@@ -172,7 +172,6 @@ abstract class FrameState extends State<Frame> {
               icon: Icon(
                 designMode ? Icons.design_services : Icons.design_services_outlined,
                 size: 26,
-                color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
             ),
             );
           },
@@ -188,6 +187,7 @@ abstract class FrameState extends State<Frame> {
   Widget? getEndDrawer(BuildContext context) => null;
 
   PreferredSizeWidget getAppBar({
+    required BuildContext context,
     Widget? leading,
     Widget? title,
     double? titleSpacing,

@@ -98,6 +98,7 @@ class WebFrameState extends FrameState {
 
   @override
   PreferredSizeWidget getAppBar({
+    required BuildContext context,
     Widget? leading,
     Widget? title,
     double? titleSpacing,
@@ -105,11 +106,10 @@ class WebFrameState extends FrameState {
     List<Widget>? actions,
   }) {
     var profileImage = IConfigService().userInfo.value?.profileImage;
-    var appStyle = AppStyle.of(context);
-    var applicationStyle = appStyle.applicationStyle;
-    Color? topMenuColor = ParseUtil.parseHexColor(applicationStyle?['web.topmenu.color']);
-    Color? iconColor = ParseUtil.parseHexColor(applicationStyle?['web.topmenu.iconColor']);
-    String? imagePath = applicationStyle?['web.topmenu.image'];
+    AppStyle appStyle = AppStyle.of(context);
+    Color? topMenuColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.topmenu.color'));
+    Color? iconColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.topmenu.iconColor'));
+    String? imagePath = appStyle.style(context, 'web.topmenu.image');
 
     bool inWorkscreen = IUiService().getCurrentWorkscreenName() != null;
 

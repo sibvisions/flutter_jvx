@@ -262,6 +262,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             title ??=
                 Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading..."));
             PreferredSizeWidget? appBar = frame?.getAppBar(
+              context: context,
               leading: leading,
               titleSpacing: leading != null ? 0 : 8,
               title: title,

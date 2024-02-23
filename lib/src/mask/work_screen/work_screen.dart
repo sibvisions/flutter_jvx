@@ -83,9 +83,9 @@ class WorkScreen extends StatelessWidget {
     BuildContext context,
     ScreenWrapper wrappedScreen,
   ) {
-    var appStyle = AppStyle.of(context).applicationStyle;
-    Color? backgroundColor = ParseUtil.parseHexColor(appStyle?['desktop.color']);
-    String? backgroundImageString = appStyle?['desktop.icon'];
+    AppStyle appStyle = AppStyle.of(context);
+    Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, 'desktop.color'));
+    String? backgroundImageString = appStyle.style(context, 'desktop.icon');
 
     return Scaffold(
       resizeToAvoidBottomInset: true,

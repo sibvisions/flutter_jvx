@@ -57,7 +57,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     bool isNormalSize = MediaQuery.sizeOf(context).height > 650;
 
     return Opacity(
-      opacity: double.parse(AppStyle.of(context).applicationStyle?['opacity.sidemenu'] ?? "1"),
+      opacity: double.parse(AppStyle.of(context).style(context, 'opacity.sidemenu') ?? "1"),
       child: Drawer(
         backgroundColor: JVxColors.isLightTheme(context)
             ? Theme.of(context).colorScheme.primary
@@ -100,7 +100,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       headerItems = [
         _buildHeaderText(
           flex: 5,
-          text: AppStyle.of(context).applicationStyle?['login.title'] ?? IConfigService().appName.value ?? "",
+          text: AppStyle.of(context).style(context, 'login.title') ?? IConfigService().appName.value ?? "",
           context: context,
           fontWeight: FontWeight.bold,
         ),

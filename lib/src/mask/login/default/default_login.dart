@@ -47,16 +47,16 @@ class DefaultLogin extends StatelessWidget implements Login {
 
   @override
   Widget build(BuildContext context) {
-    var appStyle = AppStyle.of(context).applicationStyle;
-    String? loginLogo = appStyle?['login.logo'];
+    AppStyle appStyle = AppStyle.of(context);
+    String? loginLogo = appStyle.style(context, 'login.logo');
 
-    bool inverseColor = ParseUtil.parseBool(appStyle?['login.inverseColor']) ?? false;
-    bool colorGradient = ParseUtil.parseBool(appStyle?['login.colorGradient']) ?? true;
+    bool inverseColor = ParseUtil.parseBool(appStyle.style(context, 'login.inverseColor')) ?? false;
+    bool colorGradient = ParseUtil.parseBool(appStyle.style(context, 'login.colorGradient')) ?? true;
 
-    Color? topColor = ParseUtil.parseHexColor(appStyle?['login.topColor']) ??
-        ParseUtil.parseHexColor(appStyle?['login.background']) ??
+    Color? topColor = ParseUtil.parseHexColor(appStyle.style(context, 'login.topColor')) ??
+        ParseUtil.parseHexColor(appStyle.style(context, 'login.background')) ??
         Theme.of(context).colorScheme.primary;
-    Color? bottomColor = ParseUtil.parseHexColor(appStyle?['login.bottomColor']);
+    Color? bottomColor = ParseUtil.parseHexColor(appStyle.style(context, 'login.bottomColor'));
 
     if (inverseColor) {
       var tempTop = topColor;
@@ -136,7 +136,9 @@ class DefaultLogin extends StatelessWidget implements Login {
                       : Image.asset(
                           ImageLoader.getAssetPath(
                             FlutterUI.package,
-                            "assets/images/branding_sib_visions.png",
+                            JVxColors.isLightTheme(context) ?
+                            "assets/images/branding_sib_visions.png" :
+                            "assets/images/branding_sib_visions_dark.png"
                           ),
                           fit: BoxFit.scaleDown,
                         ),

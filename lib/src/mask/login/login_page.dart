@@ -210,8 +210,8 @@ class _LoginPageState extends State<LoginPage> {
     var customWidget = FlutterUI.of(context).widget.loginBuilder?.call(context, widget.loginMode);
     if (customWidget != null) return customWidget;
 
-    var appStyle = AppStyle.of(context).applicationStyle;
-    String? loginLayout = appStyle?['login.layout'];
+    AppStyle appStyle = AppStyle.of(context);
+    String? loginLayout = appStyle.style(context, 'login.layout');
 
     Widget login;
     if (loginLayout == "modern") {

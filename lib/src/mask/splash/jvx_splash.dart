@@ -116,8 +116,8 @@ class _JVxSplashState extends State<JVxSplash> {
                             FlutterUI.translateLocal("Starting..."),
                             style: TextStyle(
                               color: value > 60
-                                  ? Theme.of(context).colorScheme.onPrimary
-                                  : Theme.of(context).colorScheme.onSurface,
+                                  ? JVxColors.DARKER_WHITE
+                                  : JVxColors.LIGHTER_BLACK,
                               fontSize: 9.0,
                             ),
                           ),

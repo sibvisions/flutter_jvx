@@ -97,7 +97,6 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         FontAwesomeIcons.magnifyingGlass,
                         size: 22,
                       ),
-                      color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
                     ),
                   );
                 }
@@ -131,9 +130,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 }
               }
 
-              var appStyle = AppStyle.of(context).applicationStyle;
-              Color? backgroundColor = ParseUtil.parseHexColor(appStyle?['desktop.color']);
-              String? backgroundImage = appStyle?['desktop.icon'];
+              AppStyle appStyle = AppStyle.of(context);
+              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, 'desktop.color'));
+              String? backgroundImage = appStyle.style(context, 'desktop.icon');
 
               FrameState? frameState = Frame.maybeOf(context);
               if (frameState != null) {
@@ -157,9 +156,10 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         if (backgroundColor != null || backgroundImage != null)
                           WorkScreenPage.buildBackground(backgroundColor, backgroundImage),
                         _getMenu(
-                          key: const PageStorageKey('MainMenu'),
-                          appStyle: appStyle,
                           applyMenuFilter(menuModel, (item) => item.label),
+                          key: const PageStorageKey('MainMenu'),
+                          context: context,
+                          appStyle: appStyle,
                         ),
                       ],
                     ),
@@ -191,6 +191,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 drawer: frameState?.getDrawer(context),
                 endDrawer: frameState?.getEndDrawer(context),
                 appBar: frameState?.getAppBar(
+                  context: context,
                   leading: leading,
                   title: !isMenuSearchEnabled
                       ? Text(FlutterUI.translate("Menu"))
@@ -317,19 +318,20 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   Widget _getMenu(
     MenuModel menuModel, {
     Key? key,
-    required Map<String, String>? appStyle,
+    required BuildContext context,
+    AppStyle? appStyle,
   }) {
-    MenuMode menuMode = MenuMode.fromString(appStyle?['menu.mode']);
+    MenuMode menuMode = MenuMode.fromString(appStyle?.style(context, 'menu.mode'));
 
     // Overriding menu mode
     AppManager? customAppManager = IUiService().getAppManager();
     menuMode = customAppManager?.onMenuMode(menuMode) ?? menuMode;
 
-    bool? grouped = ParseUtil.parseBool(appStyle?['menu.grouped']) ?? false;
+    bool? grouped = ParseUtil.parseBool(appStyle?.style(context, 'menu.grouped')) ?? false;
     // ignore: deprecated_member_use_from_same_package
     grouped = [MenuMode.GRID_GROUPED, MenuMode.LIST_GROUPED].contains(menuMode) || grouped;
-    bool? sticky = ParseUtil.parseBool(appStyle?['menu.sticky']) ?? true;
-    bool? groupOnlyOnMultiple = ParseUtil.parseBool(appStyle?['menu.group_only_on_multiple']) ?? false;
+    bool? sticky = ParseUtil.parseBool(appStyle?.style(context, 'menu.sticky')) ?? true;
+    bool? groupOnlyOnMultiple = ParseUtil.parseBool(appStyle?.style(context, 'menu.group_only_on_multiple')) ?? false;
 
     // ignore: deprecated_member_use_from_same_package
     menuMode = menuMode.migrate();

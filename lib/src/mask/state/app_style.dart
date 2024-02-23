@@ -16,18 +16,19 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../model/response/application_settings_response.dart';
 
 class AppStyle extends InheritedWidget {
-  final Map<String, String>? applicationStyle;
+  final Map<String, String>? _applicationStyle;
   final ApplicationSettingsResponse applicationSettings;
 
   const AppStyle({
     super.key,
-    required this.applicationStyle,
+    required applicationStyle,
     required this.applicationSettings,
     required super.child,
-  });
+  }):_applicationStyle = applicationStyle;
 
   /// The closest instance of this class that encloses the given context.
   static AppStyle of(BuildContext context) {
@@ -44,7 +45,20 @@ class AppStyle extends InheritedWidget {
     return context?.dependOnInheritedWidgetOfExactType<AppStyle>();
   }
 
+  /// Gets the style setting by name and recognizes dark mode setting
+  String? style(BuildContext context, String propertyName) {
+    if (!JVxColors.isLightTheme(context)) {
+      String? valueDark = _applicationStyle?['dark.${propertyName}'];
+
+      if (valueDark != null) {
+        return valueDark;
+      }
+    }
+
+    return _applicationStyle?[propertyName];
+  }
+
   @override
   bool updateShouldNotify(covariant AppStyle oldWidget) =>
-      applicationStyle != oldWidget.applicationStyle && applicationSettings != oldWidget.applicationSettings;
+      _applicationStyle != oldWidget._applicationStyle && applicationSettings != oldWidget.applicationSettings;
 }

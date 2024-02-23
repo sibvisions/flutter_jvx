@@ -70,7 +70,8 @@ class ListMenuItem extends StatelessWidget {
     var leading = MenuItemModel.getImage(
       context,
       pMenuItemModel: menuItemModel,
-      pColor: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
+      pSize: 25,
+      pColor: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white70,
     );
 
     onTap() => onClick(context, item: menuItemModel);

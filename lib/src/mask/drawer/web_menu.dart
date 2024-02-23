@@ -96,12 +96,12 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
   }
 
   Widget _buildMenu(BuildContext context, LayoutMode layoutMode) {
-    var appStyle = AppStyle.of(context).applicationStyle;
-    Color? tileColor = ParseUtil.parseHexColor(appStyle?['web.sidemenu.color']) ?? const Color(0xFF3d3d3d);
-    Color? groupTextColor = ParseUtil.parseHexColor(appStyle?['web.sidemenu.groupColor']) ?? Colors.white;
-    Color? textColor = ParseUtil.parseHexColor(appStyle?['web.sidemenu.textColor']) ?? Colors.white;
+    AppStyle appStyle = AppStyle.of(context);
+    Color? tileColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.color')) ?? const Color(0xFF3d3d3d);
+    Color? groupTextColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.groupColor')) ?? Colors.white;
+    Color? textColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.textColor')) ?? Colors.white;
     Color? selectionColor =
-        ParseUtil.parseHexColor(appStyle?['web.sidemenu.selectionColor']) ?? Theme.of(context).colorScheme.primary;
+        ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.selectionColor')) ?? Theme.of(context).colorScheme.primary;
 
     final MenuModel originalMenu = IUiService().getMenuModel();
     var menuModel = applyMenuFilter(originalMenu, (item) => item.alternativeLabel ?? item.label);

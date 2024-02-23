@@ -571,7 +571,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   late ThemeData themeData;
   late ThemeData darkThemeData;
 
-  final ThemeData splashTheme = JVxColors.applyJVxTheme(ThemeData(
+  final ThemeData splashThemeDefault = JVxColors.applyJVxTheme(ThemeData(
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
   ));
 
@@ -742,7 +742,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
               if (startupSnapshot.connectionState == ConnectionState.none &&
                   ![ConnectionState.none, ConnectionState.done].contains(exitSnapshot.connectionState)) {
-                return _buildExitSplash(child: JVxOverlay(child: child), future: IAppService().exitFuture.value!);
+                return _buildExitSplash(future: IAppService().exitFuture.value!,
+                                        context: contextD,
+                                        child: JVxOverlay(child: child));
               }
 
               if (startupApp != null &&
@@ -782,10 +784,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     required VoidCallback? returnToApps,
   }) {
     return FutureNestedNavigator(
-      theme: context != null ? Theme.of(context).copyWith(
-               colorScheme: ColorScheme.fromSeed(seedColor: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
-                                                 primary: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
-                                                 brightness: Theme.of(context).brightness)) : splashTheme,
+      theme: _splashTheme(context),
       future: future,
       transitionDelegate: transitionDelegate,
       navigatorKey: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
@@ -814,7 +813,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                       fit: BoxFit.fill,
                     ),
                     branding: Image.asset(
-                      ImageLoader.getAssetPath(FlutterUI.package, "assets/images/logo.png"),
+                      ImageLoader.getAssetPath(FlutterUI.package,
+                          JVxColors.isLightTheme(contextB) ?
+                          "assets/images/logo.png" :
+                          "assets/images/logo_dark.png"
+                      ),
                       width: 200,
                     ),
                   );
@@ -829,11 +832,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   /// Builds a widget to show when exiting an app.
   Widget _buildExitSplash({
-    required Widget child,
     required Future future,
+    BuildContext? context,
+    required Widget child
   }) {
     return FutureNestedNavigator(
-      theme: splashTheme,
+      theme: _splashTheme(context),
       future: Future.delayed(const Duration(milliseconds: 250)),
       transitionDelegate: transitionDelegate,
       builder: (contextA, delayedSnapshot) => Splash(
@@ -842,6 +846,13 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       ),
       child: child,
     );
+  }
+
+  ThemeData _splashTheme(BuildContext? context) {
+    return context != null ? Theme.of(context).copyWith(
+        colorScheme: ColorScheme.fromSeed(seedColor: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
+            primary: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
+            brightness: Theme.of(context).brightness)) : splashThemeDefault;
   }
 
   Future<void> didChangeConnectivity(ConnectivityResult result) async {

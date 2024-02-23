@@ -100,12 +100,15 @@ abstract class JVxColors {
     var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: true);
 
     themeData = themeData.copyWith(
-        appBarTheme: AppBarTheme(backgroundColor: isSelectedLight ? seedColor : colorScheme.background),
-        cardTheme: CardTheme(surfaceTintColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+        appBarTheme: AppBarTheme(backgroundColor: isSelectedLight ? colorScheme.primary : colorScheme.background,
+                                 foregroundColor: isSelectedLight ? (isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white) : themeData.textTheme.labelSmall!.color),
+        cardTheme: CardTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
         dividerTheme: DividerThemeData(color: dividerColor(themeData)),
-        dialogTheme: DialogTheme(surfaceTintColor: Colors.white, shape: RoundedRectangleBorder(
+        dialogTheme: DialogTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),),
+        textButtonTheme: TextButtonThemeData(style: ButtonStyle(foregroundColor: MaterialStateProperty.all(isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color),
+                                                                overlayColor: MaterialStateProperty.all(isSelectedLight ? null : JVxColors.WHITE))),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(shape: CircleBorder(side: BorderSide(width: 0, style: BorderStyle.none))),
         elevatedButtonTheme: evbTheme,
         typography: Typography.material2014()

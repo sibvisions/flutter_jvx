@@ -51,8 +51,8 @@ class GridMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Material(
-      color: (JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.colorScheme.onPrimary)
-          .withOpacity(double.parse(AppStyle.of(context).applicationStyle?['opacity.menu'] ?? "1")),
+      color: (JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.canvasColor)
+          .withOpacity(double.parse(AppStyle.of(context).style(context, 'opacity.menu') ?? "1")),
       child: InkWell(
         onTap: () => onClick(context, item: menuItemModel),
         child: Column(

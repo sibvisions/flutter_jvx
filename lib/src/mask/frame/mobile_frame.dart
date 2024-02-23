@@ -43,6 +43,7 @@ class MobileFrameState extends FrameState {
 
   @override
   PreferredSizeWidget getAppBar({
+    required BuildContext context,
     Widget? leading,
     Widget? title,
     double? titleSpacing,
