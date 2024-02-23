@@ -25,19 +25,25 @@ import '../../flutter_ui.dart';
 import '../../service/ui/i_ui_service.dart';
 
 class JVxSplash extends StatefulWidget {
-  final bool showAppName;
   final String? appName;
+
+  final Color? color;
+
   final Widget? logo;
   final Widget? branding;
   final Widget background;
+
   final AsyncSnapshot? snapshot;
+
   final bool centerBranding;
+  final bool showAppName;
 
   const JVxSplash({
     super.key,
     this.snapshot,
     this.showAppName = true,
     this.appName,
+    this.color,
     this.logo,
     this.branding,
     this.centerBranding = false,
@@ -87,9 +93,10 @@ class _JVxSplashState extends State<JVxSplash> {
                         padding: const EdgeInsets.only(top: 15),
                         child: Text(
                           widget.appName ?? FlutterUI.packageInfo.appName,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 32.0,
                             fontWeight: FontWeight.bold,
+                            color: widget.color,
                           ),
                         ),
                       ),
