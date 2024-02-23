@@ -21,7 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../custom/login_handler.dart';
+import '../login_handler.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../model/response/login_view_response.dart';

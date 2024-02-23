@@ -37,7 +37,7 @@ import 'commands.dart';
 import 'config/app_config.dart';
 import 'config/server_config.dart';
 import 'custom/app_manager.dart';
-import 'custom/login_handler.dart';
+import 'mask/login/login_handler.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/login/login.dart';
 import 'mask/menu/menu.dart';

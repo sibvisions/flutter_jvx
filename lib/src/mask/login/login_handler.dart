@@ -16,7 +16,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../../flutter_jvx.dart';
 
 typedef ColorBuilder = Color Function(BuildContext context);
 
