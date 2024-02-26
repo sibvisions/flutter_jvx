@@ -21,7 +21,7 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The style to make the checkbox to a switch.
+  /// The styles to make the checkbox to a switch.
   static const String SWITCH_STYLE = "f_switch";
 
   static const String CELL_SWITCH_STYLE = "ui-switch";
@@ -46,6 +46,9 @@ class FlCheckBoxModel extends FlRadioButtonModel {
 
   bool get isSwitch =>
       (styles.contains(SWITCH_STYLE) || styles.contains(CELL_SWITCH_STYLE)) && !styles.contains(CHECKBOX_STYLE);
+
+  /// The image of a checkbox
+  String? imageName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

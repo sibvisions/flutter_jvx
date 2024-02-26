@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
+import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/font_awesome_util.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
@@ -67,9 +68,13 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget? get image {
-    if (model.image != null) {
+    String? imageString = model.className != FlCellEditorClassname.CHECK_BOX_CELL_EDITOR
+        ? model.image
+        : (model as FlCheckBoxModel).imageName;
+
+    if (imageString != null) {
       Color? color;
-      if (FontAwesomeUtil.checkFontAwesome(model.image!)) {
+      if (FontAwesomeUtil.checkFontAwesome(imageString)) {
         if (!model.borderPainted || model.borderOnMouseEntered) {
           color = JVxColors.LIGHTER_BLACK;
         } else {
@@ -77,7 +82,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         }
       }
       return ImageLoader.loadImage(
-        model.image!,
+        imageString,
         pWantedColor: color,
       );
     }

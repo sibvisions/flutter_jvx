@@ -110,6 +110,7 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
 
     widgetModel.labelModel.text = model.text;
     widgetModel.selected = model.selectedValue == _value;
+    widgetModel.imageName = model.imageName;
 
     return widgetModel;
   }

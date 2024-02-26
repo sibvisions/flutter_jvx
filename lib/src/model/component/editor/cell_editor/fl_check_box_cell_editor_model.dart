@@ -31,6 +31,9 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
   /// The text to show next to the checkbox.
   String text = "";
 
+  /// The image of a checkbox
+  String imageName = "";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +64,13 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
       pKey: ApiObjectProperty.text,
       pDefault: defaultModel.text,
       pCurrent: text,
+    );
+
+    imageName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.imageName,
+      pDefault: defaultModel.imageName,
+      pCurrent: imageName,
     );
   }
 }
