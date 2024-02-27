@@ -56,6 +56,9 @@ abstract class IAppService implements Service {
 
   set returnUri(Uri? value);
 
+  /// Returns the temporary app title, if set
+  String? temporaryTitle();
+
   /// Returns whether the app was started manually
   bool wasStartedManually();
 
@@ -120,7 +123,7 @@ abstract class IAppService implements Service {
   /// Creates an [App] from [customConfig] and starts it, if it isn't already running.
   ///
   /// Used by DeepLinks and Notifications.
-  Future<void> startCustomApp(ServerConfig customConfig, {bool force = false, bool autostart = true});
+  Future<void> startCustomApp(ServerConfig customConfig, {String? appTitle, bool force = false, bool autostart = true});
 
   /// Starts the app specified by [appId] and stops the currently running app, if applicable.
   ///
@@ -132,7 +135,7 @@ abstract class IAppService implements Service {
   /// See also:
   /// * [App.createApp]
   /// * [stopApp]
-  Future<void> startApp({String? appId, bool? autostart});
+  Future<void> startApp({String? appId, String? appTitle, bool? autostart});
 
   /// Stops the currently running app and performs any necessary cleanup.
   Future<void> stopApp();

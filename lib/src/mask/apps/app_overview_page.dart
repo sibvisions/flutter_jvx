@@ -330,7 +330,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         onTap: app.isStartable
                             ? () {
                                 if (app.predefined || App.customAppsAllowed) {
-                                  IAppService().startApp(appId: app.id, autostart: false);
+                                  IAppService().startApp(appId: app.id, appTitle: app.effectiveTitle, autostart: false);
                                 } else {
                                   _showForbiddenAppStart(context);
                                 }

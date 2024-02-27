@@ -92,7 +92,7 @@ class _JVxSplashState extends State<JVxSplash> {
                       Padding(
                         padding: const EdgeInsets.only(top: 15),
                         child: Text(
-                          widget.appName ?? FlutterUI.packageInfo.appName,
+                          widget.appName ?? IAppService().temporaryTitle() ?? FlutterUI.packageInfo.appName,
                           style: TextStyle(
                             fontSize: 32.0,
                             fontWeight: FontWeight.bold,
@@ -132,6 +132,11 @@ class _JVxSplashState extends State<JVxSplash> {
                           ),
                         );
                       }),
+                ),
+              // avoid UI jumping if an error occurs and the progress is not visible
+              if (widget.snapshot?.connectionState == ConnectionState.done || IUiService().getJVxDialogs().isNotEmpty)
+                Container(
+                    height: 15,
                 ),
               if (!widget.centerBranding) ..._createBottomBranding(),
               if (widget.centerBranding) ..._createCenteredBranding(),

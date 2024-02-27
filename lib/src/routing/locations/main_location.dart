@@ -136,7 +136,7 @@ class MainLocation extends BeamLocation<BeamState> {
       bool startedManually = bool.tryParse(queryParameters.remove("startedManually") ?? "") ?? false;
       IConfigService().setCustomStartupProperties(queryParameters);
 
-      unawaited(IAppService().startCustomApp(deepLinkConfig, autostart: !startedManually));
+      unawaited(IAppService().startCustomApp(deepLinkConfig, appTitle: IConfigService().title.value, autostart: !startedManually));
     }
   }
 

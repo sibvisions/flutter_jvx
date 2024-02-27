@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/device_status_response.dart';
@@ -41,7 +42,8 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
 
     Widget labelWidget = FlLabelWidget.getTextWidget(
       model,
-      pTextStyle: model.createTextStyle(pForeground: model.foreground ?? Theme.of(context).colorScheme.onPrimary),
+      pTextStyle: model.createTextStyle(pForeground: model.foreground ?? (JVxColors.isLightTheme(context) ?
+                                                      Theme.of(context).colorScheme.onPrimary : Theme.of(context).textTheme.labelSmall!.color)),
       pSelectable: true,
     );
 

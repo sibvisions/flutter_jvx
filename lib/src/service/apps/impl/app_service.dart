@@ -50,6 +50,7 @@ class AppService implements IAppService {
   final ValueNotifier<Future<void>?> _startupFuture = ValueNotifier(null);
   final ValueNotifier<Future<void>?> _exitFuture = ValueNotifier(null);
 
+  String? _tempTitle;
   bool _startedManually = false;
   Uri? _returnUri;
 
@@ -67,6 +68,7 @@ class AppService implements IAppService {
   FutureOr<void> clear(ClearReason reason) {
     if (reason == ClearReason.DEFAULT) {
       _startedManually = false;
+      _tempTitle = null;
       _returnUri = null;
     }
   }
@@ -85,6 +87,9 @@ class AppService implements IAppService {
 
   @override
   bool wasStartedManually() => _startedManually;
+
+  @override
+  String? temporaryTitle() => _tempTitle;
 
   @override
   ValueListenable<Set<String>> getStoredAppIds() {
@@ -196,25 +201,25 @@ class AppService implements IAppService {
   }
 
   @override
-  Future<void> startCustomApp(ServerConfig customConfig, {bool force = false, bool autostart = true}) async {
+  Future<void> startCustomApp(ServerConfig customConfig, {String? appTitle, bool force = false, bool autostart = true}) async {
     App customApp = await App.createAppFromConfig(customConfig);
     BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     bool loggedOut = (state.uri.path.startsWith("/login") || !IUiService().loggedIn());
 
     // Only start app if it isn't already running or the user isn't logged in.
     if (force || IConfigService().currentApp.value != customApp.id || loggedOut) {
-      await IAppService().startApp(appId: customApp.id, autostart: autostart);
+      await IAppService().startApp(appId: customApp.id, appTitle: appTitle, autostart: autostart);
     }
   }
 
   @override
-  Future<void> startApp({String? appId, bool? autostart}) {
+  Future<void> startApp({String? appId, String? appTitle, bool? autostart}) {
     _exitFuture.value = null;
-    return _startupFuture.value = _startApp(appId: appId, autostart: autostart)
+    return _startupFuture.value = _startApp(appId: appId, appTitle: appTitle, autostart: autostart)
         .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
   }
 
-  Future<void> _startApp({String? appId, bool? autostart}) async {
+  Future<void> _startApp({String? appId, String? appTitle, bool? autostart}) async {
     if (appId == null && IConfigService().currentApp.value == null) {
       FlutterUI.log.e("Called 'startApp' without an appId or a currentApp");
       await IUiService().routeToAppOverview();
@@ -230,6 +235,8 @@ class AppService implements IAppService {
     if (autostart != null) {
       _startedManually = !autostart;
     }
+
+    _tempTitle = appTitle;
 
     await IApiService().getRepository().stop();
     var repository = IConfigService().offline.value ? OfflineApiRepository() : OnlineApiRepository();
