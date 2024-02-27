@@ -92,7 +92,7 @@ class _JVxSplashState extends State<JVxSplash> {
                       Padding(
                         padding: const EdgeInsets.only(top: 15),
                         child: Text(
-                          widget.appName ?? IAppService().temporaryTitle() ?? FlutterUI.packageInfo.appName,
+                          IAppService().temporaryTitle() ?? widget.appName ?? FlutterUI.packageInfo.appName,
                           style: TextStyle(
                             fontSize: 32.0,
                             fontWeight: FontWeight.bold,
