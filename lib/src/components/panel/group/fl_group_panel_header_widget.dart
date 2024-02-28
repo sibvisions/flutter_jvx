@@ -18,12 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../../flutter_jvx.dart';
-import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
-import '../../../model/response/device_status_response.dart';
-import '../../../service/ui/i_ui_service.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
-import '../../label/fl_label_widget.dart';
 
 class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessWidget<T> {
   final Function(BuildContext) postFrameCallback;
@@ -40,17 +35,16 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
       postFrameCallback(context);
     });
 
-    Widget labelWidget = FlLabelWidget.getTextWidget(
-      model,
-      pTextStyle: model.createTextStyle(pForeground: model.foreground ?? (JVxColors.isLightTheme(context) ?
-                                                      Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onPrimary)),
-      pSelectable: true,
-    );
+    Widget labelWidget;
 
     if (model.isFlatStyle) {
       labelWidget = Padding(
         padding: const EdgeInsets.fromLTRB(2, 2, 2, 5),
-        child: labelWidget,
+        child: FlLabelWidget.getTextWidget(model,
+                                           pTextStyle: model.createTextStyle(pForeground: model.foreground ??
+                                               (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).textTheme.labelSmall!.color)),
+                                           pSelectable: true,
+        ),
       );
     } else {
       labelWidget = Material(
@@ -59,7 +53,10 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: labelWidget,
+          child: FlLabelWidget.getTextWidget(model,
+                                             pTextStyle: model.createTextStyle(pForeground: model.foreground ?? Theme.of(context).colorScheme.onPrimary),
+                                             pSelectable: true,
+          ),
         ),
       );
     }
