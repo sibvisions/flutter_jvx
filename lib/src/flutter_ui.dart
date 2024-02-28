@@ -39,7 +39,6 @@ import 'config/server_config.dart';
 import 'custom/app_manager.dart';
 import 'mask/login/login_handler.dart';
 import 'mask/jvx_overlay.dart';
-import 'mask/login/login.dart';
 import 'mask/menu/menu.dart';
 import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/jvx_splash.dart';
@@ -84,6 +83,9 @@ import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
 import 'util/push_util.dart';
 import 'util/widgets/future_nested_navigator.dart';
+
+/// Builder function for dynamic color creation
+typedef ColorBuilder = Color Function(BuildContext context);
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterUI extends StatefulWidget {
@@ -669,7 +671,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   @override
-  Widget build(BuildContext contextA) {
+  Widget build(BuildContext context) {
     List<Locale> supportedLocales = {
       IConfigService().applicationLanguage.value,
       IConfigService().getPlatformLocale(),
@@ -682,7 +684,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         IUiService().applicationParameters,
         IConfigService().applicationStyle,
       ]),
-      builder: (contextB, _) {
+      builder: (context, _) {
         String title = (kIsWeb ? IUiService().applicationParameters.value.applicationTitleWeb : null) ??
             widget.appConfig?.title ??
             FlutterUI.packageInfo.appName;
@@ -954,8 +956,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     Map<String, String>? styleMap = IConfigService().applicationStyle.value;
 
     if (styleMap != null) {
-      Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap?['web.topmenu.color']) : null;
-      styleColor ??= ParseUtil.parseHexColor(styleMap?['theme.color']);
+      Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
+      styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
 
       changeTheme(styleColor);
     }

@@ -18,8 +18,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../../flutter_jvx.dart';
 
-typedef ColorBuilder = Color Function(BuildContext context);
-
 /// Used for customization of login
 class LoginHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -320,7 +320,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     if (customScreen != null) {
       builtScreen = ScreenWrapper.customScreen(context, customScreen, builtScreen);
 
-      safeAreaColor = customScreen.safeAreaColor;
+      safeAreaColor = customScreen.safeAreaColorBuilder?.call(context);
     }
 
     // Update screenTitle

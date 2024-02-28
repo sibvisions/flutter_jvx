@@ -68,7 +68,7 @@ class CustomScreen {
   final List<CustomComponent> replaceComponents;
 
   /// The color of the safe area
-  final Color? safeAreaColor;
+  final ColorBuilder? safeAreaColorBuilder;
 
   /// Whether this screen is shown in online mode.
   final bool showOnline;
@@ -101,7 +101,7 @@ class CustomScreen {
     this.showOnline = true,
     this.showOffline = true,
     this.sendOpenScreenRequests = false,
-    this.safeAreaColor,
+    this.safeAreaColorBuilder,
   }) : assert(showOnline || !sendOpenScreenRequests, "Cannot send open screen requests for offline-only screens.");
 
   /// Creates an online-only custom screen.
@@ -118,7 +118,7 @@ class CustomScreen {
     this.footerBuilder,
     this.replaceComponents = const [],
     this.sendOpenScreenRequests = true,
-    this.safeAreaColor,
+    this.safeAreaColorBuilder,
   })  : showOnline = true,
         showOffline = false;
 
@@ -134,7 +134,7 @@ class CustomScreen {
     this.headerBuilder,
     this.footerBuilder,
     this.replaceComponents = const [],
-    this.safeAreaColor,
+    this.safeAreaColorBuilder,
   })  : showOnline = false,
         showOffline = true,
         sendOpenScreenRequests = false;
