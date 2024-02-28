@@ -475,7 +475,7 @@ abstract class FlComponentModel {
     applyFromJson(overrideJson);
   }
 
-  /// Returns the textstyle of the component.
+  /// Returns the [TextStyle] of the component.
   TextStyle createTextStyle(
       {Color? pForeground, double? pFontSize, FontStyle? pFontStyle, FontWeight? pFontWeight, String? pFontFamily}) {
     return TextStyle(

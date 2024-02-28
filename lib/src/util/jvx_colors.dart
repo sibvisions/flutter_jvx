@@ -71,8 +71,15 @@ abstract class JVxColors {
   }) {
     ColorScheme colorScheme;
 
-    bool isSeedLight = ThemeData.estimateBrightnessForColor(seedColor) == Brightness.light;
+    //temporary color scheme to get the "real" primary "calculated" color
+    ColorScheme csTemp = ColorScheme.fromSeed(seedColor: seedColor, brightness: selectedBrightness);
+
     bool isSelectedLight = selectedBrightness == Brightness.light;
+
+    //we don't use fixed primary color in dark mode, so we have to check the calculated primary color for brightness
+    //to get the correct foreground colors
+    bool isSeedLight = ThemeData.estimateBrightnessForColor(seedColor) == Brightness.light
+                       || (!isSelectedLight && ThemeData.estimateBrightnessForColor(csTemp.primary) == Brightness.light);
 
     if (useFixedPrimary) {
       colorScheme = ColorScheme.fromSeed(
@@ -94,7 +101,7 @@ abstract class JVxColors {
     }
 
     ElevatedButtonThemeData evbTheme = ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        backgroundColor: seedColor,
+        backgroundColor: colorScheme.primary,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))));
 
     var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: true);

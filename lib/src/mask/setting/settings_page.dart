@@ -160,10 +160,17 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
+    print(Theme.of(contextA).appBarTheme.backgroundColor);
+    print(Theme.of(contextA).cardTheme.color);
+
     if (IConfigService().currentApp.value == null) {
+      //create a new base theme for standard blue
+      //if we use Theme.of(contextA) instead, the colors will be inherited from the last application
+      ThemeData thTemp = JVxColors.createTheme(JVxColors.isLightTheme(contextA) ? JVxColors.blue : Colors.white, Theme.of(contextA).brightness, useFixedPrimary: true);
+
       widget = Theme(
-        data: Theme.of(contextA).copyWith(
-          colorScheme: Theme.of(contextA).colorScheme.copyWith(primary: JVxColors.isLightTheme(contextA) ? JVxColors.blue : Colors.white),
+        data: thTemp.copyWith(
+          colorScheme: thTemp.colorScheme.copyWith(primary: JVxColors.isLight(thTemp) ? JVxColors.blue : Colors.white),
           appBarTheme: const AppBarTheme(backgroundColor: null),
         ),
         child: widget,

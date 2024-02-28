@@ -43,7 +43,7 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
     Widget labelWidget = FlLabelWidget.getTextWidget(
       model,
       pTextStyle: model.createTextStyle(pForeground: model.foreground ?? (JVxColors.isLightTheme(context) ?
-                                                      Theme.of(context).colorScheme.onPrimary : Theme.of(context).textTheme.labelSmall!.color)),
+                                                      Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onPrimary)),
       pSelectable: true,
     );
 

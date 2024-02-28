@@ -188,7 +188,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
         onPressed: widget.floatingOnPress,
         child: FaIcon(
           FontAwesomeIcons.squarePlus,
-          color: widget.model.foreground,
+          color: widget.model.foreground ?? Theme.of(context).colorScheme.onPrimary,
         ),
       ),
     );
