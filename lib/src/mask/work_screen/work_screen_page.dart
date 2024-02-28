@@ -120,6 +120,9 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   /// Title displayed on the top
   String? screenTitle;
 
+  /// The color of the safe area
+  Color? safeAreaColor;
+
   /// Navigating booleans.
   bool isNavigating = false;
   bool isForced = false;
@@ -276,8 +279,14 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             Widget content = Builder(
               builder: (context) => WillPopScope(
                 onWillPop: () => _onWillPop(context),
-                child: SafeArea(
-                  child: body!,
+                  child: Container(
+                    color: safeAreaColor,
+                    child: SafeArea(
+                      child: Container(
+                        color: safeAreaColor != null ? Theme.of(context).colorScheme.background : null,
+                        child: body!,
+                      )
+                  )
                 ),
               ),
             );
@@ -310,6 +319,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     CustomScreen? customScreen = IUiService().getCustomScreen(item!.screenLongName);
     if (customScreen != null) {
       builtScreen = ScreenWrapper.customScreen(context, customScreen, builtScreen);
+
+      safeAreaColor = customScreen.safeAreaColor;
     }
 
     // Update screenTitle
