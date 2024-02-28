@@ -20,6 +20,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:universal_io/io.dart';
 
+import '../../flutter_jvx.dart';
 import '../flutter_ui.dart';
 import '../mask/menu/menu.dart';
 import '../model/api_interaction.dart';
@@ -38,6 +39,9 @@ abstract class AppManager {
 
   /// List of all registered customs screens.
   final List<CustomScreen> customScreens = [];
+
+  /// Custom components that will replace original components.
+  final List<CustomComponent> replaceComponents = [];
 
   /// The menu item, which is the way to access the registered screens.
   ///
@@ -88,6 +92,11 @@ abstract class AppManager {
       customMenuItems[customScreen.key] = menuItem;
     }
     customScreens.add(customScreen);
+  }
+
+  /// Defines a custom component which is a replacement for an existing component
+  void replaceComponent(CustomComponent customComponent) {
+    replaceComponents.add(customComponent);
   }
 
   /// Gets called on menu mode selection. Default implementation returns original [pCurrentMode]

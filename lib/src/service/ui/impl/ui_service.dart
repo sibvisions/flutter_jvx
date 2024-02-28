@@ -806,17 +806,17 @@ class UiService implements IUiService {
 
   @override
   CustomComponent? getCustomComponent({required String pComponentName}) {
-    List<CustomScreen>? screens = appManager?.customScreens;
+    List<CustomComponent>? comps = appManager?.replaceComponents;
 
-    if (screens != null) {
-      for (CustomScreen screen in screens) {
-        for (CustomComponent component in screen.replaceComponents) {
-          if (component.componentName == pComponentName) {
-            return component;
-          }
+    if (comps != null) {
+      //in case of multiple custom components with same replacement -> use last custom component in list
+      for (CustomComponent custcomp in comps.reversed) {
+        if (custcomp.componentName == pComponentName) {
+          return custcomp;
         }
       }
     }
+
     return null;
   }
 

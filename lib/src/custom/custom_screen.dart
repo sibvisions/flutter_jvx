@@ -65,9 +65,6 @@ class CustomScreen {
   /// Used to conveniently provide a custom footer for this screen.
   final FooterBuilder? footerBuilder;
 
-  /// Custom components that will replace original components in this screen.
-  final List<CustomComponent> replaceComponents;
-
   /// The color of the safe area
   final ColorBuilder? safeAreaColorBuilder;
 
@@ -98,7 +95,6 @@ class CustomScreen {
     this.screenBuilder,
     this.headerBuilder,
     this.footerBuilder,
-    this.replaceComponents = const [],
     this.showOnline = true,
     this.showOffline = true,
     this.sendOpenScreenRequests = false,
@@ -117,7 +113,6 @@ class CustomScreen {
     this.screenBuilder,
     this.headerBuilder,
     this.footerBuilder,
-    this.replaceComponents = const [],
     this.sendOpenScreenRequests = true,
     this.safeAreaColorBuilder,
   })  : showOnline = true,
@@ -134,7 +129,6 @@ class CustomScreen {
     this.screenBuilder,
     this.headerBuilder,
     this.footerBuilder,
-    this.replaceComponents = const [],
     this.safeAreaColorBuilder,
   })  : showOnline = false,
         showOffline = true,

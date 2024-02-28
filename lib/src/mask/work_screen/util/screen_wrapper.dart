@@ -23,7 +23,7 @@ import '../../../model/component/fl_component_model.dart';
 
 class ScreenWrapper {
   /// Title displayed on the top
-  final String screenTitle;
+  final String? screenTitle;
 
   /// Header
   final PreferredSizeWidget? header;
@@ -37,7 +37,7 @@ class ScreenWrapper {
   final bool customScreen;
 
   const ScreenWrapper({
-    required this.screenTitle,
+    this.screenTitle,
     this.header,
     this.footer,
     this.screen,
@@ -69,7 +69,7 @@ class ScreenWrapper {
       header: customScreen.headerBuilder?.call(context),
       footer: customScreen.footerBuilder?.call(context),
       screen: replaceScreen ?? screen?.screen,
-      screenTitle: customScreen.screenTitle ?? screen?.screenTitle ?? "Custom Screen",
+      screenTitle: customScreen.screenTitle ?? screen?.screenTitle,
       customScreen: replaceScreen != null,
     );
   }
