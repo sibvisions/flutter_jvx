@@ -85,7 +85,7 @@ import 'util/push_util.dart';
 import 'util/widgets/future_nested_navigator.dart';
 
 /// Builder function for dynamic color creation
-typedef ColorBuilder = Color Function(BuildContext context);
+typedef ColorBuilder = Color? Function(BuildContext context);
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterUI extends StatefulWidget {
