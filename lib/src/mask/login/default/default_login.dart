@@ -131,7 +131,7 @@ class DefaultLogin extends StatelessWidget implements Login {
                         begin: Alignment.topCenter,
                         colors: [
                           topColor,
-                          JVxColors.lighten(topColor, 0.2),
+                          if (JVxColors.isLightTheme(context)) JVxColors.lighten(topColor, 0.3) else JVxColors.darken(topColor, 0.15)
                         ],
                         end: Alignment.bottomCenter,
                       )

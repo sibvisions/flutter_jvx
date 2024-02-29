@@ -174,7 +174,7 @@ class ModernLogin extends StatelessWidget implements Login {
                 begin: Alignment.topLeft,
                 colors: [
                   topColor,
-                  JVxColors.lighten(topColor, 0.2),
+                  if (JVxColors.isLightTheme(context)) JVxColors.lighten(topColor, 0.3) else JVxColors.darken(topColor, 0.15)
                 ],
                 end: Alignment.bottomRight,
               )
@@ -223,7 +223,7 @@ class ModernLogin extends StatelessWidget implements Login {
                           begin: Alignment.topLeft,
                           colors: [
                             bottomColor,
-                            JVxColors.lighten(bottomColor, 0.2),
+                            if (JVxColors.isLightTheme(context)) JVxColors.lighten(bottomColor, 0.3) else JVxColors.darken(bottomColor, 0.15)
                           ],
                           end: Alignment.bottomRight,
                         )
