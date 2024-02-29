@@ -18,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../../flutter_jvx.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
+import 'button_cell_editor_styles.dart';
 import 'i_cell_editor.dart';
 
 class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheckBoxCellEditorModel, dynamic> {
@@ -68,6 +69,18 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
 
     applyEditorJson(widgetModel, pJson);
 
+    bool showButtons = model.isButton || model.styles.any((style) => style == ButtonCellEditorStyles.TOGGLEBUTTON);
+
+    if (showButtons) {
+      if (model.isButton && model.selectedValue == null && model.deselectedValue == null) {
+        widgetModel.labelModel.text = _value ?? "";
+      } else if (cellEditorJson["text"] == null && columnDefinition != null) {
+        widgetModel.labelModel.text = columnDefinition!.label;
+      } else {
+        widgetModel.labelModel.text = cellEditorJson["text"] ?? "";
+      }
+    }
+
     lastWidgetModel = widgetModel;
 
     bool isEditable = true;
@@ -75,20 +88,20 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
       isEditable = pJson![ApiObjectProperty.cellEditorEditable];
     }
 
-    if (model.styles.any((style) => style == 'ui-button')) {
+    if (model.isButton) {
       return FlButtonWidget(
         model: widgetModel,
         focusNode: _buttonFocusNode,
         onPress: isEditable ? _onPress : null,
       );
-    } else if (model.styles.any((style) => style == 'ui-radiobutton')) {
+    } else if (model.styles.any((style) => style == ButtonCellEditorStyles.RADIOBUTTON)) {
       return FlRadioButtonWidget(
         model: widgetModel,
         focusNode: _buttonFocusNode,
         radioFocusNode: focusNode,
         onPress: isEditable ? _onPress : null,
       );
-    } else if (model.styles.any((style) => style == 'ui-togglebutton')) {
+    } else if (model.styles.any((style) => style == ButtonCellEditorStyles.TOGGLEBUTTON)) {
       return FlToggleButtonWidget(
         model: widgetModel,
         focusNode: _buttonFocusNode,
@@ -155,14 +168,18 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _onPress() {
-    if (_value == model.selectedValue) {
-      if (model.styles.any((style) => style == 'ui-button')) {
-        onEndEditing(model.selectedValue);
-      } else {
-        onEndEditing(model.deselectedValue);
-      }
+    if (model.styles.any((style) => style == ButtonCellEditorStyles.HYPERLINK)) {
+      onEndEditing(_value);
     } else {
-      onEndEditing(model.selectedValue);
+      if (_value == model.selectedValue) {
+        if (model.styles.any((style) => style == ButtonCellEditorStyles.BUTTON)) {
+          onEndEditing(model.selectedValue);
+        } else {
+          onEndEditing(model.deselectedValue);
+        }
+      } else {
+        onEndEditing(model.selectedValue);
+      }
     }
   }
 }

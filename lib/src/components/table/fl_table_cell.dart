@@ -18,7 +18,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/layout/alignments.dart';

@@ -39,7 +39,8 @@ class FlCheckBoxModel extends FlRadioButtonModel {
 
   // Checkbox never draws a border.
   @override
-  bool get borderPainted => styles.contains("ui-button") || styles.contains("ui-togglebutton");
+  bool get borderPainted =>
+      styles.contains(ButtonCellEditorStyles.BUTTON) || styles.contains(ButtonCellEditorStyles.TOGGLEBUTTON);
 
   @override
   FlCheckBoxModel get defaultModel => FlCheckBoxModel();

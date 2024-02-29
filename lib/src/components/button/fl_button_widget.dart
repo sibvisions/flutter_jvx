@@ -70,7 +70,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget? get image {
     String? imageString = model.className != FlCellEditorClassname.CHECK_BOX_CELL_EDITOR
         ? model.image
-        : (model as FlCheckBoxModel).imageName;
+        : ((model as FlCheckBoxModel).imageName != null && (model as FlCheckBoxModel).imageName!.isNotEmpty)
+            ? (model as FlCheckBoxModel).imageName
+            : null;
 
     if (imageString != null) {
       Color? color;

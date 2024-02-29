@@ -39,6 +39,7 @@ class FlButtonModel extends FlComponentModel {
   static const String HAPTIC = "f_haptic";
 
   static const String HYPERLINK_STYLE = "hyperlink";
+  static const String CELL_HYPERLINK_STYLE = "ui-hyperlink";
   static const String MOBILE_GEOLOCATION_STYLE = "mobile-geolocation";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,7 +138,7 @@ class FlButtonModel extends FlComponentModel {
   bool get isSmallStyle => styles.contains(SMALL_STYLE);
 
   /// If the button is a hyperlink button
-  bool get isHyperLink => styles.contains(HYPERLINK_STYLE);
+  bool get isHyperLink => styles.contains(HYPERLINK_STYLE) || styles.contains(CELL_HYPERLINK_STYLE);
 
   /// If the button is a geolocation button
   bool get isGeolocationStyle => styles.contains(MOBILE_GEOLOCATION_STYLE);

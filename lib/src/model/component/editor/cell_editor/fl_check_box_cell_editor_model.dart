@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../../../components/editor/cell_editor/button_cell_editor_styles.dart';
 import '../../../../service/api/shared/api_object_property.dart';
 import 'cell_editor_model.dart';
 
@@ -34,11 +35,20 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
   /// The image of a checkbox
   String imageName = "";
 
+  /// True, if the component is a button
+  bool isButton = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   FlCheckBoxCellEditorModel get defaultModel => FlCheckBoxCellEditorModel();
+
+  Set<String> _parseStyle(dynamic pStyle) {
+    String sStyle = (pStyle as String);
+
+    return sStyle.split(",").toSet();
+  }
 
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
@@ -72,5 +82,16 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
       pDefault: defaultModel.imageName,
       pCurrent: imageName,
     );
+
+    styles = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.style,
+      pDefault: defaultModel.styles,
+      pConversion: _parseStyle,
+      pCurrent: {},
+    );
+
+    isButton =
+        styles.any((style) => style == ButtonCellEditorStyles.BUTTON || style == ButtonCellEditorStyles.HYPERLINK);
   }
 }
