@@ -201,6 +201,9 @@ class FlutterUI extends StatefulWidget {
 
   final List<Widget> debugOverlayEntries;
 
+  /// show or hide the debug banner in dev mode
+  final bool debugBanner;
+
   static late PackageInfo packageInfo;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -215,6 +218,7 @@ class FlutterUI extends StatefulWidget {
     this.loginHandler,
     this.menuBuilder,
     this.debugOverlayEntries = const [],
+    this.debugBanner = true
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -701,6 +705,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
           title: title,
           builder: _routeBuilder,
+          debugShowCheckedModeBanner: widget.debugBanner,
         );
       },
     );
