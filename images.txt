@@ -1,0 +1,4 @@
+Size of enter images for icon
+
+light 479 x 563
+dark 479 x 567
