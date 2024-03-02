@@ -405,6 +405,9 @@ abstract class ApiObjectProperty {
   static const String pushNotifications = "pushNotifications";
   static const String customLanguage = "customLanguage";
 
+  static const String mandatoryMarkVisible = "mandatoryMarkVisible";
+  static const String mandatoryMark = "mandatoryMark";
+
   static const String type = "type";
   static const String chartStyle = "chartStyle";
 }

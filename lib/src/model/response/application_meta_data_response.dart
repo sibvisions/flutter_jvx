@@ -46,6 +46,12 @@ class ApplicationMetaDataResponse extends ApiResponse {
   /// Whether lost password feature is enabled.
   final bool? rememberMeEnabled;
 
+  /// Whether mandatory mark is visible
+  final bool mandatoryMarkVisible;
+
+  /// The mandatory mark
+  final String? mandatoryMark;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,8 +65,10 @@ class ApplicationMetaDataResponse extends ApiResponse {
     this.timeZoneCode,
     required this.lostPasswordEnabled,
     this.rememberMeEnabled,
+    mandatoryMarkVisible,
+    this.mandatoryMark,
     required super.name,
-  });
+  }) : mandatoryMarkVisible = mandatoryMarkVisible ?? true;
 
   ApplicationMetaDataResponse.fromJson(super.json)
       : clientId = json[ApiObjectProperty.clientId],
@@ -71,10 +79,16 @@ class ApplicationMetaDataResponse extends ApiResponse {
         timeZoneCode = json[ApiObjectProperty.timeZoneCode],
         lostPasswordEnabled = json[ApiObjectProperty.lostPasswordEnabled],
         rememberMeEnabled = json[ApiObjectProperty.rememberMe],
+        mandatoryMarkVisible = json[ApiObjectProperty.mandatoryMarkVisible] ?? true,
+        mandatoryMark = json[ApiObjectProperty.mandatoryMark],
         super.fromJson();
 
   @override
   String toString() {
-    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, serverVersion: $serverVersion, customLanguage: $customLanguage, langCode: $langCode, timeZoneCode: $timeZoneCode, lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled}';
+    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, '
+           'serverVersion: $serverVersion, customLanguage: $customLanguage, '
+           'langCode: $langCode, timeZoneCode: $timeZoneCode, '
+           'lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled, '
+           'mandatoryMarkVisible: $mandatoryMarkVisible, mandatoryMark: $mandatoryMark}';
   }
 }

@@ -34,8 +34,10 @@ class ApplicationParametersResponse extends ApiResponse {
   /// Which screen to open, is a screen name
   final String? openScreen;
 
+  /// Whether design mode is allowed
   final bool? designModeAllowed;
 
+  /// Whether push notifications are enabled
   final bool? pushNotificationsEnabled;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

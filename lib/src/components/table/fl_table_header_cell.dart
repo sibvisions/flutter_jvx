@@ -19,10 +19,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/sort_definition.dart';
 import '../../model/layout/alignments.dart';
+import '../../model/response/application_meta_data_response.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
@@ -149,7 +151,16 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
     cellText = columnDefinition.label;
 
     if (columnDefinition.nullable != true) {
-      cellText += " *";
+      ApplicationMetaDataResponse? metadata = IUiService().applicationMetaData.value;
+
+      if (metadata != null) {
+        if (metadata.mandatoryMarkVisible) {
+          cellText += " ${metadata.mandatoryMark ?? "*"}";
+        }
+      }
+      else {
+        cellText += " *";
+      }
     }
 
     style = model.createTextStyle(pFontWeight: FontWeight.bold);

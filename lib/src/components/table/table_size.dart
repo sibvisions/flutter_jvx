@@ -150,7 +150,7 @@ class TableSize {
 
       double calculatedHeaderWidth = _calculateTableTextWidth(
         textStyle.copyWith(fontWeight: FontWeight.bold),
-        "$columnLabel *", // Column headers get a * if they are mandatory
+        "$columnLabel *", // per default: Column headers get a * if they are mandatory
       );
 
       if (pMetaData.sortDefinitions?.firstWhereOrNull((element) => element.columnName == columnName)?.mode != null) {
