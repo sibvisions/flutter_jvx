@@ -27,6 +27,7 @@ import '../../service/data/i_data_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
+import '../editor/cell_editor/button_cell_editor_styles.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
@@ -194,6 +195,11 @@ class _FlTableCellState extends State<FlTableCell> {
 
     cellChild ??= _createTextWidget();
 
+    bool isTableButton = cellEditor.model.styles.any((style) =>
+        style == ButtonCellEditorStyles.BUTTON ||
+        style == ButtonCellEditorStyles.HYPERLINK ||
+        style == ButtonCellEditorStyles.TOGGLEBUTTON);
+
     Border? border;
     if (widget.model.showHorizontalLines) {
       border = Border(
@@ -248,11 +254,13 @@ class _FlTableCellState extends State<FlTableCell> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Flexible(
-              // cell editors in tables should only use the amount of space they need
-              fit: cellEditor.allowedInTable ? FlexFit.loose : FlexFit.tight,
-              child: cellChild,
-            ),
+            isTableButton
+                ? cellChild
+                : Flexible(
+                    // cell editors in tables should only use the amount of space they need
+                    fit: cellEditor.allowedInTable ? FlexFit.loose : FlexFit.tight,
+                    child: cellChild,
+                  ),
             ..._createCellIcons(),
           ],
         ),
