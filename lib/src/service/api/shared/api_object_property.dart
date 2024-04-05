@@ -236,6 +236,7 @@ abstract class ApiObjectProperty {
   static const String okText = "okText";
   static const String notOkText = "notOkText";
   static const String cancelText = "cancelText";
+  static const String inputLabel = "inputLabel";
 
   // ErrorViewResponse
   static const String silentAbort = "silentAbort";

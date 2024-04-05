@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/api/press_button_command.dart';
@@ -48,11 +49,13 @@ class MessageDialog extends JVxDialog {
 
   final OpenMessageDialogCommand command;
 
+  final inputController = TextEditingController();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const MessageDialog({
+  MessageDialog({
     super.key,
     required this.command,
   });
@@ -65,9 +68,8 @@ class MessageDialog extends JVxDialog {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: command.title?.isNotEmpty == true ? Text(command.title!) : null,
-      content: ParseUtil.isHTML(command.message)
-          ? Html(data: command.message!)
-          : (command.message != null ? Text(command.message!) : null),
+      scrollable: true,
+      content: _buildContent(context),
       actions: [
         ..._getButtons(context, command.buttonType),
       ],
@@ -75,16 +77,45 @@ class MessageDialog extends JVxDialog {
   }
 
   void close() {
-    ICommandService().sendCommand(
-      CloseFrameCommand(frameName: command.componentId, reason: "Message Dialog was dismissed"),
-    );
+    ICommandService().sendCommand(CloseFrameCommand(frameName: command.componentId, reason: "Message Dialog was dismissed"));
   }
 
   void _pressButton(BuildContext context, String componentId) {
-    ICommandService().sendCommand(PressButtonCommand(
-      componentName: componentId,
-      reason: "Button has been pressed",
-    ));
+    List<BaseCommand> commands = [];
+
+    if (command.dataProvider != null
+        && (componentId == command.okComponentId || componentId == command.notOkComponentId)) {
+      commands.add(SetValuesCommand(dataProvider: command.dataProvider!, columnNames: [command.columnName!], values: [inputController.text],
+          reason: "Value of ${command.id} set to ${inputController.text}"));
+    }
+
+    commands.add(PressButtonCommand(componentName: componentId, reason: "Button has been pressed"));
+
+    ICommandService().sendCommands(commands, abortOnFirstError: true);
+  }
+
+  Widget _buildContent(BuildContext context) {
+    List<Widget> widgets = [];
+
+    widgets.add(ParseUtil.isHTML(command.message) ? Html(data: command.message!) : (command.message != null ? Text(command.message!) : const Text("")));
+
+    if (command.dataProvider != null) {
+      widgets.add(Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: TextField(
+                  controller: inputController,
+                  decoration: InputDecoration(labelText: command.inputLabel),
+                  keyboardType: TextInputType.multiline,
+                  minLines: 3,
+                  maxLines: 3,
+                )));
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
   }
 
   List<Widget> _getButtons(BuildContext context, int buttonType) {

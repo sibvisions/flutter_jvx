@@ -432,9 +432,21 @@ class DialogsWidget extends StatefulWidget {
 }
 
 class DialogsWidgetState extends State<DialogsWidget> {
+
+  /// global key because the overlay is always the same
+  static final GlobalKey<DialogsWidgetState> _dialogKey = GlobalKey<DialogsWidgetState>();
+
   @override
   Widget build(BuildContext context) {
-    return Stack(children: _getDialogs());
+    //Overlay is required for text components, otherwise scrolling and other features won't work as expected
+    //e.g. if you use a multiline textfield and enter text until the textfield should scroll
+    return Overlay(key: _dialogKey,
+        initialEntries: [OverlayEntry(
+        builder: (context) {
+      return Stack(children: _getDialogs());
+    })]);
+
+    //return Stack(children: _getDialogs());
   }
 
   List<Widget> _getDialogs() {

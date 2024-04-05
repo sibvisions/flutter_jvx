@@ -36,6 +36,9 @@ class MessageDialogProcessor implements IResponseProcessor<MessageDialogResponse
         cancelText: pResponse.cancelText,
         title: pResponse.title,
         message: pResponse.message,
+        dataProvider: pResponse.dataProvider,
+        columnName: pResponse.columnName,
+        inputLabel: pResponse.inputLabel,
         reason: "Message.dialog from server",
       )
     ];
