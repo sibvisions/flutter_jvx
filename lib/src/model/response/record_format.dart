@@ -14,8 +14,10 @@
  * the License.
  */
 
+import 'dart:math';
 import 'dart:ui';
 
+import '../../../flutter_jvx.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../util/parse_util.dart';
 import '../component/i_font_style.dart';
@@ -52,7 +54,10 @@ class RecordFormat {
     // E.g. 5 Columns, indexes are 0, 1, 2 -> Format applied is 0, 1, 2, 2, 2
 
     int formatIndex;
-    if (column < rowFormat.columnIndexToFormatIndex.length) {
+
+    if (rowFormat.columnIndexToFormatIndex.isEmpty) {
+      formatIndex = 0;
+    } else if (column < rowFormat.columnIndexToFormatIndex.length) {
       formatIndex = rowFormat.columnIndexToFormatIndex[column];
     } else {
       formatIndex = rowFormat.columnIndexToFormatIndex.last;
@@ -77,10 +82,13 @@ class CellFormat {
   Color? background;
   Color? foreground;
   JVxFont? font;
-  String imageString = "";
+  String? imageString;
+  String? style;
+  int? leftIndent;
 
   CellFormat.fromString(String? pFormatString) {
-    List<String> entries = pFormatString?.split(";") ?? [];
+
+    List<String> entries = pFormatString?.asList(";") ?? [];
 
     for (int entryIndex = 0; entryIndex < entries.length; entryIndex++) {
       dynamic entryValue = entries[entryIndex];
@@ -98,12 +106,21 @@ class CellFormat {
         case 2:
           font = JVxFont.fromString(entryValue);
           break;
-        default:
-          if (imageString.isEmpty) {
+        case 3:
             imageString = entryValue.toString();
-          } else {
-            imageString += ";$entryValue";
-          }
+          break;
+        case 4:
+            style = entryValue.toString();
+          break;
+        case 5:
+            String? indent = entryValue.toString();
+
+            if (indent.isNotEmpty) {
+              leftIndent = int.parse(indent);
+            }
+          break;
+        default:
+          FlutterUI.log.e("Invalid form index: ($entryIndex)");
       }
     }
   }

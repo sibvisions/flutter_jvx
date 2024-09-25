@@ -155,17 +155,17 @@ abstract class ImageLoader {
       return null;
     }
 
-    IFileManager fileManager = IConfigService().getFileManager();
     ImageProvider imageProvider;
-
-    Uri? parsedURI;
-    try {
-      parsedURI = Uri.parse(pImageString);
-    } catch (_) {}
 
     if (pImageInBase64) {
       imageProvider = MemoryImage(base64Decode(pImageString));
-    } else {
+    }
+    else {
+      Uri? parsedURI;
+      try {
+        parsedURI = Uri.parse(pImageString);
+      } catch (_) {}
+
       if (parsedURI == null || !parsedURI.scheme.contains("http")) {
         // Cut away optional size
         int commaIndex = pImageString.indexOf(",");
@@ -183,6 +183,8 @@ abstract class ImageLoader {
         String? effectiveVersion = app?.version ?? IConfigService().version.value;
 
         if (effectiveVersion != null) {
+          IFileManager fileManager = IConfigService().getFileManager();
+
           String path = fileManager.getAppSpecificPath(
             "${IFileManager.IMAGES_PATH}/$pImageString",
             appId: effectiveAppId,

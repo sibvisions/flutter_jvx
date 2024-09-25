@@ -144,7 +144,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       );
       first = false;
 
-      IUiService().registerDataSubscription(pDataSubscription: dataSubscription, pImmediatlyRetrieveData: false);
+      IUiService().registerDataSubscription(pDataSubscription: dataSubscription, pImmediatelyRetrieveData: false);
 
       ICommandService().sendCommand(
         GetMetaDataCommand(dataProvider: dataProvider, subId: dataSubscription.id, reason: "Get all meta datas"),

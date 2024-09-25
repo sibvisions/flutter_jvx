@@ -15,11 +15,40 @@
  */
 
 extension StringExtension on String {
+
+  ///First character upper-case, all other characters lower-case.
   String capitalize() {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 
+  ///First character lower-case, all other characters untouched.
   String firstCharLower() {
     return "${this[0].toLowerCase()}${substring(1)}";
+  }
+
+  ///Splits all elements by [delimiter] and supports quoting of elements by '.
+  List<String> asList(String delimiter) {
+    List<String> list = [];
+
+    int first = 0;
+    int last = 0;
+    bool quote = false;
+
+    for (int i = 0; i < codeUnits.length; i++, last++) {
+      String char = String.fromCharCode(codeUnits[i]);
+      if (char == ";") {
+        if (!quote) {
+          list.add(substring(first, last).replaceAll("'", ""));
+
+          first = i + 1;
+          last = i;
+        }
+      }
+      else if (char == "'") {
+        quote = !quote;
+      }
+    }
+
+    return list;
   }
 }

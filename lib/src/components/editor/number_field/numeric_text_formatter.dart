@@ -88,6 +88,6 @@ class NumericTextFormatter extends TextInputFormatter {
   }
 
   TextInputType getKeyboardType() {
-    return TextInputType.numberWithOptions(decimal: scale != 0, signed: signed);
+    return TextInputType.numberWithOptions(decimal: scale != null && scale != 0, signed: signed == true);
   }
 }

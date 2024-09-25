@@ -160,9 +160,6 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
-    print(Theme.of(contextA).appBarTheme.backgroundColor);
-    print(Theme.of(contextA).cardTheme.color);
-
     if (IConfigService().currentApp.value == null) {
       //create a new base theme for standard blue
       //if we use Theme.of(contextA) instead, the colors will be inherited from the last application

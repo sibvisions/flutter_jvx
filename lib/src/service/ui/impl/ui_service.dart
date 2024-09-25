@@ -281,9 +281,9 @@ class UiService implements IUiService {
       showDialog(
         context: context ?? FlutterUI.getCurrentContext()!,
         barrierDismissible: pIsDismissible,
-        builder: (BuildContext context) => WillPopScope(
+        builder: (BuildContext context) => PopScope(
+          canPop: pIsDismissible,
           child: pBuilder.call(context),
-          onWillPop: () async => pIsDismissible,
         ),
       );
 
@@ -492,25 +492,39 @@ class UiService implements IUiService {
   }
 
   @override
-  void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatlyRetrieveData = true}) {
+  void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatelyRetrieveData = true}) {
     _dataSubscriptions.removeWhere((element) => element.same(pDataSubscription));
     _dataSubscriptions.add(pDataSubscription);
 
-    if (pImmediatlyRetrieveData) {
-      DataBook? databook = IDataService().getDataBook(pDataSubscription.dataProvider);
+    if (pImmediatelyRetrieveData) {
+      DataBook? dataBook = IDataService().getDataBook(pDataSubscription.dataProvider);
       bool needsToFetch = IDataService().databookNeedsFetch(
         pFrom: pDataSubscription.from,
         pTo: pDataSubscription.to,
         pDataProvider: pDataSubscription.dataProvider,
       );
-      bool fetchMetaData = databook?.metaData == null;
+      bool fetchMetaData = dataBook?.metaData == null;
+
+      //if we fetch metadata, it's not necessary to send GetMetaDataCommand again
+      //if we don't fetch metadata, we have
 
       if (needsToFetch || fetchMetaData) {
-        int fromRow = databook?.records.keys.maxOrNull ?? pDataSubscription.from;
 
+        //metadata before data!
+        if (!fetchMetaData && pDataSubscription.onMetaData != null) {
+          //in this case, we have metadata and we should handle it
+
+          ICommandService().sendCommand(GetMetaDataCommand(
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            subId: pDataSubscription.id,
+          ));
+        }
+
+        //this command triggers metadata update, if we fetch metadata
         ICommandService().sendCommand(FetchCommand(
           dataProvider: pDataSubscription.dataProvider,
-          fromRow: fromRow,
+          fromRow: dataBook?.records.keys.maxOrNull ?? pDataSubscription.from,
           rowCount: pDataSubscription.to != null
               ? pDataSubscription.to! - pDataSubscription.from
               : IUiService().getSubscriptionRowcount(pDataProvider: pDataSubscription.dataProvider),
@@ -518,50 +532,48 @@ class UiService implements IUiService {
           includeMetaData: fetchMetaData,
         ));
       } else {
+
+        //metadata before data!
+        if (pDataSubscription.onMetaData != null) {
+          ICommandService().sendCommand(GetMetaDataCommand(
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            subId: pDataSubscription.id,
+          ));
+        }
+
         if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
-          GetDataChunkCommand getDataChunkCommand = GetDataChunkCommand(
+          ICommandService().sendCommand(GetDataChunkCommand(
             reason: "Subscription added",
             dataProvider: pDataSubscription.dataProvider,
             from: pDataSubscription.from,
             to: pDataSubscription.to,
             subId: pDataSubscription.id,
             dataColumns: pDataSubscription.dataColumns,
-          );
-          ICommandService().sendCommand(getDataChunkCommand);
+          ));
         }
 
         if (pDataSubscription.onSelectedRecord != null) {
-          GetSelectedDataCommand getSelectedDataCommand = GetSelectedDataCommand(
+          ICommandService().sendCommand(GetSelectedDataCommand(
             subId: pDataSubscription.id,
             reason: "Subscription added",
             dataProvider: pDataSubscription.dataProvider,
             columnNames: pDataSubscription.dataColumns,
-          );
-          ICommandService().sendCommand(getSelectedDataCommand);
+          ));
         }
       }
 
       if (pDataSubscription.onPage != null) {
-        databook?.pageRecords.keys.forEach((pageKey) {
-          GetPageChunkCommand getDataChunkCommand = GetPageChunkCommand(
+        dataBook?.pageRecords.keys.forEach((pageKey) {
+          ICommandService().sendCommand(GetPageChunkCommand(
             reason: "Subscription added",
             dataProvider: pDataSubscription.dataProvider,
             from: pDataSubscription.from,
             to: pDataSubscription.to,
             subId: pDataSubscription.id,
             pageKey: pageKey,
-          );
-          ICommandService().sendCommand(getDataChunkCommand);
+          ));
         });
-      }
-
-      if (!fetchMetaData && pDataSubscription.onMetaData != null) {
-        GetMetaDataCommand getMetaDataCommand = GetMetaDataCommand(
-          reason: "Subscription added",
-          dataProvider: pDataSubscription.dataProvider,
-          subId: pDataSubscription.id,
-        );
-        ICommandService().sendCommand(getMetaDataCommand);
       }
     }
   }

@@ -67,7 +67,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     Widget textWidget;
 
     if (ParseUtil.isHTML(pModel.text) && pSelectable) {
-      textWidget = SelectableHtml(data: pModel.text);
+      textWidget = SelectionArea(child: Html(data: pModel.text));
     } else if (ParseUtil.isHTML(pModel.text)) {
       textWidget = Html(data: pModel.text);
     } else {

@@ -46,7 +46,11 @@ dependencies:
   collection: ^1.16.0
   rxdart: ^0.27.5
   queue: ^3.1.0+2
-  flutter_html: 3.0.0-alpha.5
+  #flutter_html: 3.0.0-alpha.5
+  flutter_html:
+    git:
+      url: https://github.com/Sub6Resources/flutter_html
+      ref: flutter_html-v3.0.0-beta.2
   async: ^2.10.0
 
   # IO handling
@@ -57,7 +61,7 @@ dependencies:
 
   cross_file: ^0.3.3+2
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
-  file_picker: ^5.0.1
+  file_picker: ^8.0.3
   file_saver: 0.2.8
 
   # SVG Support
@@ -103,9 +107,9 @@ dependencies:
   community_charts_flutter: ^1.0.1
   gauges: ^1.0.0
   graphic: ^2.2.0
-  flutter_keyboard_visibility: ^5.4.0
+  flutter_keyboard_visibility: ^6.0.0
   flutter_slidable: ^3.0.0
-  action_slider: ^0.6.1
+  action_slider: ^0.7.0
   webview_flutter: ^4.0.2
   card_loading: ^0.3.0
   flutter_treeview: ^1.0.7+1
@@ -114,7 +118,7 @@ dependencies:
   screen_brightness: ^0.2.2
 
   #WYSIWYG HTML-Editor
-  html_editor_enhanced: ^2.5.0
+  html_editor_enhanced: ^2.6.0
 
   flutter_tts: ^3.7.0
   speech_to_text: ^6.6.0
@@ -126,7 +130,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^4.0.0
 
 dependency_overrides:
   # flutter_map

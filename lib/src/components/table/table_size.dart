@@ -23,6 +23,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/parse_util.dart';
 import '../editor/cell_editor/fl_check_box_cell_editor.dart';
@@ -164,7 +165,7 @@ class TableSize {
         pRowsToCalculate,
       );
 
-      int? colIndex;
+      int? colIndex = -1;
       ColumnDefinition? columnDefinition = pDataChunk.columnDefinitions.firstWhereIndexedOrNull((index, colDef) {
         if (colDef.name == columnName) {
           colIndex = index;
@@ -189,15 +190,6 @@ class TableSize {
             calculatedColumnWidths[columnName] = columnDefinition.width! * scaling;
           }
         } else {
-          // Get all rows before [calculateUntilRowIndex]
-          List<dynamic> dataRows = [];
-          for (int i = 0; i < calculateUntilRow; i++) {
-            dataRows.add(pDataChunk.data[i]);
-          }
-
-          // Isolate the column from the rows.
-          List<dynamic> dataColumn = dataRows.map<dynamic>((e) => e[colIndex!]).toList();
-
           ICellEditor cellEditor = _createCellEditor(columnDefinition, pMetaData);
           double calculatedWidth;
           if (cellEditor.allowedInTable && cellEditor is FlCheckBoxCellEditor) {
@@ -207,7 +199,18 @@ class TableSize {
           } else if (cellEditor.allowedInTable && cellEditor is FlImageCellEditor) {
             calculatedWidth = imageCellWidth;
           } else {
-            calculatedWidth = _calculateDataWidth(dataRows, dataColumn, cellEditor, textStyle);
+            // Get all rows before [calculateUntilRow]
+            List<dynamic> dataRows = [];
+            List<CellFormat?> dataFormats = [];
+            for (int i = 0; i < calculateUntilRow; i++) {
+              dataRows.add(pDataChunk.data[i]);
+              dataFormats.add(pDataChunk.recordFormats?[pTableModel.name]?.getCellFormat(i, colIndex!));
+            }
+
+            // Isolate the column from the rows.
+            List<dynamic> dataColumn = dataRows.map<dynamic>((e) => e[colIndex!]).toList();
+
+            calculatedWidth = _calculateDataWidth(dataRows, dataFormats, dataColumn, cellEditor, textStyle);
           }
           cellEditor.dispose();
 
@@ -241,23 +244,54 @@ class TableSize {
 
   double _calculateDataWidth(
     List<dynamic> dataRows,
+    List<CellFormat?> dataFormats,
     List<dynamic> dataColumn,
     ICellEditor cellEditor,
     TextStyle pTextStyle,
   ) {
     double columnWidth = 0.0;
 
-    var valuesToCheck = dataColumn.whereNotNull().toList();
-    for (int i = 0; i < valuesToCheck.length; i++) {
-      dynamic value = valuesToCheck[i];
-      if (cellEditor is FlLinkedCellEditor) {
-        cellEditor.setValue((value, dataRows[i]));
+    for (int i = 0; i < dataColumn.length; i++) {
+      dynamic value = dataColumn[i];
+
+      if (value != null) {
+        if (cellEditor is FlLinkedCellEditor) {
+          cellEditor.setValue((value, dataRows[i]));
+        }
+        String formattedText = cellEditor.formatValue(value);
+
+        CellFormat? format = dataFormats[i];
+
+        TextStyle textStyle = pTextStyle;
+
+        if (format != null && format!.font != null)   {
+          //use cell format instead of standard text style
+          textStyle = TextStyle(
+            color: format!.foreground ?? pTextStyle.color,
+            fontSize: format!.font?.fontSize?.toDouble() ?? pTextStyle.fontSize,
+            fontStyle: format!.font != null ? FontStyle.italic : pTextStyle.fontStyle,
+            fontWeight: format!.font != null ? FontWeight.bold : pTextStyle.fontWeight,
+            fontFamily: format!.font?.fontName ?? pTextStyle.fontFamily,
+            overflow: TextOverflow.ellipsis,
+          );
+        }
+
+        double rowWidth = _calculateTableTextWidth(textStyle, formattedText);
+
+        if (format != null) {
+          rowWidth += format.leftIndent ?? 0;
+
+          if (format!.imageString != null) {
+            List<String> split = format!.imageString!.split(",");
+
+            if (split.length >= 3) {
+              rowWidth += double.tryParse(split[1]) ?? 0;
+            }
+          }
+        }
+
+        columnWidth = _adjustValue(columnWidth, rowWidth);
       }
-      String formattedText = cellEditor.formatValue(value);
-
-      double rowWidth = _calculateTableTextWidth(pTextStyle, formattedText);
-
-      columnWidth = _adjustValue(columnWidth, rowWidth);
     }
 
     columnWidth = _adjustValue(columnWidth, columnWidth + FlTableCell.getContentPadding(cellEditor));

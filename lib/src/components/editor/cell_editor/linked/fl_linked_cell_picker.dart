@@ -342,14 +342,16 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     tableModel.columnNames.clear();
     tableModel.columnLabels.clear();
 
-    if (isConcatMask && _chunkData != null) {
-      tableModel.columnNames.add("concat");
-      tableModel.columnLabels.add("concat");
-    } else {
-      for (ColumnDefinition colDef
-          in _chunkData!.columnDefinitions.where((element) => _columnNamesToShow().contains(element.name))) {
-        tableModel.columnNames.add(colDef.name);
-        tableModel.columnLabels.add(colDef.label);
+    if (_metaData != null) {
+      if (isConcatMask) {
+        tableModel.columnNames.add("concat");
+        tableModel.columnLabels.add("concat");
+      } else {
+        for (ColumnDefinition colDef
+        in _metaData!.columnDefinitions.where((element) => _columnNamesToShow().contains(element.name))) {
+          tableModel.columnNames.add(colDef.name);
+          tableModel.columnLabels.add(colDef.label);
+        }
       }
     }
   }

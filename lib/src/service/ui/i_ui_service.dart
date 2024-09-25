@@ -228,7 +228,7 @@ abstract class IUiService implements Service {
   void registerModelSubscription(ModelSubscription pModelSubscription);
 
   /// Register to receive a subscriptions of data from a specific dataProvider
-  void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatlyRetrieveData = true});
+  void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatelyRetrieveData = true});
 
   /// Notifies all subscriptions of a reload.
   void notifySubscriptionsOfReload({required String pDataprovider});

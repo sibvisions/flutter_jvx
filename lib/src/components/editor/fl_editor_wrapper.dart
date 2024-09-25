@@ -96,6 +96,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     super.initState();
 
+    //also retrieves data
     subscribe();
   }
 
@@ -182,7 +183,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Subscribes to the service and registers the set value call back.
-  void subscribe() {
+  void subscribe([bool pImmediatelyRetrieveData = true]) {
     if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -192,6 +193,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           onMetaData: receiveMetaData,
           dataColumns: isLinkedEditor() ? null : [model.columnName],
         ),
+          pImmediatelyRetrieveData: pImmediatelyRetrieveData
       );
     }
   }
@@ -242,12 +244,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       _currentValue = null;
     }
 
-    if (oldValue != _currentValue) {
-      if (isLinkedEditor() && _currentValue != null) {
-        cellEditor.setValue((_currentValue, pDataRecord!.values));
-      } else {
-        cellEditor.setValue(_currentValue);
-      }
+    if (isLinkedEditor()) {
+      cellEditor.setValue((_currentValue, pDataRecord?.values));
+      setState(() {});
+    } else  if (oldValue != _currentValue) {
+      cellEditor.setValue(_currentValue);
+
       setState(() {});
     }
   }

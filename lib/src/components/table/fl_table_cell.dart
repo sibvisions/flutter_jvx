@@ -182,16 +182,9 @@ class _FlTableCellState extends State<FlTableCell> {
   Widget build(BuildContext context) {
     Widget? cellChild;
 
-    if (widget.cellFormat?.imageString.isNotEmpty == true) {
-      cellChild = ImageLoader.loadImage(
-        widget.cellFormat!.imageString,
-        pWantedColor: widget.cellFormat?.foreground,
-      );
-    }
-
     _setCellEditorValue(widget.value);
 
-    cellChild ??= _createCellEditorWidget();
+    cellChild = _createCellEditorWidget();
 
     cellChild ??= _createTextWidget();
 
@@ -242,29 +235,33 @@ class _FlTableCellState extends State<FlTableCell> {
       onTap: widget.onTap != null && widget.model.isEnabled
           ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
           : null,
-      child: Container(
-        decoration: BoxDecoration(
-          border: border,
-          color: widget.cellFormat?.background,
-        ),
-        width: max(widget.width, 0.0),
-        alignment: FLUTTER_ALIGNMENT[widget.columnDefinition.cellEditorHorizontalAlignment.index]
-            [VerticalAlignment.CENTER.index],
-        padding: paddings,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
           children: [
-            isTableButton
-                ? cellChild
-                : Flexible(
-                    // cell editors in tables should only use the amount of space they need
-                    fit: cellEditor.allowedInTable ? FlexFit.loose : FlexFit.tight,
-                    child: cellChild,
-                  ),
-            ..._createCellIcons(),
-          ],
-        ),
-      ),
+            Container(
+              decoration: BoxDecoration(
+                border: border,
+                color: widget.cellFormat?.background,
+              ),
+              width: max(widget.width, 0.0),
+              alignment: FLUTTER_ALIGNMENT[widget.columnDefinition.cellEditorHorizontalAlignment.index]
+                  [VerticalAlignment.CENTER.index],
+              padding: paddings,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ..._createCellProfileImageOrIndent(),
+                  isTableButton ? cellChild
+                                : Flexible(
+                                    // cell editors in tables should only use the amount of space they need
+                                    fit: cellEditor.allowedInTable ? FlexFit.loose : FlexFit.tight,
+                                    child: cellChild,
+                                ),
+                  ..._createCellIcons(),
+                ],
+              ),
+            ),
+            ..._createReadOnlyOverlay()
+      ]),
     );
   }
 
@@ -368,6 +365,28 @@ class _FlTableCellState extends State<FlTableCell> {
     }
   }
 
+  List<Widget> _createCellProfileImageOrIndent() {
+
+    double indent = widget.cellFormat?.leftIndent?.toDouble() ?? 0;
+
+    if (widget.cellFormat?.imageString == null
+        || widget.cellFormat?.imageString?.isEmpty == true) {
+
+      if (indent > 0) {
+        return [Padding(padding: EdgeInsets.only(left: indent))];
+      }
+
+      return [];
+    }
+
+    Widget? cellImage = ImageLoader.loadImage(
+        widget.cellFormat!.imageString!,
+        pWantedColor: widget.cellFormat?.foreground,
+      );
+
+    return [Padding(padding: EdgeInsets.only(right: 3, left: indent), child: cellImage)];
+  }
+
   List<Widget> _createCellIcons() {
     if (cellEditor.allowedInTable) {
       return [];
@@ -419,6 +438,14 @@ class _FlTableCellState extends State<FlTableCell> {
     }
 
     return icons;
+  }
+
+  List<Widget> _createReadOnlyOverlay() {
+    if (widget.columnDefinition.readOnly || widget.readOnly) {
+      return [Container(width: max(widget.width, 0.0), color: Colors.grey.withOpacity(0.2))];
+    }
+
+    return [];
   }
 
   bool _isValueNullOrEmpty() {
