@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:graphic/graphic.dart' show Selected;
 
+import '../../../flutter_jvx.dart';
 import '../../model/command/api/mouse_clicked_command.dart';
 import '../../model/command/api/mouse_pressed_command.dart';
 import '../../model/command/api/mouse_released_command.dart';
@@ -173,12 +174,12 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     highestValue = 1;
     highestStackedValue = 1;
 
-    int indexColumnIndex = dataChunk.getColumnIndex(model.xColumnName);
+    int indexColumnIndex = dataChunk.columnDefinitionIndex(model.xColumnName);
 
     if (model.isPieChart()) {
       if (model.yColumnLabels.length == 1) {
         LinkedHashMap<String, num> mapOfIndexValues = LinkedHashMap();
-        int valueColumnIndex = dataChunk.getColumnIndex(model.yColumnNames.first);
+        int valueColumnIndex = dataChunk.columnDefinitionIndex(model.yColumnNames.first);
 
         for (var dataRow in sortedDataRows) {
           String index = dataRow[indexColumnIndex].toString();
@@ -203,7 +204,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
         var dataRow = dataChunk.data[dataRecord.index]!;
 
         for (String valueColumnName in model.yColumnNames) {
-          num value = parseToNum(dataRow[dataChunk.getColumnIndex(valueColumnName)]);
+          num value = parseToNum(dataRow[dataChunk.columnDefinitionIndex(valueColumnName)]);
 
           chartData.add(
             {
@@ -236,7 +237,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           String index = dataRow[indexColumnIndex];
 
           for (String groupName in model.yColumnNames) {
-            num value = parseToNum(dataRow[dataChunk.getColumnIndex(groupName)]);
+            num value = parseToNum(dataRow[dataChunk.columnDefinitionIndex(groupName)]);
 
             Map<String, num> indexRow = mapOfIndexRows.putIfAbsent(index, () => LinkedHashMap());
             indexRow[groupName] = (indexRow[groupName] ?? 0.0) + value;
@@ -270,7 +271,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           num index = parseToNum(dataRow[indexColumnIndex]);
 
           for (String groupName in model.yColumnNames) {
-            num value = parseToNum(dataRow[dataChunk.getColumnIndex(groupName)]);
+            num value = parseToNum(dataRow[dataChunk.columnDefinitionIndex(groupName)]);
 
             chartData.add(
               {
@@ -326,7 +327,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           // Find they key of the first row which has the "index" value of the graph inside the x column.
           var indexInDataChunk = dataChunk.data.entries.firstWhereOrNull((entry) {
             var dataRow = entry.value;
-            var indexColumnIndex = dataChunk.getColumnIndex(model.xColumnName);
+            var indexColumnIndex = dataChunk.columnDefinitionIndex(model.xColumnName);
             var indexValueInDataRow = dataRow[indexColumnIndex];
 
             return indexValueInDataRow?.toString() == indexValue?.toString();
@@ -337,7 +338,10 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           onIndexSelected(dataRecord!.index, model.yColumnNames[index]);
         }
       } else {
-        if (model.isCategoryChart(dataChunk.getColumn(model.xColumnName).dataTypeIdentifier)) {
+
+        ColumnDefinition? cdef = dataChunk.columnDefinition(model.xColumnName);
+
+        if (cdef != null && model.isCategoryChart(cdef.dataTypeIdentifier)) {
           // Category charts have a string column as their xColumn (index column).
           // The first row that satisfies the index and group condition is the correct one.
           var indexValue = chartDataEntry["index"];
@@ -346,7 +350,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           // Find they key of the first row which has the "index" value of the graph inside the x column.
           var indexInDataChunk = dataChunk.data.entries.firstWhereOrNull((entry) {
             var dataRow = entry.value;
-            var indexColumnIndex = dataChunk.getColumnIndex(model.xColumnName);
+            var indexColumnIndex = dataChunk.columnDefinitionIndex(model.xColumnName);
             var indexValueInDataRow = dataRow[indexColumnIndex];
 
             return indexValueInDataRow?.toString() == indexValue?.toString();

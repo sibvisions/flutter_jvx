@@ -36,6 +36,12 @@ class DataChunk {
   /// if left empty - will contain all columns
   final List<ColumnDefinition> columnDefinitions;
 
+  /// All column definitions by name
+  Map<String, ColumnDefinition> _columnDefinitionsByName = {};
+
+  /// All column definitions by index
+  Map<String, int> _columnDefinitionsIndexByName = {};
+
   /// Only true if server has no more data.
   final bool isAllFetched;
 
@@ -56,7 +62,13 @@ class DataChunk {
     required this.from,
     this.dataReadOnly,
     this.recordFormats,
-  });
+  }) {
+    columnDefinitions.forEach((cd) => _columnDefinitionsByName[cd.name] = cd);
+
+    for (int i = 0; i < columnDefinitions.length; i++) {
+      _columnDefinitionsIndexByName[columnDefinitions[i].name] = i;
+    }
+  }
 
   DataChunk.empty()
       : data = {},
@@ -66,18 +78,22 @@ class DataChunk {
         dataReadOnly = null,
         recordFormats = null;
 
-  int getColumnIndex(String columnName) {
-    return DataBook.getColumnIndex(columnDefinitions, columnName);
+  ///Gets the index of the column for [name]
+  int columnDefinitionIndex(String name) {
+    return _columnDefinitionsIndexByName[name] ?? -1;
   }
 
-  ColumnDefinition getColumn(String columnName) {
-    return columnDefinitions[getColumnIndex(columnName)];
+  ///Gets the column definition for [name]
+  ColumnDefinition? columnDefinition(String name) {
+    return _columnDefinitionsByName[name];
   }
 
-  dynamic getValue(String columnName, int rowIndex) {
-    return data[rowIndex]?[getColumnIndex(columnName)];
+  dynamic getValue(String name, int rowIndex) {
+    return data[rowIndex]?[columnDefinitionIndex(name)];
   }
 
   /// The record status of this row.
-  RecordStatus getRecordStatus(pRowIndex) => RecordStatus.parseRecordStatus(data[pRowIndex], columnDefinitions);
+  RecordStatus getRecordStatus(pRowIndex) {
+    return RecordStatus.parseRecordStatus(data[pRowIndex], columnDefinitions);
+  }
 }

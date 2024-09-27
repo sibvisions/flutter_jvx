@@ -198,10 +198,10 @@ class _FlTableWidgetState extends State<FlTableWidget> {
   /// The builder for the table.
   Widget createTableBuilder(BuildContext context, BoxConstraints constraints) {
     // Width cant be below 0 and must always fill the area.
-    double maxWidth = max(max(widget.tableSize.width, constraints.maxWidth), 0);
+    double maxWidth = max(max(widget.tableSize.sumColumnWidth, constraints.maxWidth), 0);
 
     // Is the table wider than it can be seen? -> Disables row swipes
-    bool canScrollHorizontally = widget.tableSize.width.ceil() > constraints.maxWidth.ceil();
+    bool canScrollHorizontally = widget.tableSize.sumColumnWidth.ceil() > constraints.maxWidth.ceil();
 
     Widget table = createTableList(canScrollHorizontally, maxWidth);
 

@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'dart:math' as math;
+import 'dart:math' as Math;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
@@ -26,6 +26,7 @@ import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
+import '../../util/extensions/double_extensions.dart';
 import '../../util/parse_util.dart';
 import '../editor/cell_editor/fl_check_box_cell_editor.dart';
 import '../editor/cell_editor/fl_choice_cell_editor.dart';
@@ -78,6 +79,12 @@ class TableSize {
   /// The size of the columns
   Map<String, double> columnWidths = {};
 
+  /// the sum of calculatedColumnWidths
+  double sumCalculatedColumnWidth = -1;
+
+  /// the sum of columnWidths
+  double sumColumnWidth = -1;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,6 +122,7 @@ class TableSize {
     calculateTableSize(tableModel: tableModel, metaData: metaData, availableWidth: availableWidth, dataChunk: dataChunk);
   }
 
+/*
   /// The width every column would like to have. Does not include the Border!
   double get calculatedWidth {
     return calculatedColumnWidths.values.sum;
@@ -124,7 +132,7 @@ class TableSize {
   double get width {
     return columnWidths.values.sum;
   }
-
+*/
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,15 +147,15 @@ class TableSize {
   }) {
     calculatedColumnWidths.clear();
 
-    availableWidth = math.max((availableWidth ?? 0.0) - (borderWidth * 2), 0);
+    availableWidth = Math.max((availableWidth ?? 0.0) - (borderWidth * 2), 0);
 
-    ApplicationMetaDataResponse? appmetadata = IUiService().applicationMetaData.value;
+    ApplicationMetaDataResponse? appMetaData = IUiService().applicationMetaData.value;
 
     String mandatoryMark = "";
 
-    if (appmetadata != null) {
-      if (appmetadata.mandatoryMarkVisible) {
-        mandatoryMark = " ${appmetadata.mandatoryMark ?? "*"}";
+    if (appMetaData != null) {
+      if (appMetaData.mandatoryMarkVisible) {
+        mandatoryMark = " ${appMetaData.mandatoryMark ?? "*"}";
       }
     }
     else {
@@ -167,86 +175,93 @@ class TableSize {
         columnLabel = "$columnLabel$mandatoryMark";
       }
 
-      double calculatedHeaderWidth = _calculateTableTextWidth(textStyle.copyWith(fontWeight: FontWeight.bold), columnLabel);
+      double calculatedHeaderWidth = _calculateTextWidth(textStyle.copyWith(fontWeight: FontWeight.bold), columnLabel);
 
+      //Sort arrow and direction text
       if (metaData.sortDefinition(columnName)?.mode != null) {
         calculatedHeaderWidth += 21;
       }
 
-      calculatedColumnWidths[columnName] = _adjustValue(minColumnWidth, calculatedHeaderWidth);
+      //header-width is start value for column width calculation
+      calculatedColumnWidths[columnName] = _adjustColumnWidth(0, calculatedHeaderWidth);
 
-      int calculateUntilRow = math.min(
-        dataChunk.data.length,
-        rowsToCalculate,
-      );
+      int calculateUntilRow = Math.min(rowsToCalculate, dataChunk.data.length);
 
-      int? colIndex = -1;
-      ColumnDefinition? columnDefinition = dataChunk.columnDefinitions.firstWhereIndexedOrNull((index, colDef) {
-        if (colDef.name == columnName) {
-          colIndex = index;
-          return true;
-        }
-        return false;
-      });
+      ColumnDefinition? columnDefinition = dataChunk.columnDefinition(columnName);
 
-      // If there is no column definition found for this column, cant calculate the width.
+      // If there is no column definition found for this column, we can't calculate the width based on data
       if (columnDefinition != null) {
         if (columnDefinition.width != null) {
-          if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHECK_BOX_CELL_EDITOR &&
-              columnDefinition.width! <= checkCellWidth) {
-            calculatedColumnWidths[columnName] = checkCellWidth;
-          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHOICE_CELL_EDITOR &&
-              columnDefinition.width! <= choiceCellWidth) {
-            calculatedColumnWidths[columnName] = choiceCellWidth;
-          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER &&
-              columnDefinition.width! <= imageCellWidth) {
-            calculatedColumnWidths[columnName] = imageCellWidth;
+          //width set for column
+          if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHECK_BOX_CELL_EDITOR) {
+            calculatedColumnWidths[columnName] = Math.max(columnDefinition.width! * scaling, checkCellWidth);
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHOICE_CELL_EDITOR ) {
+            calculatedColumnWidths[columnName] = Math.max(columnDefinition.width! * scaling, choiceCellWidth);
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER) {
+            calculatedColumnWidths[columnName] = Math.max(columnDefinition.width! * scaling, imageCellWidth);
           } else {
             calculatedColumnWidths[columnName] = columnDefinition.width! * scaling;
           }
         } else {
           ICellEditor cellEditor = _createCellEditor(columnDefinition, metaData);
-          double calculatedWidth;
-          if (cellEditor.allowedInTable && cellEditor is FlCheckBoxCellEditor) {
-            calculatedWidth = checkCellWidth;
-          } else if (cellEditor.allowedInTable && cellEditor is FlChoiceCellEditor) {
-            calculatedWidth = choiceCellWidth;
-          } else if (cellEditor.allowedInTable && cellEditor is FlImageCellEditor) {
-            calculatedWidth = imageCellWidth;
-          } else {
+          double? calculatedWidth;
+
+          if (cellEditor.allowedInTable) {
+            if (cellEditor is FlCheckBoxCellEditor) {
+              calculatedWidth = checkCellWidth;
+            } else if (cellEditor is FlChoiceCellEditor) {
+              calculatedWidth = choiceCellWidth;
+            } else if (cellEditor is FlImageCellEditor) {
+              calculatedWidth = imageCellWidth;
+            }
+          }
+
+          if (calculatedWidth == null) {
             // Get all rows before [calculateUntilRow]
             List<dynamic> dataRows = [];
             List<CellFormat?> dataFormats = [];
+            List<dynamic> dataForColumn = [];
+
+            int colIndex = dataChunk.columnDefinitionIndex(columnName);
+
             for (int i = 0; i < calculateUntilRow; i++) {
               dataRows.add(dataChunk.data[i]);
-              dataFormats.add(dataChunk.recordFormats?[tableModel.name]?.getCellFormat(i, colIndex!));
+              dataFormats.add(dataChunk.recordFormats?[tableModel.name]?.getCellFormat(i, colIndex));
+
+              // we need the values for the column
+              dataForColumn.add(dataChunk.data[i]![colIndex]);
             }
 
-            // Isolate the column from the rows.
-            List<dynamic> dataColumn = dataRows.map<dynamic>((e) => e[colIndex!]).toList();
-
-            calculatedWidth = _calculateDataWidth(dataRows, dataFormats, dataColumn, cellEditor, textStyle);
+            calculatedWidth = _calculateDataWidth(dataRows, dataFormats, dataForColumn, cellEditor, textStyle);
           }
+
           cellEditor.dispose();
 
-          calculatedColumnWidths[columnName] = _adjustValue(calculatedColumnWidths[columnName]!, calculatedWidth);
+          calculatedColumnWidths[columnName] = _adjustColumnWidth(calculatedColumnWidths[columnName]!, calculatedWidth!);
         }
       }
     }
 
+    sumCalculatedColumnWidth = 0;
+
     // Remove any negative widths.
     for (String key in calculatedColumnWidths.keys) {
-      calculatedColumnWidths[key] = math.max(0.0, calculatedColumnWidths[key]!);
+      double width = calculatedColumnWidths[key]!;
+
+      calculatedColumnWidths[key] = Math.max(0, width);
+
+      sumCalculatedColumnWidth += width;
     }
 
     columnWidths.clear();
     columnWidths.addAll(calculatedColumnWidths);
 
-    double remainingWidth = availableWidth - columnWidths.values.sum;
+    double remainingWidth = availableWidth - sumCalculatedColumnWidth;
 
     // Redistribute the remaining width. AutoSize forces all columns inside the table.
     if (remainingWidth > 0.0) {
-      _redistributeRemainingWidth(_getColumnsToRedistribute(dataChunk, false), remainingWidth);
+      //add some space to other columns
+      divideOut(tableModel, dataChunk, remainingWidth, availableWidth);
     } else if ((tableModel.autoResize || remainingWidth >= -10.0) && remainingWidth < 0.0) {
 /*
       double width = pAvailableWidth / columnWidths.length;
@@ -265,17 +280,117 @@ print(columnWidths.length);
 */
 
 //print(_getColumnsToRedistribute(dataChunk));
-
+/*
       // '30' is only there to stop if infinite loop happens.
       for (int i = 0; remainingWidth < 0.0 && i < 30; i++) {
         _redistributeRemainingWidth(_getColumnsToRedistribute(dataChunk), remainingWidth);
 
         remainingWidth = availableWidth - columnWidths.values.sum;
       }
-
+*/
 
     }
+    sumColumnWidth = columnWidths.values.sum;
   }
+
+  void divideOut(FlTableModel tableModel, DataChunk dataChunk, double width, double availableWidth) {
+
+    List<String> divideOutColumnNames = [];
+
+    List<String> noWidth = [];
+    List<String> withWidth = [];
+    List<String> noWidthText = [];
+    List<String> withWidthText = [];
+    List<String> noWidthLink = [];
+    List<String> withWidthLink = [];
+    List<String> noWidthNumber = [];
+    List<String> withWidthNumber = [];
+    List<String> noWidthDate = [];
+    List<String> withWidthDate = [];
+
+    for (int i = 0; i < tableModel.columnNames.length; i++) {
+      String columnName = tableModel.columnNames[i];
+
+      ColumnDefinition? columnDefinition = dataChunk.columnDefinition(columnName);
+
+      if (columnDefinition != null) {
+        if (columnDefinition.width == null) {
+          if (columnDefinition.cellEditorClassName == FlCellEditorClassname.TEXT_CELL_EDITOR) {
+            noWidthText.add(columnName);
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.LINKED_CELL_EDITOR) {
+            noWidthLink.add(columnName);
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.NUMBER_CELL_EDITOR) {
+            noWidthNumber.add(columnName);
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.DATE_CELL_EDITOR) {
+            noWidthDate.add(columnName);
+          }else {
+            noWidth.add(columnName);
+          }
+        }
+        else {
+          if (columnDefinition.cellEditorClassName == FlCellEditorClassname.TEXT_CELL_EDITOR) {
+            withWidthText.add(columnName);
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.LINKED_CELL_EDITOR) {
+            withWidthLink.add(columnName);
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.NUMBER_CELL_EDITOR) {
+            withWidthNumber.add(columnName);
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.DATE_CELL_EDITOR) {
+            withWidthDate.add(columnName);
+          }else {
+            withWidth.add(columnName);
+          }
+        }
+      }
+    }
+
+    divideOutColumnNames.addAll(noWidthText);
+
+    if (divideOutColumnNames.length < 3) {
+      divideOutColumnNames.addAll(noWidthLink);
+    }
+
+    if (divideOutColumnNames.length < 5) {
+      divideOutColumnNames.addAll(noWidthNumber);
+    }
+
+    if (divideOutColumnNames.isEmpty) {
+      divideOutColumnNames.addAll(noWidthDate);
+    }
+
+    if (divideOutColumnNames.length < 3) {
+      divideOutColumnNames.addAll(withWidthLink);
+    }
+
+    if (divideOutColumnNames.length < 5) {
+      divideOutColumnNames.addAll(withWidthNumber);
+    }
+
+    if (divideOutColumnNames.isEmpty) {
+      divideOutColumnNames.addAll(withWidthDate);
+    }
+
+    if (divideOutColumnNames.isEmpty) {
+      divideOutColumnNames.addAll(noWidth);
+    }
+
+    if (divideOutColumnNames.isEmpty) {
+      divideOutColumnNames.addAll(withWidth);
+    }
+
+    double part = width / divideOutColumnNames.length;
+
+    double sumParts = part.toPrecision(2) * divideOutColumnNames.length;
+
+    double rest = width - sumParts;
+
+    for (int i = 0; i < divideOutColumnNames.length - 1; i++) {
+      columnWidths[divideOutColumnNames[i]] = columnWidths[divideOutColumnNames[i]]! + part;
+    }
+
+    columnWidths[divideOutColumnNames.last] = columnWidths[divideOutColumnNames.last]! + part + rest;
+  }
+
+//  List<int> _getColumnsByDataType(t)
 
   double _calculateDataWidth(
     List<dynamic> dataRows,
@@ -311,7 +426,7 @@ print(columnWidths.length);
           );
         }
 
-        double rowWidth = _calculateTableTextWidth(textStyle, formattedText);
+        double rowWidth = _calculateTextWidth(textStyle, formattedText);
 
         if (format != null) {
           rowWidth += format.leftIndent ?? 0;
@@ -325,15 +440,16 @@ print(columnWidths.length);
           }
         }
 
-        columnWidth = _adjustValue(columnWidth, rowWidth);
+        columnWidth = _adjustColumnWidth(columnWidth, rowWidth);
       }
     }
 
-    columnWidth = _adjustValue(columnWidth, columnWidth + FlTableCell.getContentPadding(cellEditor));
+    columnWidth = _adjustColumnWidth(columnWidth, columnWidth + FlTableCell.getContentPadding(cellEditor));
+
     return columnWidth;
   }
 
-  double _calculateTableTextWidth(
+  double _calculateTextWidth(
     TextStyle pTextStyle,
     String pText,
   ) {
@@ -346,7 +462,7 @@ print(columnWidths.length);
 
     return width;
   }
-
+/*
   void _redistributeRemainingWidth(List<String> pColumnNames, double pRemainingWidth) {
     Map<String, double> currentColumns = Map.of(columnWidths);
     currentColumns.removeWhere((key, value) => !pColumnNames.contains(key) || value <= 0.0);
@@ -388,16 +504,19 @@ print(columnWidths.length);
       columnWidths[columnName] = columnWidth;
     }
   }
+*/
 
-  double _adjustValue(double currentWidth, double wantedWith) {
-    if (wantedWith > currentWidth) {
-      return math.min(math.max(wantedWith, minColumnWidth), maxColumnWidth);
+  double _adjustColumnWidth(double oldWidth, double newWidth) {
+    if (newWidth > oldWidth) {
+      //new width between min and max column width
+      return Math.min(Math.max(newWidth, minColumnWidth), maxColumnWidth);
     } else {
-      return currentWidth;
+      return oldWidth;
     }
   }
 
-  static void _doNothing(dynamic ignore) {}
+  ///no operation
+  static void _noop(dynamic object) {}
 
   ICellEditor _createCellEditor(ColumnDefinition colDef, DalMetaData metaData) {
     return ICellEditor.getCellEditor(
@@ -405,13 +524,13 @@ print(columnWidths.length);
       pCellEditorJson: colDef.cellEditorJson,
       columnName: colDef.name,
       dataProvider: metaData.dataProvider,
-      onChange: _doNothing,
-      onEndEditing: _doNothing,
-      onFocusChanged: _doNothing,
+      onChange: _noop,
+      onEndEditing: _noop,
+      onFocusChanged: _noop,
       isInTable: true,
     );
   }
-
+/*
   List<String> _getColumnsToRedistribute(DataChunk? pDataChunk, [bool pUseMinWidth = true]) {
     List<String> columnNames = columnWidths.keys.toList();
 
@@ -467,4 +586,6 @@ print(columnWidths.length);
         return pCellEditorClassName == FlCellEditorClassname.DATE_CELL_EDITOR;
     }
   }
+
+ */
 }

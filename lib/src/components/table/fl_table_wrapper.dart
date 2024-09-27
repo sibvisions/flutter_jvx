@@ -296,7 +296,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   @override
   Size calculateSize(BuildContext context) {
     return Size(
-      tableSize.calculatedWidth + (tableSize.borderWidth * 2),
+      tableSize.sumCalculatedColumnWidth + (tableSize.borderWidth * 2),
       tableSize.tableHeaderHeight + (tableSize.borderWidth * 2) + (tableSize.rowHeight * dataChunk.data.length),
     );
   }
@@ -390,7 +390,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       Map<String, dynamic> valueMap = {};
 
       for (ColumnDefinition colDef in dataChunk.columnDefinitions) {
-        valueMap[colDef.name] = dataChunk.data[selectedRow]![dataChunk.getColumnIndex(colDef.name)];
+        valueMap[colDef.name] = dataChunk.data[selectedRow]![dataChunk.columnDefinitionIndex(colDef.name)];
       }
 
       dialogValueNotifier.value = valueMap;
@@ -1177,7 +1177,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return false;
     }
 
-    ColumnDefinition colDef = dataChunk.getColumn(pColumn);
+    ColumnDefinition? colDef = dataChunk.columnDefinition(pColumn);
+
+    if (colDef == null) {
+      return false;
+    }
 
     if (!colDef.forcedStateless) {
       if (!_isRowEditable(pRowIndex)) {
@@ -1193,7 +1197,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return false;
     }
 
-    if (dataChunk.dataReadOnly?[pRowIndex]?[dataChunk.getColumnIndex(pColumn)] ?? false) {
+    if (dataChunk.dataReadOnly?[pRowIndex]?[dataChunk.columnDefinitionIndex(pColumn)] ?? false) {
       return false;
     }
 
