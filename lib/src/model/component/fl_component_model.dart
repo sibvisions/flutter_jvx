@@ -32,6 +32,7 @@ import '../../service/config/i_config_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/i_types.dart';
+import '../../util/icon_util.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
@@ -78,14 +79,14 @@ abstract class FlComponentModel {
   /// If the component has disabled the mobile scaling
   static const String NO_SCALING_STYLE = "f_no_scaling";
 
-  /// The prefix of icon styles.
-  static const String ICON_STYLE_STRING_PREFIX = "f_icon";
+  /// The marker of icon styles.
+  static const String STYLE_ICON_MARKER = "f_icon";
 
   /// The icon on the left side of the component.
-  static const String PREFIX_ICON_STYLE = "${ICON_STYLE_STRING_PREFIX}_prefix_";
+  static const String PREFIX_ICON_STYLE = "${STYLE_ICON_MARKER}_prefix_";
 
   /// The icon on the right side of the component.
-  static const String SUFFIX_ICON_STYLE = "${ICON_STYLE_STRING_PREFIX}_suffix_";
+  static const String SUFFIX_ICON_STYLE = "${STYLE_ICON_MARKER}_suffix_";
 
   /// The color of the border.
   static const String BORDER_COLOR_STYLE = "f_border_color_";
@@ -372,7 +373,7 @@ abstract class FlComponentModel {
       pKey: ApiObjectProperty.foreground,
       pDefault: defaultModel.foreground,
       pCurrent: foreground,
-      pConversion: ParseUtil.parseServerColor,
+      pConversion: ParseUtil.parseColor,
     );
     verticalAlignment = getPropertyValue(
       pJson: pJson,

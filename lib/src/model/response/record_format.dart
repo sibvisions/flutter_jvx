@@ -98,10 +98,10 @@ class CellFormat {
 
       switch (entryIndex) {
         case 0:
-          background = ParseUtil.parseServerColor(entryValue);
+          background = ParseUtil.parseColor(entryValue);
           break;
         case 1:
-          foreground = ParseUtil.parseServerColor(entryValue);
+          foreground = ParseUtil.parseColor(entryValue);
           break;
         case 2:
           font = JVxFont.fromString(entryValue);

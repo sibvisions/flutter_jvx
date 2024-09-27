@@ -75,15 +75,15 @@ abstract class ParseUtil {
     String? jsonBackground = pValue?.toString();
     List<String> listBackgroundValues = jsonBackground?.split(";") ?? [];
 
-    List<String> exludedBackgroundColors = [ApiObjectProperty.mandatoryBackground];
+    List<String> excludedBackgroundColors = [ApiObjectProperty.mandatoryBackground];
 
-    if (listBackgroundValues.length >= 2 && exludedBackgroundColors.contains(listBackgroundValues[1])) {
+    if (listBackgroundValues.length >= 2 && excludedBackgroundColors.contains(listBackgroundValues[1])) {
       return null;
     }
-    return parseServerColor(pValue);
+    return parseColor(pValue);
   }
 
-  static Color? parseServerColor(dynamic pValue) {
+  static Color? parseColor(dynamic pValue) {
     return ColorConverter.fromJson(pValue?.toString());
   }
 
@@ -179,13 +179,12 @@ abstract class ParseUtil {
     double maxWidth = double.infinity,
     int maxLines = 1,
   }) {
-    double textScaleFactor = pTextScaleFactor ?? MediaQuery.textScaleFactorOf(FlutterUI.getCurrentContext()!);
     TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: textDirection,
       maxLines: maxLines,
       textAlign: align,
-      textScaleFactor: textScaleFactor,
+      textScaler: TextScaler.linear(pTextScaleFactor ?? MediaQuery.textScalerOf(FlutterUI.getCurrentContext()!).scale(1))
     )..layout(minWidth: 0, maxWidth: maxWidth);
 
     return textPainter;

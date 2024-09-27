@@ -148,8 +148,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
             child: ImageLoader.loadImage(
               model.image,
               imageProvider: imageProvider,
-              pWantedColor: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
-              pFit: BoxFit.fill,
+              color: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
+              fit: BoxFit.fill,
             ),
           ),
         );
@@ -158,9 +158,9 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       return ImageLoader.loadImage(
         model.image,
         imageProvider: imageProvider,
-        pWantedColor: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
-        pFit: boxFit,
-        pAlignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+        color: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
+        fit: boxFit,
+        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       );
     }
   }

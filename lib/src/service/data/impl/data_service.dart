@@ -214,8 +214,8 @@ class DataService implements IDataService {
 
     if (pChangedResponse.changedColumns != null) {
       pChangedResponse.changedColumns!.forEach((changedColumn) {
-        ColumnDefinition? foundColumn =
-            metaData.columnDefinitions.firstWhereOrNull((element) => element.name == changedColumn.name);
+        ColumnDefinition? foundColumn = metaData.columnDefinition(changedColumn.name);
+
         if (foundColumn != null) {
           if (changedColumn.label != null && changedColumn.label != foundColumn.label) {
             foundColumn.label = changedColumn.label!;
@@ -285,9 +285,7 @@ class DataService implements IDataService {
     if (dataBook.metaData != null) {
       if (pColumnNames != null) {
         for (String columnName in pColumnNames) {
-          ColumnDefinition? colDef = dataBook.metaData!.columnDefinitions.firstWhereOrNull((element) {
-            return element.name == columnName;
-          });
+          ColumnDefinition? colDef = dataBook.metaData!.columnDefinition(columnName);
 
           if (colDef != null) {
             columnDefinitions.add(colDef);

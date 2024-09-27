@@ -17,9 +17,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../components.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
+import '../../model/response/application_settings_response.dart';
 import '../../model/response/record_format.dart';
 import 'fl_table_cell.dart';
 
@@ -133,16 +135,53 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
       );
     }).toList();
 
+    Color? colRow;
+
+    ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
+
     double opacity;
+
     if (model.disabledAlternatingRowColor) {
-      opacity = 0.0;
+      opacity = 0;
     } else {
-      opacity = index % 2 == 0 ? 0.00 : 0.05;
+
+      if (index.isEven) {
+        opacity = 0;
+
+        if (JVxColors.isLightTheme(context)) {
+          colRow = applicationSettings.colors?.alternateBackground;
+        } else {
+          colRow = applicationSettings.darkColors?.alternateBackground;
+        }
+      }
+      else {
+        opacity = 0.05;
+
+        if (JVxColors.isLightTheme(context)) {
+          colRow = applicationSettings.colors?.background;
+        } else {
+          colRow = applicationSettings.darkColors?.background;
+        }
+      }
     }
 
     if (isSelected && model.showSelection) {
+      Color? colSelection;
+
+      if (JVxColors.isLightTheme(context)) {
+        colSelection = applicationSettings.colors?.activeSelectionBackground;
+      } else {
+        colSelection = applicationSettings.darkColors?.activeSelectionBackground;
+      }
+
+      if (colSelection != null) {
+        colRow = colSelection;
+      }
+
       opacity = 0.25;
     }
+
+    colRow ??= Theme.of(context).colorScheme.primary;
 
     List<Widget> slideActions = slideActionFactory?.call(index) ?? [];
 
@@ -168,7 +207,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         child: Container(
           height: tableSize.rowHeight,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(opacity),
+            color: colRow.withOpacity(opacity),
           ),
           child: Row(
             children: rowWidgets,

@@ -606,7 +606,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         beamLocations: [
           MainLocation(),
         ],
-      ),
+      ).call,
       transitionDelegate: transitionDelegate,
       beamBackTransitionDelegate: transitionDelegate,
       guards: [

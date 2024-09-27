@@ -18,13 +18,6 @@ part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlIconModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// The default icon size.
-  static const double DEFAULT_ICON_SIZE = 16;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -36,7 +29,7 @@ class FlIconModel extends FlComponentModel {
 
   /// Original size of the image.
   /// This is used to calculate the size of the image in the layout.
-  Size originalSize = const Size.square(DEFAULT_ICON_SIZE);
+  Size originalSize = const Size.square(IconUtil.DEFAULT_ICON_SIZE);
 
   @override
   Size? get minimumSize {
@@ -45,7 +38,7 @@ class FlIconModel extends FlComponentModel {
     }
 
     if (image.isNotEmpty) {
-      return const Size.square(16);
+      return const Size.square(IconUtil.DEFAULT_ICON_SIZE);
     }
     return null;
   }
@@ -68,7 +61,7 @@ class FlIconModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    _parseImage(pJson, defaultModel);
+    _parseDefinition(pJson, defaultModel);
 
     preserveAspectRatio = getPropertyValue(
       pJson: pJson,
@@ -78,7 +71,7 @@ class FlIconModel extends FlComponentModel {
     );
   }
 
-  _parseImage(Map<String, dynamic> pJson, FlIconModel pDefaultModel) {
+  _parseDefinition(Map<String, dynamic> pJson, FlIconModel pDefaultModel) {
     if (pJson.containsKey(ApiObjectProperty.image)) {
       dynamic value = pJson[ApiObjectProperty.image];
       if (value != null) {
@@ -89,9 +82,8 @@ class FlIconModel extends FlComponentModel {
         if (arr.length >= 3) {
           double? width = double.tryParse(arr[1]);
           double? height = double.tryParse(arr[2]);
-          if (width != null && height != null) {
-            originalSize = Size(width, height);
-          }
+
+          originalSize = Size(width ?? originalSize.width, height ?? originalSize.height);
         }
       } else {
         image = pDefaultModel.image;

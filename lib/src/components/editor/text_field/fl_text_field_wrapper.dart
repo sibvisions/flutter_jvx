@@ -102,7 +102,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
     double width = averageColumnWidth * model.columns;
 
-    width += createWidget().extraWidthPaddings();
+    width += createWidget().extraWidthPaddings(context);
 
     return Size(width, FlTextFieldWidget.TEXT_FIELD_HEIGHT);
   }

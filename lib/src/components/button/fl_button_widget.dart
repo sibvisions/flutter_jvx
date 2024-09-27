@@ -21,6 +21,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/font_awesome_util.dart';
+import '../../util/icon_util.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
@@ -68,26 +69,28 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget? get image {
-    String? imageString = model.className != FlCellEditorClassname.CHECK_BOX_CELL_EDITOR
+    String? imageDefinition = model.className != FlCellEditorClassname.CHECK_BOX_CELL_EDITOR
         ? model.image
         : ((model as FlCheckBoxModel).imageName != null && (model as FlCheckBoxModel).imageName!.isNotEmpty)
             ? (model as FlCheckBoxModel).imageName
             : null;
 
-    if (imageString != null) {
+    if (imageDefinition != null) {
       Color? color;
-      if (FontAwesomeUtil.checkFontAwesome(imageString)) {
+
+      if (IconUtil.isFontIcon(imageDefinition)) {
         if (!model.borderPainted || model.borderOnMouseEntered) {
           color = JVxColors.LIGHTER_BLACK;
         } else {
           color = model.createTextStyle().color;
         }
       }
+
       return ImageLoader.loadImage(
-        imageString,
-        pWantedColor: color,
+        imageDefinition, color: color,
       );
     }
+
     return null;
   }
 

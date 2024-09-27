@@ -163,7 +163,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
         borderRadius: BorderRadius.circular(4.0),
         border: Border.all(
           width: widget.tableSize.borderWidth,
-          color: Theme.of(context).colorScheme.primary,
+          color: JVxColors.COMPONENT_BORDER,
         ),
         color: Theme.of(context).colorScheme.background,
       ),

@@ -18,21 +18,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
+import '../../../flutter_jvx.dart';
 import '../../model/layout/alignments.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
-import '../../service/data/i_data_service.dart';
-import '../../util/image/image_loader.dart';
-import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/button_cell_editor_styles.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
-import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import '../editor/cell_editor/linked/fl_linked_cell_editor.dart';
-import 'fl_table_widget.dart';
 
 class FlTableCell extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,7 +33,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The size of the icon.
-  static const double iconSize = 16;
+  static const double iconSize = IconUtil.DEFAULT_ICON_SIZE;
 
   /// The size of the clear icon.
   static const double clearIconSize = 24;
@@ -59,7 +52,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   final TableValueChangedCallback? onValueChanged;
 
   /// Gets called with the index of the row and name of column when the user taps a cell.
-  /// Provides the celleditor of this cell, allowing to click the cell editor.
+  /// Provides the cell editor of this cell, allowing to click the cell editor.
   /// Allows validation of the click before allowing the cell editor to be clicked.
   final TableTapCallback? onTap;
 
@@ -155,7 +148,7 @@ class _FlTableCellState extends State<FlTableCell> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The celleditor of the cell.
+  /// The cell editor of the cell.
   ICellEditor cellEditor = FlDummyCellEditor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -227,6 +220,18 @@ class _FlTableCellState extends State<FlTableCell> {
       paddings = paddings - const EdgeInsets.all(1);
     }
 
+    Color colReadOnly;
+
+    ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
+
+    if (JVxColors.isLightTheme(context)) {
+      colReadOnly = applicationSettings.colors?.readOnlyBackground ?? Colors.grey;
+    } else {
+      colReadOnly = applicationSettings.darkColors?.readOnlyBackground ?? Colors.white70;
+    }
+
+    colReadOnly = colReadOnly.withOpacity(0.2);
+
     return GestureDetector(
       onLongPressStart: (widget.onLongPress != null) && widget.model.isEnabled
           ? (details) => widget.onLongPress
@@ -260,7 +265,7 @@ class _FlTableCellState extends State<FlTableCell> {
                 ],
               ),
             ),
-            ..._createReadOnlyOverlay()
+            ..._createReadOnlyOverlay(colReadOnly)
       ]),
     );
   }
@@ -381,7 +386,7 @@ class _FlTableCellState extends State<FlTableCell> {
 
     Widget? cellImage = ImageLoader.loadImage(
         widget.cellFormat!.imageString!,
-        pWantedColor: widget.cellFormat?.foreground,
+        color: widget.cellFormat?.foreground,
       );
 
     return [Padding(padding: EdgeInsets.only(right: 3, left: indent), child: cellImage)];
@@ -440,9 +445,9 @@ class _FlTableCellState extends State<FlTableCell> {
     return icons;
   }
 
-  List<Widget> _createReadOnlyOverlay() {
-    if (widget.columnDefinition.readOnly || widget.readOnly) {
-      return [Container(width: max(widget.width, 0.0), color: Colors.grey.withOpacity(0.2))];
+  List<Widget> _createReadOnlyOverlay(Color? colReadOnly) {
+    if (colReadOnly != null && widget.columnDefinition.readOnly || widget.readOnly) {
+      return [Container(width: max(widget.width, 0.0), color: colReadOnly)];
     }
 
     return [];

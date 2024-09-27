@@ -32,15 +32,11 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
   }) : super(keyboardType: TextInputType.none);
 
   @override
-  List<Widget> createSuffixIconItems([bool pForceAll = false]) {
-    List<Widget> oldSuffixItems = super.createSuffixIconItems(pForceAll);
+  List<Widget> createSuffixIconItems([BuildContext? context, bool forceAll = false]) {
+    List<Widget> items = super.createSuffixIconItems(context, forceAll);
 
-    oldSuffixItems.add(
-      createBaseIcon(
-        FontAwesomeIcons.calendar,
-      ),
-    );
+    items.add(createEmbeddableIcon(context, FontAwesomeIcons.calendar));
 
-    return oldSuffixItems;
+    return items;
   }
 }

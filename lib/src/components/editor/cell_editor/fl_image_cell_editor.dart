@@ -21,6 +21,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../util/i_types.dart';
+import '../../../util/icon_util.dart';
 import '../../../util/image/image_loader.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
@@ -39,7 +40,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
   RecalculateCallback? recalculateSizeCallback;
 
   /// The size of the image.
-  Size imageSize = const Size.square(FlIconModel.DEFAULT_ICON_SIZE);
+  Size imageSize = const Size.square(IconUtil.DEFAULT_ICON_SIZE);
 
   /// The image loading callback.
   late Function(Size, bool)? imageStreamListener = onImage;
@@ -95,8 +96,8 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
 
     imageProvider = ImageLoader.getImageProvider(
       !defaultImageUsed ? _value : model.defaultImageName,
-      pImageStreamListener: imageStreamListener,
-      pImageInBase64: !defaultImageUsed && columnDefinition?.dataTypeIdentifier == Types.BINARY,
+      imageStreamListener: imageStreamListener,
+      base64: !defaultImageUsed && columnDefinition?.dataTypeIdentifier == Types.BINARY,
     );
   }
 

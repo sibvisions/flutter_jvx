@@ -343,10 +343,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   ReferenceDefinition get effectiveLinkReference {
-    ColumnDefinition? colDef = IDataService()
-        .getMetaData(dataProvider)
-        ?.columnDefinitions
-        .firstWhereOrNull((element) => element.name == columnName);
+    ColumnDefinition? colDef = IDataService().getMetaData(dataProvider)?.columnDefinition(columnName);
 
     return (colDef?.cellEditorModel is FlLinkedCellEditorModel)
         ? (colDef!.cellEditorModel as FlLinkedCellEditorModel).linkReference

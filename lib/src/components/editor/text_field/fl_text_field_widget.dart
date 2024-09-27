@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../flutter_ui.dart';
 import '../../../mask/frame/frame.dart';
 import '../../../mask/state/app_style.dart';
@@ -28,6 +29,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../util/font_awesome_util.dart';
+import '../../../util/icon_util.dart';
 import '../../../util/jvx_colors.dart';
 import '../../../util/parse_util.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
@@ -183,9 +185,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         focusedBorder: createBorder(FlTextBorderType.focusedBorder),
         disabledBorder: createBorder(FlTextBorderType.disabledBorder),
         focusedErrorBorder: createBorder(FlTextBorderType.focusedBorder),
-        suffixIcon: createSuffixIcon(),
+        suffixIcon: createSuffixIcon(context),
         suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
-        prefixIcon: createPrefixIcon(),
+        prefixIcon: createPrefixIcon(context),
         prefixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
         fillColor: fillColor,
         filled: true,
@@ -219,13 +221,13 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   /// Creates the clear icon at the end of a textfield.
-  Widget? createClearIcon([bool pForce = false]) {
+  Widget? createClearIcon([BuildContext? context, bool force = false]) {
     if ((textController.text.isEmpty ||
             hideClearIcon ||
             !model.isEditable ||
             !model.isEnabled ||
             model.hideClearIcon) &&
-        !pForce) {
+        !force) {
       return null;
     }
 
@@ -241,27 +243,47 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           }
         }
       },
-      child: createBaseIcon(
-        Icons.clear,
-      ),
+      child: createEmbeddableIcon(context, Icons.clear),
     );
   }
 
-  Widget createBaseIcon(IconData pIcon, [Color? pColor, Color? pColorDarkMode]) {
-    Color iconColor = pColor ?? JVxColors.COMPONENT_DISABLED;
-    Color iconColorDarkMode = pColorDarkMode ?? pColor ?? JVxColors.COMPONENT_DISABLED_LIGHTER;
+  Widget createIcon(BuildContext? context, String imageDefinition, [Color? color, Color? colorDarkMode]) {
+    Color color_ = color ?? JVxColors.COMPONENT_DISABLED;
+    Color colorDarkMode_ = colorDarkMode ?? color ?? JVxColors.COMPONENT_DISABLED_LIGHTER;
 
+    return _wrapIcon(ImageLoader.loadImage(imageDefinition, color: JVxColors.isLightTheme(context) ? color_ : colorDarkMode_));
+  }
+
+  Widget _wrapIcon(Widget icon) {
     return SizedBox(
       width: iconAreaSize,
       height: iconAreaSize,
       child: Center(
-        child: FaIcon(
-          pIcon,
-          size: iconSize,
-          color: JVxColors.isLightTheme() ? iconColor : iconColorDarkMode,
-        ),
+        child: icon,
       ),
     );
+  }
+
+  Widget createEmbeddableIcon(BuildContext? context, IconData icon) {
+    Widget ico;
+
+    if (icon.fontFamily == FontAwesomeIcons.plus.fontFamily) {
+      ico = FaIcon(
+          icon,
+          size: iconSize,
+          color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
+      );
+    }
+    else {
+      //should work with any icon data
+      ico = Icon(
+          icon,
+          size: iconSize,
+          color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
+      );
+    }
+
+    return _wrapIcon(ico);
   }
 
   /// Wraps the suf/pre-fix icon items with a container.
@@ -282,22 +304,22 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   /// Creates a list of widgets to show at the end of a textfield.
-  List<Widget> createSuffixIconItems([bool pForceAll = false]) {
+  List<Widget> createSuffixIconItems([BuildContext? context, bool forceAll = false]) {
     List<Widget> icons = [];
 
-    Widget? clearIcon = createClearIcon(pForceAll);
+    Widget? clearIcon = createClearIcon(context, forceAll);
     if (clearIcon != null) {
       icons.add(clearIcon);
     }
 
-    icons.addAll(_createIconsFromStyle(FlComponentModel.SUFFIX_ICON_STYLE));
+    icons.addAll(_createIconsFromStyle(context, FlComponentModel.SUFFIX_ICON_STYLE));
 
     return icons;
   }
 
   /// Constructs a single widget to show at the end of a textfield, unifying all suffixIconItems.
-  Widget? createSuffixIcon() {
-    List<Widget> iconItems = createSuffixIconItems();
+  Widget? createSuffixIcon(BuildContext context) {
+    List<Widget> iconItems = createSuffixIconItems(context);
 
     // Just insert a center and voilá, textfield is expanding without
     // setting "expanding" to true.
@@ -307,13 +329,13 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   /// Creates a list of widgets to show at the start of a textfield.
-  List<Widget> createPrefixIconItems() {
-    return _createIconsFromStyle(FlComponentModel.PREFIX_ICON_STYLE);
+  List<Widget> createPrefixIconItems([BuildContext? context]) {
+    return _createIconsFromStyle(context, FlComponentModel.PREFIX_ICON_STYLE);
   }
 
   /// Constructs a single widget to show at the end of a textfield, unifying all suffixIconItems.
-  Widget? createPrefixIcon() {
-    return _createXFixWidget(createPrefixIconItems());
+  Widget? createPrefixIcon(BuildContext? context) {
+    return _createXFixWidget(createPrefixIconItems(context));
   }
 
   InputBorder? createBorder(FlTextBorderType pBorderType) {
@@ -357,8 +379,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   /// Returns all extra paddings this text field has in sum apart from the text size itself.
-  double extraWidthPaddings() {
-    int iconAmount = createSuffixIconItems(true).length + createPrefixIconItems().length;
+  double extraWidthPaddings([BuildContext? context]) {
+    int iconAmount = createSuffixIconItems(context, true).length + createPrefixIconItems(context).length;
 
     double width = (iconAreaSize * iconAmount);
     width += iconsPadding.horizontal;
@@ -374,17 +396,17 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     } else {
       List<String> borderColorStrings = styles[0].split("_");
 
-      Color? iconColor = ParseUtil.parseServerColor(borderColorStrings[0]);
+      Color? iconColor = ParseUtil.parseColor(borderColorStrings[0]);
       Color? iconColorDarkMode =
-          borderColorStrings.length >= 2 ? ParseUtil.parseServerColor(borderColorStrings[1]) : null;
+          borderColorStrings.length >= 2 ? ParseUtil.parseColor(borderColorStrings[1]) : null;
 
       return JVxColors.isLightTheme(FlutterUI.getCurrentContext()!) ? iconColor : iconColorDarkMode ?? iconColor;
     }
   }
 
-  /// Extracts all prefix icons from the styles
-  List<Widget> _createIconsFromStyle([String pIconStringPrefix = FlComponentModel.ICON_STYLE_STRING_PREFIX]) {
-    List<String> listIconStrings = _extractStringsFromStyle(pIconStringPrefix);
+  /// Extracts all [prefix]ed icons from the styles
+  List<Widget> _createIconsFromStyle(BuildContext? context, String prefix) {
+    List<String> listIconStrings = _extractStringsFromStyle(prefix);
 
     List<Widget> icons = [];
 
@@ -392,32 +414,30 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       List<String> iconParts = iconString.split("_");
       String iconName = iconParts[0];
 
-      if (iconName.isEmpty) {
-        continue;
+      if (iconName.isNotEmpty) {
+        //FontAwesome is our default icon library
+        if (!IconUtil.isFontIcon(iconName)) {
+          iconName ="${IconUtil.PREFIX_FONT_AWESOME}.$iconName";
+        }
+
+        icons.add(createIcon(
+            context,
+            iconName,
+            iconParts.length >= 2 ? ParseUtil.parseColor(iconParts[1]) : null,
+            iconParts.length >= 3 ? ParseUtil.parseColor(iconParts[2]) : null));
       }
-
-      if (!FontAwesomeUtil.checkFontAwesome(iconName)) {
-        iconName = "${FontAwesomeUtil.FONT_AWESOME_PREFIX}.$iconName";
-      }
-
-      Color? iconColor = iconParts.length >= 2 ? ParseUtil.parseServerColor(iconParts[1]) : null;
-      Color? iconColorDarkMode = iconParts.length >= 3 ? ParseUtil.parseServerColor(iconParts[2]) : null;
-
-      IconData iconData = FontAwesomeUtil.ICONS[iconName] ?? FontAwesomeIcons.circleQuestion;
-
-      icons.add(createBaseIcon(iconData, iconColor, iconColorDarkMode));
     }
 
     return icons;
   }
 
-  /// Extracts all strings from the styles that start with the given prefix.
-  List<String> _extractStringsFromStyle(String pStylePrefix) {
+  /// Extracts all strings from the styles that start with the given [prefix].
+  List<String> _extractStringsFromStyle(String prefix) {
     List<String> listStrings = [];
 
     for (String style in model.styles) {
-      if (style.startsWith(pStylePrefix)) {
-        listStrings.add(style.substring(pStylePrefix.length));
+      if (style.startsWith(prefix)) {
+        listStrings.add(style.substring(prefix.length));
       }
     }
 

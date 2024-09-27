@@ -303,28 +303,31 @@ class DataBook {
       return false;
     }
 
+    bool changeDetected = false;
+
     if (metaData!.sortDefinitions == null || pSortDefinitions == null) {
-      bool areDifferent = metaData!.sortDefinitions != pSortDefinitions;
-      metaData!.sortDefinitions = pSortDefinitions;
-      return areDifferent;
+      changeDetected = metaData!.sortDefinitions != pSortDefinitions;
     }
 
-    bool changeDetected = metaData!.sortDefinitions!.length != pSortDefinitions.length;
+    if (pSortDefinitions != null && !changeDetected) {
+      changeDetected = metaData!.sortDefinitions!.length != pSortDefinitions.length;
 
-    if (!changeDetected) {
-      for (SortDefinition sortDefinition in pSortDefinitions) {
-        if (changeDetected) {
-          break;
+      if (!changeDetected) {
+
+        for (SortDefinition sortDefinition in pSortDefinitions) {
+          if (changeDetected) {
+            break;
+          }
+
+          var oldSortDefinition = metaData!.sortDefinition(sortDefinition.columnName);
+
+          changeDetected = oldSortDefinition == null || oldSortDefinition.mode != sortDefinition.mode;
         }
-
-        var oldSortDefinition =
-            metaData!.sortDefinitions!.firstWhereOrNull((element) => element.columnName == sortDefinition.columnName);
-
-        changeDetected = oldSortDefinition == null || oldSortDefinition.mode != sortDefinition.mode;
       }
     }
 
     metaData!.sortDefinitions = pSortDefinitions;
+
     return changeDetected;
   }
 
@@ -348,8 +351,10 @@ class DataBook {
     if (pDataColumnNames != null) {
       // Get provided column definitions
       definitions = [];
+
       for (String columnName in pDataColumnNames) {
-        var colDef = metaData!.columnDefinitions.firstWhereOrNull((element) => element.name == columnName);
+        var colDef = metaData!.columnDefinition(columnName);
+
         if (colDef != null) {
           definitions.add(colDef);
         }
@@ -562,7 +567,10 @@ class DalMetaData {
   ReferenceDefinition? rootReference;
 
   /// All column definitions in this dataBook
-  List<ColumnDefinition> columnDefinitions = [];
+  List<ColumnDefinition> _columnDefinitions = [];
+
+  /// All column definitions by name
+  Map<String, ColumnDefinition> _columnDefinitionsByName = {};
 
   /// The name of the data provider
   String dataProvider;
@@ -598,7 +606,10 @@ class DalMetaData {
   List<String> primaryKeyColumns = [];
 
   /// The sort definitions of this databook.
-  List<SortDefinition>? sortDefinitions;
+  List<SortDefinition>? _sortDefinitions;
+
+  /// All sort definitions by name
+  Map<String, SortDefinition> _sortDefinitionsByName = {};
 
   /// Combined json of this metaData
   Map<String, dynamic> json = {};
@@ -611,6 +622,34 @@ class DalMetaData {
 
   /// If the row 0 is an additional row (Not deletable)
   bool additionalRowVisible = false;
+
+  ///Sets column definitions and updates "by name" mapping
+  set columnDefinitions(List<ColumnDefinition> definitions) {
+    _columnDefinitions = definitions;
+
+    _columnDefinitionsByName.clear();
+
+    _columnDefinitions.forEach((cd) => _columnDefinitionsByName[cd.name] = cd);
+  }
+
+  ///Gets all column definitions
+  List<ColumnDefinition> get columnDefinitions {
+    return _columnDefinitions;
+  }
+
+  /// Sets sort definitions and updates "by name" mapping
+  set sortDefinitions(List<SortDefinition>? definitions) {
+    _sortDefinitions = definitions;
+
+    _sortDefinitionsByName.clear();
+
+    _sortDefinitions?.forEach((sd) => _sortDefinitionsByName[sd.columnName] = sd);
+  }
+
+  /// Gets all sort definitions
+  List<SortDefinition>? get sortDefinitions {
+    return _sortDefinitions;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -631,7 +670,7 @@ class DalMetaData {
         dataProvider = pJson[ApiObjectProperty.dataProvider],
         columnViewTable = pJson[ApiObjectProperty.columnViewTable]?.cast<String>(),
         columnViewTree = pJson[ApiObjectProperty.columnViewTree]?.cast<String>(),
-        columnDefinitions =
+        _columnDefinitions =
             (pJson[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList() ??
                 [],
         readOnly = pJson[ApiObjectProperty.readOnly],
@@ -670,6 +709,7 @@ class DalMetaData {
     }
     if (pResponse.columns != null) {
       columnDefinitions = pResponse.columns!;
+
       createdReferencedCellEditors.forEach((element) => element.dispose());
       columnDefinitions.forEach((colDef) {
         if (colDef.cellEditorModel is FlLinkedCellEditorModel) {
@@ -734,5 +774,15 @@ class DalMetaData {
     data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
     data["json"] = json;
     return data;
+  }
+
+  ///Gets the column definition for [name]
+  ColumnDefinition? columnDefinition(String name) {
+    return _columnDefinitionsByName[name];
+  }
+
+  ///Gets the sort definition for [name]
+  SortDefinition? sortDefinition(String name) {
+    return _sortDefinitionsByName[name];
   }
 }

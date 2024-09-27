@@ -19,6 +19,7 @@ import 'dart:math' as math;
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';
@@ -111,8 +112,7 @@ class TableSize {
     required DalMetaData metaData,
     double? availableWidth,
   }) {
-    calculateTableSize(
-        pTableModel: tableModel, pMetaData: metaData, pAvailableWidth: availableWidth, pDataChunk: dataChunk);
+    calculateTableSize(tableModel: tableModel, metaData: metaData, availableWidth: availableWidth, dataChunk: dataChunk);
   }
 
   /// The width every column would like to have. Does not include the Border!
@@ -130,43 +130,58 @@ class TableSize {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   calculateTableSize({
-    required FlTableModel pTableModel,
-    required DataChunk pDataChunk,
-    required DalMetaData pMetaData,
-    int pRowsToCalculate = 10,
-    double? pAvailableWidth,
+    required FlTableModel tableModel,
+    required DataChunk dataChunk,
+    required DalMetaData metaData,
+    int rowsToCalculate = 10,
+    double? availableWidth,
     double scaling = 1.0,
   }) {
     calculatedColumnWidths.clear();
 
-    pAvailableWidth = math.max((pAvailableWidth ?? 0.0) - (borderWidth * 2), 0);
+    availableWidth = math.max((availableWidth ?? 0.0) - (borderWidth * 2), 0);
 
-    // No data -> No meta data so there cant be fixed sizes.
-    TextStyle textStyle = pTableModel.createTextStyle();
+    ApplicationMetaDataResponse? appmetadata = IUiService().applicationMetaData.value;
+
+    String mandatoryMark = "";
+
+    if (appmetadata != null) {
+      if (appmetadata.mandatoryMarkVisible) {
+        mandatoryMark = " ${appmetadata.mandatoryMark ?? "*"}";
+      }
+    }
+    else {
+      mandatoryMark = " *";
+    }
+
+    // No data and no meta data so there cant be fixed sizes.
+    TextStyle textStyle = tableModel.createTextStyle();
 
     // How far you can calculate with the data we currently have.
-    for (int i = 0; i < pTableModel.columnNames.length; i++) {
-      String columnName = pTableModel.columnNames[i];
-      String columnLabel = pTableModel.columnLabels[i];
+    for (int i = 0; i < tableModel.columnNames.length; i++) {
+      String columnName = tableModel.columnNames[i];
+      String columnLabel = tableModel.columnLabels[i];
 
-      double calculatedHeaderWidth = _calculateTableTextWidth(
-        textStyle.copyWith(fontWeight: FontWeight.bold),
-        "$columnLabel *", // per default: Column headers get a * if they are mandatory
-      );
+      //Column headers get a * if they are mandatory
+      if (metaData.columnDefinition(columnName)?.nullable != true) {
+        columnLabel = "$columnLabel$mandatoryMark";
+      }
 
-      if (pMetaData.sortDefinitions?.firstWhereOrNull((element) => element.columnName == columnName)?.mode != null) {
+      double calculatedHeaderWidth = _calculateTableTextWidth(textStyle.copyWith(fontWeight: FontWeight.bold), columnLabel);
+
+      if (metaData.sortDefinition(columnName)?.mode != null) {
         calculatedHeaderWidth += 21;
       }
 
       calculatedColumnWidths[columnName] = _adjustValue(minColumnWidth, calculatedHeaderWidth);
 
       int calculateUntilRow = math.min(
-        pDataChunk.data.length,
-        pRowsToCalculate,
+        dataChunk.data.length,
+        rowsToCalculate,
       );
 
       int? colIndex = -1;
-      ColumnDefinition? columnDefinition = pDataChunk.columnDefinitions.firstWhereIndexedOrNull((index, colDef) {
+      ColumnDefinition? columnDefinition = dataChunk.columnDefinitions.firstWhereIndexedOrNull((index, colDef) {
         if (colDef.name == columnName) {
           colIndex = index;
           return true;
@@ -190,7 +205,7 @@ class TableSize {
             calculatedColumnWidths[columnName] = columnDefinition.width! * scaling;
           }
         } else {
-          ICellEditor cellEditor = _createCellEditor(columnDefinition, pMetaData);
+          ICellEditor cellEditor = _createCellEditor(columnDefinition, metaData);
           double calculatedWidth;
           if (cellEditor.allowedInTable && cellEditor is FlCheckBoxCellEditor) {
             calculatedWidth = checkCellWidth;
@@ -203,8 +218,8 @@ class TableSize {
             List<dynamic> dataRows = [];
             List<CellFormat?> dataFormats = [];
             for (int i = 0; i < calculateUntilRow; i++) {
-              dataRows.add(pDataChunk.data[i]);
-              dataFormats.add(pDataChunk.recordFormats?[pTableModel.name]?.getCellFormat(i, colIndex!));
+              dataRows.add(dataChunk.data[i]);
+              dataFormats.add(dataChunk.recordFormats?[tableModel.name]?.getCellFormat(i, colIndex!));
             }
 
             // Isolate the column from the rows.
@@ -227,18 +242,38 @@ class TableSize {
     columnWidths.clear();
     columnWidths.addAll(calculatedColumnWidths);
 
-    double remainingWidth = pAvailableWidth - columnWidths.values.sum;
+    double remainingWidth = availableWidth - columnWidths.values.sum;
 
     // Redistribute the remaining width. AutoSize forces all columns inside the table.
     if (remainingWidth > 0.0) {
-      _redistributeRemainingWidth(_getColumnsToRedistribute(pDataChunk, false), remainingWidth);
-    } else if ((pTableModel.autoResize || remainingWidth >= -10.0) && remainingWidth < 0.0) {
+      _redistributeRemainingWidth(_getColumnsToRedistribute(dataChunk, false), remainingWidth);
+    } else if ((tableModel.autoResize || remainingWidth >= -10.0) && remainingWidth < 0.0) {
+/*
+      double width = pAvailableWidth / columnWidths.length;
+print(width);
+print(columnWidths.length);
+      for (String columnName in columnWidths.keys) {
+        double columnWidth = columnWidths[columnName]!;
+
+        print(columnName);
+        columnWidths[columnName] = width;
+//        calculatedColumnWidths[columnName] = width;
+      }
+
+//      columnWidths["PHONE"] = 30.2;
+
+*/
+
+//print(_getColumnsToRedistribute(dataChunk));
+
       // '30' is only there to stop if infinite loop happens.
       for (int i = 0; remainingWidth < 0.0 && i < 30; i++) {
-        _redistributeRemainingWidth(_getColumnsToRedistribute(pDataChunk), remainingWidth);
+        _redistributeRemainingWidth(_getColumnsToRedistribute(dataChunk), remainingWidth);
 
-        remainingWidth = pAvailableWidth - columnWidths.values.sum;
+        remainingWidth = availableWidth - columnWidths.values.sum;
       }
+
+
     }
   }
 

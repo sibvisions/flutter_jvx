@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../util/font_awesome_util.dart';
+import '../../util/icon_util.dart';
 
 class MenuItemModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,21 +71,18 @@ class MenuItemModel {
     double? pSize,
     Color? pColor,
   }) {
-    Widget icon = const FaIcon(
-      FontAwesomeIcons.clone,
-    );
-
-    // Server side images
-    String? imageName = pMenuItemModel.image;
-    if (imageName != null) {
-      icon = FontAwesomeUtil.getFontAwesomeIcon(
-        pText: imageName,
-      );
-    }
+    Widget? icon;
 
     // Custom menu item
     if (pMenuItemModel.imageBuilder != null) {
       icon = pMenuItemModel.imageBuilder!.call(context);
+    }
+
+    if (icon == null) {
+      // Server side images
+      if (pMenuItemModel.image != null) {
+        icon = IconUtil.fromString(pMenuItemModel.image)?.icon;
+      }
     }
 
     return Builder(builder: (context) {
@@ -96,7 +94,7 @@ class MenuItemModel {
             size: pSize,
             color: pColor,
           ),
-          child: icon,
+          child: icon ?? const FaIcon(FontAwesomeIcons.clone),
         ),
       );
     });

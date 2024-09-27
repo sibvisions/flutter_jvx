@@ -256,9 +256,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void receiveMetaData(DalMetaData pMetaData) {
     metaData = pMetaData;
-    ColumnDefinition? newColDef =
-        metaData!.columnDefinitions.firstWhereOrNull((element) => element.name == model.columnName);
-    cellEditor.setColumnDefinition(newColDef);
+
+    cellEditor.setColumnDefinition(metaData!.columnDefinition(model.columnName));
+
     setState(() {});
   }
 

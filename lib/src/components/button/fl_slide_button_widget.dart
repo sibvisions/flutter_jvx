@@ -51,7 +51,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
     if (model.image != null) {
       return ImageLoader.loadImage(
         model.image!,
-        pWantedColor: model.createTextStyle().color,
+        color: model.createTextStyle().color,
       );
     }
     return null;

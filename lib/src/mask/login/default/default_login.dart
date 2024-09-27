@@ -143,7 +143,7 @@ class DefaultLogin extends StatelessWidget implements Login {
                   constraints: BoxConstraints.loose(const Size.fromWidth(650)),
                   child: logo ??
                          (loginLogo != null ?
-                             ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown) :
+                             ImageLoader.loadImage(loginLogo, fit: BoxFit.scaleDown) :
                              Image.asset(
                                 ImageLoader.getAssetPath(
                                   FlutterUI.package,

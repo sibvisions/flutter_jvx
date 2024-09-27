@@ -87,7 +87,7 @@ class FlMapModel extends FlComponentModel {
       pKey: ApiObjectProperty.fillColor,
       pDefault: defaultModel.fillColor,
       pCurrent: fillColor,
-      pConversion: (e) => ParseUtil.parseServerColor(e)!,
+      pConversion: (e) => ParseUtil.parseColor(e)!,
     );
 
     tileProvider = getPropertyValue(
@@ -102,7 +102,7 @@ class FlMapModel extends FlComponentModel {
       pKey: ApiObjectProperty.lineColor,
       pDefault: defaultModel.lineColor,
       pCurrent: lineColor,
-      pConversion: (e) => ParseUtil.parseServerColor(e)!,
+      pConversion: (e) => ParseUtil.parseColor(e)!,
     );
 
     groupDataBook = getPropertyValue(

@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import '../../flutter_jvx.dart';
@@ -114,8 +112,8 @@ abstract class JVxColors {
         dialogTheme: DialogTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),),
-        textButtonTheme: TextButtonThemeData(style: ButtonStyle(foregroundColor: MaterialStateProperty.all(isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color),
-                                                                overlayColor: MaterialStateProperty.all(isSelectedLight ? null : JVxColors.WHITE))),
+        textButtonTheme: TextButtonThemeData(style: ButtonStyle(foregroundColor: WidgetStateProperty.all(isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color),
+                                                                overlayColor: WidgetStateProperty.all(isSelectedLight ? null : JVxColors.WHITE))),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(shape: CircleBorder(side: BorderSide(width: 0, style: BorderStyle.none))),
         elevatedButtonTheme: evbTheme,
         typography: Typography.material2014()

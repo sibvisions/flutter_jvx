@@ -309,10 +309,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _recalculateTableSize([bool pRecalculateWidth = true]) {
     if (pRecalculateWidth) {
       tableSize.calculateTableSize(
-        pMetaData: metaData,
-        pTableModel: model,
-        pDataChunk: dataChunk,
-        pAvailableWidth: layoutData.layoutPosition?.width,
+        metaData: metaData,
+        tableModel: model,
+        dataChunk: dataChunk,
+        availableWidth: layoutData.layoutPosition?.width,
         scaling: model.scaling,
       );
     }
@@ -958,14 +958,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (!model.sortOnHeaderEnabled) {
       return null;
     }
-    ColumnDefinition? coldef = metaData.columnDefinitions.firstWhereOrNull((element) => pColumnName == element.name);
+    ColumnDefinition? coldef = metaData.columnDefinition(pColumnName);
 
     if (coldef == null || !coldef.sortable) {
       return null;
     }
 
-    SortDefinition? currentSortDefinition =
-        metaData.sortDefinitions?.firstWhereOrNull((sortDef) => sortDef.columnName == pColumnName);
+    SortDefinition? currentSortDefinition = metaData.sortDefinition(pColumnName);
     bool exists = currentSortDefinition != null;
 
     currentSortDefinition?.mode = currentSortDefinition.nextMode;

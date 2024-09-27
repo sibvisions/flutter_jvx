@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../util/image/image_loader.dart';
 
@@ -67,12 +68,12 @@ class FlPopupMenuItemWidget extends PopupMenuItem<String> {
 
   static Widget _createIcon(String? icon) {
     if (icon == null) {
-      return const SizedBox.square(dimension: 16.0);
+      return const SizedBox.square(dimension: IconUtil.DEFAULT_ICON_SIZE);
     } else {
       return ImageLoader.loadImage(
         icon,
-        pWidth: 16.0,
-        pHeight: 16.0,
+        width: IconUtil.DEFAULT_ICON_SIZE,
+        height: IconUtil.DEFAULT_ICON_SIZE,
       );
     }
   }

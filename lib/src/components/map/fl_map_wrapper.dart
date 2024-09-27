@@ -204,8 +204,8 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
         height: markerSize,
         builder: (_) => ImageLoader.loadImage(
           image ?? model.markerImage!,
-          pWidth: markerSize,
-          pHeight: markerSize,
+          width: markerSize,
+          height: markerSize,
         ),
       );
     } else {

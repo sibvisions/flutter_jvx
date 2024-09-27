@@ -98,7 +98,7 @@ class WorkScreenPage extends StatefulWidget {
           child: backgroundImage != null
               ? ImageLoader.loadImage(
                   backgroundImage,
-                  pFit: BoxFit.scaleDown,
+                  fit: BoxFit.scaleDown,
                 )
               : null,
         ),

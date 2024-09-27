@@ -32,15 +32,11 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
   }) : super(keyboardType: TextInputType.none);
 
   @override
-  List<Widget> createSuffixIconItems([bool pForceAll = false]) {
-    List<Widget> oldSuffixItems = super.createSuffixIconItems(pForceAll);
+  List<Widget> createSuffixIconItems([BuildContext? context, bool forceAll = false]) {
+    List<Widget> items = super.createSuffixIconItems(context, forceAll);
 
-    oldSuffixItems.add(
-      createBaseIcon(
-        FontAwesomeIcons.caretDown,
-      ),
-    );
+    items.add(createEmbeddableIcon(context, FontAwesomeIcons.caretDown));
 
-    return oldSuffixItems;
+    return items;
   }
 }

@@ -344,9 +344,9 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     if (imageString.isNotEmpty) {
       image = ImageLoader.loadImage(
         imageString,
-        pWidth: 16,
-        pHeight: 16,
-        pWantedColor: enabled ? null : JVxColors.COMPONENT_DISABLED,
+        width: 16,
+        height: 16,
+        color: enabled ? null : JVxColors.COMPONENT_DISABLED,
       );
     }
 

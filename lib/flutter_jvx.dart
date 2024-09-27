@@ -140,7 +140,7 @@ export 'src/util/config_util.dart';
 export 'src/util/debug/jvx_debug.dart';
 export 'src/util/extensions/list_extensions.dart';
 export 'src/util/extensions/string_extensions.dart';
-export 'src/util/font_awesome_util.dart';
+export 'src/util/icon_util.dart';
 export 'src/util/i_clonable.dart';
 export 'src/util/image/image_loader.dart';
 export 'src/util/jvx_colors.dart';
