@@ -104,7 +104,7 @@ dependencies:
   photo_view: ^0.14.0
   avatars: ^3.0.2
 
-  community_charts_flutter: ^1.0.1
+  community_charts_flutter: ^1.0.4
   gauges: ^1.0.0
   graphic: ^2.2.0
   flutter_keyboard_visibility: ^6.0.0

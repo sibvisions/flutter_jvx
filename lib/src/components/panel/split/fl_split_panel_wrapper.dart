@@ -86,7 +86,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
           secondHorizontalController: secondHorizontalController,
           layout: layoutData.layout as SplitLayout,
           children: [
-            ...children.values.toList(),
+            ...children.values,
             getDragSlider(),
           ],
         ),

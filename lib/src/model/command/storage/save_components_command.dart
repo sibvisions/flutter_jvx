@@ -33,10 +33,10 @@ class SaveComponentsCommand extends StorageCommand {
   /// If it is the desktop panel.
   bool isDesktopPanel = false;
 
-  /// Whether or not it only updates content or openes it as new content.
+  /// Whether or not it only updates content or opens it as new content.
   bool isContent = false;
 
-  /// If this save is an update. If not, will route to the workscreen or open a new content.
+  /// If this save is an update. If not, will route to the work screen or open a new content.
   bool isUpdate = false;
 
   /// Id of Screen to Update

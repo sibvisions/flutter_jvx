@@ -207,7 +207,7 @@ class UiService implements IUiService {
       });
     }
 
-    FlutterUI.logUI.i("Routing to workscreen: $pScreenName, resolved name: $resolvedScreenName");
+    FlutterUI.logUI.i("Routing to work-screen: $pScreenName, resolved name: $resolvedScreenName");
 
     if (pReplaceRoute ||
         lastBeamState.pathPatternSegments.contains("settings") ||
@@ -498,7 +498,7 @@ class UiService implements IUiService {
 
     if (pImmediatelyRetrieveData) {
       DataBook? dataBook = IDataService().getDataBook(pDataSubscription.dataProvider);
-      bool needsToFetch = IDataService().databookNeedsFetch(
+      bool needsToFetch = IDataService().dataBookNeedsFetch(
         pFrom: pDataSubscription.from,
         pTo: pDataSubscription.to,
         pDataProvider: pDataSubscription.dataProvider,
@@ -527,7 +527,7 @@ class UiService implements IUiService {
           fromRow: dataBook?.records.keys.maxOrNull ?? pDataSubscription.from,
           rowCount: pDataSubscription.to != null
               ? pDataSubscription.to! - pDataSubscription.from
-              : IUiService().getSubscriptionRowcount(pDataProvider: pDataSubscription.dataProvider),
+              : IUiService().getSubscriptionRowCount(pDataProvider: pDataSubscription.dataProvider),
           reason: "Fetch for DataSubscription [${pDataSubscription.dataProvider}]",
           includeMetaData: fetchMetaData,
         ));
@@ -579,8 +579,8 @@ class UiService implements IUiService {
   }
 
   @override
-  void notifySubscriptionsOfReload({required String pDataprovider}) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataprovider).toList().forEach((dataSubscription) {
+  void notifySubscriptionsOfReload({required String pDataProvider}) {
+    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((dataSubscription) {
       if (dataSubscription.onReload != null && dataSubscription.onDataChunk != null && dataSubscription.from >= 0) {
         dataSubscription.to = dataSubscription.onReload!.call();
       }
@@ -793,7 +793,7 @@ class UiService implements IUiService {
   }
 
   @override
-  int getSubscriptionRowcount({required String pDataProvider}) {
+  int getSubscriptionRowCount({required String pDataProvider}) {
     int rowCount = 0;
 
     var subscriptions = _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider).toList();
@@ -933,7 +933,7 @@ class UiService implements IUiService {
   }
 
   @override
-  String? getCurrentWorkscreenName() {
+  String? getCurrentWorkScreenName() {
     return (FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState)
         .pathParameters[MainLocation.screenNameKey];
   }

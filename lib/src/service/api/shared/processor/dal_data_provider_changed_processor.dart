@@ -34,13 +34,13 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
         deleteAll: true,
       ));
 
-      IUiService().notifySubscriptionsOfReload(pDataprovider: pResponse.dataProvider);
+      IUiService().notifySubscriptionsOfReload(pDataProvider: pResponse.dataProvider);
 
       commands.add(
         FetchCommand(
           reason: "Data provider changed response was reload -1",
           fromRow: 0,
-          rowCount: IUiService().getSubscriptionRowcount(pDataProvider: pResponse.dataProvider),
+          rowCount: IUiService().getSubscriptionRowCount(pDataProvider: pResponse.dataProvider),
           dataProvider: pResponse.dataProvider,
           includeMetaData: true,
         ),

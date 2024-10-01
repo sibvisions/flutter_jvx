@@ -16,21 +16,10 @@
 
 import 'dart:typed_data';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:universal_io/io.dart';
 
 import '../../flutter_jvx.dart';
-import '../flutter_ui.dart';
-import '../mask/menu/menu.dart';
-import '../model/api_interaction.dart';
-import '../model/command/base_command.dart';
-import '../model/config/application_parameters.dart';
-import '../model/menu/menu_model.dart';
-import '../model/request/api_request.dart';
-import '../service/ui/i_ui_service.dart';
-import 'custom_menu_item.dart';
-import 'custom_screen.dart';
 
 abstract class AppManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

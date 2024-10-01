@@ -117,14 +117,14 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
         FetchCommand(
           dataProvider: pCommand.dataProvider,
           fromRow: 0,
-          rowCount: IUiService().getSubscriptionRowcount(pDataProvider: pCommand.dataProvider),
+          rowCount: IUiService().getSubscriptionRowCount(pDataProvider: pCommand.dataProvider),
           reason: "Fetch for ${pCommand.runtimeType}",
           includeMetaData: true,
         )
       ];
     }
 
-    // Get Data record - is null if databook has no selected row
+    // Get Data record - is null if data book has no selected row
     DataRecord? record = IDataService().getSelectedRowData(
       pColumnNames: pCommand.columnNames,
       pDataProvider: pCommand.dataProvider,
@@ -140,7 +140,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _getDataChunk(GetDataChunkCommand command) async {
-    bool needFetch = IDataService().databookNeedsFetch(
+    bool needFetch = IDataService().dataBookNeedsFetch(
       pFrom: command.from,
       pTo: command.to,
       pDataProvider: command.dataProvider,

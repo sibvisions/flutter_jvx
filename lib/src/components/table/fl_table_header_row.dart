@@ -21,6 +21,7 @@ import '../../components.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/sort_definition.dart';
+import 'fl_table_cell.dart';
 import 'fl_table_header_cell.dart';
 
 class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
@@ -87,7 +88,7 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
         onDoubleTap: onDoubleTap,
         columnDefinition: columnDefinition,
         width: tableSize.columnWidths[columnDefinition.name]!,
-        paddings: tableSize.cellPaddings,
+        paddings: model.autoResize && (tableSize.columnWidths[columnDefinition.name]! < FlTableCell.clearIconSize + FlTableCell.iconSize + tableSize.cellPaddings.left + tableSize.cellPaddings.right) ? TableSize.paddingsSmall : tableSize.cellPaddings,
         cellDividerWidth: tableSize.columnDividerWidth,
         cellIndex: cellIndex,
         sortMode: sortDef?.mode,

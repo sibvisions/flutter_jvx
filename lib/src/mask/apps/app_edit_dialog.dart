@@ -486,7 +486,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                   icon: icon,
                 ),
               ),
-              // gapless looks kinda cheesy in web
+              // gap-less looks kinda cheesy in web
               gapless: !kIsWeb,
               backgroundColor: Colors.white,
               version: QrVersions.auto,

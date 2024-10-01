@@ -81,7 +81,7 @@ abstract class IDataService implements Service {
   DalMetaData? getMetaData(String pDataProvider);
 
   /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
-  bool databookNeedsFetch({
+  bool dataBookNeedsFetch({
     required String pDataProvider,
     required int pFrom,
     int? pTo,
@@ -102,30 +102,30 @@ abstract class IDataService implements Service {
     String? pNewSelectedColumn,
   });
 
-  /// Clears all the databooks of this workscreen
-  void clearData(String pWorkscreen);
+  /// Clears all the data books of this work-screen
+  void clearData(String pWorkScreen);
 
-  /// Clear all databooks
+  /// Clear all data books
   void clearDataBooks();
 
-  /// Gets all databooks
+  /// Gets all data books
   HashMap<String, DataBook> getDataBooks();
 
-  /// Gets a databook
+  /// Gets a data book
   DataBook? getDataBook(String pDataProvider);
 
-  /// Adds a LinkedCellEditor as referenced celleditors to it's referencedDatabook and
-  /// also builds the datamap for the linkreference.
+  /// Adds a LinkedCellEditor as referenced cell editors to it's referenced data book and
+  /// also builds the data map for the link reference.
   ///
   /// LinkedCellEditors sometimes have concat masks or a display reference. This means that the
   /// value it has should be represented by a different value or just more values concatenated.
   ///
-  /// Not every LinkedCellEditor should do this, which is why it is done in the referenced databook centrally.
+  /// Not every LinkedCellEditor should do this, which is why it is done in the referenced data book centrally.
   ///
   ReferencedCellEditor createReferencedCellEditors(
       FlLinkedCellEditorModel cellEditorModel, String dataProvider, String columnName);
 
-  void setDatabookFetching(String pDataProvider, int pTo);
+  void setDataBookFetching(String pDataProvider, int pTo);
 
-  void removeDatabookFetching(String pDataProvider, int pTo);
+  void removeDataBookFetching(String pDataProvider, int pTo);
 }

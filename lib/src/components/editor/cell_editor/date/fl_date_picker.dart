@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../flutter_ui.dart';
 
 const Size _calendarPortraitDialogSize = Size(330.0, 518.0);
 const Size _calendarLandscapeDialogSize = Size(496.0, 346.0);
@@ -258,7 +257,7 @@ class _FlDatePickerDialogState extends State<FlDatePickerDialog> with Restoratio
 
     // Constrain the textScaleFactor to the largest supported value to prevent
     // layout issues.
-    final double textScaleFactor = math.min(MediaQuery.of(context).textScaleFactor, 1.3);
+    final double textScaleFactor = math.min(MediaQuery.textScalerOf(context).scale(1), 1.3);
 
     final String dateText = localizations.formatMediumDate(_selectedDate.value);
     final Color onPrimarySurface =
@@ -405,7 +404,7 @@ class _FlDatePickerDialogState extends State<FlDatePickerDialog> with Restoratio
         curve: Curves.easeIn,
         child: MediaQuery(
           data: MediaQuery.of(context).copyWith(
-            textScaleFactor: textScaleFactor,
+            textScaler: TextScaler.linear(textScaleFactor),
           ),
           child: Builder(builder: (BuildContext context) {
             switch (orientation) {
@@ -445,7 +444,7 @@ class _FlDatePickerDialogState extends State<FlDatePickerDialog> with Restoratio
   }
 }
 
-// A restorable [DatePickerEntryMode] value.
+// A restore-able [DatePickerEntryMode] value.
 //
 // This serializes each entry as a unique `int` value.
 class _RestorableDatePickerEntryMode extends RestorableValue<DatePickerEntryMode> {
@@ -471,7 +470,7 @@ class _RestorableDatePickerEntryMode extends RestorableValue<DatePickerEntryMode
   Object? toPrimitives() => value.index;
 }
 
-// A restorable [AutovalidateMode] value.
+// A restore-able [AutovalidateMode] value.
 //
 // This serializes each entry as a unique `int` value.
 class _RestorableAutovalidateMode extends RestorableValue<AutovalidateMode> {

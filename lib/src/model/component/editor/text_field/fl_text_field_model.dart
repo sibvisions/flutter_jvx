@@ -21,7 +21,7 @@ class FlTextFieldModel extends FlLabelModel {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The placeholder text inside the textfield if it is empty.
+  /// The placeholder text inside the text field if it is empty.
   String? placeholder;
 
   // The count of rows of text shown.
@@ -31,10 +31,10 @@ class FlTextFieldModel extends FlLabelModel {
   /// (average character length * columns = wanted width of field in non constrained layouts)
   int columns = 10;
 
-  /// If the textfield has a drawn border.
+  /// If the text field has a drawn border.
   bool isBorderVisible = true;
 
-  /// If the textfield is editable or not.
+  /// If the text field is editable or not.
   bool isEditable = true;
 
   /// If this editor should have a clear icon.

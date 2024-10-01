@@ -293,9 +293,9 @@ class StorageService implements IStorageService {
       if (childModel != null && !pIncludeRemoved && childModel.isRemoved) {
         childModel = null;
       }
-      // Tabset panel set non selected sub-panels as invisible.
+      // Tab-set panel set non selected sub-panels as invisible.
       // We always render them though, even the invisible panels,
-      // therefore tabset-children are always visible for us.
+      // therefore tab-set children are always visible for us.
       if (childModel != null &&
           (pIgnoreVisibility || childModel.isVisible || pParentModel.className == FlContainerClassname.TABSET_PANEL)) {
         allDescendants.add(childModel);
@@ -454,7 +454,7 @@ class StorageService implements IStorageService {
     } else if (components.last.classNameEventSourceRef == FlContainerClassname.DIALOG) {
       return IUiService().isContentVisible(components.last.name);
     } else {
-      return (components.last as FlPanelModel).screenNavigationName == IUiService().getCurrentWorkscreenName();
+      return (components.last as FlPanelModel).screenNavigationName == IUiService().getCurrentWorkScreenName();
     }
   }
 

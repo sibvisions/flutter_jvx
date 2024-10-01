@@ -44,7 +44,7 @@ class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
 
   @override
   Future<void> afterProcessing(FetchCommand command, BaseCommand? origin) async {
-    IDataService().removeDatabookFetching(
+    IDataService().removeDataBookFetching(
       command.dataProvider,
       command.rowCount == -1 ? command.rowCount : command.fromRow + command.rowCount,
     );

@@ -298,7 +298,7 @@ abstract class IConfigService implements Service {
   ValueListenable<String?> get offlineScreen;
 
   /// Sets the screen to which the offline data has to be synced back.
-  Future<void> updateOfflineScreen(String pWorkscreen);
+  Future<void> updateOfflineScreen(String pWorkScreen);
 
   // ------------------------------
 

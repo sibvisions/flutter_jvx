@@ -23,7 +23,7 @@ import '../../model/component/fl_component_model.dart';
 /// A wrapper is a stateful widget that wraps FlutterJVx widgets and handles all JVx specific implementations and functionality.
 /// e.g:
 ///
-/// Model inits/updates; Layout inits/updates; Size calculation; Subscription handling for data widgets.
+/// Model initializes/updates; Layout initializes/updates; Size calculation; Subscription handling for data widgets.
 abstract class BaseCompWrapperWidget<M extends FlComponentModel> extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

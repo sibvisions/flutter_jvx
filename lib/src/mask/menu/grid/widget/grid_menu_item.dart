@@ -18,9 +18,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../model/menu/menu_item_model.dart';
-import '../../../state/app_style.dart';
-import '../../menu.dart';
 
 class GridMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

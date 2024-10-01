@@ -24,25 +24,10 @@ import 'package:rxdart/transformers.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../components/components_factory.dart';
-import '../../custom/app_manager.dart';
-import '../../flutter_ui.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/menu/menu_model.dart';
-import '../../service/apps/i_app_service.dart';
-import '../../service/command/i_command_service.dart';
-import '../../service/config/i_config_service.dart';
-import '../../service/layout/i_layout_service.dart';
-import '../../service/storage/i_storage_service.dart';
-import '../../service/ui/i_ui_service.dart';
-import '../../util/misc/dialog_result.dart';
 import '../../util/offline_util.dart';
-import '../../util/parse_util.dart';
-import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
-import '../state/app_style.dart';
 import '../work_screen/work_screen_page.dart';
-import 'menu.dart';
 
 /// Menu Page
 ///

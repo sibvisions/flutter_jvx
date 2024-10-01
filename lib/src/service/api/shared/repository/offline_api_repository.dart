@@ -45,20 +45,20 @@ import 'offline/offline_database.dart';
 class OfflineApiRepository extends IRepository {
   OfflineDatabase? offlineDatabase;
 
-  /// Every databook saves the maximum fetch registered, that way unspezified fetch responses don't
+  /// Every data book saves the maximum fetch registered, that way unspecified fetch responses don't
   /// contain all the data we have available.
-  final Map<String, int> _databookFetchMap = {};
+  final Map<String, int> _dataBookFetchMap = {};
 
-  /// Every databook saves the last fetch registered, that way unspezified fetch responses don't
+  /// Every data book saves the last fetch registered, that way unspecified fetch responses don't
   /// contain all the data we have available.
-  final Map<String, Object> _databookLastFilter = {};
+  final Map<String, Object> _dataBookLastFilter = {};
 
   @override
   Future<void> start() async {
     if (isStopped()) {
       offlineDatabase = await OfflineDatabase.open();
 
-      // Init all current databooks because there is no OpenScreenCommand offline
+      // Init all current data books because there is no OpenScreenCommand offline
       await initDataBooks();
     }
   }
@@ -204,7 +204,7 @@ class OfflineApiRepository extends IRepository {
         filters.add(selectedRowFilter.asFilterCondition());
       } else {
         // Cancel when no filter
-        return _refetchMaximum(pRequest.dataProvider);
+        return _reFetchMaximum(pRequest.dataProvider);
       }
     }
 
@@ -223,7 +223,7 @@ class OfflineApiRepository extends IRepository {
 
     await DataBook.deselectRecord(pDataProvider: pRequest.dataProvider);
 
-    return _refetchMaximum(pRequest.dataProvider);
+    return _reFetchMaximum(pRequest.dataProvider);
     // }
   }
 
@@ -235,14 +235,14 @@ class OfflineApiRepository extends IRepository {
     int? rowCount = pRequest.rowCount >= 0 ? pRequest.rowCount : null;
 
     if (rowCount == null) {
-      _databookFetchMap[pRequest.dataProvider] = -1;
+      _dataBookFetchMap[pRequest.dataProvider] = -1;
     } else {
-      int currentMaxFetch = _databookFetchMap[pRequest.dataProvider] ?? 0;
+      int currentMaxFetch = _dataBookFetchMap[pRequest.dataProvider] ?? 0;
 
       int maxFetch = pRequest.fromRow + rowCount;
 
       if (currentMaxFetch != -1 && currentMaxFetch < maxFetch) {
-        _databookFetchMap[pRequest.dataProvider] = maxFetch;
+        _dataBookFetchMap[pRequest.dataProvider] = maxFetch;
       }
     }
 
@@ -296,27 +296,27 @@ class OfflineApiRepository extends IRepository {
         columnNames: pRequest.columnNames!,
       );
 
-      _databookLastFilter[pRequest.dataProvider] = filter;
+      _dataBookLastFilter[pRequest.dataProvider] = filter;
     } else if ((pRequest.filter?.isEmpty ?? true) && pRequest.filterCondition == null) {
-      _databookLastFilter.remove(pRequest.dataProvider);
+      _dataBookLastFilter.remove(pRequest.dataProvider);
     } else {
-      _databookLastFilter[pRequest.dataProvider] = pRequest.filterCondition ?? pRequest.filter!;
+      _dataBookLastFilter[pRequest.dataProvider] = pRequest.filterCondition ?? pRequest.filter!;
     }
 
-    return _refetchMaximum(pRequest.dataProvider);
+    return _reFetchMaximum(pRequest.dataProvider);
   }
 
   Future<ApiResponse?> _insert(ApiInsertRecordRequest pRequest) async {
     await offlineDatabase!.insert(pTableName: pRequest.dataProvider, pInsert: {});
 
-    return _refetchMaximum(pRequest.dataProvider);
+    return _reFetchMaximum(pRequest.dataProvider);
   }
 
-  DalDataProviderChangedResponse _deselect(String pDataprovider) {
+  DalDataProviderChangedResponse _deselect(String pDataProvider) {
     return DalDataProviderChangedResponse.fromJson(
       {
         ApiObjectProperty.name: ApiResponseNames.dalDataProviderChanged,
-        ApiObjectProperty.dataProvider: pDataprovider,
+        ApiObjectProperty.dataProvider: pDataProvider,
         ApiObjectProperty.selectedRow: -1,
         ApiObjectProperty.selectedColumn: null,
       },
@@ -367,7 +367,7 @@ class OfflineApiRepository extends IRepository {
 
     if (selectionResult.isNotEmpty) {
       if (pRequest.rowNumber != null && selectionResult.length > pRequest.rowNumber!) {
-        /// check if every value of the selected result at this row number fullfills all values provided by the filter
+        /// check if every value of the selected result at this row number fulfills all values provided by the filter
         bool bFound = true;
         var rowToCheck = selectionResult[pRequest.rowNumber!];
         for (int i = 0; i < filterColumns.length && bFound; i++) {
@@ -424,7 +424,7 @@ class OfflineApiRepository extends IRepository {
         filters.add(selectedRowFilter.asFilterCondition());
       } else {
         // Cancel when no filter
-        return _refetchMaximum(pRequest.dataProvider);
+        return _reFetchMaximum(pRequest.dataProvider);
       }
     }
 
@@ -444,18 +444,18 @@ class OfflineApiRepository extends IRepository {
       pFilter: FilterCondition(conditions: filters),
     );
 
-    return _refetchMaximum(pRequest.dataProvider);
+    return _reFetchMaximum(pRequest.dataProvider);
   }
 
   FilterCondition? _getLastFilter(String dataProvider) {
     return _getFilter(
-      cast(_databookLastFilter[dataProvider]),
-      cast(_databookLastFilter[dataProvider]),
+      cast(_dataBookLastFilter[dataProvider]),
+      cast(_dataBookLastFilter[dataProvider]),
     );
   }
 
-  Future<DalFetchResponse?> _refetchMaximum(String pDataProvider) async {
-    int? maxFetch = _databookFetchMap[pDataProvider];
+  Future<DalFetchResponse?> _reFetchMaximum(String pDataProvider) async {
+    int? maxFetch = _dataBookFetchMap[pDataProvider];
     if (maxFetch != null) {
       return _fetch(
         ApiFetchRequest(

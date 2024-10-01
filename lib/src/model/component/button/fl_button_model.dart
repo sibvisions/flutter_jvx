@@ -91,16 +91,16 @@ class FlButtonModel extends FlComponentModel {
     _paddings = value;
   }
 
-  /// Dataprovider for QR-Code buttons or telephone button
+  /// Data provider for QR-Code buttons or telephone button
   String dataProvider = "";
 
-  /// Columnname for QR-Code buttons or telephone button
+  /// Column name for QR-Code buttons or telephone button
   String columnName = "";
 
-  /// Columnname for geolocation button
+  /// Column name for geolocation button
   String latitudeColumnName = "";
 
-  /// Columnname for geolocation button
+  /// Column name for geolocation button
   String longitudeColumnName = "";
 
   /// List of supported scan formats

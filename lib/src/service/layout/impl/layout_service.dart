@@ -37,7 +37,7 @@ class LayoutService implements ILayoutService {
   /// The map of all registered components
   final HashMap<String, LayoutData> _layoutDataSet = HashMap<String, LayoutData>();
 
-  /// The map of all layouting components
+  /// The map of all layout components
   final List<String> _currentlyLayouting = [];
 
   /// If layouting is currently allowed.
@@ -182,7 +182,7 @@ class LayoutService implements ILayoutService {
 
     List<LayoutData> descendants = _getDescendants(pParentLayout: deleted);
     descendants.forEach((element) {
-      _layoutDataSet.remove(element);
+      _layoutDataSet.remove(element.id);
     });
 
     return true;

@@ -81,7 +81,7 @@ class FormLayoutAnchor {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Returns wether the orientation of the anchor is horizontal or vertical
+  /// Returns whether the orientation of the anchor is horizontal or vertical
   static AlignmentOrientation getOrientationFromData({required String anchorName}) {
     if (anchorName.startsWith("l") || anchorName.startsWith("r")) {
       return AlignmentOrientation.HORIZONTAL;

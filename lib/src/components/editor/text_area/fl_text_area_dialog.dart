@@ -127,7 +127,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
                 inputFormatters: widget.inputFormatters,
                 isMandatory: widget.isMandatory,
                 valueChanged: (value) {
-                  // Set state to update the textfield widget.
+                  // Set state to update the Text area widget.
                   setState(() {});
                 },
                 canShowDialog: false,

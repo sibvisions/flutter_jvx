@@ -91,7 +91,7 @@ class ColumnDefinition {
   /// If the number type is signed.
   bool? signed;
 
-  /// Enable autotrim to avoid whitespaces at the begin and end of texts
+  /// Enable auto trim to avoid whitespaces at the begin and end of texts
   bool autoTrim;
 
   /// The encoding of binary data types.

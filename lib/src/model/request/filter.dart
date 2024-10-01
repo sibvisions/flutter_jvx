@@ -44,7 +44,7 @@ class Filter {
       : columnNames = const [],
         values = const [];
 
-  /// Creates a filter from a pagekey
+  /// Creates a filter from a page key
   Filter.fromPageKey(Map<String, dynamic> pPageKey)
       : columnNames = pPageKey.keys.toList(),
         values = pPageKey.values.toList();

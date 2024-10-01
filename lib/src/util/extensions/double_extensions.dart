@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 extension DoubleExtension on double {
     double toPrecision(int fractionDigits) {
-        var mod = Math.pow(10, fractionDigits.toDouble()).toDouble();
+        var mod = math.pow(10, fractionDigits.toDouble()).toDouble();
 
         return ((this * mod).round().toDouble() / mod);
     }

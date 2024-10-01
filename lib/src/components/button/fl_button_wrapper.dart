@@ -17,7 +17,6 @@
 import 'dart:async';
 
 import 'package:action_slider/action_slider.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -28,26 +27,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../flutter_ui.dart';
-import '../../model/command/api/press_button_command.dart';
-import '../../model/command/api/set_values_command.dart';
-import '../../model/command/base_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/data/subscriptions/data_record.dart';
-import '../../model/data/subscriptions/data_subscription.dart';
-import '../../model/layout/layout_data.dart';
-import '../../routing/locations/main_location.dart';
-import '../../service/api/shared/api_object_property.dart';
-import '../../service/command/i_command_service.dart';
-import '../../service/storage/i_storage_service.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
-import '../../util/parse_util.dart';
-import '../../util/widgets/jvx_scanner.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import 'fl_button_widget.dart';
 import 'fl_slide_button_widget.dart';
 
 class FlButtonWrapper<T extends FlButtonModel> extends BaseCompWrapperWidget<T> {
@@ -107,7 +90,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
               })
               .whenComplete(() => Future.delayed(const Duration(milliseconds: 1500)))
               .whenComplete(() {
-                if (controller.value == SliderMode.failure ||
+                if (controller.value.mode == SliderMode.failure ||
                     (model.isSliderResetable && model.isSliderAutoResetting)) {
                   controller.reset();
                 }
@@ -145,7 +128,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     layoutData.isFixedSize = model.isSlideStyle;
 
     if (model.isSlideStyle && model.lastChangedProperties.contains(ApiObjectProperty.style)) {
-      if (actionSliderController.value == SliderMode.success || actionSliderController.value == SliderMode.failure) {
+      if (actionSliderController.value.mode == SliderMode.success || actionSliderController.value.mode == SliderMode.failure) {
         actionSliderController.reset();
       }
     }
@@ -271,8 +254,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void goOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
-    String workscreenName = state.pathParameters[MainLocation.screenNameKey]!;
-    FlPanelModel? screenModel = IStorageService().getComponentByNavigationName(workscreenName);
+    String workScreenName = state.pathParameters[MainLocation.screenNameKey]!;
+    FlPanelModel? screenModel = IStorageService().getComponentByNavigationName(workScreenName);
     OfflineUtil.initOffline(screenModel!.name);
   }
 

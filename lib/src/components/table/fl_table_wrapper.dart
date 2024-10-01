@@ -512,13 +512,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Refreshes this data provider
   Future<void> _refresh() {
-    IUiService().notifySubscriptionsOfReload(pDataprovider: model.dataProvider);
+    IUiService().notifySubscriptionsOfReload(pDataProvider: model.dataProvider);
 
     return ICommandService().sendCommand(
       FetchCommand(
         fromRow: 0,
         reload: true,
-        rowCount: IUiService().getSubscriptionRowcount(pDataProvider: model.dataProvider),
+        rowCount: IUiService().getSubscriptionRowCount(pDataProvider: model.dataProvider),
         dataProvider: model.dataProvider,
         reason: "Table refreshed",
       ),

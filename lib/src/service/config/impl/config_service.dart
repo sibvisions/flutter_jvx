@@ -667,9 +667,9 @@ class ConfigService implements IConfigService {
   ValueListenable<String?> get offlineScreen => _offlineScreen;
 
   @override
-  Future<void> updateOfflineScreen(String pWorkscreen) async {
-    await _configHandler.updateOfflineScreen(pWorkscreen);
-    _offlineScreen.value = pWorkscreen;
+  Future<void> updateOfflineScreen(String pWorkScreen) async {
+    await _configHandler.updateOfflineScreen(pWorkScreen);
+    _offlineScreen.value = pWorkScreen;
   }
 
   // ------------------------------

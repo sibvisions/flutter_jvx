@@ -22,17 +22,9 @@ import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../flutter_jvx.dart';
-import '../flutter_ui.dart';
 import '../model/command/api/alive_command.dart';
-import '../model/command/api/device_status_command.dart';
-import '../service/command/i_command_service.dart';
-import '../service/config/i_config_service.dart';
 import '../service/service.dart';
-import '../service/ui/i_ui_service.dart';
-import '../util/widgets/status_banner.dart';
 import 'apps/app_overview_page.dart';
-import 'state/app_style.dart';
-import 'state/loading_bar.dart';
 
 class JVxOverlay extends StatefulWidget {
   final Widget? child;
@@ -394,7 +386,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                                     listenable: routerDelegate,
                                     builder: (context, child) {
                                       return Text(
-                                        routerDelegate.configuration.location.toString(),
+                                        routerDelegate.configuration.uri.toString(),
                                         textAlign: TextAlign.center,
                                       );
                                     },
@@ -439,7 +431,7 @@ class DialogsWidgetState extends State<DialogsWidget> {
   @override
   Widget build(BuildContext context) {
     //Overlay is required for text components, otherwise scrolling and other features won't work as expected
-    //e.g. if you use a multiline textfield and enter text until the textfield should scroll
+    //e.g. if you use a multiline text field and enter text until the text field should scroll
     return Overlay(key: _dialogKey,
         initialEntries: [OverlayEntry(
         builder: (context) {

@@ -63,7 +63,7 @@ class ReferencedCellEditor {
         int linkRefColumnIndex = linkReference.columnNames.indexWhere((e) => e == columnName);
         // Name of matching reference column.
         String referencedColumnName = linkReference.referencedColumnNames[linkRefColumnIndex];
-        // Index of reference column in the referenced (this) databook.
+        // Index of reference column in the referenced (this) data book.
         int referencedColumnIndex = DataBook.getColumnIndex(dataBook.metaData!.columnDefinitions, referencedColumnName);
 
         if (referencedColumnIndex >= 0) {
@@ -95,9 +95,10 @@ class ReferencedCellEditor {
   }
 
   void dispose() {
-    DataBook? databook = IDataService().getDataBook(cellEditorModel.linkReference.referencedDataBook);
-    if (databook != null) {
-      databook.referencedCellEditors.remove(this);
+    DataBook? dataBook = IDataService().getDataBook(cellEditorModel.linkReference.referencedDataBook);
+
+    if (dataBook != null) {
+      dataBook.referencedCellEditors.remove(this);
     }
   }
 }

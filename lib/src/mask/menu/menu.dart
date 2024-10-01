@@ -180,7 +180,10 @@ abstract class Menu extends StatelessWidget {
                   reason: "User requested screen closing",
                 ),
               )
-              .then((success) => Frame.of(context).rebuild());
+              .then((success) => {
+                if (context.mounted) {
+                  Frame.of(context).rebuild()
+                }});
         }
       };
     }

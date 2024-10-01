@@ -18,12 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../flutter_ui.dart';
-import '../../model/command/api/close_frame_command.dart';
-import '../../model/command/api/press_button_command.dart';
-import '../../model/command/ui/view/message/open_message_dialog_command.dart';
-import '../../service/command/i_command_service.dart';
-import '../../util/parse_util.dart';
 import '../frame_dialog.dart';
 
 /// This is a standard template for a server side message.

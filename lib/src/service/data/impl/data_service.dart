@@ -46,7 +46,7 @@ class DataService implements IDataService {
   /// Map of all DataBooks with dataProvider as key
   HashMap<String, DataBook> dataBooks = HashMap();
 
-  /// Map of all currently fetching databooks with dataProvider as key and value is the row to fetch to.
+  /// Map of all currently fetching data books with dataProvider as key and value is the row to fetch to.
   HashMap<String, int> fetchingDataBooks = HashMap();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -280,7 +280,7 @@ class DataService implements IDataService {
 
     DataBook dataBook = dataBooks[pDataProvider]!;
 
-    // Get data from databook and add column definitions in correct order -
+    // Get data from data book and add column definitions in correct order -
     // either same as requested or as received from server
     if (dataBook.metaData != null) {
       if (pColumnNames != null) {
@@ -338,7 +338,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool databookNeedsFetch({
+  bool dataBookNeedsFetch({
     required int pFrom,
     required String pDataProvider,
     int? pTo,
@@ -400,7 +400,7 @@ class DataService implements IDataService {
 
   @override
   bool setSelectedRow({required String pDataProvider, required int pNewSelectedRow, String? pNewSelectedColumn}) {
-    // get databook, if null return false
+    // get data book, if null return false
     DataBook? dataBook = dataBooks[pDataProvider];
     if (dataBook == null) {
       return false;
@@ -412,10 +412,10 @@ class DataService implements IDataService {
   }
 
   @override
-  void clearData(String pWorkscreen) {
-    FlutterUI.logUI.i("Clearing all data books of prefix: $pWorkscreen");
+  void clearData(String pWorkScreen) {
+    FlutterUI.logUI.i("Clearing all data books of prefix: $pWorkScreen");
     FlutterUI.logUI.i("Pre clearing: ${dataBooks.values}");
-    dataBooks.removeWhere((key, value) => key.startsWith(pWorkscreen, key.indexOf("/") + 1));
+    dataBooks.removeWhere((key, value) => key.startsWith(pWorkScreen, key.indexOf("/") + 1));
     FlutterUI.logUI.i("Post clearing: ${dataBooks.values}");
   }
 
@@ -450,9 +450,9 @@ class DataService implements IDataService {
       linkReference.columnNames.add(columnName);
     }
 
-    var databook = getDataBook(linkReference.referencedDataBook);
-    if (databookNeedsFetch(pFrom: 0, pDataProvider: linkReference.referencedDataBook, pTo: -1) ||
-        (databook != null && databook.metaData == null)) {
+    var dataBook = getDataBook(linkReference.referencedDataBook);
+    if (dataBookNeedsFetch(pFrom: 0, pDataProvider: linkReference.referencedDataBook, pTo: -1) ||
+        (dataBook != null && dataBook.metaData == null)) {
       ICommandService().sendCommand(
         FetchCommand(
           includeMetaData: true,
@@ -470,12 +470,12 @@ class DataService implements IDataService {
   }
 
   @override
-  void setDatabookFetching(String pDataProvider, int pTo) {
+  void setDataBookFetching(String pDataProvider, int pTo) {
     fetchingDataBooks[pDataProvider] = pTo;
   }
 
   @override
-  void removeDatabookFetching(String pDataProvider, int pTo) {
+  void removeDataBookFetching(String pDataProvider, int pTo) {
     if (fetchingDataBooks[pDataProvider] == pTo) {
       fetchingDataBooks.remove(pDataProvider);
     }

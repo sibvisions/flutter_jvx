@@ -66,7 +66,7 @@ abstract class OfflineUtil {
     OnlineApiRepository onlineApiRepository = OnlineApiRepository();
     OfflineApiRepository offlineApiRepository = IApiService().getRepository() as OfflineApiRepository;
     String failedStep = "Initializing";
-    String offlineWorkscreenClassName = IConfigService().offlineScreen.value!;
+    String offlineWorkScreenClassName = IConfigService().offlineScreen.value!;
 
     try {
       await WakelockPlus.enable();
@@ -100,7 +100,7 @@ abstract class OfflineUtil {
       failedStep = "Preparing synchronization";
       await ICommandService().sendCommand(
         OpenScreenCommand(
-          screenClassName: offlineWorkscreenClassName,
+          screenClassName: offlineWorkScreenClassName,
           reason: "We are back online",
           parameter: {"mobile.onlineSync": true},
         ),
@@ -142,7 +142,7 @@ abstract class OfflineUtil {
         Map<String, List<Map<String, Object?>>> insertsByDataBook = {};
         Map<String, List<Map<String, Object?>>> updatesByDataBook = {};
         Map<String, List<Map<String, Object?>>> deletesByDataBook = {};
-        // The first key is the databook
+        // The first key is the data book
         // The second key is what kind of changed row this is. (insert, update, delete)
         // OfflineDatabase.ROW_STATE_INSERTED, OfflineDatabase.ROW_STATE_UPDATED, OfflineDatabase.ROW_STATE_DELETED
         for (DataBook dataBook in sortedList) {
@@ -268,10 +268,10 @@ abstract class OfflineUtil {
 
       if (successfulSync) {
         failedStep = "Closing sync connection to server";
-        FlPanelModel? workscreenModel =
-            IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkscreenClassName)!;
+        FlPanelModel? workScreenModel =
+            IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkScreenClassName)!;
         await ICommandService().sendCommand(CloseScreenCommand(
-          screenName: workscreenModel.name,
+          screenName: workScreenModel.name,
           reason: "We have synced",
         ));
 
@@ -325,7 +325,7 @@ abstract class OfflineUtil {
       await onlineApiRepository.stop();
       IApiService().setRepository(offlineApiRepository);
       IUiService().setMenuModel(null);
-      IStorageService().deleteScreen(screenName: offlineWorkscreenClassName);
+      IStorageService().deleteScreen(screenName: offlineWorkScreenClassName);
 
       ProgressDialogWidget.safeClose(dialogKey);
       DialogResult? result = await IUiService().openDialog(
@@ -458,12 +458,12 @@ abstract class OfflineUtil {
     return primaryColumns;
   }
 
-  static Set<String> getActiveDataProviders(String offlineWorkscreen) {
-    // String databookPrefix = ConfigController.appName + "/" + pWorkscreen;
+  static Set<String> getActiveDataProviders(String offlineWorkScreen) {
+    // String dataBookPrefix = ConfigController.appName + "/" + pWorkScreen;
     return IDataService().getDataBooks().keys.toList().where((element) {
       var prefixes = element.split("/");
       if (prefixes.length >= 2) {
-        return prefixes[1] == offlineWorkscreen;
+        return prefixes[1] == offlineWorkScreen;
       }
       return false;
     }).toSet();
@@ -570,7 +570,7 @@ abstract class OfflineUtil {
       // Clear screen storage
       IStorageService().clear(ClearReason.DEFAULT);
 
-      // Clear databooks for offline usage
+      // Clear data books for offline usage
       IDataService().clearDataBooks();
       await offlineApiRepository.initDataBooks();
       IApiService().setRepository(offlineApiRepository);

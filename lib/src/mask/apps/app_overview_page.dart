@@ -488,8 +488,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         },
         onDelete: () async {
           bool? shouldDelete = await _showDeleteDialog(context, editApp?.predefined ?? false);
-          if (!mounted) return;
           if (shouldDelete ?? false) {
+            if (!context.mounted) return;
             Navigator.pop(context);
             apps?.remove(editApp);
             await editApp!.delete();
@@ -498,8 +498,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         },
         onLongDelete: () async {
           bool? shouldDelete = await _showDeleteDataDialog(context);
-          if (!mounted) return;
           if (shouldDelete ?? false) {
+            if (!context.mounted) return;
             Navigator.pop(context);
             await editApp!.deleteData();
             unawaited(_refreshApps());
@@ -603,10 +603,14 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     if (mounted && selection != null) {
       switch (selection) {
         case 1:
-          _scanQR(context);
+          if (context.mounted) {
+            _scanQR(context);
+          }
           break;
         case 2:
-          _openAppEditor(context);
+          if (context.mounted) {
+            _openAppEditor(context);
+          }
           break;
       }
     }

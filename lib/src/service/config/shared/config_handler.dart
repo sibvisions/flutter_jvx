@@ -191,5 +191,5 @@ abstract class ConfigHandler {
   Future<String?> offlineScreen();
 
   /// Sets the offline screen.
-  Future<void> updateOfflineScreen(String workscreen);
+  Future<void> updateOfflineScreen(String workScreen);
 }

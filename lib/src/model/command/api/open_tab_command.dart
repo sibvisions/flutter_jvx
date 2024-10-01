@@ -21,7 +21,7 @@ class OpenTabCommand extends SessionCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of the tabset panel
+  /// Name of the tab-set panel
   final String componentName;
 
   /// Index of the closed tab

@@ -26,7 +26,7 @@ import '../../service/ui/i_ui_service.dart';
 import '../components_factory.dart';
 import 'base_comp_wrapper_state.dart';
 
-/// The base class for all states of FlutterJVx's container wrapper.
+/// The base class for all states of Flutter JVx container wrapper.
 ///
 /// A container is a class which holds one or more children components
 /// and has all the information on how to layout them.
@@ -34,7 +34,7 @@ import 'base_comp_wrapper_state.dart';
 /// A wrapper is a stateful widget that wraps FlutterJVx widgets and handles all JVx specific implementations and functionality.
 /// e.g:
 ///
-/// Model inits/updates; Layout inits/updates; Size calculation; Subscription handling for data widgets.
+/// Model initializes/updates; Layout initializes/updates; Size calculation; Subscription handling for data widgets.
 abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

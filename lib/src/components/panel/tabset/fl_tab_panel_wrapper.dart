@@ -156,11 +156,11 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     FlutterUI.logLayout.d("BUILD CHILDREN");
     FlutterUI.logLayout.d("Children count: ${children.values.length}");
-    FlutterUI.logLayout.d("Tabcontentlist: $tabContentList");
-    FlutterUI.logLayout.d("Tabheaderlist: $tabHeaderList");
+    FlutterUI.logLayout.d("TabContent list: $tabContentList");
+    FlutterUI.logLayout.d("TabHeader list: $tabHeaderList");
     FlutterUI.logLayout.d("Model Selected index:${model.selectedIndex}");
     FlutterUI.logLayout
-        .d("Tabcontroller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
+        .d("Tab Controller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
     FlutterUI.logLayout.d("Set state: $returnValue");
 
     if (returnValue && pSetStateOnChange) {

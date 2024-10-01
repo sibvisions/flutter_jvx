@@ -14,12 +14,9 @@
  * the License.
  */
 
-import 'dart:math';
 import 'dart:ui';
 
 import '../../../flutter_jvx.dart';
-import '../../service/api/shared/api_object_property.dart';
-import '../../util/parse_util.dart';
 import '../component/i_font_style.dart';
 
 /// A RecordFormat represents the cell formats of all records inside a specific component.

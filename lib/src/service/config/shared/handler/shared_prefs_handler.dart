@@ -431,7 +431,7 @@ class SharedPrefsHandler implements ConfigHandler {
   }
 
   @override
-  Future<void> updateOfflineScreen(String workscreen) async {
-    await setString("offlineScreen", workscreen);
+  Future<void> updateOfflineScreen(String workScreen) async {
+    await setString("offlineScreen", workScreen);
   }
 }

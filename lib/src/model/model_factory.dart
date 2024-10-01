@@ -86,7 +86,7 @@ abstract class ModelFactory {
     }
   }
 
-  /// Returns a list of changed component jsons, or null if none are found.
+  /// Returns a list of changed component json', or null if none are found.
   ///
   /// A component is only recognized as updated if the [ApiObjectProperty.className] is not supplied.
   static List<dynamic>? retrieveChangedComponents(List<dynamic>? pChangedComponents) {

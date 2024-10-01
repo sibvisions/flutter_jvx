@@ -18,7 +18,6 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
@@ -27,7 +26,6 @@ import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
@@ -45,7 +43,7 @@ import 'cell_editor/i_cell_editor.dart';
 import 'cell_editor/linked/fl_linked_cell_editor.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
-/// It serves as the layouting wrapper of various non layouting widgets.
+/// It serves as the layout wrapper of various non layout widgets.
 class FlEditorWrapper<T extends FlEditorModel> extends BaseCompWrapperWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -214,7 +212,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       onChangeTimer?.cancel();
       onChangeTimer = Timer(const Duration(milliseconds: 300), () => _onValueChanged(pValue));
 
-      // Textfield wont update immediately, so we need to force it to update.
+      // TextField wont update immediately, so we need to force it to update.
     }
     setState(() {});
   }

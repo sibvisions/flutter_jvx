@@ -17,12 +17,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../flutter_ui.dart';
-import '../../service/ui/i_ui_service.dart';
 
 class JVxSplash extends StatefulWidget {
   final String? appName;

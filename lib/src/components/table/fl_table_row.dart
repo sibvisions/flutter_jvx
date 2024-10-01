@@ -18,15 +18,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../components.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
-import '../../model/response/application_settings_response.dart';
 import '../../model/response/record_format.dart';
 import 'fl_table_cell.dart';
 
 class FlTableRow extends FlStatelessWidget<FlTableModel> {
-  /// The width each slideable action should have
+  /// The width each slide-able action should have
   static const double SLIDEABLE_WIDTH = 125;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,7 +120,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         onTap: onTap,
         columnDefinition: columnDefinition,
         width: tableSize.columnWidths[columnDefinition.name]!,
-        paddings: tableSize.cellPaddings,
+        paddings: model.autoResize && (tableSize.columnWidths[columnDefinition.name]! < FlTableCell.clearIconSize + FlTableCell.iconSize + tableSize.cellPaddings.left + tableSize.cellPaddings.right) ? TableSize.paddingsSmall : tableSize.cellPaddings,
         cellDividerWidth: tableSize.columnDividerWidth,
         value: values[columnDefinitions.indexOf(columnDefinition)],
         readOnly: recordReadOnly?[columnDefinitions.indexOf(columnDefinition)] ?? false,

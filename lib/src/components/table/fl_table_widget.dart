@@ -23,15 +23,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../components.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/data/data_book.dart';
-import '../../model/data/subscriptions/data_chunk.dart';
+import '../../util/extensions/double_extensions.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
+import 'table_size.dart';
 
 typedef TableLongPressCallback = void Function(
     int rowIndex, String column, ICellEditor cellEditor, Offset pGlobalPosition);
@@ -201,7 +199,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
     double maxWidth = max(max(widget.tableSize.sumColumnWidth, constraints.maxWidth), 0);
 
     // Is the table wider than it can be seen? -> Disables row swipes
-    bool canScrollHorizontally = widget.tableSize.sumColumnWidth.ceil() > constraints.maxWidth.ceil();
+    bool canScrollHorizontally = widget.tableSize.sumColumnWidth.toPrecision(1) > constraints.maxWidth.toPrecision(1);
 
     Widget table = createTableList(canScrollHorizontally, maxWidth);
 

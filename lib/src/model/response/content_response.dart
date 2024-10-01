@@ -25,7 +25,7 @@ class ContentResponse extends ApiResponse {
   /// List of all changed and new components
   final List<dynamic>? changedComponents;
 
-  /// Whether or not it only updates content or openes it as new content.
+  /// Whether or not it only updates content or opens it as new content.
   final bool update;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

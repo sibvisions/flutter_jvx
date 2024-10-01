@@ -40,7 +40,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The json of this celleditor.
+  /// The json of this cell editor.
   Map<String, dynamic> cellEditorJson;
 
   /// The name of the component this cell editor is part of.
@@ -69,7 +69,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
 
   bool isInTable;
 
-  /// The cellformat of this cellEditor
+  /// The cell format of this cell editor
   CellFormat? cellFormat;
 
   String columnName;

@@ -7,7 +7,7 @@ import '../../../service/ui/i_ui_service.dart';
 import '../../apps/app_overview_page.dart';
 
 class SimpleMenuAction extends StatefulWidget {
-  const SimpleMenuAction({Key? key}) : super(key: key);
+  const SimpleMenuAction({super.key});
 
   @override
   State<SimpleMenuAction> createState() => _SimpleMenuActionState();

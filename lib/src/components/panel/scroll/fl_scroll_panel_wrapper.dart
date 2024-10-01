@@ -38,7 +38,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   _FlScrollPanelWrapperState() : super();
 
   final ScrollController _horizontalController = ScrollController();
-  final ScrollController _vertictalController = ScrollController();
+  final ScrollController _verticalController = ScrollController();
 
   @override
   void initState() {
@@ -70,7 +70,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
       viewHeight: layoutData.layoutPosition?.height ?? heightOfScrollPanel,
       isScrollable: isScrollable,
       horizontalScrollController: _horizontalController,
-      verticalScrollController: _vertictalController,
+      verticalScrollController: _verticalController,
       children: children.values.toList(),
     );
 
@@ -80,7 +80,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   @override
   void dispose() {
     _horizontalController.dispose();
-    _vertictalController.dispose();
+    _verticalController.dispose();
 
     super.dispose();
   }

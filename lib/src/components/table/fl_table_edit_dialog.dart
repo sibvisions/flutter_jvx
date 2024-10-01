@@ -3,19 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../flutter_ui.dart';
 import '../../model/command/api/restore_data_command.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
-import '../../service/command/i_command_service.dart';
-import '../../util/parse_util.dart';
-import '../editor/cell_editor/fl_choice_cell_editor.dart';
-import '../editor/cell_editor/fl_image_cell_editor.dart';
-import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import '../editor/cell_editor/linked/fl_linked_cell_editor.dart';
-import '../editor/text_area/fl_text_area_widget.dart';
-import 'fl_table_widget.dart';
 
 /// A dialog that allows editing columns in a table.
 class FlTableEditDialog extends StatefulWidget {
@@ -71,7 +60,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   /// The cell editors of the columns to edit.
   List<ICellEditor> cellEditors = [];
 
-  /// If the table edits a singular column, the dialog will switch to local editing, without immediatly sending the value to the server.
+  /// If the table edits a singular column, the dialog will switch to local editing, without immediately sending the value to the server.
   /// Moreover the cancel button will only cancel the local changes, instead of resetting the whole row.
   bool get isSingleColumnEdit => widget.columnDefinitions.length == 1;
 

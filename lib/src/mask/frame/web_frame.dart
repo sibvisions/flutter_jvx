@@ -111,7 +111,7 @@ class WebFrameState extends FrameState {
     Color? iconColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.topmenu.iconColor'));
     String? imagePath = appStyle.style(context, 'web.topmenu.image');
 
-    bool inWorkscreen = IUiService().getCurrentWorkscreenName() != null;
+    bool inWorkscreen = IUiService().getCurrentWorkScreenName() != null;
 
     return AppBar(
       titleSpacing: 8,

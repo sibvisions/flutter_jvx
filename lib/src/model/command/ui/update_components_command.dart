@@ -22,7 +22,7 @@ class UpdateComponentsCommand extends UiCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The screenname that caused this update.
+  /// The screen name that caused this update.
   final bool notifyDesktopPanel;
 
   /// List of components whose model changed

@@ -17,7 +17,7 @@
 import '../../model/component/fl_component_model.dart';
 import 'fl_stateless_widget.dart';
 
-/// The base class for all FlutterJVx's components which change and/or set a value.
+/// The base class for all Flutter JVx components which change and/or set a value.
 abstract class FlStatelessDataWidget<T extends FlComponentModel, C> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

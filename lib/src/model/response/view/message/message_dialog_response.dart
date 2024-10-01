@@ -52,7 +52,7 @@ class MessageDialogResponse extends MessageView {
   /// Input field label
   final String? inputLabel;
 
-  /// The dataprovider name
+  /// The data provider name
   final String? dataProvider;
 
   /// The column name of dataProvider

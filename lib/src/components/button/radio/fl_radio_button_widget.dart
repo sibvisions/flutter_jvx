@@ -78,12 +78,12 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
     radioFocusNode.canRequestFocus = model.isFocusable;
 
     return ButtonStyle(
-      elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
-      backgroundColor: MaterialStateProperty.all(model.background ?? Colors.transparent),
-      foregroundColor: MaterialStateProperty.all(Theme.of(context).textTheme.bodyLarge?.color),
-      padding: MaterialStateProperty.all(model.paddings),
+      elevation: WidgetStateProperty.all(model.borderPainted ? 2 : 0),
+      backgroundColor: WidgetStateProperty.all(model.background ?? Colors.transparent),
+      foregroundColor: WidgetStateProperty.all(Theme.of(context).textTheme.bodyLarge?.color),
+      padding: WidgetStateProperty.all(model.paddings),
       splashFactory: splashFactory,
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
     );
   }
 

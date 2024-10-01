@@ -297,7 +297,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     _createTableColumnView();
 
     // This is the column index of the column of the linked cell editor in this data chunk.
-    // This data chunk is the referenced databook! Not the databook of the linked cell editor!
+    // This data chunk is the referenced data book! Not the data book of the linked cell editor!
     int colIndex = linkedCellEditor.effectiveLinkReference.columnNames.indexOf(linkedCellEditor.columnName);
     colIndex = colIndex == -1 ? 0 : colIndex;
 
@@ -322,7 +322,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
 
     if (_chunkData != null && _chunkData!.data.isNotEmpty) {
-      // loop through the chunkdata data and find the index of the record for which the value equals the linkedcelleditor get value
+      // loop through the chunk data and find the index of the record for which the value equals the linked cell editor get value
       for (int i = 0; i < _chunkData!.data.length; i++) {
         if (_chunkData!.data[i]![colIndex] == await linkedCellEditor.getValue()) {
           selectedRow = i;
@@ -405,6 +405,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
               data[_chunkData!.columnDefinitions.indexWhere((element) => element.name == referencedColumnName)];
         }
       }
+
+      if (!mounted) return;
+
       Navigator.of(context).pop(dataMap);
     });
   }
@@ -464,7 +467,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
     filterTimer = Timer(const Duration(milliseconds: 300), _onTextFieldValueChanged);
 
-    // Textfield wont update immediately, so we need to force it to update.
+    // Text field wont update immediately, so we need to force it to update.
     setState(() {});
   }
 
@@ -505,13 +508,13 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   /// Refreshes this data provider
   Future<void> _refresh() {
-    IUiService().notifySubscriptionsOfReload(pDataprovider: model.linkReference.referencedDataBook);
+    IUiService().notifySubscriptionsOfReload(pDataProvider: model.linkReference.referencedDataBook);
 
     return ICommandService().sendCommand(
       FetchCommand(
         fromRow: 0,
         reload: true,
-        rowCount: IUiService().getSubscriptionRowcount(pDataProvider: model.linkReference.referencedDataBook),
+        rowCount: IUiService().getSubscriptionRowCount(pDataProvider: model.linkReference.referencedDataBook),
         dataProvider: model.linkReference.referencedDataBook,
         reason: "Table refreshed",
       ),
@@ -624,8 +627,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         }
 
         // Scrolling via the controller does not fire scroll notifications.
-        // The last scrollnotification is therefore not updated and would be wrong for
-        // the next scroll. Therefore, the last scrollnotification is set to null.
+        // The last scroll notification is therefore not updated and would be wrong for
+        // the next scroll. Therefore, the last scroll notification is set to null.
         lastScrollNotification = null;
       }
     }

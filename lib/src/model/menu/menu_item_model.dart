@@ -17,7 +17,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../util/font_awesome_util.dart';
 import '../../util/icon_util.dart';
 
 class MenuItemModel {

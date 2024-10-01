@@ -47,7 +47,7 @@ class FlowLayout extends ILayout {
   /// Alignment of the components
   late final int innerAlignment;
 
-  /// Wether the layout should be wrapped if there is not enough space for all components
+  /// Whether the layout should be wrapped if there is not enough space for all components
   late final bool autoWrap;
 
   late final bool isRowOrientationHorizontal;
@@ -81,7 +81,7 @@ class FlowLayout extends ILayout {
 
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
-    /** Sorts the Childcomponent based on indexOf property */
+    /** Sorts the Child component based on indexOf property */
     pChildren.sort((a, b) => a.indexOf! - b.indexOf!);
 
     double dimWidth = pParent.layoutPosition?.width ?? 0;
@@ -217,7 +217,7 @@ class FlowLayout extends ILayout {
       case 2: // HorizontalAlignment.RIGHT or VerticalAlignment.BOTTOM
         return 1;
       default:
-        throw Exception("Cant evaluate alignmentfactor for alignment: $pEnumIndex");
+        throw Exception("Cant evaluate alignment factor for alignment: $pEnumIndex");
     }
   }
 
@@ -255,7 +255,7 @@ class FlowLayout extends ILayout {
         /** Check for the tallest component in row orientation */
         height = max(height, prefSize.height);
 
-        /** If autowrapping is true and the width of the row is greater than the width of the layout, add a new row */
+        /** If auto wrapping is true and the width of the row is greater than the width of the layout, add a new row */
         if (!bFirst && autoWrap && pContainerSize.width > 0 && calcWidth > pContainerSize.width) {
           calcWidth = prefSize.width;
           anzRows++;
@@ -273,7 +273,7 @@ class FlowLayout extends ILayout {
         /** Check for the widest component in row orientation */
         width = max(width, prefSize.width);
 
-        /** If autowrapping is true and the height of the column is greater than the height of the layout, add a new column */
+        /** If auto wrapping is true and the height of the column is greater than the height of the layout, add a new column */
         if (!bFirst && autoWrap && pContainerSize.height > 0 && calcHeight > pContainerSize.height) {
           calcHeight = prefSize.height;
           anzCols++;

@@ -256,25 +256,25 @@ class _HourMinuteControl extends StatelessWidget {
     final TimePickerThemeData timePickerTheme = TimePickerTheme.of(context);
     final bool isDark = themeData.colorScheme.brightness == Brightness.dark;
     final Color textColor = timePickerTheme.hourMinuteTextColor ??
-        MaterialStateColor.resolveWith((Set<MaterialState> states) {
-          return states.contains(MaterialState.selected)
+        WidgetStateColor.resolveWith((Set<WidgetState> states) {
+          return states.contains(WidgetState.selected)
               ? themeData.colorScheme.primary
               : themeData.colorScheme.onSurface;
         });
     final Color backgroundColor = timePickerTheme.hourMinuteColor ??
-        MaterialStateColor.resolveWith((Set<MaterialState> states) {
-          return states.contains(MaterialState.selected)
+        WidgetStateColor.resolveWith((Set<WidgetState> states) {
+          return states.contains(WidgetState.selected)
               ? themeData.colorScheme.primary.withOpacity(isDark ? 0.24 : 0.12)
               : themeData.colorScheme.onSurface.withOpacity(0.12);
         });
     final TextStyle style = timePickerTheme.hourMinuteTextStyle ?? themeData.textTheme.displayMedium!;
     final ShapeBorder shape = timePickerTheme.hourMinuteShape ?? _kDefaultShape;
 
-    final Set<MaterialState> states = isSelected ? <MaterialState>{MaterialState.selected} : <MaterialState>{};
+    final Set<WidgetState> states = isSelected ? <WidgetState>{WidgetState.selected} : <WidgetState>{};
     return SizedBox(
       height: _kTimePickerHeaderControlHeight,
       child: Material(
-        color: MaterialStateProperty.resolveAs(backgroundColor, states),
+        color: WidgetStateProperty.resolveAs(backgroundColor, states),
         clipBehavior: Clip.antiAlias,
         shape: shape,
         child: InkWell(
@@ -283,8 +283,8 @@ class _HourMinuteControl extends StatelessWidget {
           child: Center(
             child: Text(
               text,
-              style: style.copyWith(color: MaterialStateProperty.resolveAs(textColor, states)),
-              textScaleFactor: 1.0,
+              style: style.copyWith(color: WidgetStateProperty.resolveAs(textColor, states)),
+              textScaler: const TextScaler.linear(1.0)
             ),
           ),
         ),
@@ -396,8 +396,8 @@ class _StringFragment extends StatelessWidget {
         child: Center(
           child: Text(
             _stringFragmentValue(timeOfDayFormat),
-            style: hourMinuteStyle.apply(color: MaterialStateProperty.resolveAs(textColor, <MaterialState>{})),
-            textScaleFactor: 1.0,
+            style: hourMinuteStyle.apply(color: WidgetStateProperty.resolveAs(textColor, <WidgetState>{})),
+            textScaler: const TextScaler.linear(1.0),
           ),
         ),
       ),
@@ -511,31 +511,31 @@ class _DayPeriodControl extends StatelessWidget {
     final TimePickerThemeData timePickerTheme = TimePickerTheme.of(context);
     final bool isDark = colorScheme.brightness == Brightness.dark;
     final Color textColor = timePickerTheme.dayPeriodTextColor ??
-        MaterialStateColor.resolveWith((Set<MaterialState> states) {
-          return states.contains(MaterialState.selected)
+        WidgetStateColor.resolveWith((Set<WidgetState> states) {
+          return states.contains(WidgetState.selected)
               ? colorScheme.primary
               : colorScheme.onSurface.withOpacity(0.60);
         });
     final Color backgroundColor = timePickerTheme.dayPeriodColor ??
-        MaterialStateColor.resolveWith((Set<MaterialState> states) {
+        WidgetStateColor.resolveWith((Set<WidgetState> states) {
           // The unselected day period should match the overall picker dialog
           // color. Making it transparent enables that without being redundant
           // and allows the optional elevation overlay for dark mode to be
           // visible.
-          return states.contains(MaterialState.selected)
+          return states.contains(WidgetState.selected)
               ? colorScheme.primary.withOpacity(isDark ? 0.24 : 0.12)
               : Colors.transparent;
         });
     final bool amSelected = selectedTime.period == DayPeriod.am;
-    final Set<MaterialState> amStates = amSelected ? <MaterialState>{MaterialState.selected} : <MaterialState>{};
+    final Set<WidgetState> amStates = amSelected ? <WidgetState>{WidgetState.selected} : <WidgetState>{};
     final bool pmSelected = !amSelected;
-    final Set<MaterialState> pmStates = pmSelected ? <MaterialState>{MaterialState.selected} : <MaterialState>{};
+    final Set<WidgetState> pmStates = pmSelected ? <WidgetState>{WidgetState.selected} : <WidgetState>{};
     final TextStyle textStyle = timePickerTheme.dayPeriodTextStyle ?? Theme.of(context).textTheme.titleMedium!;
     final TextStyle amStyle = textStyle.copyWith(
-      color: MaterialStateProperty.resolveAs(textColor, amStates),
+      color: WidgetStateProperty.resolveAs(textColor, amStates),
     );
     final TextStyle pmStyle = textStyle.copyWith(
-      color: MaterialStateProperty.resolveAs(textColor, pmStates),
+      color: WidgetStateProperty.resolveAs(textColor, pmStates),
     );
     OutlinedBorder shape =
         timePickerTheme.dayPeriodShape ?? const RoundedRectangleBorder(borderRadius: _kDefaultBorderRadius);
@@ -548,10 +548,10 @@ class _DayPeriodControl extends StatelessWidget {
       side: borderSide,
     );
 
-    final double buttonTextScaleFactor = math.min(MediaQuery.of(context).textScaleFactor, 2.0);
+    final double buttonTextScaleFactor = math.min(MediaQuery.of(context).textScaler.scale(1.0), 2.0);
 
     final Widget amButton = Material(
-      color: MaterialStateProperty.resolveAs(backgroundColor, amStates),
+      color: WidgetStateProperty.resolveAs(backgroundColor, amStates),
       child: InkWell(
         onTap: Feedback.wrapForTap(() => _setAm(context), context),
         child: Semantics(
@@ -562,7 +562,7 @@ class _DayPeriodControl extends StatelessWidget {
             child: Text(
               materialLocalizations.anteMeridiemAbbreviation,
               style: amStyle,
-              textScaleFactor: buttonTextScaleFactor,
+              textScaler: TextScaler.linear(buttonTextScaleFactor),
             ),
           ),
         ),
@@ -570,7 +570,7 @@ class _DayPeriodControl extends StatelessWidget {
     );
 
     final Widget pmButton = Material(
-      color: MaterialStateProperty.resolveAs(backgroundColor, pmStates),
+      color: WidgetStateProperty.resolveAs(backgroundColor, pmStates),
       child: InkWell(
         onTap: Feedback.wrapForTap(() => _setPm(context), context),
         child: Semantics(
@@ -581,7 +581,7 @@ class _DayPeriodControl extends StatelessWidget {
             child: Text(
               materialLocalizations.postMeridiemAbbreviation,
               style: pmStyle,
-              textScaleFactor: buttonTextScaleFactor,
+              textScaler: TextScaler.linear(buttonTextScaleFactor),
             ),
           ),
         ),
@@ -1151,7 +1151,7 @@ class _DialState extends State<_Dial> with SingleTickerProviderStateMixin {
 
   _TappableLabel _buildTappableLabel(TextTheme textTheme, Color color, int value, String label, VoidCallback onTap) {
     final TextStyle style = textTheme.bodyLarge!.copyWith(color: color);
-    final double labelScaleFactor = math.min(MediaQuery.of(context).textScaleFactor, 2.0);
+    final double labelScaleFactor = math.min(MediaQuery.of(context).textScaler.scale(1.0), 2.0);
     return _TappableLabel(
       value: value,
       painter: TextPainter(
@@ -1226,10 +1226,10 @@ class _DialState extends State<_Dial> with SingleTickerProviderStateMixin {
     final Color backgroundColor =
         pickerTheme.dialBackgroundColor ?? themeData.colorScheme.onBackground.withOpacity(0.12);
     final Color accentColor = pickerTheme.dialHandColor ?? themeData.colorScheme.primary;
-    final Color primaryLabelColor = MaterialStateProperty.resolveAs(pickerTheme.dialTextColor, <MaterialState>{}) ??
+    final Color primaryLabelColor = WidgetStateProperty.resolveAs(pickerTheme.dialTextColor, <WidgetState>{}) ??
         themeData.colorScheme.onSurface;
     final Color secondaryLabelColor =
-        MaterialStateProperty.resolveAs(pickerTheme.dialTextColor, <MaterialState>{MaterialState.selected}) ??
+        WidgetStateProperty.resolveAs(pickerTheme.dialTextColor, <WidgetState>{WidgetState.selected}) ??
             themeData.colorScheme.onPrimary;
     List<_TappableLabel> primaryLabels;
     List<_TappableLabel> secondaryLabels;

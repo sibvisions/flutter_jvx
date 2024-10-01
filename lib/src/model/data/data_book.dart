@@ -62,13 +62,13 @@ class DataBook {
   /// Link to source of the data,
   String dataProvider;
 
-  /// All fetched records of this databook with specific page names.
+  /// All fetched records of this data book with specific page names.
   Map<String, Map<int, List<dynamic>>> pageRecords;
 
-  /// All fetched records of this dataBook
+  /// All fetched records of this data book
   Map<int, List<dynamic>> records;
 
-  /// All fetched records of this dataBook
+  /// All fetched records of this data book
   Map<int, List<bool>> recordReadOnly;
 
   /// If this dataBook has already fetched all possible data
@@ -455,7 +455,7 @@ class DataBook {
     );
   }
 
-  /// Inserts a new record into the databook.
+  /// Inserts a new record into the data book.
   static Future<bool> insertRecord({
     required String pDataProvider,
     bool showDialogOnError = true,
@@ -557,20 +557,20 @@ class DalMetaData {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The master reference of this databook.
+  /// The master reference of this data book.
   ReferenceDefinition? masterReference;
 
-  /// The detail reference of this databook.
+  /// The detail reference of this data book.
   ReferenceDefinition? detailReference;
 
-  /// The root reference of this databook.
+  /// The root reference of this data book.
   ReferenceDefinition? rootReference;
 
-  /// All column definitions in this dataBook
+  /// All column definitions in this data book
   List<ColumnDefinition> _columnDefinitions = [];
 
   /// All column definitions by name
-  Map<String, ColumnDefinition> _columnDefinitionsByName = {};
+  final Map<String, ColumnDefinition> _columnDefinitionsByName = {};
 
   /// The name of the data provider
   String dataProvider;
@@ -581,7 +581,7 @@ class DalMetaData {
   /// All visible columns of this this dataBook if shown in a tree
   List<String> columnViewTree = [];
 
-  /// If the databook is readonly.
+  /// If the data book is readonly.
   bool readOnly = false;
 
   /// If data book allows deletion of the current row.
@@ -605,11 +605,11 @@ class DalMetaData {
   /// The primary key columns of the dataBook
   List<String> primaryKeyColumns = [];
 
-  /// The sort definitions of this databook.
+  /// The sort definitions of this data book.
   List<SortDefinition>? _sortDefinitions;
 
   /// All sort definitions by name
-  Map<String, SortDefinition> _sortDefinitionsByName = {};
+  final Map<String, SortDefinition> _sortDefinitionsByName = {};
 
   /// Combined json of this metaData
   Map<String, dynamic> json = {};
@@ -748,7 +748,7 @@ class DalMetaData {
     ParseUtil.applyJsonToJson(pResponse.json, json);
   }
 
-  /// Returns true if the given databook is self-joined (references itself in masterReference), false if it isn't
+  /// Returns true if the given data book is self-joined (references itself in masterReference), false if it isn't
   bool isSelfJoined() {
     return masterReference != null && masterReference!.referencedDataBook == dataProvider;
   }

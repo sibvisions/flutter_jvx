@@ -29,7 +29,7 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   /// The style to make the checkbox to a checkbox.
   ///
   /// This serves as an override to allow editors to override a switch style,
-  /// allowing a celleditor to be a switch inside a table,
+  /// allowing a cell editor to be a switch inside a table,
   /// and the cell editor to be overridden by an editor style.
   static const String CHECKBOX_STYLE = "f_checkbox";
 

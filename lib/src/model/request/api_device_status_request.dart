@@ -23,10 +23,10 @@ class ApiDeviceStatusRequest extends SessionRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Available height of the device for workscreens.
+  /// Available height of the device for work-screens.
   final int? screenHeight;
 
-  /// Available width of the device for workscreens.
+  /// Available width of the device for work-screens.
   final int? screenWidth;
 
   /// Describes the current platform brightness.

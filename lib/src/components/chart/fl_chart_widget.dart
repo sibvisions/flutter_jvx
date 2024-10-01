@@ -97,7 +97,6 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
 
     // There exist 4 types of "charts"
     // Line; Area; Bars; Horizontal Bars;
-
     if (model.isLineChart() || model.isAreaChart() || model.isBarChart() || model.isPieChart()) {
       chart = _buildChart(context);
     } else {
@@ -131,6 +130,8 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Chart<Map<String, dynamic>>(
+          //required for repaint problems
+          key: GlobalObjectKey("${model.id}_chartWidget"),
           data: data,
           variables: createVariables(),
           marks: createMarks(context, constraints),

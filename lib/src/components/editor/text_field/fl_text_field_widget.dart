@@ -22,17 +22,8 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_jvx.dart';
-import '../../../flutter_ui.dart';
 import '../../../mask/frame/frame.dart';
-import '../../../mask/state/app_style.dart';
-import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
-import '../../../model/response/application_settings_response.dart';
-import '../../../util/font_awesome_util.dart';
-import '../../../util/icon_util.dart';
-import '../../../util/jvx_colors.dart';
-import '../../../util/parse_util.dart';
-import '../../base_wrapper/fl_stateless_data_widget.dart';
 
 enum FlTextBorderType {
   border,
@@ -220,7 +211,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.background;
   }
 
-  /// Creates the clear icon at the end of a textfield.
+  /// Creates the clear icon at the end of a Text field.
   Widget? createClearIcon([BuildContext? context, bool force = false]) {
     if ((textController.text.isEmpty ||
             hideClearIcon ||
@@ -303,7 +294,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     );
   }
 
-  /// Creates a list of widgets to show at the end of a textfield.
+  /// Creates a list of widgets to show at the end of a Text field.
   List<Widget> createSuffixIconItems([BuildContext? context, bool forceAll = false]) {
     List<Widget> icons = [];
 
@@ -317,23 +308,23 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return icons;
   }
 
-  /// Constructs a single widget to show at the end of a textfield, unifying all suffixIconItems.
+  /// Constructs a single widget to show at the end of a Text field, unifying all suffixIconItems.
   Widget? createSuffixIcon(BuildContext context) {
     List<Widget> iconItems = createSuffixIconItems(context);
 
-    // Just insert a center and voilá, textfield is expanding without
+    // Just insert a center and voila, Text field is expanding without
     // setting "expanding" to true.
     iconItems.add(const Center());
 
     return _createXFixWidget(iconItems);
   }
 
-  /// Creates a list of widgets to show at the start of a textfield.
+  /// Creates a list of widgets to show at the start of a Text field.
   List<Widget> createPrefixIconItems([BuildContext? context]) {
     return _createIconsFromStyle(context, FlComponentModel.PREFIX_ICON_STYLE);
   }
 
-  /// Constructs a single widget to show at the end of a textfield, unifying all suffixIconItems.
+  /// Constructs a single widget to show at the end of a Text field, unifying all suffixIconItems.
   Widget? createPrefixIcon(BuildContext? context) {
     return _createXFixWidget(createPrefixIconItems(context));
   }

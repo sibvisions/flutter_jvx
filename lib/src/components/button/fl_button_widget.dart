@@ -20,7 +20,6 @@ import 'package:flutter/services.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../service/api/shared/fl_component_classname.dart';
-import '../../util/font_awesome_util.dart';
 import '../../util/icon_util.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
@@ -257,15 +256,15 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     hasElevation &= !model.isTextButton;
 
     return ButtonStyle(
-      minimumSize: MaterialStateProperty.all(Size.zero),
-      elevation: MaterialStateProperty.all(hasElevation ? 2 : 0),
-      backgroundColor: backgroundColor != null ? MaterialStateProperty.all(backgroundColor) : null,
-      padding: MaterialStateProperty.all(model.paddings),
+      minimumSize: WidgetStateProperty.all(Size.zero),
+      elevation: WidgetStateProperty.all(hasElevation ? 2 : 0),
+      backgroundColor: backgroundColor != null ? WidgetStateProperty.all(backgroundColor) : null,
+      padding: WidgetStateProperty.all(model.paddings),
       splashFactory: !model.borderPainted ? NoSplash.splashFactory : null,
       overlayColor: !model.borderPainted
-          ? MaterialStateProperty.all(Colors.transparent)
+          ? WidgetStateProperty.all(Colors.transparent)
           : model.borderOnMouseEntered
-              ? MaterialStateProperty.all(JVxColors.COMPONENT_DISABLED_LIGHTER)
+              ? WidgetStateProperty.all(JVxColors.COMPONENT_DISABLED_LIGHTER)
               : null,
     );
   }

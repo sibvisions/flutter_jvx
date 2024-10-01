@@ -17,7 +17,6 @@
 import '../../../service/data/i_data_service.dart';
 import '../../response/record_format.dart';
 import '../column_definition.dart';
-import '../data_book.dart';
 import 'data_record.dart';
 
 /// Used as return value when getting subscriptions data from [IDataService]
@@ -37,15 +36,15 @@ class DataChunk {
   final List<ColumnDefinition> columnDefinitions;
 
   /// All column definitions by name
-  Map<String, ColumnDefinition> _columnDefinitionsByName = {};
+  final Map<String, ColumnDefinition> _columnDefinitionsByName = {};
 
   /// All column definitions by index
-  Map<String, int> _columnDefinitionsIndexByName = {};
+  final Map<String, int> _columnDefinitionsIndexByName = {};
 
   /// Only true if server has no more data.
   final bool isAllFetched;
 
-  /// index of first record in databook
+  /// index of first record in data book
   final int from;
 
   /// Contains record formats

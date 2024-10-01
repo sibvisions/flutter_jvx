@@ -38,7 +38,7 @@ import 'base_cont_wrapper_state.dart';
 /// A wrapper is a stateful widget that wraps FlutterJVx widgets and handles all JVx specific implementations and functionality.
 /// e.g:
 ///
-/// Model inits/updates; Layout inits/updates; Size calculation; Subscription handling for data widgets.
+/// Model initializes/updates; Layout initializes/updates; Size calculation; Subscription handling for data widgets.
 abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget<T>> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -244,7 +244,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Callback called after every build.
   void postFrameCallback(BuildContext context) {
-    if (!mounted) {
+    if (!context.mounted) {
       return;
     }
 
@@ -387,7 +387,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     ICommandService().sendCommand(SetFocusCommand(componentId: model.id, focus: true, reason: "Sending Focus"));
   }
 
-  /// Unfocuses this component.
+  /// Unfocus this component.
   void unfocus() {
     ICommandService().sendCommand(SetFocusCommand(componentId: model.id, focus: false, reason: "Sending Focus"));
   }

@@ -231,7 +231,7 @@ abstract class IUiService implements Service {
   void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatelyRetrieveData = true});
 
   /// Notifies all subscriptions of a reload.
-  void notifySubscriptionsOfReload({required String pDataprovider});
+  void notifySubscriptionsOfReload({required String pDataProvider});
 
   /// Removes all active subscriptions
   void disposeSubscriptions({required Object pSubscriber});
@@ -306,13 +306,13 @@ abstract class IUiService implements Service {
   });
 
   /// Returns the highest row which any component is subscribed to on this data provider
-  int getSubscriptionRowcount({required String pDataProvider});
+  int getSubscriptionRowCount({required String pDataProvider});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// If this screen beams or sends an open workscreen command first.
+  /// If this screen beams or sends an open work-screen command first.
   bool usesNativeRouting(String pScreenLongName);
 
   /// Gets replace-type screen by screenName
@@ -356,7 +356,7 @@ abstract class IUiService implements Service {
   /// Returns the current work screen name from the route url.
   ///
   /// This is usually the same as in [MenuItemModel.label].
-  String? getCurrentWorkscreenName();
+  String? getCurrentWorkScreenName();
 
   void openContent(String name);
 

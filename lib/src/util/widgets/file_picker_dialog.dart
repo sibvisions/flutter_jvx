@@ -71,7 +71,7 @@ abstract class FilePickerDialog {
                     ],
                   ),
                   InkWell(
-                    onTap: () => pick(UploadType.CAMERA).then((val) => Navigator.of(context).pop(val)),
+                    onTap: () => pick(UploadType.CAMERA).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}}),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
@@ -91,7 +91,7 @@ abstract class FilePickerDialog {
                     ),
                   ),
                   InkWell(
-                    onTap: () => pick(UploadType.GALLERY).then((val) => Navigator.of(context).pop(val)),
+                    onTap: () => pick(UploadType.GALLERY).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}} ),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
@@ -111,7 +111,7 @@ abstract class FilePickerDialog {
                     ),
                   ),
                   InkWell(
-                    onTap: () => pick(UploadType.FILE_SYSTEM).then((val) => Navigator.of(context).pop(val)),
+                    onTap: () => pick(UploadType.FILE_SYSTEM).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}}),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(

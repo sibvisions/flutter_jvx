@@ -130,7 +130,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
   }
 
   void _handleDoubleTap() {
-    if (controller.value == SliderMode.loading || controller.value == SliderMode.standard) {
+    if (controller.value.mode == SliderMode.loading || controller.value.mode == SliderMode.standard) {
       return;
     }
 

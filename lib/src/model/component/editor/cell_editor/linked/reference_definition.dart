@@ -33,19 +33,15 @@ class ReferenceDefinition extends ColumnMapping {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ReferenceDefinition({
-    List<String>? columnNames,
-    List<String>? referencedColumnNames,
+    super.columnNames,
+    super.referencedColumnNames,
     required this.referencedDataBook,
     Map<String, String>? dataToDisplay,
-  })  : dataToDisplay = dataToDisplay ?? {},
-        super(
-          columnNames: columnNames,
-          referencedColumnNames: referencedColumnNames,
-        );
+  })  : dataToDisplay = dataToDisplay ?? {};
 
-  ReferenceDefinition.fromJson(Map<String, dynamic> json)
+  ReferenceDefinition.fromJson(super.json)
       : referencedDataBook = json[ApiObjectProperty.referencedDataBook],
-        super.fromJson(json);
+        super.fromJson();
 
   @override
   Map<String, dynamic> toJson() => {

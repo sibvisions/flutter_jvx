@@ -63,13 +63,13 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   /// The controller for the tree view.
   TreeViewController controller = TreeViewController(children: <Node<List<NodeData>>>[]);
 
-  /// The data pages of the databooks. First key is the dataprovider, second key is the page.
+  /// The data pages of the data books. First key is the dataprovider, second key is the page.
   HashMap<String, HashMap<String?, DataChunk>> data = HashMap<String, HashMap<String?, DataChunk>>();
 
-  /// First key is the dataprovider, second key is the page. The value is a list of nodes which are receiving the page.
+  /// First key is the data provider, second key is the page. The value is a list of nodes which are receiving the page.
   HashMap<String, HashMap<String, List<String>>> nodesReceivingPage = HashMap<String, HashMap<String, List<String>>>();
 
-  /// The meta datas.
+  /// The meta data.
   HashMap<String, DalMetaData> metaDatas = HashMap<String, DalMetaData>();
 
   /// The selected records.

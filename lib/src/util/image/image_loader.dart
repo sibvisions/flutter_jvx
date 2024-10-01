@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
-import '../../model/component/fl_component_model.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/app.dart';
@@ -127,7 +126,7 @@ abstract class ImageLoader {
     return DEFAULT_IMAGE;
   }
 
-  static ImageProvider? _getBinaryImageProvider(
+  static ImageProvider? getBinaryImageProvider(
       Uint8List bytes, {
       Function(Size, bool)? imageStreamListener,
   }) {
@@ -252,7 +251,7 @@ abstract class ImageLoader {
   }
 
   ///Checks whether the given [value] is base64 encoded
-  static bool _isBase64(dynamic value) {
+  static bool isBase64(dynamic value) {
     if (value.runtimeType == String) {
       final RegExp rx = RegExp(r'^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$',
         multiLine: true,

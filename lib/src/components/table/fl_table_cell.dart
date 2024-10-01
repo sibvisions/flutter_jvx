@@ -396,6 +396,12 @@ class _FlTableCellState extends State<FlTableCell> {
     if (cellEditor.allowedInTable) {
       return [];
     }
+    //no icons if width is smaller than "only" icons (with separator)
+    if (widget.width < FlTableCell.clearIconSize + FlTableCell.iconSize
+        + widget.paddings.left + widget.paddings.right
+        + (widget.model.showVerticalLines ? widget.cellDividerWidth : 0)) {
+      return [];
+    }
 
     List<Widget> icons = [];
 

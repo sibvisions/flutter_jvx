@@ -18,7 +18,7 @@ import '../../service/api/shared/api_object_property.dart';
 import 'session_request.dart';
 
 /// Request that should be sent when navigating(user pressing back),
-/// while being in workscreen and when navigating back to the menu
+/// while being in work screen and when navigating back to the menu
 class ApiNavigationRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
