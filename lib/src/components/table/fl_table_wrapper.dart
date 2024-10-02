@@ -55,6 +55,7 @@ import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/column_list.dart';
 import '../../util/offline_util.dart';
+import '../../util/sort_list.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../editor/cell_editor/date/fl_date_cell_editor.dart';
@@ -140,7 +141,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   Future? currentEditDialog;
 
   /// The last sort definition.
-  List<SortDefinition>? lastSortDefinitions;
+  SortList? lastSortDefinitions;
 
   /// The size has to be calculated on the next data receiving
   bool _calcOnDataReceived = false;
@@ -976,24 +977,24 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return null;
     }
 
-    SortDefinition? currentSortDefinition = metaData.sortDefinition(pColumnName);
+    SortDefinition? currentSortDefinition = metaData.sortDefinitions?.byName(pColumnName);
     bool exists = currentSortDefinition != null;
 
     currentSortDefinition?.mode = currentSortDefinition.nextMode;
     currentSortDefinition ??= SortDefinition(columnName: pColumnName);
 
-    List<SortDefinition> sortDefs;
+    SortList sort;
     if (pAdditive && metaData.sortDefinitions != null) {
-      sortDefs = [
+      sort = SortList([
         ...metaData.sortDefinitions ?? {},
         if (!exists) currentSortDefinition,
-      ];
+      ]);
     } else {
-      sortDefs = [currentSortDefinition];
+      sort = SortList.fromElement(currentSortDefinition);
     }
 
     return SortCommand(
-        dataProvider: model.dataProvider, sortDefinitions: sortDefs, reason: "sorted", columnName: pColumnName);
+        dataProvider: model.dataProvider, sortDefinitions: sort, reason: "sorted", columnName: pColumnName);
   }
 
   void _sortColumn(String pColumnName, [bool pAdditive = false]) {

@@ -26,6 +26,7 @@ import '../../service/data/i_data_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/column_list.dart';
 import '../../util/parse_util.dart';
+import '../../util/sort_list.dart';
 import '../command/api/delete_record_command.dart';
 import '../command/api/filter_command.dart';
 import '../command/api/insert_record_command.dart';
@@ -299,7 +300,7 @@ class DataBook {
   }
 
   /// Sets the sort definition and returns if anything changed
-  bool updateSortDefinitions(List<SortDefinition>? pSortDefinitions) {
+  bool updateSortDefinitions(SortList? pSortDefinitions) {
     if (metaData == null) {
       return false;
     }
@@ -320,7 +321,7 @@ class DataBook {
             break;
           }
 
-          var oldSortDefinition = metaData!.sortDefinition(sortDefinition.columnName);
+          var oldSortDefinition = metaData!.sortDefinitions!.byName(sortDefinition.columnName);
 
           changeDetected = oldSortDefinition == null || oldSortDefinition.mode != sortDefinition.mode;
         }
@@ -601,10 +602,7 @@ class DalMetaData {
   List<String> primaryKeyColumns = [];
 
   /// The sort definitions of this data book.
-  List<SortDefinition>? _sortDefinitions;
-
-  /// All sort definitions by name
-  final Map<String, SortDefinition> _sortDefinitionsByName = {};
+  SortList? sortDefinitions = SortList.empty();
 
   /// Combined json of this metaData
   Map<String, dynamic> json = {};
@@ -617,20 +615,6 @@ class DalMetaData {
 
   /// If the row 0 is an additional row (Not deletable)
   bool additionalRowVisible = false;
-
-  /// Sets sort definitions and updates "by name" mapping
-  set sortDefinitions(List<SortDefinition>? definitions) {
-    _sortDefinitions = definitions;
-
-    _sortDefinitionsByName.clear();
-
-    _sortDefinitions?.forEach((sd) => _sortDefinitionsByName[sd.columnName] = sd);
-  }
-
-  /// Gets all sort definitions
-  List<SortDefinition>? get sortDefinitions {
-    return _sortDefinitions;
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -755,8 +739,4 @@ class DalMetaData {
     return data;
   }
 
-  ///Gets the sort definition for [name]
-  SortDefinition? sortDefinition(String name) {
-    return _sortDefinitionsByName[name];
-  }
 }

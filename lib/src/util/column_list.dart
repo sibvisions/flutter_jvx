@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2024 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,21 +25,25 @@ class ColumnList extends ListBase<ColumnDefinition> {
     /// the mapping between name and column definition
     final Map<String, ColumnDefinition> names = {};
 
-    /// tha mapping between column name and index in the list
+    /// the mapping between column name and index in the list
     final Map<String, int> index = {};
 
+    ///Creates a new ColumnList with a list of existing elements
     ColumnList([List<ColumnDefinition>? items]) {
         list = items ?? List<ColumnDefinition>.empty(growable: true);
 
         _update();
     }
 
+    ///Creates a growable list with given [element]
     ColumnList.fromElement(ColumnDefinition element) : this(List<ColumnDefinition>.filled(1, element, growable: true));
 
+    ///Creates a new empty growable
     static ColumnList empty() {
         return ColumnList();
     }
 
+    ///Creates a new ColumnList from an existing list of ColumnDefinitions
     static ColumnList? fromList(List<ColumnDefinition>? items) {
         if (items == null) {
             return null;

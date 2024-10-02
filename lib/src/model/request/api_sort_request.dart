@@ -15,7 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import '../data/sort_definition.dart';
+import '../../util/sort_list.dart';
 import 'session_request.dart';
 
 class ApiSortRequest extends SessionRequest {
@@ -26,7 +26,7 @@ class ApiSortRequest extends SessionRequest {
   final String dataProvider;
 
   /// List of columns to sort
-  final List<SortDefinition> sortDefinitions;
+  final SortList sortDefinitions;
 
   /// The column which got sorted
   final String columnName;

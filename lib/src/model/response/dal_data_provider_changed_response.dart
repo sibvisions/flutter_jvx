@@ -16,6 +16,7 @@
 
 import '../../flutter_ui.dart';
 import '../../service/api/shared/api_object_property.dart';
+import '../../util/sort_list.dart';
 import '../data/sort_definition.dart';
 import 'api_response.dart';
 import 'record_format.dart';
@@ -76,7 +77,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
   final String? selectedColumn;
 
   /// The changed sort definitions
-  final List<SortDefinition>? sortDefinitions;
+  final SortList? sortDefinitions;
 
   /// The cell formats for this dataprovider.
   final Map<String, RecordFormat>? recordFormats;
@@ -113,8 +114,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
         recordReadOnly = json[ApiObjectProperty.recordReadOnly] != null
             ? List.from(json[ApiObjectProperty.recordReadOnly][ApiObjectProperty.records])
             : null,
-        sortDefinitions =
-            (json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList(),
+        sortDefinitions = SortList.fromList((json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList()),
         super.fromJson();
 }
 

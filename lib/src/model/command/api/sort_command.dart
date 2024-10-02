@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../../data/sort_definition.dart';
+import '../../../util/sort_list.dart';
 import '../../request/api_set_values_request.dart';
 import 'session_command.dart';
 
@@ -28,7 +28,7 @@ class SortCommand extends SessionCommand {
   final String dataProvider;
 
   /// List of columns to sort
-  final List<SortDefinition> sortDefinitions;
+  final SortList sortDefinitions;
 
   /// The column which got sorted
   final String columnName;

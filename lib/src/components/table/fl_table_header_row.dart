@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../components.dart';
@@ -22,6 +21,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/sort_definition.dart';
 import '../../util/column_list.dart';
+import '../../util/sort_list.dart';
 import 'fl_table_cell.dart';
 import 'fl_table_header_cell.dart';
 
@@ -46,7 +46,7 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
   final TableSize tableSize;
 
   /// The sort definitions
-  final List<SortDefinition>? sortDefinitions;
+  final SortList? sortDefinitions;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -81,7 +81,7 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
         double colWidth = tableSize.columnWidths[colName] ?? -1;
 
         if (colWidth > 0) {
-          SortDefinition? sortDef = sortDefinitions?.firstWhereOrNull((element) => element.columnName == cd.name);
+          SortDefinition? sortDef = sortDefinitions?.byName(cd.name);
 
           rowWidgets.add(FlTableHeaderCell(
             model: model,

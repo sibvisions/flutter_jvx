@@ -16,6 +16,7 @@
 
 import '../../flutter_ui.dart';
 import '../../service/api/shared/api_object_property.dart';
+import '../../util/sort_list.dart';
 import '../data/sort_definition.dart';
 import 'api_response.dart';
 import 'record_format.dart';
@@ -59,7 +60,7 @@ class DalFetchResponse extends ApiResponse {
   final Map<String, RecordFormat>? recordFormats;
 
   /// The sort definitions
-  final List<SortDefinition>? sortDefinitions;
+  final SortList? sortDefinitions;
 
   final List<dynamic>? masterRow;
 
@@ -108,8 +109,7 @@ class DalFetchResponse extends ApiResponse {
         recordReadOnly = json[ApiObjectProperty.recordReadOnly] != null
             ? List.from(json[ApiObjectProperty.recordReadOnly][ApiObjectProperty.records])
             : null,
-        sortDefinitions =
-            (json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList(),
+        sortDefinitions = SortList.fromList((json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList()),
         treePath = json[ApiObjectProperty.treePath]?.cast<int>(),
         super.fromJson();
 }

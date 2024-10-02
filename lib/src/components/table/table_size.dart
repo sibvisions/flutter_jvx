@@ -165,7 +165,7 @@ class TableSize {
       double calculatedHeaderWidth = _calculateTextWidth(textStyle.copyWith(fontWeight: FontWeight.bold), columnLabel);
 
       //Sort arrow and direction text
-      if (metaData.sortDefinition(columnName)?.mode != null) {
+      if (metaData.sortDefinitions?.byName(columnName)?.mode != null) {
         calculatedHeaderWidth += 21;
       }
 
