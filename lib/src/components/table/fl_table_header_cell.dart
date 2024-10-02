@@ -173,13 +173,24 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
       mainAxisAlignment = MainAxisAlignment.start;
     }
 
+    double gap;
+
+    TextStyle sortStyle = style.copyWith(fontSize: 8);
+
+    //small gap if width is smaller than "only" icons (with separator)
+    if (width < 16 + 5 + (sortIndex != null ? ParseUtil.getTextWidth(text: sortIndex!.toString(), style: sortStyle) : 0) +
+                paddings.left + paddings.right + (model.showVerticalLines ? cellDividerWidth : 0)) {
+      gap = 1;
+    }
+    else {
+      gap = 5;
+    }
+
     return Row(
       mainAxisAlignment: mainAxisAlignment,
       children: [
-        text,
-        const SizedBox(
-          width: 5,
-        ),
+        Flexible(fit: FlexFit.loose, child: text),
+        SizedBox(width: gap),
         FaIcon(
           sortMode == SortMode.ascending ? FontAwesomeIcons.sortUp : FontAwesomeIcons.sortDown,
           size: 16,
@@ -187,7 +198,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
         if (sortIndex != null)
           Text(
             sortIndex!.toString(),
-            style: style.copyWith(fontSize: 8),
+            style: sortStyle,
             maxLines: 1,
           ),
       ],

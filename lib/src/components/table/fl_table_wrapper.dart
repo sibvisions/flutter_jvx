@@ -971,9 +971,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (!model.sortOnHeaderEnabled) {
       return null;
     }
-    ColumnDefinition? coldef = metaData.columnDefinitions.byName(pColumnName);
+    ColumnDefinition? colDef = metaData.columnDefinitions.byName(pColumnName);
 
-    if (coldef == null || !coldef.sortable) {
+    if (colDef == null || !colDef.sortable) {
       return null;
     }
 
