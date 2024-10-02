@@ -24,6 +24,7 @@ import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/column_list.dart';
 import '../../util/parse_util.dart';
 import '../command/api/delete_record_command.dart';
 import '../command/api/filter_command.dart';
@@ -345,35 +346,36 @@ class DataBook {
       return null;
     }
 
+    ColumnList? columnList;
+
     List<dynamic> selectedRecord = records[pRecordIndex]!;
-    List<ColumnDefinition> definitions = metaData!.columnDefinitions;
+
+    List<dynamic>? recordForColumnNames;
 
     if (pDataColumnNames != null) {
-      // Get provided column definitions
-      definitions = [];
+      columnList = ColumnList.empty();
+
+      recordForColumnNames = [];
 
       for (String columnName in pDataColumnNames) {
-        var colDef = metaData!.columnDefinition(columnName);
+        var colDef = metaData!.columnDefinitions.byName(columnName);
 
         if (colDef != null) {
-          definitions.add(colDef);
+          columnList.add(colDef);
+
+          // We use only requested columns for our new record
+          recordForColumnNames.add(selectedRecord[metaData!.columnDefinitions.indexOf(colDef)]);
         }
       }
 
-      // Get full selected record, then only take requested columns
-      List<dynamic> fullRecord = selectedRecord;
-      selectedRecord = definitions.map((e) {
-        int indexOfDef = metaData!.columnDefinitions.indexOf(e);
-        return fullRecord[indexOfDef];
-      }).toList();
-
-      selectedRecord.add(selectedRecord.last);
+      //add status info
+      recordForColumnNames.add(selectedRecord.last);
     }
 
     return DataRecord(
-      columnDefinitions: definitions,
+      columnDefinitions: columnList ?? metaData!.columnDefinitions,
       index: pRecordIndex,
-      values: selectedRecord,
+      values: recordForColumnNames ?? selectedRecord,
       selectedColumn: selectedColumn,
       treePath: treePath,
     );
@@ -546,10 +548,6 @@ class DataBook {
   }) {
     IUiService().disposeDataSubscription(pSubscriber: pSubObject, pDataProvider: pDataProvider);
   }
-
-  static int getColumnIndex(List<ColumnDefinition> columnDefinitions, String columnName) {
-    return columnDefinitions.indexWhere((colDef) => colDef.name == columnName);
-  }
 }
 
 class DalMetaData {
@@ -567,10 +565,7 @@ class DalMetaData {
   ReferenceDefinition? rootReference;
 
   /// All column definitions in this data book
-  List<ColumnDefinition> _columnDefinitions = [];
-
-  /// All column definitions by name
-  final Map<String, ColumnDefinition> _columnDefinitionsByName = {};
+  ColumnList columnDefinitions = ColumnList.empty();
 
   /// The name of the data provider
   String dataProvider;
@@ -623,20 +618,6 @@ class DalMetaData {
   /// If the row 0 is an additional row (Not deletable)
   bool additionalRowVisible = false;
 
-  ///Sets column definitions and updates "by name" mapping
-  set columnDefinitions(List<ColumnDefinition> definitions) {
-    _columnDefinitions = definitions;
-
-    _columnDefinitionsByName.clear();
-
-    _columnDefinitions.forEach((cd) => _columnDefinitionsByName[cd.name] = cd);
-  }
-
-  ///Gets all column definitions
-  List<ColumnDefinition> get columnDefinitions {
-    return _columnDefinitions;
-  }
-
   /// Sets sort definitions and updates "by name" mapping
   set sortDefinitions(List<SortDefinition>? definitions) {
     _sortDefinitions = definitions;
@@ -670,9 +651,7 @@ class DalMetaData {
         dataProvider = pJson[ApiObjectProperty.dataProvider],
         columnViewTable = pJson[ApiObjectProperty.columnViewTable]?.cast<String>(),
         columnViewTree = pJson[ApiObjectProperty.columnViewTree]?.cast<String>(),
-        _columnDefinitions =
-            (pJson[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList() ??
-                [],
+        columnDefinitions = ColumnList((pJson[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList() ?? []),
         readOnly = pJson[ApiObjectProperty.readOnly],
         deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],
         updateEnabled = pJson[ApiObjectProperty.updateEnabled],
@@ -774,11 +753,6 @@ class DalMetaData {
     data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
     data["json"] = json;
     return data;
-  }
-
-  ///Gets the column definition for [name]
-  ColumnDefinition? columnDefinition(String name) {
-    return _columnDefinitionsByName[name];
   }
 
   ///Gets the sort definition for [name]

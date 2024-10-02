@@ -64,7 +64,7 @@ class ReferencedCellEditor {
         // Name of matching reference column.
         String referencedColumnName = linkReference.referencedColumnNames[linkRefColumnIndex];
         // Index of reference column in the referenced (this) data book.
-        int referencedColumnIndex = DataBook.getColumnIndex(dataBook.metaData!.columnDefinitions, referencedColumnName);
+        int referencedColumnIndex = dataBook.metaData!.columnDefinitions.indexByName(referencedColumnName);
 
         if (referencedColumnIndex >= 0) {
           dataBook.records.values.forEach((dataRow) {

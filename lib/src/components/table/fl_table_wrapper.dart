@@ -53,6 +53,7 @@ import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/column_list.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -113,6 +114,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// The data of the table.
   DataChunk dataChunk = DataChunk.empty();
+
+  /// The columns to show (based on [model.columnNames])
+  ColumnList? columnsToShow;
 
   /// The sizes of the table.
   late TableSize tableSize;
@@ -280,10 +284,18 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     super.modelUpdated();
 
     if (model.lastChangedProperties.contains(ApiObjectProperty.dataProvider)) {
+      columnsToShow = null;
+
       _subscribe();
     }
 
-    if (model.lastChangedProperties.contains(ApiObjectProperty.columnNames) ||
+    bool namesChanged = model.lastChangedProperties.contains(ApiObjectProperty.columnNames);
+
+    if (namesChanged) {
+      columnsToShow = null;
+    }
+
+    if (namesChanged ||
         model.lastChangedProperties.contains(ApiObjectProperty.columnLabels) ||
         model.lastChangedProperties.contains(ApiObjectProperty.autoResize)) {
       _calcOnDataReceived = true;
@@ -390,7 +402,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       Map<String, dynamic> valueMap = {};
 
       for (ColumnDefinition colDef in dataChunk.columnDefinitions) {
-        valueMap[colDef.name] = dataChunk.data[selectedRow]![dataChunk.columnDefinitionIndex(colDef.name)];
+        valueMap[colDef.name] = dataChunk.data[selectedRow]![dataChunk.columnDefinitions.indexByName(colDef.name)];
       }
 
       dialogValueNotifier.value = valueMap;
@@ -583,7 +595,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
         _showDialog(
           rowIndex: pRowIndex,
-          columnDefinitions: [pCellEditor.columnDefinition!],
+          columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
           values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
           dataRow: dataChunk.data[pRowIndex],
           onEndEditing: _setValueEnd,
@@ -600,7 +612,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
         _showDialog(
           rowIndex: pRowIndex,
-          columnDefinitions: [pCellEditor.columnDefinition!],
+          columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
           values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
           dataRow: dataChunk.data[pRowIndex],
           onEndEditing: _setValueEnd,
@@ -958,7 +970,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (!model.sortOnHeaderEnabled) {
       return null;
     }
-    ColumnDefinition? coldef = metaData.columnDefinition(pColumnName);
+    ColumnDefinition? coldef = metaData.columnDefinitions.byName(pColumnName);
 
     if (coldef == null || !coldef.sortable) {
       return null;
@@ -1013,8 +1025,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       null,
       pAfterSelect: () {
         if (IStorageService().isVisibleInUI(model.id) && _isAnyCellInRowEditable(pRowIndex)) {
-          List<ColumnDefinition> columnsToShow =
-              _getColumnsToShow().where((column) => _isCellEditable(pRowIndex, column.name)).toList();
+
+          List<ColumnDefinition> columnsToShow = _getColumnsToShow().where((colDef) => _isCellEditable(pRowIndex, colDef.name)).toList();
 
           Map<String, dynamic> values = {};
           for (ColumnDefinition colDef in columnsToShow) {
@@ -1023,7 +1035,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
           _showDialog(
             rowIndex: pRowIndex,
-            columnDefinitions: columnsToShow,
+            columnDefinitions: ColumnList(columnsToShow),
             values: values,
             onEndEditing: _setValueEnd,
             newValueNotifier: dialogValueNotifier,
@@ -1073,7 +1085,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   void _showDialog({
     required int rowIndex,
-    required List<ColumnDefinition> columnDefinitions,
+    required ColumnList columnDefinitions,
     required Map<String, dynamic> values,
     required void Function(dynamic, int, String) onEndEditing,
     required ValueNotifier<Map<String, dynamic>?> newValueNotifier,
@@ -1177,7 +1189,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return false;
     }
 
-    ColumnDefinition? colDef = dataChunk.columnDefinition(pColumn);
+    ColumnDefinition? colDef = dataChunk.columnDefinitions.byName(pColumn);
 
     if (colDef == null) {
       return false;
@@ -1197,7 +1209,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return false;
     }
 
-    if (dataChunk.dataReadOnly?[pRowIndex]?[dataChunk.columnDefinitionIndex(pColumn)] ?? false) {
+    if (dataChunk.dataReadOnly?[pRowIndex]?[dataChunk.columnDefinitions.indexByName(pColumn)] ?? false) {
       return false;
     }
 
@@ -1209,7 +1221,23 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   List<ColumnDefinition> _getColumnsToShow() {
-    return dataChunk.columnDefinitions.where((element) => tableSize.columnWidths.containsKey(element.name)).toList();
+    if (columnsToShow == null) {
+      columnsToShow = ColumnList.empty();
+
+      model.columnNames.forEach((colName) {
+        ColumnDefinition? cd = dataChunk.columnDefinitions.byName(colName);
+
+        if (cd != null) {
+          double colWidth = tableSize.columnWidths[colName] ?? -1;
+
+          if (colWidth > 0) {
+            columnsToShow!.add(cd);
+          }
+        }
+      });
+    }
+
+    return columnsToShow!;
   }
 }
 

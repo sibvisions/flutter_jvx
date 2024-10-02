@@ -33,6 +33,7 @@ import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
+import '../../../util/column_list.dart';
 import '../../api/shared/api_object_property.dart';
 import '../../command/i_command_service.dart';
 import '../../service.dart';
@@ -214,7 +215,7 @@ class DataService implements IDataService {
 
     if (pChangedResponse.changedColumns != null) {
       pChangedResponse.changedColumns!.forEach((changedColumn) {
-        ColumnDefinition? foundColumn = metaData.columnDefinition(changedColumn.name);
+        ColumnDefinition? foundColumn = metaData.columnDefinitions.byName(changedColumn.name);
 
         if (foundColumn != null) {
           if (changedColumn.label != null && changedColumn.label != foundColumn.label) {
@@ -285,7 +286,7 @@ class DataService implements IDataService {
     if (dataBook.metaData != null) {
       if (pColumnNames != null) {
         for (String columnName in pColumnNames) {
-          ColumnDefinition? colDef = dataBook.metaData!.columnDefinition(columnName);
+          ColumnDefinition? colDef = dataBook.metaData!.columnDefinitions.byName(columnName);
 
           if (colDef != null) {
             columnDefinitions.add(colDef);
@@ -325,7 +326,7 @@ class DataService implements IDataService {
     return DataChunk(
       data: resultData,
       isAllFetched: dataBook.isAllFetched,
-      columnDefinitions: columnDefinitions,
+      columnDefinitions: ColumnList(columnDefinitions),
       from: pFrom,
       recordFormats: dataBook.recordFormats,
       dataReadOnly: dataBook.recordReadOnly,

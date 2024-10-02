@@ -19,9 +19,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/response/record_format.dart';
+import '../../util/column_list.dart';
 import 'fl_table_cell.dart';
 
 class FlTableRow extends FlStatelessWidget<FlTableModel> {
+
   /// The width each slide-able action should have
   static const double SLIDEABLE_WIDTH = 125;
 
@@ -44,7 +46,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   final TableLongPressCallback? onLongPress;
 
   /// The colum definitions to build.
-  final List<ColumnDefinition> columnDefinitions;
+  final ColumnList columnDefinitions;
 
   /// The width of the cell.
   final TableSize tableSize;
@@ -98,38 +100,45 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
   @override
   Widget build(BuildContext context) {
-    List<ColumnDefinition> columnsToShow =
-        columnDefinitions.where((element) => tableSize.columnWidths.containsKey(element.name)).toList();
 
-    columnsToShow.sort((a, b) => model.columnNames.indexOf(a.name).compareTo(model.columnNames.indexOf(b.name)));
+    List<Widget> rowWidgets = [];
 
     int cellIndex = -1;
+    double rowWidth = 0;
 
-    double rowWidth = 0.0;
-    List<Widget> rowWidgets = columnsToShow
-        .where((columnDefinition) => tableSize.columnWidths[columnDefinition.name]! > 0.0)
-        .map((columnDefinition) {
-      cellIndex += 1;
-      rowWidth += tableSize.columnWidths[columnDefinition.name]!;
+    //similar code is in fl_table_wrapper.dart -> _getColumnsToShow
+    model.columnNames.forEach((colName) {
+      ColumnDefinition? cd = columnDefinitions.byName(colName);
 
-      return FlTableCell(
-        model: model,
-        onEndEditing: onEndEditing,
-        onValueChanged: onValueChanged,
-        onLongPress: onLongPress,
-        onTap: onTap,
-        columnDefinition: columnDefinition,
-        width: tableSize.columnWidths[columnDefinition.name]!,
-        paddings: model.autoResize && (tableSize.columnWidths[columnDefinition.name]! < FlTableCell.clearIconSize + FlTableCell.iconSize + tableSize.cellPaddings.left + tableSize.cellPaddings.right) ? TableSize.paddingsSmall : tableSize.cellPaddings,
-        cellDividerWidth: tableSize.columnDividerWidth,
-        value: values[columnDefinitions.indexOf(columnDefinition)],
-        readOnly: recordReadOnly?[columnDefinitions.indexOf(columnDefinition)] ?? false,
-        rowIndex: index,
-        cellIndex: cellIndex,
-        cellFormat: recordFormats?.getCellFormat(index, columnDefinitions.indexOf(columnDefinition)),
-        isSelected: selectedColumn == columnDefinition.name && isSelected,
-      );
-    }).toList();
+      if (cd != null) {
+        double colWidth = tableSize.columnWidths[colName] ?? -1;
+
+        if (colWidth > 0) {
+
+          rowWidth += colWidth;
+
+          int cdIndex = columnDefinitions.indexOf(cd);
+
+          rowWidgets.add(FlTableCell(
+            model: model,
+            onEndEditing: onEndEditing,
+            onValueChanged: onValueChanged,
+            onLongPress: onLongPress,
+            onTap: onTap,
+            columnDefinition: cd,
+            width: colWidth,
+            paddings: model.autoResize && (colWidth < FlTableCell.clearIconSize + FlTableCell.iconSize + tableSize.cellPaddings.left + tableSize.cellPaddings.right) ? TableSize.paddingsSmall : tableSize.cellPaddings,
+            cellDividerWidth: tableSize.columnDividerWidth,
+            value: values[cdIndex],
+            readOnly: recordReadOnly?[cdIndex] ?? false,
+            rowIndex: index,
+            cellIndex: ++cellIndex,
+            cellFormat: recordFormats?.getCellFormat(index, cdIndex),
+            isSelected: isSelected && selectedColumn == cd.name,
+          ));
+        }
+      }
+    });
 
     Color? colRow;
 

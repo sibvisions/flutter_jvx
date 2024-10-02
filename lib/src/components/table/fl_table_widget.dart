@@ -29,7 +29,6 @@ import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
-import 'table_size.dart';
 
 typedef TableLongPressCallback = void Function(
     int rowIndex, String column, ICellEditor cellEditor, Offset pGlobalPosition);

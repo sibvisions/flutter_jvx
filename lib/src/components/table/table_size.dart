@@ -22,6 +22,7 @@ import 'package:flutter/widgets.dart';
 import '../../../flutter_jvx.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
+import '../../util/column_list.dart';
 import '../../util/extensions/double_extensions.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_cell.dart';
@@ -73,6 +74,8 @@ class TableSize {
 
   /// The size of the columns
   Map<String, double> columnWidths = {};
+
+  ColumnList columns = ColumnList.empty();
 
   /// the sum of calculatedColumnWidths
   double sumCalculatedColumnWidth = -1;
@@ -155,7 +158,7 @@ class TableSize {
       String columnLabel = tableModel.columnLabels[i];
 
       //Column headers get a * if they are mandatory
-      if (metaData.columnDefinition(columnName)?.nullable != true) {
+      if (metaData.columnDefinitions.byName(columnName)?.nullable != true) {
         columnLabel = "$columnLabel$mandatoryMark";
       }
 
@@ -171,7 +174,7 @@ class TableSize {
 
       int calculateUntilRow = math.min(rowsToCalculate, dataChunk.data.length);
 
-      ColumnDefinition? columnDefinition = dataChunk.columnDefinition(columnName);
+      ColumnDefinition? columnDefinition = dataChunk.columnDefinitions.byName(columnName);
 
       // If there is no column definition found for this column, we can't calculate the width based on data
       if (columnDefinition != null) {
@@ -206,7 +209,7 @@ class TableSize {
             List<CellFormat?> dataFormats = [];
             List<dynamic> dataForColumn = [];
 
-            int colIndex = dataChunk.columnDefinitionIndex(columnName);
+            int colIndex = dataChunk.columnDefinitions.indexByName(columnName);
 
             for (int i = 0; i < calculateUntilRow; i++) {
               dataRows.add(dataChunk.data[i]);
@@ -272,7 +275,7 @@ class TableSize {
     for (int i = 0; i < tableModel.columnNames.length; i++) {
       String columnName = tableModel.columnNames[i];
 
-      ColumnDefinition? columnDefinition = dataChunk.columnDefinition(columnName);
+      ColumnDefinition? columnDefinition = dataChunk.columnDefinitions.byName(columnName);
 
       if (columnDefinition != null) {
         if (columnDefinition.width == null) {
@@ -347,7 +350,7 @@ class TableSize {
     for (int i = 0; i < tableModel.columnNames.length; i++) {
       String columnName = tableModel.columnNames[i];
 
-      ColumnDefinition? columnDefinition = dataChunk.columnDefinition(columnName);
+      ColumnDefinition? columnDefinition = dataChunk.columnDefinitions.byName(columnName);
 
       if (columnDefinition != null) {
         if (columnDefinition.width == null) {

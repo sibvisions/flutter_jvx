@@ -253,7 +253,7 @@ abstract class ImageLoader {
   ///Checks whether the given [value] is base64 encoded
   static bool isBase64(dynamic value) {
     if (value.runtimeType == String) {
-      final RegExp rx = RegExp(r'^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$',
+      final RegExp rx = RegExp(r'^([A-Za-z\d+/]{4})*([A-Za-z\d+/]{3}=|[A-Za-z\d+/]{2}==)?$',
         multiLine: true,
         unicode: true,
       );

@@ -162,12 +162,12 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     highestValue = 1;
     highestStackedValue = 1;
 
-    int indexColumnIndex = dataChunk.columnDefinitionIndex(model.xColumnName);
+    int indexColumnIndex = dataChunk.columnDefinitions.indexByName(model.xColumnName);
 
     if (model.isPieChart()) {
       if (model.yColumnLabels.length == 1) {
         LinkedHashMap<String, num> mapOfIndexValues = LinkedHashMap();
-        int valueColumnIndex = dataChunk.columnDefinitionIndex(model.yColumnNames.first);
+        int valueColumnIndex = dataChunk.columnDefinitions.indexByName(model.yColumnNames.first);
 
         for (var dataRow in sortedDataRows) {
           String index = dataRow[indexColumnIndex].toString();
@@ -192,7 +192,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
         var dataRow = dataChunk.data[dataRecord.index]!;
 
         for (String valueColumnName in model.yColumnNames) {
-          num value = parseToNum(dataRow[dataChunk.columnDefinitionIndex(valueColumnName)]);
+          num value = parseToNum(dataRow[dataChunk.columnDefinitions.indexByName(valueColumnName)]);
 
           chartData.add(
             {
@@ -225,7 +225,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           String index = dataRow[indexColumnIndex];
 
           for (String groupName in model.yColumnNames) {
-            num value = parseToNum(dataRow[dataChunk.columnDefinitionIndex(groupName)]);
+            num value = parseToNum(dataRow[dataChunk.columnDefinitions.indexByName(groupName)]);
 
             Map<String, num> indexRow = mapOfIndexRows.putIfAbsent(index, () => LinkedHashMap());
             indexRow[groupName] = (indexRow[groupName] ?? 0.0) + value;
@@ -259,7 +259,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           num index = parseToNum(dataRow[indexColumnIndex]);
 
           for (String groupName in model.yColumnNames) {
-            num value = parseToNum(dataRow[dataChunk.columnDefinitionIndex(groupName)]);
+            num value = parseToNum(dataRow[dataChunk.columnDefinitions.indexByName(groupName)]);
 
             chartData.add(
               {
@@ -315,7 +315,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           // Find they key of the first row which has the "index" value of the graph inside the x column.
           var indexInDataChunk = dataChunk.data.entries.firstWhereOrNull((entry) {
             var dataRow = entry.value;
-            var indexColumnIndex = dataChunk.columnDefinitionIndex(model.xColumnName);
+            var indexColumnIndex = dataChunk.columnDefinitions.indexByName(model.xColumnName);
             var indexValueInDataRow = dataRow[indexColumnIndex];
 
             return indexValueInDataRow?.toString() == indexValue?.toString();
@@ -327,7 +327,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
         }
       } else {
 
-        ColumnDefinition? colDef = dataChunk.columnDefinition(model.xColumnName);
+        ColumnDefinition? colDef = dataChunk.columnDefinitions.byName(model.xColumnName);
 
         if (colDef != null && model.isCategoryChart(colDef.dataTypeIdentifier)) {
           // Category charts have a string column as their xColumn (index column).
@@ -338,7 +338,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
           // Find they key of the first row which has the "index" value of the graph inside the x column.
           var indexInDataChunk = dataChunk.data.entries.firstWhereOrNull((entry) {
             var dataRow = entry.value;
-            var indexColumnIndex = dataChunk.columnDefinitionIndex(model.xColumnName);
+            var indexColumnIndex = dataChunk.columnDefinitions.indexByName(model.xColumnName);
             var indexValueInDataRow = dataRow[indexColumnIndex];
 
             return indexValueInDataRow?.toString() == indexValue?.toString();

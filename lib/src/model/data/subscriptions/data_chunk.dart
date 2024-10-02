@@ -15,8 +15,8 @@
  */
 
 import '../../../service/data/i_data_service.dart';
+import '../../../util/column_list.dart';
 import '../../response/record_format.dart';
-import '../column_definition.dart';
 import 'data_record.dart';
 
 /// Used as return value when getting subscriptions data from [IDataService]
@@ -33,13 +33,7 @@ class DataChunk {
 
   /// List of all column definitions, order is the same as the columnNames requested in [DataSubscription],
   /// if left empty - will contain all columns
-  final List<ColumnDefinition> columnDefinitions;
-
-  /// All column definitions by name
-  final Map<String, ColumnDefinition> _columnDefinitionsByName = {};
-
-  /// All column definitions by index
-  final Map<String, int> _columnDefinitionsIndexByName = {};
+  final ColumnList columnDefinitions;
 
   /// Only true if server has no more data.
   final bool isAllFetched;
@@ -61,34 +55,18 @@ class DataChunk {
     required this.from,
     this.dataReadOnly,
     this.recordFormats,
-  }) {
-    columnDefinitions.forEach((cd) => _columnDefinitionsByName[cd.name] = cd);
-
-    for (int i = 0; i < columnDefinitions.length; i++) {
-      _columnDefinitionsIndexByName[columnDefinitions[i].name] = i;
-    }
-  }
+  });
 
   DataChunk.empty()
       : data = {},
         isAllFetched = false,
-        columnDefinitions = [],
+        columnDefinitions = ColumnList.empty(),
         from = 0,
         dataReadOnly = null,
         recordFormats = null;
 
-  ///Gets the index of the column for [name]
-  int columnDefinitionIndex(String name) {
-    return _columnDefinitionsIndexByName[name] ?? -1;
-  }
-
-  ///Gets the column definition for [name]
-  ColumnDefinition? columnDefinition(String name) {
-    return _columnDefinitionsByName[name];
-  }
-
   dynamic getValue(String name, int rowIndex) {
-    return data[rowIndex]?[columnDefinitionIndex(name)];
+    return data[rowIndex]?[columnDefinitions.indexByName(name)];
   }
 
   /// The record status of this row.

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/restore_data_command.dart';
+import '../../util/column_list.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
 /// A dialog that allows editing columns in a table.
@@ -19,7 +20,7 @@ class FlTableEditDialog extends StatefulWidget {
   final ValueNotifier<Map<String, dynamic>?> newValueNotifier;
 
   /// The column definitions of the columns to edit.
-  final List<ColumnDefinition> columnDefinitions;
+  final ColumnList columnDefinitions;
 
   /// The values of the row to edit.
   final Map<String, dynamic> values;

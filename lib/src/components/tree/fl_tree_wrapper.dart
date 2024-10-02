@@ -27,7 +27,6 @@ import '../../model/command/api/select_tree_command.dart';
 import '../../model/command/data/get_meta_data_command.dart';
 import '../../model/component/editor/cell_editor/linked/reference_definition.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -36,6 +35,7 @@ import '../../model/request/filter.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/column_list.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_tree_widget.dart';
@@ -437,28 +437,27 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   Filter _createPrimaryKeysFilter(
-      DalMetaData pMetaData, List<dynamic> pDataRow, List<ColumnDefinition> pColumnDefinitions) {
+      DalMetaData pMetaData, List<dynamic> pDataRow, ColumnList pColumnDefinitions) {
     return Filter(
       columnNames: pMetaData.primaryKeyColumns,
       values: pMetaData.primaryKeyColumns
-          .map((columnName) => pDataRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
+          .map((columnName) => pDataRow[pColumnDefinitions.indexByName(columnName)])
           .toList(),
     );
   }
 
-  String _createLabel(DalMetaData pMetaData, List<dynamic> pDataRow, List<ColumnDefinition> pColumnDefinitions) {
+  String _createLabel(DalMetaData pMetaData, List<dynamic> pDataRow, ColumnList pColumnDefinitions) {
     if (pMetaData.columnViewTree.isNotEmpty) {
       String label = "";
       for (String column in pMetaData.columnViewTree) {
         if (label.isNotEmpty) {
           label += " ";
         }
-        label += "${pDataRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == column)]}";
+        label += "${pDataRow[pColumnDefinitions.indexByName(column)]}";
       }
       return label;
     } else if (pMetaData.columnViewTable.isNotEmpty) {
-      return pDataRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == pMetaData.columnViewTable[0])]
-          .toString();
+      return pDataRow[pColumnDefinitions.indexByName(pMetaData.columnViewTable[0])].toString();
     } else {
       return "No column view";
     }

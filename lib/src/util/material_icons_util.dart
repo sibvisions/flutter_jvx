@@ -16,8 +16,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'parse_util.dart';
-
 abstract class MaterialIconUtil {
   static Icon? getIcon(String name, [double? size, Color? color, bool useDefault = true]) {
 

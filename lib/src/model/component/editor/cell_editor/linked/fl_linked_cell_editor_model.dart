@@ -19,8 +19,7 @@ import 'package:flutter/animation.dart';
 
 import '../../../../../service/api/shared/api_object_property.dart';
 import '../../../../../service/config/i_config_service.dart';
-import '../../../../data/column_definition.dart';
-import '../../../../data/data_book.dart';
+import '../../../../../util/column_list.dart';
 import '../../../fl_component_model.dart';
 import '../cell_editor_model.dart';
 import 'column_mapping.dart';
@@ -206,7 +205,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   /// depending on the concatMask and displayReferencedColumnName.
   String createDisplayString(
     List<String> columnViewTable,
-    List<ColumnDefinition> columnDefinitions,
+    ColumnList columnDefinitions,
     List<dynamic> dataRow,
   ) {
     String displayString = "";
@@ -255,7 +254,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   /// ''';
   /// ```
   Map<String, dynamic> createDisplayMapKey(
-    List<ColumnDefinition> columnDefinitions,
+    ColumnList columnDefinitions,
     List<dynamic> dataRow,
     ReferenceDefinition linkReference,
     String columnName, {
@@ -283,35 +282,32 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
     }
 
     var linkRefColumnIndex = linkReference.columnNames.indexWhere((e) => e == columnName);
-    var columnIndex = DataBook.getColumnIndex(columnDefinitions, columnName);
-    var refColumnIndex =
-        DataBook.getColumnIndex(columnDefinitions, linkReference.referencedColumnNames[linkRefColumnIndex]);
-    keyObject[linkReference.referencedColumnNames[linkRefColumnIndex]] = [
-      dataRow[columnIndex == -1 ? refColumnIndex : columnIndex].toString(),
-    ];
+    var columnIndex = columnDefinitions.indexByName(columnName);
+    var refColumnIndex = columnDefinitions.indexByName(linkReference.referencedColumnNames[linkRefColumnIndex]);
+
+    keyObject[linkReference.referencedColumnNames[linkRefColumnIndex]] = [dataRow[columnIndex == -1 ? refColumnIndex : columnIndex].toString(),];
 
     return keyObject;
   }
 
   /// Adds key columns to [keyObject].
   void addSearchColumnMappings(
-    List<ColumnDefinition> columnDefinitions,
+    ColumnList columnDefinitions,
     List<dynamic> dataRow,
     Map<String, dynamic> keyObject,
     ColumnMapping searchColumnMapping,
   ) {
     searchColumnMapping.columnNames.forEachIndexed((i, columnName) {
-      var columnIndex = DataBook.getColumnIndex(columnDefinitions, columnName);
-      var refColumnIndex = DataBook.getColumnIndex(columnDefinitions, searchColumnMapping.referencedColumnNames[i]);
-      keyObject[searchColumnMapping.referencedColumnNames[i]] = [
-        dataRow[columnIndex == -1 ? refColumnIndex : columnIndex].toString(),
-      ];
+      var columnIndex = columnDefinitions.indexByName(columnName);
+      var refColumnIndex = columnDefinitions.indexByName(searchColumnMapping.referencedColumnNames[i]);
+
+      keyObject[searchColumnMapping.referencedColumnNames[i]] = [dataRow[columnIndex == -1 ? refColumnIndex : columnIndex].toString(),];
     });
   }
 
   /// Adds compatible conditions recursively to [keyObject].
   void addAdditionalConditions(
-    List<ColumnDefinition> columnDefinitions,
+    ColumnList columnDefinitions,
     List<dynamic> dataRow,
     Map<String, dynamic> keyObject,
     BaseCondition additionalCondition,
@@ -323,13 +319,13 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
         // If dataProvider is build map then the map is initially built, then the dataRow already contains the referencedColumnNames
         if (dataProvider == null) {
           keyObject[additionalCondition.columnName] = [
-            dataRow[DataBook.getColumnIndex(columnDefinitions, additionalCondition.columnName)].toString(),
+            dataRow[columnDefinitions.indexByName(additionalCondition.columnName)].toString(),
           ];
         } else {
           // Check if the dataRow of the additionalCondition is the given dataProvider, if yes, use the value of the column of the dataRow, if not, use the value of the additionalCondition
           keyObject[additionalCondition.columnName] = [
             additionalCondition.dataRow == dataProvider
-                ? dataRow[DataBook.getColumnIndex(columnDefinitions, additionalCondition.dataRowColumnName)].toString()
+                ? dataRow[columnDefinitions.indexByName(additionalCondition.dataRowColumnName)].toString()
                 : additionalCondition.value.toString(),
           ];
         }

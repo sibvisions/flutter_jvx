@@ -35,6 +35,7 @@ import '../../../../model/request/filter.dart';
 import '../../../../service/command/i_command_service.dart';
 import '../../../../service/data/i_data_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
+import '../../../../util/column_list.dart';
 import '../../../table/fl_table_widget.dart';
 import '../../../table/table_size.dart';
 import '../../text_field/fl_text_field_widget.dart';
@@ -310,9 +311,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       }
 
       _chunkDataConcatMask = DataChunk(
-        columnDefinitions: [
-          ColumnDefinition.fromJson({"name": "concat", "label": "concat"})
-        ],
+        columnDefinitions: ColumnList.fromElement(ColumnDefinition.fromJson({"name": "concat", "label": "concat"})),
         data: concatMaskData,
         from: _chunkData!.from,
         isAllFetched: _chunkData!.isAllFetched,

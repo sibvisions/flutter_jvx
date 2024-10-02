@@ -15,6 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
+import '../../util/column_list.dart';
 import '../component/editor/cell_editor/linked/reference_definition.dart';
 import '../data/column_definition.dart';
 import 'api_response.dart';
@@ -34,7 +35,7 @@ class DalMetaDataResponse extends ApiResponse {
   ReferenceDefinition? rootReference;
 
   /// All column definitions in this dataBook
-  List<ColumnDefinition>? columns;
+  ColumnList? columns;
 
   /// All visible columns of this this dataBook if shown in a table
   List<String>? columnViewTable;
@@ -80,8 +81,7 @@ class DalMetaDataResponse extends ApiResponse {
       : dataProvider = json[ApiObjectProperty.dataProvider],
         columnViewTable = json[ApiObjectProperty.columnViewTable]?.cast<String>(),
         columnViewTree = json[ApiObjectProperty.columnViewTree]?.cast<String>(),
-        columns =
-            (json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList(),
+        columns = ColumnList.fromList((json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList()),
         readOnly = json[ApiObjectProperty.readOnly],
         deleteEnabled = json[ApiObjectProperty.deleteEnabled],
         updateEnabled = json[ApiObjectProperty.updateEnabled],

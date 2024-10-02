@@ -14,15 +14,14 @@
  * the License.
  */
 
-import '../column_definition.dart';
-import '../data_book.dart';
+import '../../../util/column_list.dart';
 
 enum RecordStatus {
   INSERTED,
   UPDATED,
   NONE;
 
-  static parseRecordStatus(List<dynamic>? values, List<ColumnDefinition> columnDefinitions) {
+  static parseRecordStatus(List<dynamic>? values, ColumnList columnDefinitions) {
     if (values == null || values.isEmpty || values.last == null || values.length <= columnDefinitions.length) {
       return NONE;
     }
@@ -55,7 +54,7 @@ class DataRecord {
   final String? selectedColumn;
 
   /// Column info
-  final List<ColumnDefinition> columnDefinitions;
+  final ColumnList columnDefinitions;
 
   /// Values of this row, order corresponds to order of [columnDefinitions]
   final List<dynamic> values;
@@ -75,11 +74,7 @@ class DataRecord {
     this.treePath,
   });
 
-  int getColumnIndex(String columnName) {
-    return DataBook.getColumnIndex(columnDefinitions, columnName);
-  }
-
   dynamic getValue(String columnName) {
-    return values[getColumnIndex(columnName)];
+    return values[columnDefinitions.indexByName(columnName)];
   }
 }

@@ -21,6 +21,7 @@ import '../../components.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/sort_definition.dart';
+import '../../util/column_list.dart';
 import 'fl_table_cell.dart';
 import 'fl_table_header_cell.dart';
 
@@ -29,7 +30,6 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Callbacks
   /// Gets called with the name of column when the user taps a cell.
   final TableHeaderTapCallback? onTap;
 
@@ -39,9 +39,8 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
   /// Gets called with the name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
 
-  // Fields
   /// The colum definitions to build.
-  final List<ColumnDefinition> columnDefinitions;
+  final ColumnList columnDefinitions;
 
   /// The width of the cell.
   final TableSize tableSize;
@@ -69,32 +68,37 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
 
   @override
   Widget build(BuildContext context) {
-    List<ColumnDefinition> columnsToShow =
-        columnDefinitions.where((element) => tableSize.columnWidths.containsKey(element.name)).toList();
 
-    columnsToShow.sort((a, b) => model.columnNames.indexOf(a.name).compareTo(model.columnNames.indexOf(b.name)));
+    List<Widget> rowWidgets = [];
 
     int cellIndex = -1;
-    List<Widget> rowWidgets = columnsToShow.map((columnDefinition) {
-      cellIndex += 1;
 
-      SortDefinition? sortDef =
-          sortDefinitions?.firstWhereOrNull((element) => element.columnName == columnDefinition.name);
+    //similar code is in fl_table_wrapper.dart -> _getColumnsToShow
+    model.columnNames.forEach((colName) {
+      ColumnDefinition? cd = columnDefinitions.byName(colName);
 
-      return FlTableHeaderCell(
-        model: model,
-        onLongPress: onLongPress,
-        onTap: onTap,
-        onDoubleTap: onDoubleTap,
-        columnDefinition: columnDefinition,
-        width: tableSize.columnWidths[columnDefinition.name]!,
-        paddings: model.autoResize && (tableSize.columnWidths[columnDefinition.name]! < FlTableCell.clearIconSize + FlTableCell.iconSize + tableSize.cellPaddings.left + tableSize.cellPaddings.right) ? TableSize.paddingsSmall : tableSize.cellPaddings,
-        cellDividerWidth: tableSize.columnDividerWidth,
-        cellIndex: cellIndex,
-        sortMode: sortDef?.mode,
-        sortIndex: sortDef != null && sortDefinitions!.length >= 2 ? sortDefinitions!.indexOf(sortDef) + 1 : null,
-      );
-    }).toList();
+      if (cd != null) {
+        double colWidth = tableSize.columnWidths[colName] ?? -1;
+
+        if (colWidth > 0) {
+          SortDefinition? sortDef = sortDefinitions?.firstWhereOrNull((element) => element.columnName == cd.name);
+
+          rowWidgets.add(FlTableHeaderCell(
+            model: model,
+            onLongPress: onLongPress,
+            onTap: onTap,
+            onDoubleTap: onDoubleTap,
+            columnDefinition: cd,
+            width: colWidth,
+            paddings: model.autoResize && (colWidth < FlTableCell.clearIconSize + FlTableCell.iconSize + tableSize.cellPaddings.left + tableSize.cellPaddings.right) ? TableSize.paddingsSmall : tableSize.cellPaddings,
+            cellDividerWidth: tableSize.columnDividerWidth,
+            cellIndex: cellIndex,
+            sortMode: sortDef?.mode,
+            sortIndex: sortDef != null && sortDefinitions!.length >= 2 ? sortDefinitions!.indexOf(sortDef) + 1 : null,
+          ));
+        }
+      }
+    });
 
     return SizedBox(
       height: tableSize.tableHeaderHeight,

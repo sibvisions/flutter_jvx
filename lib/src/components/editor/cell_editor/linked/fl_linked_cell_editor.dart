@@ -17,7 +17,6 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -343,7 +342,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   ReferenceDefinition get effectiveLinkReference {
-    ColumnDefinition? colDef = IDataService().getMetaData(dataProvider)?.columnDefinition(columnName);
+    ColumnDefinition? colDef = IDataService().getMetaData(dataProvider)?.columnDefinitions.byName(columnName);
 
     return (colDef?.cellEditorModel is FlLinkedCellEditorModel)
         ? (colDef!.cellEditorModel as FlLinkedCellEditorModel).linkReference
