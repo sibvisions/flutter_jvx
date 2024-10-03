@@ -28,19 +28,19 @@ class DalMetaDataResponse extends ApiResponse {
   /// The reference of this response
   ReferenceDefinition? masterReference;
 
-  /// The master reference of this databook.
-  ReferenceDefinition? detailReference;
+  /// The detail references of this data book.
+  List<ReferenceDefinition>? detailReferences;
 
-  /// The master reference of this databook.
+  /// The master reference of this data book.
   ReferenceDefinition? rootReference;
 
-  /// All column definitions in this dataBook
-  ColumnList? columns;
+  /// All column definitions in this data book
+  ColumnList? columnDefinitions;
 
-  /// All visible columns of this this dataBook if shown in a table
+  /// All visible columns of this this data book if shown in a table
   List<String>? columnViewTable;
 
-  /// All visible columns of this this dataBook if shown in a tree
+  /// All visible columns of this this data book if shown in a tree
   List<String>? columnViewTree = [];
 
   /// The path to the dataBook
@@ -81,7 +81,7 @@ class DalMetaDataResponse extends ApiResponse {
       : dataProvider = json[ApiObjectProperty.dataProvider],
         columnViewTable = json[ApiObjectProperty.columnViewTable]?.cast<String>(),
         columnViewTree = json[ApiObjectProperty.columnViewTree]?.cast<String>(),
-        columns = ColumnList.fromList((json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList()),
+        columnDefinitions = ColumnList.fromList((json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList()),
         readOnly = json[ApiObjectProperty.readOnly],
         deleteEnabled = json[ApiObjectProperty.deleteEnabled],
         updateEnabled = json[ApiObjectProperty.updateEnabled],
@@ -93,9 +93,7 @@ class DalMetaDataResponse extends ApiResponse {
         masterReference = json[ApiObjectProperty.masterReference] != null
             ? ReferenceDefinition.fromJson(json[ApiObjectProperty.masterReference])
             : null,
-        detailReference = json[ApiObjectProperty.detailReference] != null
-            ? ReferenceDefinition.fromJson(json[ApiObjectProperty.detailReference])
-            : null,
+        detailReferences = (json[ApiObjectProperty.detailReferences] as List<dynamic>?)?.map((e) => ReferenceDefinition.fromJson(e)).toList(),
         rootReference = json[ApiObjectProperty.rootReference] != null
             ? ReferenceDefinition.fromJson(json[ApiObjectProperty.rootReference])
             : null,

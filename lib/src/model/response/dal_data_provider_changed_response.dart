@@ -70,6 +70,12 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// If data book allows insertion of any row.
   final bool? modelInsertEnabled;
 
+  /// If data book is already closed.
+  final bool? closed;
+
+  /// If the row 0 is an additional row (Not deletable)
+  final bool? additionalRowVisible;
+
   /// The tree path
   final List<int>? treePath;
 
@@ -79,7 +85,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// The changed sort definitions
   final SortList? sortDefinitions;
 
-  /// The cell formats for this dataprovider.
+  /// The cell formats for this data provider.
   final Map<String, RecordFormat>? recordFormats;
 
   /// Saves which records are read only and which are not.
@@ -92,8 +98,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
   DalDataProviderChangedResponse.fromJson(super.json)
       : dataProvider = json[ApiObjectProperty.dataProvider],
         reload = json[ApiObjectProperty.reload],
-        changedColumns =
-            (json[ApiObjectProperty.changedColumns] as List<dynamic>?)?.map((e) => ChangedColumn.fromJson(e)).toList(),
+        changedColumns = (json[ApiObjectProperty.changedColumns] as List<dynamic>?)?.map((e) => ChangedColumn.fromJson(e)).toList(),
         selectedRow = json[ApiObjectProperty.selectedRow],
         deletedRow = json[ApiObjectProperty.deletedRow],
         changedColumnNames = json[ApiObjectProperty.changedColumnNames]?.cast<String>(),
@@ -115,6 +120,8 @@ class DalDataProviderChangedResponse extends ApiResponse {
             ? List.from(json[ApiObjectProperty.recordReadOnly][ApiObjectProperty.records])
             : null,
         sortDefinitions = SortList.fromList((json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList()),
+        closed = json[ApiObjectProperty.closed],
+        additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
         super.fromJson();
 }
 

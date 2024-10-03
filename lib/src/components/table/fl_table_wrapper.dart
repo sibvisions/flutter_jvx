@@ -1222,7 +1222,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   List<ColumnDefinition> _getColumnsToShow() {
-    if (columnsToShow == null) {
+    if (columnsToShow == null || columnsToShow!.isEmpty) {
       columnsToShow = ColumnList.empty();
 
       model.columnNames.forEach((colName) {

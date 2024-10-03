@@ -46,11 +46,11 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
         ),
       );
     } else {
-      if (IDataService().updateMetaDataChangedResponse(pChangedResponse: pResponse)) {
+      if (IDataService().updateMetaDataChanged(pChangedResponse: pResponse)) {
         IUiService().notifyMetaDataChange(pDataProvider: pResponse.dataProvider);
       }
-      bool dataChanged = IDataService().updateDataChangedResponse(pChangedResponse: pResponse);
-      bool selectionChanged = IDataService().updateSelectionChangedResponse(pChangedResponse: pResponse);
+      bool dataChanged = IDataService().updateDataChanged(pChangedResponse: pResponse);
+      bool selectionChanged = IDataService().updateSelectionChanged(pChangedResponse: pResponse);
 
       if (dataChanged) {
         IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);

@@ -104,7 +104,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand pCommand) async {
-    IDataService().updateData(pCommand: pCommand);
+    IDataService().updateFromFetch(pCommand: pCommand);
 
     return [];
   }

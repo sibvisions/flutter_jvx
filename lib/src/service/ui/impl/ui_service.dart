@@ -728,12 +728,14 @@ class UiService implements IUiService {
     required String pDataProvider,
   }) {
     _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
-      // Check if selected data changed
-      ICommandService().sendCommand(GetMetaDataCommand(
-        subId: sub.id,
-        reason: "Notify data was called with pFrom -1",
-        dataProvider: sub.dataProvider,
-      ));
+      if (sub.onMetaData != null) {
+        // Check if selected data changed
+        ICommandService().sendCommand(GetMetaDataCommand(
+          subId: sub.id,
+          reason: "Notify data was called with pFrom -1",
+          dataProvider: sub.dataProvider,
+        ));
+      }
     });
   }
 

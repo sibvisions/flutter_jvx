@@ -117,7 +117,7 @@ abstract class ApiObjectProperty {
   static const String borderVisible = "borderVisible";
   static const String detectEndNode = "detectEndNode";
   static const String masterReference = "masterReference";
-  static const String detailReference = "detailReference";
+  static const String detailReferences = "detailReferences";
   static const String rootReference = "rootReference";
   static const String saveLock = "saveLock";
   static const String editLock = "editLock";
@@ -298,6 +298,7 @@ abstract class ApiObjectProperty {
   static const String recordReadOnly = "recordReadOnly";
   static const String format = "format";
   static const String masterRow = "masterRow";
+  static const String closed = "closed";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";

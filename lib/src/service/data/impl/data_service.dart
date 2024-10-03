@@ -67,7 +67,7 @@ class DataService implements IDataService {
   }
 
   @override
-  List<BaseCommand> updateData({required SaveFetchDataCommand pCommand}) {
+  List<BaseCommand> updateFromFetch({required SaveFetchDataCommand pCommand}) {
     DataBook dataBook =
         dataBooks[pCommand.response.dataProvider] ??= DataBook(dataProvider: pCommand.response.dataProvider);
 
@@ -76,23 +76,23 @@ class DataService implements IDataService {
       dataBook.selectedRow = -1;
     }
 
-    dataBook.saveFromFetch(pCommand: pCommand);
+    dataBook.updateFromFetch(pCommand: pCommand);
 
     return [];
   }
 
   @override
-  bool updateDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
+  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
     DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
     if (dataBook == null) {
       return false;
     }
 
-    return dataBook.saveFromChangedResponse(pChangedResponse: pChangedResponse);
+    return dataBook.updateDataChanged(pChangedResponse: pChangedResponse);
   }
 
   @override
-  bool updateSelectionChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
+  bool updateSelectionChanged({required DalDataProviderChangedResponse pChangedResponse}) {
     DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
     if (dataBook == null) {
       return false;
@@ -166,14 +166,19 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateMetaDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
-    DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
-    DalMetaData? metaData = dataBook?.metaData;
+  bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
+    DalMetaData? metaData = dataBooks[pChangedResponse.dataProvider]?.metaData;
+
     if (metaData == null) {
       return false;
     }
 
     bool anyChanges = false;
+
+    if (pChangedResponse.readOnly != null && metaData.readOnly != pChangedResponse.readOnly) {
+      metaData.readOnly = pChangedResponse.readOnly!;
+      anyChanges = true;
+    }
 
     if (pChangedResponse.insertEnabled != null && metaData.insertEnabled != pChangedResponse.insertEnabled) {
       metaData.insertEnabled = pChangedResponse.insertEnabled!;
@@ -190,26 +195,23 @@ class DataService implements IDataService {
       anyChanges = true;
     }
 
-    if (pChangedResponse.modelInsertEnabled != null &&
-        metaData.modelInsertEnabled != pChangedResponse.modelInsertEnabled) {
+    if (pChangedResponse.modelInsertEnabled != null && metaData.modelInsertEnabled != pChangedResponse.modelInsertEnabled) {
       metaData.modelInsertEnabled = pChangedResponse.modelInsertEnabled!;
       anyChanges = true;
     }
 
-    if (pChangedResponse.modelUpdateEnabled != null &&
-        metaData.modelUpdateEnabled != pChangedResponse.modelUpdateEnabled) {
+    if (pChangedResponse.modelUpdateEnabled != null && metaData.modelUpdateEnabled != pChangedResponse.modelUpdateEnabled) {
       metaData.modelUpdateEnabled = pChangedResponse.modelUpdateEnabled!;
       anyChanges = true;
     }
 
-    if (pChangedResponse.modelDeleteEnabled != null &&
-        metaData.modelDeleteEnabled != pChangedResponse.modelDeleteEnabled) {
+    if (pChangedResponse.modelDeleteEnabled != null && metaData.modelDeleteEnabled != pChangedResponse.modelDeleteEnabled) {
       metaData.modelDeleteEnabled = pChangedResponse.modelDeleteEnabled!;
       anyChanges = true;
     }
 
-    if (pChangedResponse.readOnly != null && metaData.readOnly != pChangedResponse.readOnly) {
-      metaData.readOnly = pChangedResponse.readOnly!;
+    if (pChangedResponse.additionalRowVisible != null && metaData.additionalRowVisible != pChangedResponse.additionalRowVisible!) {
+      metaData.additionalRowVisible = pChangedResponse.additionalRowVisible!;
       anyChanges = true;
     }
 

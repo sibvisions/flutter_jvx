@@ -127,8 +127,8 @@ class DataBook {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Saves all data from a fetchRequest
-  void saveFromFetch({required SaveFetchDataCommand pCommand}) {
+  /// Updates all data from a fetch request
+  void updateFromFetch({required SaveFetchDataCommand pCommand}) {
     var pFetchResponse = pCommand.response;
 
     Map<int, List> dataMap;
@@ -230,9 +230,10 @@ class DataBook {
     );
   }
 
-  /// Saves all data from a [DalDataProviderChangedResponse]
-  bool saveFromChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
+  /// Updates all data from a [DalDataProviderChangedResponse]
+  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
     bool changed = false;
+
     if (pChangedResponse.json.containsKey(ApiObjectProperty.sortDefinition)) {
       changed = updateSortDefinitions(pChangedResponse.sortDefinitions);
     }
@@ -289,7 +290,7 @@ class DataBook {
       String columnName = pChangedResponse.changedColumnNames![index];
       dynamic columnData = pChangedResponse.changedValues![index];
 
-      int intColIndex = metaData?.columnDefinitions.indexWhere((element) => element.name == columnName) ?? -1;
+      int intColIndex = metaData?.columnDefinitions.indexByName(columnName) ?? -1;
       if (intColIndex >= 0) {
         rowData[intColIndex] = columnData;
         changed = true;
@@ -559,8 +560,8 @@ class DalMetaData {
   /// The master reference of this data book.
   ReferenceDefinition? masterReference;
 
-  /// The detail reference of this data book.
-  ReferenceDefinition? detailReference;
+  /// The detail references of this data book.
+  List<ReferenceDefinition>? detailReferences;
 
   /// The root reference of this data book.
   ReferenceDefinition? rootReference;
@@ -623,16 +624,7 @@ class DalMetaData {
   DalMetaData(this.dataProvider);
 
   DalMetaData.fromJson(Map<String, dynamic> pJson)
-      : masterReference = pJson[ApiObjectProperty.masterReference] != null
-            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.masterReference])
-            : null,
-        detailReference = pJson[ApiObjectProperty.detailReference] != null
-            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.detailReference])
-            : null,
-        rootReference = pJson[ApiObjectProperty.rootReference] != null
-            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.rootReference])
-            : null,
-        dataProvider = pJson[ApiObjectProperty.dataProvider],
+      : dataProvider = pJson[ApiObjectProperty.dataProvider],
         columnViewTable = pJson[ApiObjectProperty.columnViewTable]?.cast<String>(),
         columnViewTree = pJson[ApiObjectProperty.columnViewTree]?.cast<String>(),
         columnDefinitions = ColumnList((pJson[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList() ?? []),
@@ -641,9 +633,16 @@ class DalMetaData {
         updateEnabled = pJson[ApiObjectProperty.updateEnabled],
         insertEnabled = pJson[ApiObjectProperty.insertEnabled],
         modelDeleteEnabled = pJson[ApiObjectProperty.modelDeleteEnabled],
-        modelInsertEnabled = pJson[ApiObjectProperty.modelInsertEnabled],
         modelUpdateEnabled = pJson[ApiObjectProperty.modelUpdateEnabled],
+        modelInsertEnabled = pJson[ApiObjectProperty.modelInsertEnabled],
         primaryKeyColumns = pJson[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
+        masterReference = pJson[ApiObjectProperty.masterReference] != null
+            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.masterReference])
+            : null,
+        detailReferences = (pJson[ApiObjectProperty.detailReferences] as List<dynamic>?)?.map((e) => ReferenceDefinition.fromJson(e)).toList(),
+        rootReference = pJson[ApiObjectProperty.rootReference] != null
+            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.rootReference])
+            : null,
         additionalRowVisible = pJson[ApiObjectProperty.additionalRowVisible],
         json = pJson["json"] ?? {} {
     changedProperties = json.keys.toList();
@@ -661,17 +660,8 @@ class DalMetaData {
     if (pResponse.columnViewTree != null) {
       columnViewTree = pResponse.columnViewTree!;
     }
-    if (pResponse.masterReference != null) {
-      masterReference = pResponse.masterReference!;
-    }
-    if (pResponse.detailReference != null) {
-      detailReference = pResponse.detailReference!;
-    }
-    if (pResponse.rootReference != null) {
-      rootReference = pResponse.rootReference!;
-    }
-    if (pResponse.columns != null) {
-      columnDefinitions = pResponse.columns!;
+    if (pResponse.columnDefinitions != null) {
+      columnDefinitions = pResponse.columnDefinitions!;
 
       createdReferencedCellEditors.forEach((element) => element.dispose());
       columnDefinitions.forEach((colDef) {
@@ -681,29 +671,38 @@ class DalMetaData {
         }
       });
     }
-    if (pResponse.primaryKeyColumns != null) {
-      primaryKeyColumns = pResponse.primaryKeyColumns!;
+    if (pResponse.readOnly != null) {
+      readOnly = pResponse.readOnly!;
     }
     if (pResponse.deleteEnabled != null) {
       deleteEnabled = pResponse.deleteEnabled!;
     }
-    if (pResponse.insertEnabled != null) {
-      insertEnabled = pResponse.insertEnabled!;
-    }
     if (pResponse.updateEnabled != null) {
       updateEnabled = pResponse.updateEnabled!;
+    }
+    if (pResponse.insertEnabled != null) {
+      insertEnabled = pResponse.insertEnabled!;
     }
     if (pResponse.modelDeleteEnabled != null) {
       modelDeleteEnabled = pResponse.modelDeleteEnabled!;
     }
-    if (pResponse.modelInsertEnabled != null) {
-      modelInsertEnabled = pResponse.modelInsertEnabled!;
-    }
     if (pResponse.modelUpdateEnabled != null) {
       modelUpdateEnabled = pResponse.modelUpdateEnabled!;
     }
-    if (pResponse.readOnly != null) {
-      readOnly = pResponse.readOnly!;
+    if (pResponse.modelInsertEnabled != null) {
+      modelInsertEnabled = pResponse.modelInsertEnabled!;
+    }
+    if (pResponse.primaryKeyColumns != null) {
+      primaryKeyColumns = pResponse.primaryKeyColumns!;
+    }
+    if (pResponse.masterReference != null) {
+      masterReference = pResponse.masterReference!;
+    }
+    if (pResponse.detailReferences != null) {
+      detailReferences = pResponse.detailReferences!;
+    }
+    if (pResponse.rootReference != null) {
+      rootReference = pResponse.rootReference!;
     }
     if (pResponse.additionalRowVisible != null) {
       additionalRowVisible = pResponse.additionalRowVisible!;
@@ -718,14 +717,10 @@ class DalMetaData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data[ApiObjectProperty.masterReference] = masterReference?.toJson();
-    data[ApiObjectProperty.detailReference] = detailReference?.toJson();
-    data[ApiObjectProperty.rootReference] = rootReference?.toJson();
-    data[ApiObjectProperty.columns] =
-        columnDefinitions.isNotEmpty ? columnDefinitions.map((e) => e.toJson()).toList() : null;
     data[ApiObjectProperty.dataProvider] = dataProvider;
     data[ApiObjectProperty.columnViewTable] = columnViewTable;
     data[ApiObjectProperty.columnViewTree] = columnViewTree;
+    data[ApiObjectProperty.columns] = columnDefinitions.isNotEmpty ? columnDefinitions.map((e) => e.toJson()).toList() : null;
     data[ApiObjectProperty.readOnly] = readOnly;
     data[ApiObjectProperty.deleteEnabled] = deleteEnabled;
     data[ApiObjectProperty.updateEnabled] = updateEnabled;
@@ -734,6 +729,9 @@ class DalMetaData {
     data[ApiObjectProperty.modelUpdateEnabled] = modelUpdateEnabled;
     data[ApiObjectProperty.modelInsertEnabled] = modelInsertEnabled;
     data[ApiObjectProperty.primaryKeyColumns] = primaryKeyColumns;
+    data[ApiObjectProperty.masterReference] = masterReference?.toJson();
+    data[ApiObjectProperty.detailReferences] = (detailReferences != null && detailReferences!.isNotEmpty) ? detailReferences!.map((e) => e.toJson()).toList() : null;
+    data[ApiObjectProperty.rootReference] = rootReference?.toJson();
     data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
     data["json"] = json;
     return data;
