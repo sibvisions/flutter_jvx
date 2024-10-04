@@ -279,15 +279,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             Widget content = Builder(
               builder: (context) => WillPopScope(
                 onWillPop: () => _onWillPop(context),
-                  child: Container(
-                    color: safeAreaColor,
-                    child: SafeArea(
-                      child: Container(
-                        color: safeAreaColor != null ? Theme.of(context).colorScheme.background : null,
-                        child: body!,
-                      )
-                  )
-                ),
+                  child: _wrapBody(body!)
               ),
             );
 
@@ -304,6 +296,23 @@ class WorkScreenPageState extends State<WorkScreenPage> {
         );
       },
     );
+  }
+
+  ///Wraps the body (= screen) with a SafeArea or without if noSafeArea property is set
+  Widget _wrapBody(Widget body) {
+    if (model?.noSafeArea == true) {
+      return body;
+    } else {
+      return Container(
+          color: safeAreaColor,
+          child: SafeArea(
+              child: Container(
+                color: safeAreaColor != null ? Theme.of(context).colorScheme.background : null,
+                child: body,
+              )
+          )
+      );
+    }
   }
 
   Widget _buildWorkScreen(BuildContext context, bool isOffline) {

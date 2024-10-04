@@ -28,17 +28,21 @@ class FlPanelModel extends FlComponentModel {
   /// If a panel should the same background color as the default editor background color.
   static const String DEFAULT_EDITOR_BACKGROUND_STYLE = "f_default_editorbackground";
 
-  /// If a workscreen should not have a back button.
+  /// If a work-screen should not have a back button.
   static const String NO_BACK_STYLE = "f_no_back";
 
-  /// If a workscreen should route to app overview on back.
+  /// If a work-screen should route to app overview on back.
   static const String OVERVIEW_BACK_STYLE = "f_overview_back";
 
-  /// If a workscreen should have no menu.
+  /// If a work-screen should have no menu.
   static const String NO_MENU_STYLE = "f_no_menu";
 
-  /// If a workscreen should have a simple menu.
+  /// If a work-screen should have no safe area.
+  static const String NO_SAFE_AREA_STYLE = "f_no_safe_area";
+
+  /// If a work-screen should have a simple menu.
   static const String SIMPLE_MENU_STYLE = "f_simple_menu";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,6 +94,9 @@ class FlPanelModel extends FlComponentModel {
 
   /// If the screen has a drawer menu.
   bool get noMenu => styles.contains(NO_MENU_STYLE) || hasSimpleMenu;
+
+  /// If the screen has no safe are.
+  bool get noSafeArea => styles.contains(NO_SAFE_AREA_STYLE);
 
   /// If the screen has a simple menu.
   bool get hasSimpleMenu => styles.contains(SIMPLE_MENU_STYLE);
