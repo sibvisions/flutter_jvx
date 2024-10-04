@@ -75,7 +75,6 @@ abstract class ImageLoader {
   /// Loads any server sent image string.
   static Widget loadImage(
     String imageDefinition, {
-    ImageProvider? imageProvider,
     Function(Size, bool)? imageStreamListener,
     double? width,
     double? height,
@@ -96,7 +95,7 @@ abstract class ImageLoader {
         );
       }
 
-      imageProvider ??= ImageLoader.getImageProvider(imageDefinition, imageStreamListener: imageStreamListener);
+      ImageProvider? imageProvider = getImageProvider(imageDefinition, imageStreamListener: imageStreamListener);
 
       if (imageProvider != null) {
         List<String> split = imageDefinition.split(",");
@@ -141,8 +140,7 @@ abstract class ImageLoader {
   static ImageProvider? getImageProvider(
     String? imageDefinition, {
     App? app,
-    Function(Size, bool)? imageStreamListener,
-    bool base64 = false,
+    Function(Size, bool)? imageStreamListener
   }) {
     if (imageDefinition == null || imageDefinition.isEmpty) {
       return null;
@@ -150,8 +148,22 @@ abstract class ImageLoader {
 
     ImageProvider imageProvider;
 
-    if (base64) {
-      imageProvider = MemoryImage(base64Decode(imageDefinition));
+    Uint8List? base64Decoded;
+
+    if (isBase64(imageDefinition)) {
+      try {
+        base64Decoded = base64Decode(imageDefinition);
+      } catch (ex) {
+        FlutterUI.log.e(ex);
+        //decode problem -
+      }
+    }
+
+    double? width_;
+    double? height_;
+
+    if (base64Decoded != null) {
+      imageProvider = MemoryImage(base64Decoded);
     }
     else {
       Uri? parsedURI;
@@ -167,6 +179,13 @@ abstract class ImageLoader {
         String imageDefinition_ = imageDefinition;
         if (commaIndex >= 0) {
           imageDefinition_ = imageDefinition.substring(0, commaIndex);
+
+          List<String> split = imageDefinition.substring(commaIndex + 1).split(",");
+
+          if (split.length >= 2) {
+            width_ = double.tryParse(split[0]);
+            height_ = double.tryParse(split[1]);
+          }
         }
 
         if (imageDefinition_.startsWith("/")) {
@@ -202,7 +221,12 @@ abstract class ImageLoader {
       }
     }
 
-    _addImageListener(imageProvider, imageStreamListener);
+    if (width_ != null || height_ != null) {
+      imageStreamListener?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
+    }
+    else {
+      _addImageListener(imageProvider, imageStreamListener);
+    }
 
     return imageProvider;
   }

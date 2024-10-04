@@ -86,7 +86,6 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
         if (imageValue is String) {
           contentWidget = ImageLoader.loadImage(
             imageValue,
-            imageProvider: ImageLoader.getImageProvider(imageValue, base64: true),
             fit: BoxFit.scaleDown,
           );
         } else if (imageValue is Uint8List) {

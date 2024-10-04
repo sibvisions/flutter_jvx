@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../util/image/image_loader.dart';
@@ -30,9 +31,9 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   final VoidCallback? onPress;
 
-  final ImageProvider? imageProvider;
+  final Widget? image;
 
-  final Widget? directImage;
+  final Function(Size, bool)? imageStreamListener;
 
   final bool inTable;
 
@@ -43,21 +44,21 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   const FlIconWidget({
     super.key,
     required super.model,
-    this.imageProvider,
-    this.directImage,
+    this.image,
+    this.imageStreamListener,
     this.onPress,
     this.inTable = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    Widget? child = directImage ?? getImage(imageProvider);
+    Widget? child = image ?? _loadImage();
 
     if (model.toolTipText != null) {
       child = Tooltip(message: model.toolTipText!, child: child);
     }
 
-    if (onPress != null || directImage != null) {
+    if (onPress != null) {
       return GestureDetector(
         onTap: model.isEnabled ? onPress : null,
         child: DecoratedBox(
@@ -67,7 +68,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       );
     } else {
       return GestureDetector(
-        onTap: imageProvider != null
+        onTap: image == null && !IconUtil.isFontIcon(model.image)
             ? () => showDialog(
                   context: context,
                   builder: (context) {
@@ -79,7 +80,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
                         ),
                         initialScale: PhotoViewComputedScale.contained * 0.75,
                         minScale: PhotoViewComputedScale.contained * 0.1,
-                        imageProvider: imageProvider,
+                        imageProvider: ImageLoader.getImageProvider(model.image),
                       ),
                     );
                   },
@@ -119,8 +120,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     return BoxFit.none;
   }
 
-  Widget? getImage(ImageProvider? imageProvider) {
-    if (model.image.isEmpty) {
+  Widget? _loadImage() {
+    if (model.image == null || model.image!.isEmpty) {
       return null;
     }
 
@@ -146,8 +147,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
             width: width,
             height: height,
             child: ImageLoader.loadImage(
-              model.image,
-              imageProvider: imageProvider,
+              model.image!,
+              imageStreamListener: imageStreamListener,
               color: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
               fit: BoxFit.fill,
             ),
@@ -156,8 +157,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       });
     } else {
       return ImageLoader.loadImage(
-        model.image,
-        imageProvider: imageProvider,
+        model.image!,
+        imageStreamListener: imageStreamListener,
         color: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
         fit: boxFit,
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],

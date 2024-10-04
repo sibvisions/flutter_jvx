@@ -76,13 +76,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
 
     applyEditorJson(widgetModel, pJson);
 
-    Widget image;
-    if (currentIndex >= 0) {
-      image = model.listImages[currentIndex];
-    } else {
-      image = model.defaultImage;
-    }
-
     bool isEditable = true;
     if (pJson?.containsKey(ApiObjectProperty.cellEditorEditable) == true) {
       isEditable = pJson![ApiObjectProperty.cellEditorEditable];
@@ -93,7 +86,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
       width: model.imageSize,
       child: FlIconWidget(
         model: widgetModel,
-        directImage: image,
+        image: currentIndex >= 0 ? model.listImages[currentIndex] : model.defaultImage,
         inTable: isInTable,
         onPress: isEditable ? _onPress : null,
       ),

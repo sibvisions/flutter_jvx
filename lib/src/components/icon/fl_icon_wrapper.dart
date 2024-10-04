@@ -20,7 +20,6 @@ import 'package:flutter/widgets.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
-import '../../util/image/image_loader.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_icon_widget.dart';
@@ -33,29 +32,11 @@ class FlIconWrapper extends BaseCompWrapperWidget<FlIconModel> {
 }
 
 class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
-  ImageProvider? imageProvider;
-
   _FlIconWrapperState() : super();
 
   @override
-  void initState() {
-    super.initState();
-    createImageProvider();
-  }
-
-  @override
-  void modelUpdated() {
-    createImageProvider();
-    super.modelUpdated();
-  }
-
-  void createImageProvider() {
-    imageProvider = ImageLoader.getImageProvider(model.image);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final FlIconWidget widget = FlIconWidget(model: model, imageProvider: imageProvider);
+    final FlIconWidget widget = FlIconWidget(model: model);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
@@ -66,7 +47,7 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
 
   @override
   Size calculateSize(BuildContext context) {
-    return model.image.isNotEmpty ? model.originalSize : Size.zero;
+    return model.image != null && model.image!.isNotEmpty ? model.originalSize : Size.zero;
   }
 
   @override
