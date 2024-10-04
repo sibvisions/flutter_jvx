@@ -16,7 +16,9 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
@@ -40,6 +42,7 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
+    print(model.center);
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
@@ -48,21 +51,22 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
             onPressed!(point);
           }
         },
-        onPositionChanged: (MapPosition mapPosition, bool boolean) {
+        onPositionChanged: (MapCamera camera, bool hasGesture) {
           if (model.pointSelectionLockedOnCenter && onPressed != null) {
-            onPressed!(mapController?.center);
+            onPressed!(mapController?.camera.center);
           }
         },
-        zoom: model.zoomLevel,
+        initialZoom: model.zoomLevel,
         // Seems to be necessary even though it's the fallback
         minZoom: 0,
         maxZoom: 18,
-        center: model.center,
+        initialCenter: LatLng.fromSexagesimal("48°12'30.56\"N, 16°22'19.49\"E"), //Vienna
       ),
       children: [
         TileLayer(
-          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: const ["a", "b", "c"],
+          urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+          userAgentPackageName: 'com.sibvisions.flutter_jvx',
+          tileProvider: CancellableNetworkTileProvider(),
         ),
         PolygonLayer(
           polygons: polygons,

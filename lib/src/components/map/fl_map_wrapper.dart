@@ -152,7 +152,6 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
     for (List<LatLng> pointList in polygonPointsGrouped.values) {
       polygons.add(Polygon(
         points: pointList,
-        isFilled: true,
         color: model.fillColor,
         borderColor: model.lineColor,
         borderStrokeWidth: 1,
@@ -178,6 +177,11 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
 
       markers.add(getMarker(image, point));
     }
+
+    if (model.center == null && markers.isNotEmpty) {
+      mapController.move(markers.last.point, mapController.camera.zoom);
+    }
+
     setState(() {});
   }
 
@@ -195,14 +199,14 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   }
 
   Marker getMarker(String? image, LatLng point) {
-    const double markerSize = 64;
+    const double markerSize = 32;
 
     if (image != null || model.markerImage != null) {
       return Marker(
         point: point,
         width: markerSize,
         height: markerSize,
-        builder: (_) => ImageLoader.loadImage(
+        child: ImageLoader.loadImage(
           image ?? model.markerImage!,
           width: markerSize,
           height: markerSize,
@@ -214,9 +218,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
         point: point,
         width: markerSize,
         height: markerSize,
-        anchorPos: AnchorPos.exactly(Anchor(markerSize / 2, 0)),
-        rotateAlignment: Alignment.bottomCenter,
-        builder: (_) => Align(
+        child: Align(
           alignment: Alignment.bottomCenter,
           child: SizedBox(
             height: markerSize - 5,

@@ -22,7 +22,7 @@ class FlMapModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Where the map should be centered
-  LatLng? center = const LatLng(48, 17);
+  LatLng? center;
 
   // List of Markers that will be shown on the map
   List<Marker> markers = [];
@@ -31,10 +31,10 @@ class FlMapModel extends FlComponentModel {
   List<Polygon> polygons = [];
 
   // Zoom factor of map
-  double zoomLevel = 13;
+  double zoomLevel = 8.5;
 
   // Fill Color
-  Color fillColor = Colors.white;
+  Color? fillColor;
 
   // Line Color
   Color lineColor = JVxColors.LIGHTER_BLACK;
