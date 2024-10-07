@@ -95,15 +95,22 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     super.initState();
 
     //also retrieves data
-    subscribe();
+    _subscribe();
+  }
+
+  @override
+  void beforeModelUpdate(Set<String> changedProperties) {
+    if (changedProperties.contains(ApiObjectProperty.cellEditor)) {
+      _unsubscribe();
+    }
+
+    super.beforeModelUpdate(changedProperties);
   }
 
   @override
   modelUpdated() {
     // If a change of cell editors has occurred.
     if (model.changedCellEditor) {
-      unsubscribe();
-
       recreateCellEditor();
 
       model.applyComponentInformation(cellEditor.createWidgetModel());
@@ -123,7 +130,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   void dispose() {
+    _unsubscribe();
+
     cellEditor.dispose();
+
     super.dispose();
   }
 
@@ -181,7 +191,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Subscribes to the service and registers the set value call back.
-  void subscribe([bool pImmediatelyRetrieveData = true]) {
+  void _subscribe([bool pImmediatelyRetrieveData = true]) {
     if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -202,7 +212,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Unsubscribes the callback of the cell editor from value changes.
-  void unsubscribe() {
+  void _unsubscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
@@ -349,7 +359,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     cellEditor.model.styles.addAll(model.styles);
 
     if (pSubscribe) {
-      subscribe();
+      _subscribe();
     }
   }
 

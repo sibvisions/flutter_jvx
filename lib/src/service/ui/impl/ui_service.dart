@@ -626,19 +626,28 @@ class UiService implements IUiService {
   void notifyAffectedComponents({required Set<String> affectedIds}) {
     for (String affectedId in affectedIds) {
       // Copy list to avoid concurrent modification
-      List.of(_componentSubscriptions).where((element) => element.compId == affectedId).forEach((element) {
-        element.affectedCallback?.call();
+      List.of(_componentSubscriptions).where((element) => element.compId == affectedId && element.affectedCallback != null).forEach((element) {
+        element.affectedCallback!.call();
       });
     }
   }
 
   @override
-  void notifyChangedComponents({required List<String> updatedModels}) {
+  void notifyBeforeModelUpdate(String modelId, Set<String> changedProperties) {
+    // Copy list to avoid concurrent modification
+    List.of(_componentSubscriptions).where((element) => element.compId == modelId && element.beforeModelUpdateCallback != null).forEach((element) {
+      // Notify active component
+      element.beforeModelUpdateCallback!.call(changedProperties);
+    });
+  }
+
+  @override
+  void notifyModelUpdated({required List<String> updatedModels}) {
     for (String updatedModelId in updatedModels) {
       // Copy list to avoid concurrent modification
-      List.of(_componentSubscriptions).where((element) => element.compId == updatedModelId).forEach((element) {
+      List.of(_componentSubscriptions).where((element) => element.compId == updatedModelId && element.modelUpdatedCallback != null).forEach((element) {
         // Notify active component
-        element.modelCallback?.call();
+        element.modelUpdatedCallback!.call();
       });
     }
   }

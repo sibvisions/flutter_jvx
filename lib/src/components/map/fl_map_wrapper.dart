@@ -23,6 +23,7 @@ import '../../model/command/api/set_values_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -46,12 +47,15 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
 
   MapController mapController = MapController();
 
+  bool initCenter = true;
+
   _FlMapWrapperState() : super();
 
   @override
   void initState() {
     super.initState();
-    subscribe();
+
+    _subscribe();
   }
 
   @override
@@ -73,18 +77,49 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
 
   @override
   void dispose() {
-    unsubscribe();
+    _unsubscribe();
     super.dispose();
+  }
+
+  @override
+  void beforeModelUpdate(Set<String> changedProperties) {
+    if (changedProperties.contains(ApiObjectProperty.pointsDataBook)
+        || changedProperties.contains(ApiObjectProperty.groupDataBook)) {
+      _unsubscribe();
+    }
   }
 
   @override
   modelUpdated() {
     super.modelUpdated();
-    unsubscribe();
-    subscribe();
+
+    bool applyCenter = false;
+
+    if (model.lastChangedProperties.contains(ApiObjectProperty.center)) {
+      initCenter = true;
+      applyCenter = true;
+    }
+
+    if (model.lastChangedProperties.contains(ApiObjectProperty.pointsDataBook)
+        || model.lastChangedProperties.contains(ApiObjectProperty.groupDataBook)) {
+
+      initCenter = true;
+      applyCenter = false;
+
+      _subscribe();
+    }
+
+    if (applyCenter) {
+      if (initCenter && model.center != null) {
+        mapController.move(model.center!, mapController.camera.zoom);
+
+        initCenter = false;
+      }
+
+    }
   }
 
-  void subscribe() {
+  void _subscribe() {
     if (model.pointsDataBook != null) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -118,13 +153,13 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
     }
   }
 
-  void unsubscribe() {
+  void _unsubscribe() {
     if (model.groupDataBook != null) {
-      IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.groupDataBook!);
+      IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.groupDataBook);
     }
 
     if (model.pointsDataBook != null) {
-      IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.pointsDataBook!);
+      IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.pointsDataBook);
     }
   }
 
@@ -178,8 +213,15 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
       markers.add(getMarker(image, point));
     }
 
-    if (model.center == null && markers.isNotEmpty) {
+    if (initCenter && model.center == null && markers.isNotEmpty) {
       mapController.move(markers.last.point, mapController.camera.zoom);
+
+      initCenter = false;
+    }
+
+    //if lockOnCenter is enabled, we remove the last marker because we have a special layer for this use-case
+    if (model.pointSelectionEnabled && model.pointSelectionLockedOnCenter && markers.isNotEmpty) {
+      markers.removeLast();
     }
 
     setState(() {});
@@ -199,41 +241,28 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   }
 
   Marker getMarker(String? image, LatLng point) {
-    const double markerSize = 32;
-
     if (image != null || model.markerImage != null) {
       return Marker(
         point: point,
-        width: markerSize,
-        height: markerSize,
+        width: FlMapWidget.markerSize,
+        height: FlMapWidget.markerSize,
         child: ImageLoader.loadImage(
           image ?? model.markerImage!,
-          width: markerSize,
-          height: markerSize,
+          width: FlMapWidget.markerSize,
+          height: FlMapWidget.markerSize,
         ),
       );
     } else {
       // OverflowBox is used to remove the spacing between the icon and the actual point
       return Marker(
         point: point,
-        width: markerSize,
-        height: markerSize,
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            height: markerSize - 5,
-            width: markerSize,
-            child: OverflowBox(
-              minHeight: markerSize,
-              maxHeight: markerSize,
-              alignment: Alignment.topCenter,
-              child: Icon(
-                Icons.location_pin,
-                size: markerSize,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          ),
+        alignment: Alignment.topCenter,
+        width: FlMapWidget.markerSize,
+        height: FlMapWidget.markerSize,
+        child: Icon(
+          Icons.location_pin,
+          size: FlMapWidget.markerSize,
+          color: Theme.of(context).colorScheme.primary,
         ),
       );
     }

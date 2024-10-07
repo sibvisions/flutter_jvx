@@ -342,6 +342,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Subscribes to the data service.
   void _subscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this);
+
     if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -366,7 +367,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Unsubscribes from the data service.
   void _unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    IUiService().disposeDataSubscription(pSubscriber: this);
 
     currentState &= ~LOADED_META_DATA;
     currentState &= ~LOADED_DATA;

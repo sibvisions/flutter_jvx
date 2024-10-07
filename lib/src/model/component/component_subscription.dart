@@ -30,8 +30,11 @@ class ComponentSubscription<T extends FlComponentModel> {
   /// Component callback to notify a component it is affected.
   final Function()? affectedCallback;
 
+  /// Component callback to receive an event before new model data.
+  final Function(Set<String>)? beforeModelUpdateCallback;
+
   /// Component callback to receive new model data.
-  final Function()? modelCallback;
+  final Function()? modelUpdatedCallback;
 
   /// Component callback to receive new layout data
   final Function(LayoutData pLayout)? layoutCallback;
@@ -43,7 +46,8 @@ class ComponentSubscription<T extends FlComponentModel> {
     required this.compId,
     required this.subbedObj,
     this.affectedCallback,
-    this.modelCallback,
+    this.beforeModelUpdateCallback,
+    this.modelUpdatedCallback,
     this.layoutCallback,
     this.saveCallback,
   });

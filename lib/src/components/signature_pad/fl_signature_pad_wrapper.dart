@@ -17,6 +17,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -28,6 +29,7 @@ import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -66,7 +68,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
     layoutData.isFixedSize = true;
 
-    subscribe();
+    _subscribe();
   }
 
   @override
@@ -94,11 +96,22 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   @override
+  void beforeModelUpdate(Set<String> changedProperties) {
+
+    if (changedProperties.contains(ApiObjectProperty.dataProvider)
+        || changedProperties.contains(ApiObjectProperty.columnName)) {
+      _unsubscribe();
+    }
+  }
+
+  @override
   void modelUpdated() {
     super.modelUpdated();
 
-    unsubscribe();
-    subscribe();
+    if (model.lastChangedProperties.contains(ApiObjectProperty.dataProvider)
+        || model.lastChangedProperties.contains(ApiObjectProperty.columnName)) {
+      _subscribe();
+    }
   }
 
   Future<BaseCommand?> sendSignature() async {
@@ -136,11 +149,13 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
   @override
   void dispose() {
+    _unsubscribe();
+
     signatureController.dispose();
     super.dispose();
   }
 
-  void subscribe() {
+  void _subscribe() {
     if (model.dataProvider != null && model.columnName != null) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -153,7 +168,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     }
   }
 
-  void unsubscribe() {
+  void _unsubscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 

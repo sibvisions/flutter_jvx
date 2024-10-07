@@ -187,7 +187,7 @@ class FlMapModel extends FlComponentModel {
 
   LatLng? _parseLatLng(dynamic pValue) {
     if (pValue != null && pValue is String) {
-      List<String> centerStrings = pValue.split(";");
+      List<String> centerStrings = pValue.split(",");
       return LatLng(double.tryParse(centerStrings.first) ?? 0, double.tryParse(centerStrings.last) ?? 0);
     }
     return null;

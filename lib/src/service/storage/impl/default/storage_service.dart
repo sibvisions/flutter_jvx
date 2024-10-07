@@ -131,13 +131,18 @@ class StorageService implements IStorageService {
         // Get old model
         FlComponentModel? model = _componentMap[changedId];
         if (model != null) {
+
+          Set<String> changedProperties = changedData.keys.toSet();
+
+          IUiService().notifyBeforeModelUpdate(changedId, changedProperties);
+
           // Update component and add to changedModels
           String? oldParentId = model.parent;
           bool wasVisible = model.isVisible;
           bool wasRemoved = model.isRemoved;
           model.isRemoved = false;
 
-          model.lastChangedProperties = changedData.keys.toSet();
+          model.lastChangedProperties = changedProperties;
           _removeAsChild(model);
           model.applyFromJson(changedData);
           if (model.isDestroyed) {

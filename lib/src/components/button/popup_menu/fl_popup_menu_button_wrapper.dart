@@ -49,28 +49,14 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
   void initState() {
     super.initState();
 
-    registerDescendantModels();
+    _registerDescendantModels();
   }
 
   @override
   void modelUpdated() {
     super.modelUpdated();
 
-    registerDescendantModels();
-  }
-
-  /// Register descendant models to receive ui updates
-  void registerDescendantModels() {
-    List<FlComponentModel> descendantModels = IStorageService().getAllComponentsBelowById(pParentId: model.id);
-    for (var childModel in descendantModels) {
-      IUiService().disposeSubscriptions(pSubscriber: childModel.id);
-      ComponentSubscription componentSubscription = ComponentSubscription(
-        compId: childModel.id,
-        subbedObj: this,
-        modelCallback: () => setState(() {}),
-      );
-      IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
-    }
+    _registerDescendantModels();
   }
 
   @override
@@ -95,6 +81,20 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
     });
 
     return wrapWidget(child: popupButtonWidget);
+  }
+
+  /// Register descendant models to receive ui updates
+  void _registerDescendantModels() {
+    List<FlComponentModel> descendantModels = IStorageService().getAllComponentsBelowById(pParentId: model.id);
+    for (var childModel in descendantModels) {
+      IUiService().disposeSubscriptions(pSubscriber: childModel.id);
+      ComponentSubscription componentSubscription = ComponentSubscription(
+        compId: childModel.id,
+        subbedObj: this,
+        modelUpdatedCallback: () => setState(() {}),
+      );
+      IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
+    }
   }
 
   List<PopupMenuEntry<String>> _createPopupItems() {

@@ -62,22 +62,33 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
     selectionStream.stream.listen(handleSelection);
 
-    subscribe();
+    _subscribe();
+  }
+
+  @override
+  void beforeModelUpdate(Set<String> changedProperties) {
+    if (changedProperties.contains(ApiObjectProperty.dataProvider)) {
+      _unsubscribe();
+    }
   }
 
   @override
   void modelUpdated() {
     super.modelUpdated();
 
-    if (model.lastChangedProperties.contains(ApiObjectProperty.dataProvider)) {
-      unsubscribe();
-      subscribe();
+    if (model.lastChangedProperties.contains(ApiObjectProperty.dataProvider)
+        || model.lastChangedProperties.contains(ApiObjectProperty.yColumnNames)
+        || model.lastChangedProperties.contains(ApiObjectProperty.xColumnName)) {
+      _subscribe();
     }
   }
 
   @override
   void dispose() {
     selectionStream.close();
+
+    _unsubscribe();
+
     super.dispose();
   }
 
@@ -106,8 +117,10 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     );
   }
 
-  void subscribe() {
-    if (model.yColumnNames.isNotEmpty && model.xColumnName.isNotEmpty) {
+  void _subscribe() {
+    if (model.dataProvider.isNotEmpty
+        && model.yColumnNames.isNotEmpty
+        && model.xColumnName.isNotEmpty) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
@@ -121,7 +134,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     }
   }
 
-  void unsubscribe() {
+  void _unsubscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 

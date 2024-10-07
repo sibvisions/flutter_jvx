@@ -113,11 +113,14 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
       // Copied from [PopupMenuButtonState]
       final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
       final RenderBox button = context.findRenderObject()! as RenderBox;
+
+      print(button.semanticBounds);
+
       final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
       final RelativeRect position = RelativeRect.fromRect(
         Rect.fromPoints(
-          button.localToGlobal(Offset.zero, ancestor: overlay),
-          button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+          button.localToGlobal(Offset(1, button.paintBounds.height), ancestor: overlay),
+          button.localToGlobal(button.size.bottomRight(const Offset(0, -8)), ancestor: overlay),
         ),
         Offset.zero & overlay.size,
       );

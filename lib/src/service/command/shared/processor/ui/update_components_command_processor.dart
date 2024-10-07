@@ -55,7 +55,7 @@ class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponent
 
     // Update Components in UI after all are marked as dirty
     await Future.wait(futureList).then((value) {
-      IUiService().notifyChangedComponents(updatedModels: command.changedComponents);
+      IUiService().notifyModelUpdated(updatedModels: command.changedComponents);
       IUiService().notifyAffectedComponents(affectedIds: command.affectedComponents);
       IUiService().notifyModels();
 

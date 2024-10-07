@@ -250,9 +250,11 @@ abstract class IUiService implements Service {
   /// when parent model hasn't been changed as well.
   void notifyAffectedComponents({required Set<String> affectedIds});
 
-  /// Notify changed live components that their model has changed, will give
-  /// them their new model.
-  void notifyChangedComponents({required List<String> updatedModels});
+  /// Notify changed live component before the model has changed
+  void notifyBeforeModelUpdate(String modelId, Set<String> changedProperties);
+
+  /// Notify changed live components that their model has changed
+  void notifyModelUpdated({required List<String> updatedModels});
 
   void notifyModels();
 

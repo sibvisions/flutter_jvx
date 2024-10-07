@@ -99,6 +99,10 @@ abstract class FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Basic Data
+
+  /// The json base base data
+  Map<String, dynamic>? jsonBase;
+
   /// The component id.
   String id = "";
 
@@ -250,6 +254,8 @@ abstract class FlComponentModel {
   /// Only applies properties if they exist in the json,
   /// otherwise uses their initiated default values.
   void applyFromJson(Map<String, dynamic> pJson) {
+    jsonBase = pJson;
+
     id = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.id,

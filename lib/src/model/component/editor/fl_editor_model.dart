@@ -56,6 +56,7 @@ class FlEditorModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     // We have to give the editor wrapper all the necessary information for the layout.
     super.applyFromJson(pJson);
+
     ParseUtil.applyJsonToJson(pJson, json);
 
     columnName = getPropertyValue(

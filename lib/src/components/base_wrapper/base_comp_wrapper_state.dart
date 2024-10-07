@@ -91,7 +91,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       subbedObj: this,
       affectedCallback: affected,
       layoutCallback: receiveNewLayoutData,
-      modelCallback: modelUpdated,
+      beforeModelUpdateCallback: beforeModelUpdate,
+      modelUpdatedCallback: modelUpdated,
       saveCallback: createSaveCommand,
     );
     IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
@@ -262,6 +263,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     }
   }
 
+  //Invoked before a model starts with update
+  void beforeModelUpdate(Set<String> changedProperties) {}
+
   /// Sets State with new Model
   void modelUpdated() {
     FlutterUI.logUI.d("${model.name}|${model.id} received new Model");
@@ -325,7 +329,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     // Constraint by width
     if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
       double newHeight =
-          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionWidth)).ceilToDouble();
+      (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionWidth)).ceilToDouble();
 
       layoutData.widthConstrains[positionWidth] = newHeight;
     }
@@ -333,7 +337,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     // Constraint by height
     if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
       double? newWidth =
-          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionHeight)).ceilToDouble();
+      (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionHeight)).ceilToDouble();
 
       layoutData.heightConstrains[positionHeight] = newWidth;
     }

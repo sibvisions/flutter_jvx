@@ -14,15 +14,17 @@
  * the License.
  */
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../model/component/fl_component_model.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
+import 'zoom_buttons_widget.dart';
 
 class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
+
+  static double markerSize = 32;
+
   final List<Marker> markers;
 
   final List<Polygon> polygons;
@@ -42,24 +44,23 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    print(model.center);
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
         onTap: (tapPosition, point) {
-          if (onPressed != null && !model.pointSelectionLockedOnCenter) {
+          if (onPressed != null && model.pointSelectionEnabled && !model.pointSelectionLockedOnCenter) {
             onPressed!(point);
           }
         },
         onPositionChanged: (MapCamera camera, bool hasGesture) {
-          if (model.pointSelectionLockedOnCenter && onPressed != null) {
+          if (onPressed != null && model.pointSelectionEnabled && model.pointSelectionLockedOnCenter) {
             onPressed!(mapController?.camera.center);
           }
         },
         initialZoom: model.zoomLevel,
         // Seems to be necessary even though it's the fallback
-        minZoom: 0,
-        maxZoom: 18,
+        minZoom: 2,
+        maxZoom: 19,
         initialCenter: LatLng.fromSexagesimal("48°12'30.56\"N, 16°22'19.49\"E"), //Vienna
       ),
       children: [
@@ -74,8 +75,44 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
         MarkerLayer(
           markers: markers,
           rotate: true,
-        )
+        ),
+        if (model.pointSelectionLockedOnCenter && model.pointSelectionEnabled)
+        Container(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: FlMapWidget.markerSize) ,
+            child: Icon(
+              Icons.location_pin,
+              color: Theme.of(context).colorScheme.primary,
+              size: FlMapWidget.markerSize),
+          )
+        ),
+        const FlutterMapZoomButtons(
+          minZoom: 2,
+          maxZoom: 19,
+          mini: true,
+          padding: 5,
+          alignment: Alignment.bottomRight,
+        ),
+        //CustomPaint(painter: DebugPainter(), child: Container())
       ],
     );
+  }
+}
+
+class DebugPainter extends CustomPainter { //         <-- CustomPainter class
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint p = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 0.1;
+
+    canvas.drawLine(Offset(size.width / 2, 0), Offset(size.width / 2, size.height), p);
+    canvas.drawLine(Offset(0, size.height / 2), Offset(size.width, size.height / 2), p);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter old) {
+    return false;
   }
 }
