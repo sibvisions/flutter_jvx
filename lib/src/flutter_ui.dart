@@ -582,7 +582,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
   ));
 
-  late final StreamSubscription<ConnectivityResult> subscription;
+  late final StreamSubscription<List<ConnectivityResult>> subscription;
 
   /// The last password that the user entered, used for offline switch.
   String? lastPassword;
@@ -590,9 +590,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   late final StreamSubscription newTokenSubscription;
   late final StreamSubscription notificationTapSubscription;
   late final ValueNotifier<List<Map<String?, Object?>>> tappedNotificationPayloads;
-  late final StreamSubscription<RemoteMessage> notificationSubscription;
+  late final VoidCallback notificationSubscription;
   late final ValueNotifier<List<RemoteMessage>> messagesReceived;
-  late final StreamSubscription<RemoteMessage> backgroundNotificationSubscription;
+  late final VoidCallback backgroundNotificationSubscription;
   late final ValueNotifier<List<RemoteMessage>> backgroundMessagesReceived;
 
   @override
@@ -863,24 +863,40 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             brightness: Theme.of(context).brightness)) : splashThemeDefault;
   }
 
-  Future<void> didChangeConnectivity(ConnectivityResult result) async {
-    if (result == ConnectivityResult.none) {
+  Future<void> didChangeConnectivity(List<ConnectivityResult> result) async {
+    if (result.contains(ConnectivityResult.none)) {
       FlutterUI.logAPI.i("Connectivity lost");
+
       var repository = IApiService().getRepository();
-      if (repository is OnlineApiRepository && repository.connected) {
-        // Workaround for https://github.com/dart-lang/sdk/issues/47807
-        if (Platform.isIOS) {
-          // Force close sockets
-          await repository.stop();
-          await repository.start();
-          try {
-            await repository.startWebSocket();
-          } catch (_) {
-            // Expected to throw, triggers reconnect.
+
+      if (repository is OnlineApiRepository) {
+        if (repository.connected) {
+          // Workaround for https://github.com/dart-lang/sdk/issues/47807
+          if (Platform.isIOS) {
+            // Force close sockets
+            await repository.stop();
+            await repository.start();
+            try {
+              await repository.startWebSocket();
+            } catch (_) {
+              // Expected to throw, triggers reconnect.
+            }
+            repository.setConnected(true);
           }
+          repository.setConnected(false);
+        }
+      }
+    }
+    else if (result.contains(ConnectivityResult.wifi)
+             || result.contains(ConnectivityResult.ethernet)) {
+      FlutterUI.logAPI.i("Connectivity is back");
+
+      var repository = IApiService().getRepository();
+
+      if (repository is OnlineApiRepository) {
+        if (!repository.connected) {
           repository.setConnected(true);
         }
-        repository.setConnected(false);
       }
     }
   }
@@ -1059,11 +1075,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       PushUtil.handleNotificationTap(tappedNotificationPayloads, data);
     });
 
-    notificationSubscription = Push.instance.onMessage.listen((message) {
+    notificationSubscription = Push.instance.addOnMessage((message) {
       PushUtil.handleOnMessage(messagesReceived, message);
     });
 
-    backgroundNotificationSubscription = Push.instance.onBackgroundMessage.listen((message) {
+    backgroundNotificationSubscription = Push.instance.addOnBackgroundMessage((message) {
       PushUtil.handleOnBackgroundMessages(backgroundMessagesReceived, message);
     });
   }
@@ -1071,8 +1087,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   void disposePushStreams() {
     newTokenSubscription.cancel();
     notificationTapSubscription.cancel();
-    notificationSubscription.cancel();
-    backgroundNotificationSubscription.cancel();
+    notificationSubscription();
+    backgroundNotificationSubscription();
 
     tappedNotificationPayloads.dispose();
     messagesReceived.dispose();

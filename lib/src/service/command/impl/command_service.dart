@@ -23,10 +23,13 @@ import 'package:queue/queue.dart';
 
 import '../../../commands.dart';
 import '../../../flutter_ui.dart';
+import '../../../model/command/api/alive_command.dart';
 import '../../../model/command/api/session_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
+import '../../api/i_api_service.dart';
+import '../../api/shared/repository/online_api_repository.dart';
 import '../../service.dart';
 import '../../storage/i_storage_service.dart';
 import '../../ui/i_ui_service.dart';
@@ -221,6 +224,14 @@ class CommandService implements ICommandService {
 
     List<BaseCommand> commands;
 
+    bool wasConnected = true;
+
+    var repository = IApiService().getRepository();
+
+    if (repository is OnlineApiRepository) {
+      wasConnected = repository.connected;
+    }
+
     try {
       await processor.beforeProcessing(pCommand, origin);
 
@@ -244,16 +255,30 @@ class CommandService implements ICommandService {
       bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException;
 
       if (pCommand is! ErrorCommand && pCommand is! FeedbackCommand) {
-        commands = [
-          OpenErrorDialogCommand(
-            silentAbort: !showDialogOnError,
-            message: FlutterUI.translate(IUiService.getErrorMessage(error)),
-            error: error,
-            stackTrace: stackTrace,
-            isTimeout: isConnectionError,
-            reason: "Failed processing ${pCommand.runtimeType}",
-          ),
-        ];
+
+        bool showError = true;
+
+        if (pCommand is AliveCommand) {
+          if (!wasConnected) {
+            showError = false;
+          }
+        }
+
+        if (showError) {
+          commands = [
+            OpenErrorDialogCommand(
+              silentAbort: !showDialogOnError,
+              message: FlutterUI.translate(IUiService.getErrorMessage(error)),
+              error: error,
+              stackTrace: stackTrace,
+              isTimeout: isConnectionError,
+              reason: "Failed processing ${pCommand.runtimeType}",
+            ),
+          ];
+        }
+        else {
+          commands = [];
+        }
 
         // If there is a current session and a "probably" working connection, report to the server.
         if (!isConnectionError && IUiService().clientId.value != null) {

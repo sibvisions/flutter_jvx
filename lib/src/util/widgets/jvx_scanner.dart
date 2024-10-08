@@ -100,13 +100,13 @@ class _JVxScannerState extends State<JVxScanner> {
           leading: const Center(child: CloseButton()),
           title: Text(FlutterUI.translate(widget.title)),
           actions: [
-            ValueListenableBuilder<TorchState>(
-              valueListenable: controller.torchState,
+            ValueListenableBuilder(
+              valueListenable: controller,
               builder: (context, state, child) {
                 return IconButton(
-                  tooltip: FlutterUI.translate(state == TorchState.off ? "Enable Torch" : "Disable Torch"),
+                  tooltip: FlutterUI.translate(state.torchState == TorchState.off ? "Enable Torch" : "Disable Torch"),
                   onPressed: () => controller.toggleTorch(),
-                  icon: Icon(_getTorchIcon(state)),
+                  icon: Icon(_getTorchIcon(state.torchState)),
                 );
               },
             ),
@@ -136,10 +136,14 @@ class _JVxScannerState extends State<JVxScanner> {
 
   IconData _getTorchIcon(TorchState state) {
     switch (state) {
+      case TorchState.unavailable:
+        return Icons.block;
       case TorchState.off:
         return Icons.flash_off;
       case TorchState.on:
         return Icons.flash_on;
+      case TorchState.auto:
+            return Icons.flash_auto;
     }
   }
 

@@ -9,7 +9,7 @@ publish_to: 'none'
 version: 2.2.0+1
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.0.2 <4.0.0"
 
 dependencies:
   # Flutter Dep
@@ -21,7 +21,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.1
   flutter_native_splash: ^2.2.16
 
   # iOS Dep
@@ -30,21 +30,21 @@ dependencies:
   # Translations capability
   intl: any # An exact version pin will be provided by the Flutter SDK
   timezone: ^0.9.0
-  flutter_timezone: ^1.0.4
+  flutter_timezone: ^3.0.1
 
   # Config
   shared_preferences: ^2.0.15
 
   # Device Identification
-  package_info_plus: ^4.0.1
-  device_info_plus: ^9.0.0
-  android_id: ^0.3.2
+  package_info_plus: ^8.0.2
+  device_info_plus: ^10.1.2
+  android_id: ^0.4.0
 
   # Util
   dio: ^5.2.1+1
   logger: ^2.0.0
-  collection: ^1.16.0
-  rxdart: ^0.27.5
+  collection: ^1.18.0
+  rxdart: ^0.28.0
   queue: ^3.1.0+2
   #flutter_html: 3.0.0-alpha.5
   flutter_html:
@@ -56,22 +56,22 @@ dependencies:
   # IO handling
   universal_io: ^2.0.4
 
-  web_socket_channel: ^2.3.0
-  connectivity_plus: ^4.0.0
+  web_socket_channel: ^3.0.1
+  connectivity_plus: ^6.0.5
 
   cross_file: ^0.3.3+2
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
-  file_picker: ^8.0.3
-  file_saver: 0.2.8
+  file_picker: ^8.1.2
+  file_saver: 0.2.14
 
   # SVG Support
   flutter_svg: ^2.0.0+1
   # Icons
   font_awesome_flutter: ^10.2.1
   # Managing different persistent classes
-  get_it: ^7.2.0
+  get_it: ^8.0.0
   # QR Scanner
-  mobile_scanner: ^4.0.0
+  mobile_scanner: ^5.0.0
   # Signature Pad
   signature: ^5.3.2
   # Saving files on system
@@ -86,8 +86,8 @@ dependencies:
   # Used for routing with navigator 2.0
   beamer: ^1.5.2
   # Used for offline mode
-  sqflite: ^2.0.3
-  wakelock_plus: ^1.0.0+3
+  sqflite: ^2.4.0
+  wakelock_plus: ^1.2.8
   # Used for debugging
   flutter_debug_overlay: ^0.1.0
 
@@ -102,7 +102,7 @@ dependencies:
   liquid_progress_indicator:
     git:
       url: https://github.com/wheregmis/liquid_progress_indicator
-  photo_view: ^0.14.0
+  photo_view: ^0.15.0
   avatars: ^3.0.2
 
   community_charts_flutter: ^1.0.4
@@ -116,15 +116,15 @@ dependencies:
   flutter_treeview: ^1.0.7+1
   modal_bottom_sheet: ^3.0.0-pre
   qr_flutter: ^4.1.0
-  screen_brightness: ^0.2.2
+  screen_brightness: ^1.0.1
 
   #WYSIWYG HTML-Editor
   html_editor_enhanced: ^2.6.0
 
-  flutter_tts: ^3.7.0
-  speech_to_text: ^6.6.0
+  flutter_tts: ^4.0.0
+  speech_to_text: ^7.0.0
 
-  push: ^1.0.4
+  push: ^2.3.0
   flutter_local_notifications: ^17.2.1+2
   open_filex: ^4.3.4
 
@@ -135,7 +135,7 @@ dev_dependencies:
 
 dependency_overrides:
   # flutter_map
-  http: ^1.0.0
+#  http: ^1.0.0
 
 flutter:
   uses-material-design: true

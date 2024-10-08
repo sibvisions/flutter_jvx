@@ -38,7 +38,7 @@ class FlPanelModel extends FlComponentModel {
   static const String NO_MENU_STYLE = "f_no_menu";
 
   /// If a work-screen should have no safe area.
-  static const String NO_SAFE_AREA_STYLE = "f_no_safe_area";
+  static const String FULL_SIZE_STYLE = "f_full_size";
 
   /// If a work-screen should have a simple menu.
   static const String SIMPLE_MENU_STYLE = "f_simple_menu";
@@ -96,7 +96,7 @@ class FlPanelModel extends FlComponentModel {
   bool get noMenu => styles.contains(NO_MENU_STYLE) || hasSimpleMenu;
 
   /// If the screen has no safe are.
-  bool get noSafeArea => styles.contains(NO_SAFE_AREA_STYLE);
+  bool get fullSize => styles.contains(FULL_SIZE_STYLE);
 
   /// If the screen has a simple menu.
   bool get hasSimpleMenu => styles.contains(SIMPLE_MENU_STYLE);

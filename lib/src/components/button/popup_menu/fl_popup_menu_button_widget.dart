@@ -113,9 +113,6 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
       // Copied from [PopupMenuButtonState]
       final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
       final RenderBox button = context.findRenderObject()! as RenderBox;
-
-      print(button.semanticBounds);
-
       final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
       final RelativeRect position = RelativeRect.fromRect(
         Rect.fromPoints(

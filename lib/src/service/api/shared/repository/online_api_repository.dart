@@ -363,8 +363,15 @@ class OnlineApiRepository extends IRepository {
     _reconnectTimer = Timer(Duration(seconds: _lastDelay), () async {
       try {
         await ICommandService().sendCommand(AliveCommand(reason: "Periodic check", retryRequest: false));
-        // The CommandService already resets the connected state and the timer.
-        FlutterUI.logAPI.i("Alive Request succeeded");
+
+        if (connected) {
+          // The CommandService already resets the connected state and the timer.
+          FlutterUI.logAPI.i("Alive Request succeeded");
+        }
+        else {
+          FlutterUI.logAPI.w("Alive Request not successful, retry");
+          _reconnectHTTP();
+        }
       } on DioException catch (e, stack) {
         if (_shouldRetryDioRequest(e)) {
           FlutterUI.logAPI.w("Alive Request timed out, retry", error: e, stackTrace: stack);

@@ -300,7 +300,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   ///Wraps the body (= screen) with a SafeArea or without if noSafeArea property is set
   Widget _wrapBody(Widget body) {
-    if (model?.noSafeArea == true) {
+    if (model?.fullSize == true) {
       return body;
     } else {
       return Container(
