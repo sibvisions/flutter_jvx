@@ -14,14 +14,17 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 
 import '../../../flutter_jvx.dart';
+import '../base_wrapper/fl_stateful_widget.dart';
 import 'zoom_buttons_widget.dart';
 
-class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
+class FlMapWidget<T extends FlMapModel> extends FlStatefulWidget<T> {
 
   static double markerSize = 32;
 
@@ -43,21 +46,34 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
   });
 
   @override
+  State<FlMapWidget> createState() => _FlMapWidgetState();
+}
+
+class _FlMapWidgetState extends State<FlMapWidget> {
+
+  Timer? timer;
+
+  @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      mapController: mapController,
+      mapController: widget.mapController,
       options: MapOptions(
         onTap: (tapPosition, point) {
-          if (onPressed != null && model.pointSelectionEnabled && !model.pointSelectionLockedOnCenter) {
-            onPressed!(point);
+          if (widget.onPressed != null && widget.model.pointSelectionEnabled && !widget.model.pointSelectionLockedOnCenter) {
+            widget.onPressed!(point);
           }
         },
         onPositionChanged: (MapCamera camera, bool hasGesture) {
-          if (onPressed != null && model.pointSelectionEnabled && model.pointSelectionLockedOnCenter) {
-            onPressed!(mapController?.camera.center);
-          }
+          timer?.cancel();
+
+          //don't send too many updates - only 1 if possible
+          timer = Timer(const Duration(milliseconds: 250), () {
+            if (widget.onPressed != null && widget.model.pointSelectionEnabled && widget.model.pointSelectionLockedOnCenter) {
+              widget.onPressed!(widget.mapController?.camera.center);
+            }
+          });
         },
-        initialZoom: model.zoomLevel,
+        initialZoom: widget.model.zoomLevel,
         // Seems to be necessary even though it's the fallback
         minZoom: 2,
         maxZoom: 19,
@@ -70,13 +86,13 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
           tileProvider: CancellableNetworkTileProvider(),
         ),
         PolygonLayer(
-          polygons: polygons,
+          polygons: widget.polygons,
         ),
         MarkerLayer(
-          markers: markers,
+          markers: widget.markers,
           rotate: true,
         ),
-        if (model.pointSelectionLockedOnCenter && model.pointSelectionEnabled)
+        if (widget.model.pointSelectionLockedOnCenter && widget.model.pointSelectionEnabled)
         Container(
           alignment: Alignment.center,
           child: Padding(

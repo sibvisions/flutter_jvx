@@ -218,14 +218,7 @@ class JVxOverlayState extends State<JVxOverlay> {
     subscription = _subject.debounceTime(const Duration(milliseconds: 50)).listen(
       (size) {
         if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-          ICommandService().sendCommand(
-            DeviceStatusCommand(
-              screenWidth: size.width.toInt(),
-              screenHeight: size.height.toInt(),
-              reason: "Device Size changed",
-            ),
-            showDialogOnError: false,
-          );
+          _updateDeviceStatus();
         }
       },
     );
@@ -236,10 +229,29 @@ class JVxOverlayState extends State<JVxOverlay> {
     super.didChangeDependencies();
 
     if (IUiService().clientId.value != null && !IConfigService().offline.value) {
+      _updateDeviceStatus();
+    }
+  }
+
+  void _updateDeviceStatus() {
+
+    Size? size = _subject.valueOrNull ?? MediaQuery.maybeSizeOf(context);
+    bool darkMode = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
+    if ((size != null && size != AppVariables.lastSize) || darkMode != AppVariables.lastDarkMode) {
+
+      Size? logSize = AppVariables.lastSize;
+      bool? logDarkMode = AppVariables.lastDarkMode;
+
+      AppVariables.lastSize = size;
+      AppVariables.lastDarkMode = darkMode;
+
       ICommandService().sendCommand(
         DeviceStatusCommand(
-          darkMode: Theme.of(context).brightness == Brightness.dark,
-          reason: "Platform Brightness changed",
+          screenWidth: size?.width.toInt(),
+          screenHeight: size?.height.toInt(),
+          darkMode: darkMode,
+          reason: "Device status changed: $size != ${logSize}, $darkMode != ${logDarkMode}",
         ),
         showDialogOnError: false,
       );

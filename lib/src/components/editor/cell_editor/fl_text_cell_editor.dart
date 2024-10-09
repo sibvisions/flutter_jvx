@@ -326,7 +326,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   /// Instead, it must be handled by the controller but only after having been initialized.
   void _fixEditorEnableStatus() {
     if (isInitialized && isHtml && lastWidgetModel != null) {
-      if (lastWidgetModel!.isReadOnly) {
+      if (lastWidgetModel!.isReadOnly || !lastWidgetModel!.isEditable || lastWidgetModel!.isEnabled) {
         htmlController.disable();
       } else {
         htmlController.enable();

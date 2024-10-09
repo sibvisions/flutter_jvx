@@ -155,6 +155,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     }
     fillColor ??= defaultBackground(context);
 
+    if (fillColor != null && !model.isEditable) {
+      fillColor = fillColor.withOpacity(0.3);
+    }
+
     focusNode.canRequestFocus = model.isFocusable;
 
     return TextField(

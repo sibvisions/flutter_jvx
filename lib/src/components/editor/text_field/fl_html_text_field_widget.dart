@@ -70,7 +70,7 @@ class FlHtmlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataW
         // Disabled: Only affects the startup of the widget.
         // Subsequent changes are not taken into account.
         // Must be handled via the controller.
-        disabled: model.isReadOnly,
+        disabled: model.isReadOnly || !model.isEditable || !model.isEnabled,
       ),
       callbacks: Callbacks(
           onFocus: () => onFocusChanged(true),

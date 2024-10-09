@@ -33,6 +33,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:universal_io/io.dart';
 
+import '../main.dart';
 import 'commands.dart';
 import 'config/app_config.dart';
 import 'config/server_config.dart';
@@ -86,6 +87,13 @@ import 'util/widgets/future_nested_navigator.dart';
 
 /// Builder function for dynamic color creation
 typedef ColorBuilder = Color? Function(BuildContext context);
+
+///Simple static application variables
+class AppVariables {
+  static Size? lastSize;
+
+  static bool? lastDarkMode;
+}
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterUI extends StatefulWidget {
@@ -676,6 +684,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    AppVariables.lastSize ??= AppVariables.lastSize = MediaQuery.sizeOf(context);
+    AppVariables.lastDarkMode ??= MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
     List<Locale> supportedLocales = {
       IConfigService().applicationLanguage.value,
       IConfigService().getPlatformLocale(),
