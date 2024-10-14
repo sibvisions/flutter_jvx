@@ -128,7 +128,7 @@ class DebugPainter extends CustomPainter { //         <-- CustomPainter class
   }
 
   @override
-  bool shouldRepaint(CustomPainter old) {
+  bool shouldRepaint(CustomPainter oldDelegate) {
     return false;
   }
 }

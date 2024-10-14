@@ -251,7 +251,7 @@ class JVxOverlayState extends State<JVxOverlay> {
           screenWidth: size?.width.toInt(),
           screenHeight: size?.height.toInt(),
           darkMode: darkMode,
-          reason: "Device status changed: $size != ${logSize}, $darkMode != ${logDarkMode}",
+          reason: "Device status changed: $size != $logSize, $darkMode != $logDarkMode",
         ),
         showDialogOnError: false,
       );

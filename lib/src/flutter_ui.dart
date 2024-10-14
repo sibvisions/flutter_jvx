@@ -33,7 +33,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:universal_io/io.dart';
 
-import '../main.dart';
 import 'commands.dart';
 import 'config/app_config.dart';
 import 'config/server_config.dart';

@@ -87,11 +87,12 @@ class _JVxScannerState extends State<JVxScanner> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) return;
+
         var result = widget.callback(scannedBarcodes);
         if (result is Future) await result;
-        return true;
       },
       child: Scaffold(
         appBar: AppBar(
