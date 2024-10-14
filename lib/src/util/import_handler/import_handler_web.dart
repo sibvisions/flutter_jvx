@@ -31,6 +31,7 @@ class ImportHandler {
 class FixedHashUrlStrategy extends web_plugins.HashUrlStrategy {
   final web_plugins.PlatformLocation _platformLocation;
 
+  // ignore: use_super_parameters
   const FixedHashUrlStrategy([this._platformLocation = const web_plugins.BrowserPlatformLocation()])
       : super(_platformLocation);
 
