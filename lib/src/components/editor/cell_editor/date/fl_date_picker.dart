@@ -685,7 +685,7 @@ class _FlDatePickerDialogState extends State<FlDatePickerDialog> with Restoratio
       shape: useMaterial3
           ? datePickerTheme.shape ?? defaults.shape
           : datePickerTheme.shape ?? dialogTheme.shape ?? defaults.shape,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       clipBehavior: Clip.antiAlias,
       child: AnimatedContainer(
         width: dialogSize.width,

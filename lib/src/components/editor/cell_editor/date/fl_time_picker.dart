@@ -2391,7 +2391,7 @@ class _FlTimePickerDialogState extends State<FlTimePickerDialog> with Restoratio
           children: <Widget>[
             if (_entryMode.value == TimePickerEntryMode.dial || _entryMode.value == TimePickerEntryMode.input)
               Padding(
-              padding: const EdgeInsets.only(top: 15),
+              padding: const EdgeInsets.only(top: 14),
               child: IconButton(
                 // In material3 mode, we want to use the color as part of the
                 // button style which applies its own opacity. In material2 mode,
@@ -2414,7 +2414,7 @@ class _FlTimePickerDialogState extends State<FlTimePickerDialog> with Restoratio
               child: Container(
                 alignment: AlignmentDirectional.centerEnd,
                 constraints: const BoxConstraints(minHeight: 36),
-                padding: const EdgeInsets.only(top: 15),
+                padding: const EdgeInsets.only(top: 14),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
