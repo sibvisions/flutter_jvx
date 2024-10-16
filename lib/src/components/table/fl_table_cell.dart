@@ -41,6 +41,9 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   /// The gap between icons and text
   static const double iconTextGap = 5;
 
+  /// The gap between format image and text
+  static const double formatImageGap = 3;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -389,7 +392,7 @@ class _FlTableCellState extends State<FlTableCell> {
         color: widget.cellFormat?.foreground,
       );
 
-    return [Padding(padding: EdgeInsets.only(right: 3, left: indent), child: cellImage)];
+    return [Padding(padding: EdgeInsets.only(right: FlTableCell.formatImageGap, left: indent), child: cellImage)];
   }
 
   List<Widget> _createCellIcons() {

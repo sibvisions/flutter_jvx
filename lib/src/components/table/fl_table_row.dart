@@ -127,7 +127,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
             onTap: onTap,
             columnDefinition: cd,
             width: colWidth,
-            paddings: model.autoResize && (colWidth < FlTableCell.clearIconSize + FlTableCell.iconSize + tableSize.cellPaddings.left + tableSize.cellPaddings.right) ? TableSize.paddingsSmall : tableSize.cellPaddings,
+            paddings: model.autoResize && (colWidth < FlTableCell.clearIconSize + FlTableCell.iconSize +
+                                                      tableSize.cellPaddings.left + tableSize.cellPaddings.right +
+                                                      (tableSize.columnFormatWidths[colName] ?? 0)) ? TableSize.paddingsSmall : tableSize.cellPaddings,
             cellDividerWidth: tableSize.columnDividerWidth,
             value: values[cdIndex],
             readOnly: recordReadOnly?[cdIndex] ?? false,

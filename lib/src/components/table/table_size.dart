@@ -75,6 +75,9 @@ class TableSize {
   /// The size of the columns
   Map<String, double> columnWidths = {};
 
+  /// The format size of the columns
+  Map<String, double> columnFormatWidths = {};
+
   ColumnList columns = ColumnList.empty();
 
   /// the sum of calculatedColumnWidths
@@ -133,6 +136,7 @@ class TableSize {
     double scaling = 1.0,
   }) {
     calculatedColumnWidths.clear();
+    columnFormatWidths.clear();
 
     availableWidth = math.max((availableWidth ?? 0.0) - (borderWidth * 2), 0);
 
@@ -219,7 +223,7 @@ class TableSize {
               dataForColumn.add(dataChunk.data[i]![colIndex]);
             }
 
-            calculatedWidth = _calculateDataWidth(dataRows, dataFormats, dataForColumn, cellEditor, textStyle);
+            calculatedWidth = _calculateDataWidth(columnName, dataRows, dataFormats, dataForColumn, cellEditor, textStyle);
           }
 
           cellEditor.dispose();
@@ -409,7 +413,6 @@ class TableSize {
       columnWidths[divideOutColumnNames.last] = columnWidths[divideOutColumnNames.last]! + rest;
     }
     else {
-
       //try to use "special" columns with fixed size without width adjustment
 
       divideOutColumnNames.addAll(withWidthBox);
@@ -431,11 +434,32 @@ class TableSize {
 
       double part = (availableWidth - fixedSize) / columnsLeft;
 
+      double maybeWidth;
+      double tooLargeSum = 0;
+
+      Map<String, double> columnsTooLarge = {};
+
+      //Get all columns which are larger than the maybe width, based on the cell format
+      for (int i = 0; i < columnWidths.length; i++) {
+        if (!divideOutColumnNames.contains(tableModel.columnNames[i])) {
+          maybeWidth = FlTableCell.clearIconSize + FlTableCell.iconSize +
+                       paddingsSmall.left + paddingsSmall.right + (columnFormatWidths[tableModel.columnNames[i]] ?? 0);
+
+          if (maybeWidth > part) {
+            columnsTooLarge[tableModel.columnNames[i]] = maybeWidth;
+
+            tooLargeSum += maybeWidth - part;
+          }
+        }
+      }
+
       // divide out width for all available columns
 
       double sumParts = part.toPrecision(2) * columnsLeft;
 
       double rest = availableWidth - fixedSize - sumParts;
+
+      List<String> resizableColumns = [];
 
       String? lastNotFixed;
       for (int i = 0; i < columnWidths.length; i++) {
@@ -444,16 +468,42 @@ class TableSize {
           columnWidths[tableModel.columnNames[i]] = part;
 
           lastNotFixed = tableModel.columnNames[i];
+
+          if (!columnsTooLarge.containsKey(tableModel.columnNames[i])) {
+            //collect all columns which are not too large and can be resized
+            //also possible that such columns are too small after resizing
+            resizableColumns.add(tableModel.columnNames[i]);
+          }
         }
       }
 
       lastNotFixed ??= tableModel.columnNames.last;
 
       columnWidths[lastNotFixed] = columnWidths[lastNotFixed]! + rest;
+
+      if (resizableColumns.isNotEmpty) {
+        //another adjustment for too large columns, based on the cell format
+        part = tooLargeSum / resizableColumns.length;
+
+        sumParts = part.toPrecision(2) * resizableColumns.length;
+
+        rest = tooLargeSum - sumParts;
+
+        //make too large columns larger than the resizable columns
+        columnsTooLarge.forEach((name, width) => columnWidths[name] = width);
+
+        //make resizable columns smaller - maybe too small
+        for (int i = 0; i < resizableColumns.length; i++) {
+          columnWidths[resizableColumns[i]] = columnWidths[resizableColumns[i]]! - part;
+        }
+
+        columnWidths[resizableColumns.last] = columnWidths[resizableColumns.last]! + rest;
+      }
     }
   }
 
   double _calculateDataWidth(
+    String columnName,
     List<dynamic> dataRows,
     List<CellFormat?> dataFormats,
     List<dynamic> dataColumn,
@@ -490,15 +540,25 @@ class TableSize {
         double rowWidth = _calculateTextWidth(textStyle, formattedText);
 
         if (format != null) {
-          rowWidth += format.leftIndent ?? 0;
+          double formatWidth = format.leftIndent?.toDouble() ?? 0;
 
           if (format.imageString != null) {
             List<String> split = format.imageString!.split(",");
 
             if (split.length >= 3) {
-              rowWidth += double.tryParse(split[1]) ?? 0;
+              formatWidth += double.tryParse(split[1]) ?? 0;
             }
+
+            //if an image is defined -> add gap because it's added as padding
+            formatWidth += FlTableCell.formatImageGap;
           }
+
+          rowWidth += formatWidth;
+
+          columnFormatWidths[columnName] = math.max(formatWidth, columnFormatWidths[columnName] ?? 0);
+        }
+        else {
+          columnFormatWidths[columnName] = 0;
         }
 
         columnWidth = _adjustColumnWidth(columnWidth, rowWidth);
