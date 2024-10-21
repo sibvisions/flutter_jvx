@@ -77,7 +77,7 @@ class FlIconModel extends FlComponentModel {
       if (value != null) {
         // Set the original size of the image.
         List<String> arr = value.split(",");
-        image = arr[0];
+        image = value;
 
         if (arr.length >= 3) {
           double? width = double.tryParse(arr[1]);

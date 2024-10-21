@@ -59,53 +59,42 @@ abstract class IconUtil {
         }
 
         if (type != null) {
-            // name;arg=value;arg2=value2;width,height,dynamic
+            // name;arg=value;arg2=value2,width,height,dynamic
 
-            List<String> elements = imageDefinition_.split(";");
+            List<String> fontDefElements = imageDefinition_.split(",");
 
             Map<String, String> arguments = {};
 
             String iconName;
 
-            List<String>? properties;
+            List<String> fontWithArguments = fontDefElements[0].split(";");
 
-            if (elements.length == 1) {
-                properties = elements[0].split(",");
-
-                iconName = properties.removeAt(0);
-            }
-            else {
-                iconName = elements[0];
-            }
+            iconName = fontWithArguments[0];
 
             Color? color_ = color;
 
             if (color_ == null) {
-                if (elements.length > 1) {
-                    for (int i = 1; i < elements.length - 1; i++) {
-                        List<String> arg = elements[i].split("=");
+                for (int i = 1; i < fontWithArguments.length; i++) {
+                    List<String> arg = fontWithArguments[i].split("=");
 
-                        if (arg.length == 2) {
-                            arguments[arg[0]] = arg[1];
-                        }
+                    if (arg.length == 2) {
+                        arguments[arg[0]] = arg[1];
                     }
+                }
 
-                    String? argColor = arguments["color"];
+                String? argColor = arguments["color"];
 
-                    if (argColor != null) {
-                        color_ = ParseUtil.parseHexColor(argColor);
-                    }
+                if (argColor != null) {
+                    color_ = ParseUtil.parseHexColor(argColor);
                 }
             }
 
             double? size_ = size;
 
             if (size_ == null) {
-                properties ??= elements.last.split(",");
-
-                if (properties.length > 2) {
+                if (fontDefElements.length > 3) {
                     //use height if width is not a valid number (shouldn't happen)
-                    size_ = double.tryParse(properties[0]) ?? double.tryParse(properties[1]);
+                    size_ = double.tryParse(fontDefElements[fontDefElements.length - 3]) ?? double.tryParse(fontDefElements[fontDefElements.length - 2]);
                 }
             }
 

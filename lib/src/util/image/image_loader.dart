@@ -18,6 +18,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -116,6 +117,7 @@ abstract class ImageLoader {
           height: height_ ?? height,
           fit: fit,
           alignment: alignment,
+          gaplessPlayback: imageProvider is MemoryImage,
         );
       }
     }
