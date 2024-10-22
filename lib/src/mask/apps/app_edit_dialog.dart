@@ -331,7 +331,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                         child: Banner(
                           message: FlutterUI.translateLocal("Provided"),
                           location: BannerLocation.topEnd,
-                          color: parentTheme.colorScheme.primary,
+                          color: JVxColors.isLightTheme(context) ? parentTheme.colorScheme.primary : Colors.white70,
                           textStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 9.5,
                               color: JVxColors.isLightTheme(context) ? Colors.white: JVxColors.LIGHTER_BLACK),
                         ),

@@ -165,7 +165,7 @@ class AppItem extends StatelessWidget {
                     child: Banner(
                       message: FlutterUI.translateLocal("Provided"),
                       location: BannerLocation.topEnd,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white70,
                       textStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 9.5,
                                       color: JVxColors.isLightTheme(context) ? Colors.white: JVxColors.LIGHTER_BLACK),
                       ),

@@ -52,7 +52,7 @@ class LoadingBar extends InheritedWidget {
         if (LoadingBar.maybeOf(context)?.show ?? false)
           LinearProgressIndicator(
             minHeight: 5,
-            color: JVxColors.toggleColor(Theme.of(context).colorScheme.primary),
+            color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Theme.of(context).buttonTheme.colorScheme?.primary ?? Colors.white70,
             backgroundColor: Colors.transparent,
           ),
       ]);
