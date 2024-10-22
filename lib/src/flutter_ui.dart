@@ -869,7 +869,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   ThemeData _splashTheme(BuildContext? context) {
     return context != null ? Theme.of(context).copyWith(
         colorScheme: ColorScheme.fromSeed(seedColor: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
-            primary: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
+            primary: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black54,
             brightness: Theme.of(context).brightness)) : splashThemeDefault;
   }
 

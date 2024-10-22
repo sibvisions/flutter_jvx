@@ -463,7 +463,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
     Uri uri = _transformUri(baseUrl);
 
     try {
-      ScreenBrightness().setScreenBrightness(1.0);
+      ScreenBrightness().setApplicationScreenBrightness(1.0);
     } catch (_) {}
 
     showDialog(
@@ -496,7 +496,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
       },
     ).whenComplete(() {
       try {
-        ScreenBrightness().resetScreenBrightness();
+        ScreenBrightness().resetApplicationScreenBrightness();
       } catch (_) {}
     });
   }

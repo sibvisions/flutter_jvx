@@ -120,7 +120,7 @@ dependencies:
   flutter_treeview: ^1.0.7+1
   modal_bottom_sheet: ^3.0.0-pre
   qr_flutter: ^4.1.0
-  screen_brightness: ^1.0.1
+  screen_brightness: ^2.0.0
 
   #WYSIWYG HTML-Editor
   html_editor_enhanced: ^2.6.0

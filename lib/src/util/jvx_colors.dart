@@ -109,7 +109,7 @@ abstract class JVxColors {
                                  foregroundColor: isSelectedLight ? (isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white) : themeData.textTheme.labelSmall!.color),
         cardTheme: CardTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
         dividerTheme: DividerThemeData(color: dividerColor(themeData)),
-        dialogTheme: DialogTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(
+        dialogTheme: DialogTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.grey[500], shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),),
         textButtonTheme: TextButtonThemeData(style: ButtonStyle(foregroundColor: WidgetStateProperty.all(isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color),
