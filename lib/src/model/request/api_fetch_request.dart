@@ -48,6 +48,9 @@ class ApiFetchRequest extends SessionRequest {
   /// If `true`, the data provider will be reloaded server side.
   bool reload;
 
+  /// Whether it's a fetch for going offline.
+  final bool offline;
+
   final FetchCommand? command;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +64,7 @@ class ApiFetchRequest extends SessionRequest {
     required this.includeMetaData,
     this.filter,
     this.reload = false,
+    this.offline = false,
     this.command,
   });
 
@@ -77,5 +81,6 @@ class ApiFetchRequest extends SessionRequest {
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.reload: reload,
         ApiObjectProperty.filter: filter?.toJson(),
+        ApiObjectProperty.offline: offline
       };
 }

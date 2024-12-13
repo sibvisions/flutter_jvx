@@ -26,20 +26,24 @@ extension StringExtension on String {
     return "${this[0].toLowerCase()}${substring(1)}";
   }
 
-  ///Splits all elements by [delimiter] and supports quoting of elements by '.
+  ///Splits all elements by [delimiter] but assumes that an element ends with [delimiter].
+  ///This method supports quoting of elements by '.
   List<String> asList(String delimiter) {
     List<String> list = [];
 
     int first = 0;
     int last = 0;
     bool quote = false;
+    bool added = false;
 
     for (int i = 0; i < codeUnits.length; i++, last++) {
+      added = false;
       String char = String.fromCharCode(codeUnits[i]);
       if (char == ";") {
         if (!quote) {
           list.add(substring(first, last).replaceAll("'", ""));
 
+          added = true;
           first = i + 1;
           last = i;
         }
@@ -47,6 +51,11 @@ extension StringExtension on String {
       else if (char == "'") {
         quote = !quote;
       }
+    }
+
+    //not closed or last element
+    if (!added) {
+      list.add(substring(first, last).replaceAll("'", ""));
     }
 
     return list;

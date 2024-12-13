@@ -46,6 +46,9 @@ class FetchCommand extends SessionCommand {
   /// If `true`, the root key will be set. Client side only.
   final bool setRootKey;
 
+  /// Whether it's a fetch for going offline.
+  final bool offline;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,6 +61,7 @@ class FetchCommand extends SessionCommand {
     this.filter,
     this.reload = false,
     this.setRootKey = false,
+    this.offline = false,
     required super.reason,
   }) {
     IDataService().setDataBookFetching(

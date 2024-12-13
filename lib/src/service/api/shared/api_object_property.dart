@@ -299,6 +299,7 @@ abstract class ApiObjectProperty {
   static const String format = "format";
   static const String masterRow = "masterRow";
   static const String closed = "closed";
+  static const String offline = "offline";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";

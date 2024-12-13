@@ -486,6 +486,7 @@ abstract class OfflineUtil {
           fromRow: 0,
           rowCount: -1,
           includeMetaData: true,
+          offline: true
         ),
       );
     }
