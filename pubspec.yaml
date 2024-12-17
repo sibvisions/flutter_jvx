@@ -61,7 +61,7 @@ dependencies:
 
   cross_file: ^0.3.3+2
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
-  file_picker: 8.1.4
+  file_picker: ^8.1.6
   file_saver: 0.2.14
 
   #cached_network_image: ^3.4.0
