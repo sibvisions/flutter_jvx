@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
+import '../../util/extensions/color_extensions.dart';
 import '../../util/parse_util.dart';
 import 'api_response.dart';
 
@@ -168,5 +169,5 @@ abstract class ColorConverter {
     return ParseUtil.parseHexColor(sColor);
   }
 
-  static String toJson(Color object) => "#${object.value.toRadixString(16)}";
+  static String toJson(Color object) => "#${object.toInt().toRadixString(16)}";
 }

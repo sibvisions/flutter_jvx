@@ -176,7 +176,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
         decoration: InputDecoration(
           hintText: FlutterUI.translate("Search"),
           hintStyle: TextStyle(
-            color: textColor.withOpacity(0.4),
+            color: textColor.withAlpha(Color.getAlphaFromOpacity(0.4)),
           ),
           // Needed to keep vertical align centered
           contentPadding: const EdgeInsets.fromLTRB(12, 16, 12, 16),

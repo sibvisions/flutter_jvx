@@ -128,7 +128,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                   child: Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                      color: Theme.of(context).colorScheme.primary.withAlpha(Color.getAlphaFromOpacity(0.5)),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Icon(
@@ -149,7 +149,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                         padding: const EdgeInsets.all(5),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                            color: Theme.of(context).colorScheme.primary.withAlpha(Color.getAlphaFromOpacity(0.5)),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: IconButton(
@@ -164,7 +164,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                         padding: const EdgeInsets.all(5),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                            color: Theme.of(context).colorScheme.primary.withAlpha(Color.getAlphaFromOpacity(0.5)),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: IconButton(
@@ -179,7 +179,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                         padding: const EdgeInsets.all(5),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                            color: Theme.of(context).colorScheme.primary.withAlpha(Color.getAlphaFromOpacity(0.5)),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: IconButton(

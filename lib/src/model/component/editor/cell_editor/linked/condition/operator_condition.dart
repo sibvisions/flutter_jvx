@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'package:collection/collection.dart';
-
 import '../../../../../../service/api/shared/api_object_property.dart';
 import 'base_condition.dart';
 
@@ -28,7 +26,7 @@ class OperatorCondition extends BaseCondition {
   OperatorCondition.fromJson(super.json)
       : conditions = (json[ApiObjectProperty.conditions] as List<dynamic>?)
             ?.map((e) => BaseCondition.parseCondition(e))
-            .whereNotNull()
+            .nonNulls
             .toList(),
         condition = BaseCondition.parseCondition(json[ApiObjectProperty.condition]),
         super.fromJson();

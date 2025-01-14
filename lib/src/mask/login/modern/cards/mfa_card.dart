@@ -38,7 +38,7 @@ class MFACard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+      color: Theme.of(context).colorScheme.surface.withAlpha(Color.getAlphaFromOpacity(0.9)),
       elevation: 10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),

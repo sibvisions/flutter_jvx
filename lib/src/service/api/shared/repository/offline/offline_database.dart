@@ -575,7 +575,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     if (superWhere != null || filter.conditions.isNotEmpty) {
       where = [
         if (superWhere != null) superWhere,
-        ...filter.conditions.map((e) => _buildWhereClause(e)).whereNotNull(),
+        ...filter.conditions.map((e) => _buildWhereClause(e)).nonNulls,
       ].join(" ${filter.operatorType.name} ");
       where = "($where)";
     }
@@ -603,7 +603,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         case CompareType.GreaterEquals:
           operator = ">=";
           break;
-        case CompareType.Equals:
+        //case CompareType.Equals:
         default:
           operator = "=";
       }

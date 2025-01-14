@@ -104,7 +104,7 @@ class ModernLogin extends StatelessWidget implements Login {
                           bottomLeft: Radius.circular(20),
                         ),
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+                      backgroundColor: Theme.of(context).colorScheme.surface.withAlpha(Color.getAlphaFromOpacity(0.9)),
                       padding: kIsWeb ? const EdgeInsets.all(16.0) : const EdgeInsets.all(10.0),
                     ),
                     onPressed: () =>

@@ -225,10 +225,10 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
               // repeats the gradient over the canvas
               colors: [
                 // Colors are easy thanks to Flutter's Colors class.
-                Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                Theme.of(context).colorScheme.background.withOpacity(0.5),
-                Theme.of(context).colorScheme.background.withOpacity(0.5),
+                Theme.of(context).colorScheme.primary.withAlpha(Color.getAlphaFromOpacity(0.5)),
+                Theme.of(context).colorScheme.primary.withAlpha(Color.getAlphaFromOpacity(0.5)),
+                Theme.of(context).colorScheme.background.withAlpha(Color.getAlphaFromOpacity(0.5)),
+                Theme.of(context).colorScheme.background.withAlpha(Color.getAlphaFromOpacity(0.5)),
               ],
             ),
             borderRadius: BorderRadius.circular(4),

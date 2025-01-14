@@ -217,12 +217,12 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     List<String> dataProviders = [];
     List<Filter?> filters = [];
 
-    Node<NodeData>? node = controller.getNode(pNodeKey);
+    Node<dynamic>? node = controller.getNode(pNodeKey);
     while (node != null) {
       dataProviders.insert(0, node.data!.dataProvider);
       filters.insert(0, node.data!.rowFilter);
 
-      var parentNode = controller.getParent(node.key) as Node<NodeData>;
+      var parentNode = controller.getParent(node.key) as Node<dynamic>;
       if (node != parentNode) {
         node = parentNode;
       } else {
@@ -246,7 +246,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   _handleExpansionChanged(String pNodeKey, bool pExpanded) {
-    Node<NodeData> node = controller.getNode(pNodeKey)!;
+    Node<dynamic> node = controller.getNode(pNodeKey)!;
     node = node.copyWith(expanded: pExpanded);
     controller = controller.withUpdateNode(node.key, node);
 
@@ -254,7 +254,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       if (node.children.isEmpty) {
         _fetchNodeChildren(node);
       } else if (model.detectEndNode) {
-        for (Node<NodeData> child in List<Node<NodeData>>.from(node.children)) {
+        for (Node<dynamic> child in List<dynamic>.from(node.children)) {
           if (child.children.isEmpty && child.parent) {
             _fetchNodeChildren(child);
           }
@@ -264,7 +264,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     setState(() {});
   }
 
-  void _fetchNodeChildren(Node<NodeData> node) {
+  void _fetchNodeChildren(Node<dynamic> node) {
     String dataProvider = dataProviderAtTreeDepth(node.data!.treePath.length - 1)!;
     DalMetaData metaData = metaDatas[dataProvider]!;
     String childDataProvider = dataProviderAtTreeDepth(node.data!.treePath.length)!;
@@ -298,8 +298,8 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         baseDataProvider == pDataProvider && IDataService().getDataBook(baseDataProvider)!.rootKey == pPageKey;
 
     // Get all the nodes that are receiving this page.
-    List<Node<NodeData>> parentNodes = nodesReceivingPage[pDataProvider]?[pPageKey]
-            ?.map((nodeKey) => controller.getNode<NodeData>(nodeKey)!)
+    List<Node<dynamic>> parentNodes = nodesReceivingPage[pDataProvider]?[pPageKey]
+            ?.map((nodeKey) => controller.getNode(nodeKey)!)
             .toList() ??
         [];
 
@@ -312,26 +312,26 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     String? childDataBook = dataProviderAtTreeDepth(treeDepth + 1);
 
     if (childDataBook != null) {
-      List<Node<NodeData>> childrenToUnsub = [];
+      List<Node<dynamic>> childrenToUnsub = [];
       if (parentNodes.isNotEmpty) {
         // Remove all children nodes of these parent from receiving the child pages they haven been added to.
-        for (Node<NodeData> parentNode in parentNodes) {
+        for (Node<dynamic> parentNode in parentNodes) {
           for (Node child in parentNode.children) {
-            childrenToUnsub.add(child as Node<NodeData>);
+            childrenToUnsub.add(child);
           }
         }
       } else {
         for (Node child in controller.children) {
-          childrenToUnsub.add(child as Node<NodeData>);
+          childrenToUnsub.add(child);
         }
       }
-      for (Node<NodeData> child in childrenToUnsub) {
+      for (Node<dynamic> child in childrenToUnsub) {
         nodesReceivingPage[childDataBook]?[child.data!.subPageKey]?.remove(child.key);
       }
     }
 
     // All nodes that were build for each parent node.
-    HashMap<String?, List<Node<NodeData>>> newNodesPerParent = HashMap();
+    HashMap<String?, List<Node<dynamic>>> newNodesPerParent = HashMap();
 
     pPageChunk.data.forEach((rowIndex, dataRow) {
       // Filter to identify this row in the child nodes of our parent nodes.
@@ -347,7 +347,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
       // Loop through every parent but at least do it once, as we could have no parents and are base nodes.
       do {
-        Node<NodeData>? parentNode = isLevelZeroData ? null : parentNodes[parentIndex];
+        Node<dynamic>? parentNode = isLevelZeroData ? null : parentNodes[parentIndex];
 
         // Create the node key.
         List<int> treePath = [...parentNode?.data!.treePath ?? [], rowIndex];
@@ -377,9 +377,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
         List<Node> oldNodes = isLevelZeroData ? controller.children : parentNode?.children ?? [];
         Node? oldNode = oldNodes.firstWhereOrNull(
-            (element) => (element as Node<NodeData>).data!.rowFilter.toPageKey() == rowFilter.toPageKey());
+            (element) => element.data!.rowFilter.toPageKey() == rowFilter.toPageKey());
 
-        Node<NodeData> newNode = Node<NodeData>(
+        Node<dynamic> newNode = Node<dynamic>(
           key: nodeKey,
           children: oldNode?.children ?? [],
           // If the node is not evaluated to be a parent, then it can not be expanded.
@@ -420,8 +420,8 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     if (isLevelZeroData) {
       controller = controller.copyWith(children: newNodesPerParent.isNotEmpty ? newNodesPerParent.values.first : []);
     } else {
-      for (Node<NodeData> parentNode in parentNodes) {
-        List<Node<NodeData>> children = newNodesPerParent[parentNode.key] ?? [];
+      for (Node<dynamic> parentNode in parentNodes) {
+        List<Node<dynamic>> children = newNodesPerParent[parentNode.key] ?? [];
         // Add the new nodes to the parent node.
         parentNode = parentNode.copyWith(
           children: children,
@@ -544,7 +544,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   Node? getNodeFromTreePath(List<int> pTreePath, [Node? parentNode]) {
     Iterator iterator = (parentNode?.children ?? controller.children).iterator;
     while (iterator.moveNext()) {
-      Node<NodeData> child = iterator.current;
+      Node<dynamic> child = iterator.current;
       if (listEquals(child.data!.treePath, pTreePath)) {
         return child;
       } else if (child.isParent &&
@@ -558,7 +558,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
   Future<void> _refresh() async {
     if (initialized && _hasAllMetaData()) {
-      controller = TreeViewController(children: <Node<List<NodeData>>>[]);
+      controller = TreeViewController(children: <Node<List<dynamic>>>[]);
       data.clear();
       selectedRecords.clear();
       nodesReceivingPage.clear();

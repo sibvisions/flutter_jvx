@@ -367,7 +367,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     Iterable<String?> appIds = [
       IConfigService().lastApp.value,
       IConfigService().defaultApp.value,
-    ].whereNotNull();
+    ].nonNulls;
 
     return apps?.firstWhereOrNull((app) => appIds.contains(app.id) && !app.parametersHidden);
   }

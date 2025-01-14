@@ -985,14 +985,14 @@ class UiService implements IUiService {
     } else {
       showBarModalBottomSheet(
         context: FlutterUI.getCurrentContext()!,
-        barrierColor: JVxColors.LIGHTER_BLACK.withOpacity(0.75),
+        barrierColor: JVxColors.LIGHTER_BLACK.withAlpha(Color.getAlphaFromOpacity(0.75)),
         topControl: Container(
           height: 20,
           alignment: Alignment.bottomCenter,
           child: Container(
             height: 6,
             width: 40,
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.5), borderRadius: BorderRadius.circular(6)),
+            decoration: BoxDecoration(color: Colors.white.withAlpha(Color.getAlphaFromOpacity(0.5)), borderRadius: BorderRadius.circular(6)),
           ),
         ),
         clipBehavior: Clip.antiAliasWithSaveLayer,

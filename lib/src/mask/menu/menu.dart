@@ -116,7 +116,7 @@ abstract class Menu extends StatelessWidget {
           sticky: sticky,
           groupOnlyOnMultiple: groupOnlyOnMultiple,
         );
-      case MenuMode.DRAWER:
+      //case MenuMode.DRAWER:
       default:
         return GridMenu(
           key: key,

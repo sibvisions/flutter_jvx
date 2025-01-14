@@ -280,7 +280,7 @@ class FlButtonModel extends FlComponentModel {
       pConversion: (e) => (e as List<dynamic>?)
           ?.map((e) => e as String)
           .map<List<BarcodeFormat>?>((e) => ParseUtil.parseScanFormat(e))
-          .whereNotNull()
+          .nonNulls
           .expand((e) => e)
           .toSet()
           .toList(),

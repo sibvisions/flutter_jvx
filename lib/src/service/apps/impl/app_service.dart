@@ -99,7 +99,7 @@ class AppService implements IAppService {
   @override
   Future<void> refreshStoredApps() async {
     _storedAppIds.value = await IConfigService().getConfigHandler().getAppKeys();
-    _apps = (await Future.wait(getAppIds().map((id) => App.getApp(id)))).whereNotNull().toList();
+    _apps = (await Future.wait(getAppIds().map((id) => App.getApp(id)))).nonNulls.toList();
   }
 
   @override

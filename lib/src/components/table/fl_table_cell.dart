@@ -233,7 +233,7 @@ class _FlTableCellState extends State<FlTableCell> {
       colReadOnly = applicationSettings.darkColors?.readOnlyBackground ?? Colors.white70;
     }
 
-    colReadOnly = colReadOnly.withOpacity(0.2);
+    colReadOnly = colReadOnly.withAlpha(Color.getAlphaFromOpacity(0.2));
 
     return GestureDetector(
       onLongPressStart: (widget.onLongPress != null) && widget.model.isEnabled

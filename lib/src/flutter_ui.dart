@@ -594,8 +594,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   /// The last password that the user entered, used for offline switch.
   String? lastPassword;
 
-  late final StreamSubscription newTokenSubscription;
-  late final StreamSubscription notificationTapSubscription;
+  late final VoidCallback newTokenSubscription;
+  late final VoidCallback notificationTapSubscription;
   late final ValueNotifier<List<Map<String?, Object?>>> tappedNotificationPayloads;
   late final VoidCallback notificationSubscription;
   late final ValueNotifier<List<RemoteMessage>> messagesReceived;
@@ -691,7 +691,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       IConfigService().getPlatformLocale(),
       ...IConfigService().supportedLanguages.value,
       "en",
-    }.whereNotNull().map((e) => Locale(e)).toList();
+    }.nonNulls.map((e) => Locale(e)).toList();
 
     return ListenableBuilder(
       listenable: Listenable.merge([
@@ -1076,9 +1076,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     messagesReceived = ValueNotifier([]);
     backgroundMessagesReceived = ValueNotifier([]);
 
-    newTokenSubscription = Push.instance.onNewToken.listen(PushUtil.handleTokenUpdates);
+    newTokenSubscription = Push.instance.addOnNewToken(PushUtil.handleTokenUpdates);
 
-    notificationTapSubscription = Push.instance.onNotificationTap.listen((data) {
+    notificationTapSubscription = Push.instance.addOnNotificationTap((data) {
       // "payload" means it's a local notification, handle elsewhere.
       if (data.containsKey("payload")) return;
 
@@ -1095,8 +1095,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   void disposePushStreams() {
-    newTokenSubscription.cancel();
-    notificationTapSubscription.cancel();
+    newTokenSubscription();
+    notificationTapSubscription();
     notificationSubscription();
     backgroundNotificationSubscription();
 

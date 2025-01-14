@@ -208,13 +208,13 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         groupTag: slideActionFactory,
         endActionPane: ActionPane(
           extentRatio: slideableExtentRatio,
-          motion: const ScrollMotion(),
+          motion: const StretchMotion(),
           children: slideActions,
         ),
         child: Container(
           height: tableSize.rowHeight,
           decoration: BoxDecoration(
-            color: colRow.withOpacity(opacity),
+            color: colRow.withAlpha(Color.getAlphaFromOpacity(opacity)),
           ),
           child: Row(
             children: rowWidgets,

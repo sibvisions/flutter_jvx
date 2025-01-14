@@ -137,7 +137,7 @@ class AppItem extends StatelessWidget {
                       if (locked || hidden)
                         CircleAvatar(
                           // CardColor matches background
-                          backgroundColor: Theme.of(context).cardColor.withOpacity(0.75),
+                          backgroundColor: Theme.of(context).cardColor.withAlpha(Color.getAlphaFromOpacity(0.75)),
                           radius: 12,
                           child: Icon(
                             hidden ? Icons.visibility_off : Icons.lock,
@@ -147,7 +147,7 @@ class AppItem extends StatelessWidget {
                         ),
                       if (offline)
                         CircleAvatar(
-                          backgroundColor: Theme.of(context).cardColor.withOpacity(0.75),
+                          backgroundColor: Theme.of(context).cardColor.withAlpha(Color.getAlphaFromOpacity(0.75)),
                           radius: 12,
                           child: Icon(
                             Icons.cloud_off,

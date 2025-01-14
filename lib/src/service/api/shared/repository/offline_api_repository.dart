@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'package:collection/collection.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:universal_io/io.dart';
 
@@ -99,7 +98,7 @@ class OfflineApiRepository extends IRepository {
   ) async {
     _checkStatus();
 
-    var dalMetaData = dataBooks.map((e) => e.metaData).whereNotNull().toList(growable: false);
+    var dalMetaData = dataBooks.map((e) => e.metaData).nonNulls.toList(growable: false);
     // Drop old data + possible old scheme
     await offlineDatabase!.dropTables(IConfigService().currentApp.value!);
     await offlineDatabase!.createTables(IConfigService().currentApp.value!, dalMetaData);

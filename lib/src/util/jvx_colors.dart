@@ -35,7 +35,7 @@ abstract class JVxColors {
 
   /// Specifically requested color mix.
   static Color dividerColor(ThemeData theme) {
-    return theme.colorScheme.onPrimary.withOpacity(0.15);
+    return theme.colorScheme.onPrimary.withAlpha(Color.getAlphaFromOpacity(0.15));
   }
 
   /// Whether the theme of [context] is in light mode

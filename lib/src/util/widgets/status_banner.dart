@@ -199,8 +199,6 @@ class StatusBannerState extends State<StatusBanner> with SingleTickerProviderSta
                   case StatusBannerLocation.bottom:
                     adjustedDelta = -details.delta.dy;
                     break;
-                  default:
-                    throw UnimplementedError("Invalid location: ${widget.location}");
                 }
                 _controller.value = (_controller.value + (adjustedDelta / _childHeight)).clamp(0, 1);
               },

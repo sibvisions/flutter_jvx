@@ -206,7 +206,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
         decoration: InputDecoration(
           hintText: FlutterUI.translate("Search"),
           hintStyle: TextStyle(
-            color: DefaultTextStyle.of(context).style.color?.withOpacity(0.4),
+            color: DefaultTextStyle.of(context).style.color?.withAlpha(Color.getAlphaFromOpacity(0.4)),
           ),
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,

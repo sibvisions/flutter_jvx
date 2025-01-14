@@ -40,7 +40,7 @@ class SortDefinition {
         return SortMode.ascending;
       case SortMode.ascending:
         return SortMode.descending;
-      case SortMode.descending:
+      //case SortMode.descending:
       default:
         return null;
     }
@@ -52,7 +52,7 @@ class SortDefinition {
         return "None";
       case SortMode.descending:
         return "Descending";
-      case SortMode.ascending:
+      //case SortMode.ascending:
       default:
         return "Ascending";
     }

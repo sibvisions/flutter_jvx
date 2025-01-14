@@ -146,7 +146,7 @@ class ConfigService implements IConfigService {
         await Future.forEach<String>(
           _appConfig!.serverConfigs!
               .map((e) => App.computeId(e.appName, e.baseUrl.toString(), predefined: true))
-              .whereNotNull(),
+              .nonNulls,
           (e) => App.getApp(e).then((app) => app?.delete()),
         );
       }

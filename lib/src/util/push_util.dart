@@ -168,7 +168,7 @@ abstract class PushUtil {
   }
 
   /// Handles device token updates.
-  static Future<void> handleTokenUpdates(String token) async {
+  static FutureOr<void> handleTokenUpdates(String token) async {
     FlutterUI.log.d("New APNS/FCM registration token: $token");
     await PushUtil.sendPushData({parameterPushToken: token});
   }

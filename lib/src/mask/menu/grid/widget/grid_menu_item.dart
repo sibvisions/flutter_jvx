@@ -49,7 +49,7 @@ class GridMenuItem extends StatelessWidget {
     var theme = Theme.of(context);
     return Material(
       color: (JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.canvasColor)
-          .withOpacity(double.parse(AppStyle.of(context).style(context, 'opacity.menu') ?? "1")),
+          .withAlpha(Color.getAlphaFromOpacity(double.parse(AppStyle.of(context).style(context, 'opacity.menu') ?? "1"))),
       child: InkWell(
         onTap: () => onClick(context, item: menuItemModel),
         child: Column(
@@ -59,7 +59,7 @@ class GridMenuItem extends StatelessWidget {
             Expanded(
               flex: 25,
               child: Container(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withAlpha(Color.getAlphaFromOpacity(0.2)),
                 padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
                 child: Padding(
                   padding: const EdgeInsets.all(2.0),
@@ -82,7 +82,7 @@ class GridMenuItem extends StatelessWidget {
             Expanded(
               flex: 75,
               child: Container(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withAlpha(Color.getAlphaFromOpacity(0.1)),
                 child: MenuItemModel.getImage(
                   context,
                   pMenuItemModel: menuItemModel,

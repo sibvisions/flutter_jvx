@@ -29,8 +29,8 @@ dependencies:
 
   # Translations capability
   intl: any # An exact version pin will be provided by the Flutter SDK
-  timezone: ^0.9.0
-  flutter_timezone: ^3.0.1
+  timezone: ^0.10.0
+  flutter_timezone: ^4.0.0
 
   # Config
   shared_preferences: ^2.0.15
@@ -43,21 +43,21 @@ dependencies:
   # Util
   dio: ^5.2.1+1
   logger: ^2.0.0
-  collection: ^1.18.0
+  collection: ^1.19.0
   rxdart: ^0.28.0
-  queue: ^3.1.0+2
+  queue: ^3.4.0
   #flutter_html: 3.0.0-alpha.5
   flutter_html:
     git:
       url: https://github.com/Sub6Resources/flutter_html
       ref: flutter_html-v3.0.0-beta.2
-  async: ^2.10.0
+  async: ^2.11.0
 
   # IO handling
   universal_io: ^2.0.4
 
   web_socket_channel: ^3.0.1
-  connectivity_plus: ^6.0.5
+  connectivity_plus: ^6.1.0
 
   cross_file: ^0.3.3+2
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
@@ -77,10 +77,10 @@ dependencies:
   # Signature Pad
   signature: ^5.3.2
   # Saving files on system
-  path: ^1.8.1
+  path: ^1.9.0
   path_provider: ^2.0.11
   # Zip files handling
-  archive: ^3.3.1
+  archive: ^4.0.2
   # Special Slivers for lists and grids
   sliver_tools: ^0.2.7
   # Auto resizing text widget
@@ -89,7 +89,7 @@ dependencies:
   beamer: ^1.7.0
   # Used for offline mode
   sqflite: ^2.4.0
-  wakelock_plus: ^1.2.8
+  wakelock_plus: ^1.2.0
   # Used for debugging
   flutter_debug_overlay:
     git:
@@ -115,9 +115,12 @@ dependencies:
   flutter_keyboard_visibility: ^6.0.0
   flutter_slidable: ^3.0.0
   action_slider: ^0.7.0
-  webview_flutter: ^4.0.2
+  webview_flutter: ^4.0.0
   card_loading: ^0.3.0
-  flutter_treeview: ^1.0.7+1
+  flutter_treeview: #^1.0.7+1
+    git:
+      url: https://github.com/sibvisions/flutter_treeview
+
   modal_bottom_sheet: ^3.0.0-pre
   qr_flutter: ^4.1.0
   screen_brightness: ^2.0.0
@@ -128,8 +131,8 @@ dependencies:
   flutter_tts: ^4.0.0
   speech_to_text: ^7.0.0
 
-  push: ^2.3.0
-  flutter_local_notifications: ^17.2.1+2
+  push: ^3.0.0
+  flutter_local_notifications: ^18.0.0
   open_filex: ^4.5.0
 
 dev_dependencies:
