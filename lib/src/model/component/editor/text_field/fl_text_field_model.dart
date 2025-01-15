@@ -116,6 +116,6 @@ class FlTextFieldModel extends FlLabelModel {
 
   /// If editing of the text field is possible.
   bool get isReadOnly {
-    return !(isEnabled && isEditable && isFocusable);
+    return !isEnabled || !isEditable;
   }
 }
