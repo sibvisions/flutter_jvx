@@ -25,7 +25,7 @@ import 'fl_table_cell.dart';
 class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
   /// The width each slide-able action should have
-  static const double SLIDEABLE_WIDTH = 125;
+  static const double SLIDEABLE_WIDTH = 90;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -190,16 +190,15 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
     colRow ??= Theme.of(context).colorScheme.primary;
 
-    List<Widget> slideActions = slideActionFactory?.call(index) ?? [];
+    List<Widget> slideActions = slideActionFactory?.call(context, index) ?? [];
 
     double singleActionExtent = SLIDEABLE_WIDTH / rowWidth;
     double slideableExtentRatio = singleActionExtent * slideActions.length;
-    slideableExtentRatio = slideableExtentRatio.clamp(0.25, 0.9);
+    slideableExtentRatio = slideableExtentRatio.clamp(0.20, 0.9);
+
     return Theme(
       data: Theme.of(context).copyWith(
-        iconTheme: IconTheme.of(context).copyWith(
-          size: 16,
-        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: JVxColors.DARKER_WHITE, foregroundColor: JVxColors.DARKER_WHITE, iconSize: 16))
       ),
       child: Slidable(
         closeOnScroll: true,

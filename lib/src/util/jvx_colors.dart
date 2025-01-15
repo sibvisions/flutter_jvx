@@ -88,34 +88,55 @@ abstract class JVxColors {
         onSecondary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         onTertiary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         brightness: selectedBrightness,
+        surface: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
         background: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
       );
     } else {
       colorScheme = ColorScheme.fromSeed(
         seedColor: seedColor,
         brightness: selectedBrightness,
+        surface: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
         background: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
       );
     }
 
-    ElevatedButtonThemeData evbTheme = ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        backgroundColor: colorScheme.primary,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))));
-
     var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: true);
 
+    ElevatedButtonThemeData evbTheme = ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        backgroundColor: colorScheme.primary,
+        iconColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))));
+
+    OutlinedButtonThemeData otbTheme = OutlinedButtonThemeData(style: OutlinedButton.styleFrom(
+        foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        iconColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white));
+
     themeData = themeData.copyWith(
-        appBarTheme: AppBarTheme(backgroundColor: isSelectedLight ? colorScheme.primary : colorScheme.background,
+        appBarTheme: AppBarTheme(backgroundColor: isSelectedLight ? colorScheme.primary : colorScheme.surface,
                                  foregroundColor: isSelectedLight ? (isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white) : themeData.textTheme.labelSmall!.color),
         cardTheme: CardTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
         dividerTheme: DividerThemeData(color: dividerColor(themeData)),
-        dialogTheme: DialogTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.grey[500], shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),),
+        dialogTheme: DialogTheme(backgroundColor: isSelectedLight ? Colors.white : Colors.grey[500],
+            surfaceTintColor: isSelectedLight ? Colors.white : Colors.grey[500],
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5))),
+        dialogBackgroundColor: isSelectedLight ? Colors.white : Colors.grey[500],
         textButtonTheme: TextButtonThemeData(style: ButtonStyle(foregroundColor: WidgetStateProperty.all(isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color),
                                                                 overlayColor: WidgetStateProperty.all(isSelectedLight ? null : JVxColors.WHITE))),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(shape: CircleBorder(side: BorderSide(width: 0, style: BorderStyle.none))),
         elevatedButtonTheme: evbTheme,
+        outlinedButtonTheme: otbTheme,
+        datePickerTheme: DatePickerThemeData(backgroundColor: isSelectedLight ? Colors.white : Colors.grey[500],
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+        timePickerTheme: TimePickerThemeData(backgroundColor: isSelectedLight ? Colors.white : Colors.grey[500],
+            dialBackgroundColor: isSelectedLight ? Colors.white : Colors.grey[500],
+            hourMinuteShape: const OutlineInputBorder(
+              //same as in text field widget
+                borderSide: BorderSide(
+                  color: COMPONENT_BORDER,
+                )),
+            hourMinuteColor: themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.background,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
         typography: Typography.material2014()
     );
 
@@ -175,7 +196,7 @@ abstract class JVxColors {
 
     if (_isBlack(themeData.primaryIconTheme.color)) {
       themeData = themeData.copyWith(
-        iconTheme: themeData.primaryIconTheme.copyWith(
+        primaryIconTheme: themeData.primaryIconTheme.copyWith(
           color: JVxColors.LIGHTER_BLACK,
         ),
       );
