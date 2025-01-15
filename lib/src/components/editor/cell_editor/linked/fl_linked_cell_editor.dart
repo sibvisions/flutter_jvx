@@ -75,6 +75,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
+    super.focusChecker
   }) : super(
           model: FlLinkedCellEditorModel(),
         ) {
@@ -199,7 +200,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   @override
-  void focusChanged(bool pHasFocus) {
+  void handleFocusChanged(bool pHasFocus) {
     if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
       if (!lastWidgetModel!.isFocusable) {
         focusNode.unfocus();

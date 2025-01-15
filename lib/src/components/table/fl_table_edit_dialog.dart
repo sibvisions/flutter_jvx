@@ -71,6 +71,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   /// If the dialog was dismissed by either button.
   bool dismissedByButton = false;
 
+  /// whether we ignore focus handling of cell editor
+  bool ignoreCellEditorFocus = true;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,6 +102,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         },
         onFocusChanged: (_) {},
         isInTable: false,
+        focusChecker: _focusHandlingEnabled
       );
       if (cellEditor is FlLinkedCellEditor) {
         cellEditor.setValue((widget.values[colDef.name], widget.values.values.toList()));
@@ -322,5 +326,14 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     if (!fromDispose) {
       Navigator.of(context).pop();
     }
+  }
+
+  bool _focusHandlingEnabled(IFocusableCellEditor cellEditor) {
+    if (ignoreCellEditorFocus) {
+      ignoreCellEditorFocus = false;
+      return false;
+    }
+
+    return true;
   }
 }

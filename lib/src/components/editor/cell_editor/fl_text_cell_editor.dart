@@ -304,7 +304,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   }
 
   @override
-  Future<void> focusChanged(bool pHasFocus) async {
+  Future<void> handleFocusChanged(bool pHasFocus) async {
     if (lastWidgetModel == null || !isInitialized) {
       return;
     }
@@ -318,7 +318,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
       }
     }
 
-    super.focusChanged(pHasFocus);
+    super.handleFocusChanged(pHasFocus);
   }
 
   /// The [HtmlEditor] does not update its status of enable/disable on its own through the constructor.

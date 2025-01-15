@@ -64,6 +64,7 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
     required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
+    super.focusChecker
   }) : super(
           model: FlDateCellEditorModel(),
         ) {
@@ -126,7 +127,7 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   }
 
   @override
-  void focusChanged(bool pHasFocus) {
+  void handleFocusChanged(bool pHasFocus) {
     if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
       if (!lastWidgetModel!.isFocusable) {
         focusNode.unfocus();

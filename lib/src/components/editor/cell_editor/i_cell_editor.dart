@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -32,6 +33,7 @@ import 'fl_text_cell_editor.dart';
 import 'linked/fl_linked_cell_editor.dart';
 
 typedef RecalculateCallback = Function([bool pRecalculate]);
+typedef CellEditorFocusChecker = bool Function(IFocusableCellEditor cellEditor);
 
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.
 abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorModelType extends ICellEditorModel,
@@ -140,6 +142,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
     RecalculateCallback? pRecalculateCallback,
     required String dataProvider,
     required String columnName,
+    CellEditorFocusChecker? focusChecker
   }) {
     String? cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
 
@@ -197,7 +200,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
           isInTable: isInTable,
           recalculateSizeCallback: pRecalculateCallback,
           columnName: columnName,
-          dataProvider: dataProvider,
+          dataProvider: dataProvider
         );
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         return FlDateCellEditor(
@@ -209,6 +212,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
           isInTable: isInTable,
           columnName: columnName,
           dataProvider: dataProvider,
+          focusChecker: focusChecker
         );
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
@@ -221,6 +225,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
           isInTable: isInTable,
           columnName: columnName,
           dataProvider: dataProvider,
+          focusChecker: focusChecker
         );
 
       default:
@@ -253,6 +258,9 @@ abstract class IFocusableCellEditor<
   /// The callback function that is called when the focus of this cell editor changes.
   Function(bool)? onFocusChanged;
 
+  /// Whether the first focus request should be ignored
+  CellEditorFocusChecker? focusChecker;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -268,6 +276,7 @@ abstract class IFocusableCellEditor<
     super.name,
     super.columnDefinition,
     this.onFocusChanged,
+    this.focusChecker
   }) {
     focusNode.addListener(() {
       focusChanged(focusNode.hasFocus);
@@ -282,9 +291,22 @@ abstract class IFocusableCellEditor<
   bool firesFocusCallback() => true;
 
   /// Is called when the focus changes.
+  @nonVirtual
   void focusChanged(bool pHasFocus) {
+    //If there's a local focus checker, don't handle focus if it's not expected
+    if (focusChecker != null) {
+      if (!focusChecker!(this)) {
+        focusNode.unfocus();
+        return;
+      }
+    }
+
+    handleFocusChanged(pHasFocus);
+  }
+
+  void handleFocusChanged(bool pHasFocus) {
     if (onFocusChanged != null && firesFocusCallback()) {
-      onFocusChanged!(pHasFocus);
+        onFocusChanged!(pHasFocus);
     }
   }
 

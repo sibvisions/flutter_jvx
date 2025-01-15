@@ -175,7 +175,7 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
   }
 
   @override
-  void focusChanged(bool pHasFocus) {
+  void handleFocusChanged(bool pHasFocus) {
     if (lastWidgetModel == null) {
       return;
     }
@@ -187,6 +187,6 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
       }
     }
 
-    super.focusChanged(pHasFocus);
+    super.handleFocusChanged(pHasFocus);
   }
 }
