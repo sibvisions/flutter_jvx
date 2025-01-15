@@ -1048,7 +1048,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     );
   }
 
-  List<SlidableAction> createSlideActions(int pRowIndex) {
+  List<SlidableAction> createSlideActions(BuildContext pContext, int pRowIndex) {
     List<SlidableAction> slideActions = [];
 
     if (_isAnyCellInRowEditable(pRowIndex)) {
@@ -1061,6 +1061,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           backgroundColor: Colors.green,
           label: FlutterUI.translate("Edit"),
           icon: FontAwesomeIcons.penToSquare,
+          padding: const EdgeInsets.only(left: 8, right: 8),
         ),
       );
     }
@@ -1078,6 +1079,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           backgroundColor: Colors.red,
           label: FlutterUI.translate("Delete"),
           icon: FontAwesomeIcons.trash,
+          padding: const EdgeInsets.only(left: 8, right: 8),
         ),
       );
     }

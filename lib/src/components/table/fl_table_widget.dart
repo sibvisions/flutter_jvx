@@ -35,7 +35,7 @@ typedef TableLongPressCallback = void Function(
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
 typedef TableHeaderTapCallback = void Function(String column);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
-typedef TableSlideActionFactory = List<SlidableAction> Function(int pRowIndex);
+typedef TableSlideActionFactory = List<SlidableAction> Function(BuildContext context, int pRowIndex);
 
 class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The scroll controller of the table.
