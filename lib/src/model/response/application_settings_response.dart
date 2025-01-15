@@ -147,8 +147,7 @@ class ApplicationColors {
         Color? darkColor;
         if (lightColor != null) {
           HSVColor hsvColor = HSVColor.fromColor(lightColor);
-          hsvColor = hsvColor.withSaturation((hsvColor.saturation + 0.1).clamp(0.0, 1.0));
-          hsvColor = hsvColor.withValue((hsvColor.value - 0.2).clamp(0.0, 1.0));
+          hsvColor = hsvColor.withValue((hsvColor.value - 0.75).clamp(0.0, 1.0));
 
           darkColor = hsvColor.toColor();
         }
