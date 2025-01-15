@@ -190,7 +190,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
     colRow ??= Theme.of(context).colorScheme.primary;
 
-    List<Widget> slideActions = slideActionFactory?.call(context, index) ?? [];
+    List<SlidableAction> slideActions = slideActionFactory?.call(context, index) ?? [];
 
     double singleActionExtent = SLIDEABLE_WIDTH / rowWidth;
     double slideableExtentRatio = singleActionExtent * slideActions.length;
@@ -198,7 +198,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
     return Theme(
       data: Theme.of(context).copyWith(
-        outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: JVxColors.DARKER_WHITE, foregroundColor: JVxColors.DARKER_WHITE, iconSize: 16))
+        outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white,
+            textStyle: const TextStyle(fontWeight: FontWeight.normal),
+            iconSize: 16))
       ),
       child: Slidable(
         closeOnScroll: true,

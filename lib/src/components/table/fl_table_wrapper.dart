@@ -17,7 +17,6 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -26,44 +25,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../flutter_ui.dart';
-import '../../model/command/api/delete_record_command.dart';
-import '../../model/command/api/fetch_command.dart';
-import '../../model/command/api/insert_record_command.dart';
-import '../../model/command/api/select_record_command.dart';
-import '../../model/command/api/set_values_command.dart';
+import '../../../flutter_jvx.dart';
 import '../../model/command/api/sort_command.dart';
-import '../../model/command/base_command.dart';
-import '../../model/command/ui/function_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/editor/cell_editor/cell_editor_model.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
-import '../../model/data/data_book.dart';
 import '../../model/data/sort_definition.dart';
-import '../../model/data/subscriptions/data_chunk.dart';
-import '../../model/data/subscriptions/data_record.dart';
-import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
-import '../../model/request/filter.dart';
-import '../../routing/locations/main_location.dart';
-import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/fl_component_classname.dart';
-import '../../service/command/i_command_service.dart';
-import '../../service/data/i_data_service.dart';
-import '../../service/storage/i_storage_service.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../../util/column_list.dart';
 import '../../util/offline_util.dart';
 import '../../util/sort_list.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import '../editor/cell_editor/date/fl_date_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import '../editor/cell_editor/linked/fl_linked_cell_editor.dart';
 import 'fl_table_edit_dialog.dart';
-import 'fl_table_widget.dart';
-import 'table_size.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
@@ -1051,6 +1026,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   List<SlidableAction> createSlideActions(BuildContext pContext, int pRowIndex) {
     List<SlidableAction> slideActions = [];
 
+    bool isLight = JVxColors.isLightTheme(pContext);
+
     if (_isAnyCellInRowEditable(pRowIndex)) {
       slideActions.add(
         SlidableAction(
@@ -1058,7 +1035,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             _editRow(pRowIndex);
           },
           autoClose: true,
-          backgroundColor: Colors.green,
+          backgroundColor: isLight ? Colors.green : const Color(0xFF2c662f),
+          foregroundColor: isLight ? Colors.white : Theme.of(context).textTheme.labelSmall!.color,
           label: FlutterUI.translate("Edit"),
           icon: FontAwesomeIcons.penToSquare,
           padding: const EdgeInsets.only(left: 8, right: 8),
@@ -1076,7 +1054,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             }
           },
           autoClose: true,
-          backgroundColor: Colors.red,
+          backgroundColor: isLight ? Colors.red : const Color(0xFF932821),
+          foregroundColor: isLight ? Colors.white : Theme.of(context).textTheme.labelSmall!.color,
           label: FlutterUI.translate("Delete"),
           icon: FontAwesomeIcons.trash,
           padding: const EdgeInsets.only(left: 8, right: 8),
