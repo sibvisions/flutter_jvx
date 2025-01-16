@@ -17,6 +17,7 @@ rm -r $pubCache/hosted/pub.dev/file_picker-*
 rm -r $pubCache/hosted/pub.dev/device_info_plus-*
 rm -r $pubCache/hosted/pub.dev/flutter_native_splash-*
 rm -r $pubCache/hosted/pub.dev/sqflite-*
+rm -r $pubCache/hosted/pub.dev/sqflite_*
 rm -r $pubCache/hosted/pub.dev/flutter_keyboard_visibility-*
 rm -r $pubCache/hosted/pub.dev/geolocator-*
 rm -r $pubCache/hosted/pub.dev/geolocator_*
@@ -29,7 +30,11 @@ rm -r $pubCache/hosted/pub.dev/speech_to_text*
 rm -r $pubCache/hosted/pub.dev/file_saver*
 rm -r $pubCache/hosted/pub.dev/html_editor_enhanced*
 rm -r $pubCache/hosted/pub.dev/push-*
-rm -r $pubCache/hosted/pub.dev/push_*
 rm -r $pubCache/hosted/pub.dev/flutter_local_notifications*
 rm -r $pubCache/hosted/pub.dev/screen_brightness*
 rm -r $pubCache/hosted/pub.dev/open_filex*
+rm -r $pubCache/hosted/pub.dev/pointer_interceptor*
+rm -r $pubCache/hosted/pub.dev/webview_flutter*
+rm -r $pubCache/hosted/pub.dev/android_id*
+
+echo $pubCache

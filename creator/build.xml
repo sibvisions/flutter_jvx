@@ -369,7 +369,14 @@ the License.
       <arg value="--release" />
     </exec>
 
+    <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
+      <arg value="build" />
+      <arg value="appbundle" />
+      <arg value="--release" />
+    </exec>
+
     <copy file="${project.temp}/build/app/outputs/flutter-apk/app-release.apk" tofile="${install}/app-release-android.apk" />
+    <copy file="${project.temp}/build/app/outputs/flutter-apk/app-release.aab" tofile="${install}/app-release-android.aab" />
   </target>
 
 
