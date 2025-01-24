@@ -119,12 +119,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   ///
   /// Every wrapper itself is "wrapped" in a [Positioned] widget,
   /// which will positioned itself inside the [Stack] of a [BaseContWrapperState]'s widget.
-  Positioned wrapWidget({required Widget child}) {
+  Positioned wrapWidget({BuildContext? context, required Widget child}) {
     return Positioned(
-      top: getTopForPositioned(),
-      left: getLeftForPositioned(),
-      width: getWidthForPositioned(),
-      height: getHeightForPositioned(),
+        key: ValueKey("Stack-BaseComp ${model.name}"),
+      top: getTopForPositioned(context),
+      left: getLeftForPositioned(context),
+      width: getWidthForPositioned(context),
+      height: getHeightForPositioned(context),
       child: wrapWithSemantic(
         wrapWithDesignListener(
           wrapWithOpacity(
@@ -294,6 +295,10 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Is called when a new [LayoutData] is sent from the [ILayoutService].
   void receiveNewLayoutData(LayoutData pLayoutData) {
+
+    //mark layout data "received"
+    pLayoutData.receivedDate = DateTime.now();
+
     LayoutPosition? calcPosition;
     if (pLayoutData.hasPosition && pLayoutData.layoutPosition!.isConstraintCalc) {
       calcPosition = pLayoutData.layoutPosition;
@@ -349,8 +354,34 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Calculates the size the components ideally wants to have.
   Size calculateSize(BuildContext context) {
-    double minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(double.infinity).ceilToDouble();
-    double minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
+    double minWidth = 0;
+    double minHeight = 0;
+
+    //It's possible that width is defined but height is undefined or vice versa.
+    //In both cases, we should try to get the value. Only if no value is defined,
+    //throw an error
+
+    Error? eWidth;
+    try {
+      minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(double.infinity).ceilToDouble();
+    }
+    on Error catch (e) {
+      eWidth = e;
+    }
+
+    Error? eHeight;
+    try {
+      minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
+    }
+    on Error catch (e) {
+      eHeight = e;
+    }
+
+    if (eWidth != null && eHeight != null) {
+      FlutterUI.logUI.d("It's not possible to get the size of widget $runtimeType");
+      throw eWidth;
+    }
+
     return Size(minWidth, minHeight);
   }
 
@@ -367,22 +398,23 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// The top value for [wrapWidget].
-  double getTopForPositioned() {
+  double getTopForPositioned(BuildContext? context) {
     return layoutData.hasPosition ? layoutData.layoutPosition!.top : 0.0;
   }
 
   /// The left value for [wrapWidget].
-  double getLeftForPositioned() {
+  double getLeftForPositioned(BuildContext? context) {
     return layoutData.hasPosition ? layoutData.layoutPosition!.left : 0.0;
   }
 
   /// The width value for [wrapWidget].
-  double getWidthForPositioned() {
+  double getWidthForPositioned(BuildContext? context) {
     return layoutData.hasPosition ? layoutData.layoutPosition!.width : 0.0;
   }
 
+
   /// The height value for [wrapWidget].
-  double getHeightForPositioned() {
+  double getHeightForPositioned(BuildContext? context) {
     return layoutData.hasPosition ? layoutData.layoutPosition!.height : 0.0;
   }
 

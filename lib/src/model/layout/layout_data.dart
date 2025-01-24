@@ -85,6 +85,9 @@ class LayoutData implements ICloneable {
   /// When width has been constrained what height did the component take.
   Map<double, double> widthConstrains;
 
+  /// Time when layout was received from component
+  DateTime? receivedDate;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,6 +112,7 @@ class LayoutData implements ICloneable {
     this.indexOf,
     this.layout,
     this.isFixedSize = false,
+    this.receivedDate
   });
 
   /// Clones [LayoutData] as a deep copy.
@@ -142,6 +146,7 @@ class LayoutData implements ICloneable {
       heightConstrains: Map.of(heightConstrains),
       widthConstrains: Map.of(widthConstrains),
       isFixedSize: isFixedSize,
+      receivedDate: receivedDate
     );
   }
 
@@ -184,6 +189,7 @@ class LayoutData implements ICloneable {
     heightConstrains = Map.of(pLayoutData.heightConstrains);
     widthConstrains = Map.of(pLayoutData.widthConstrains);
     isFixedSize = pLayoutData.isFixedSize;
+    receivedDate = pLayoutData.receivedDate;
   }
 
   /// If this component is a parent.
