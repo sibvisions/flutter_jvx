@@ -89,6 +89,7 @@ class LayoutService implements ILayoutService {
     _layoutDataSet[pLayoutData.id] = pLayoutData;
 
     List<BaseCommand> commands = [];
+
     // If child lost its position, give it back the old one.
     if (!pLayoutData.hasPosition && oldLayoutData != null && oldLayoutData.hasPosition == true) {
       pLayoutData.layoutPosition = oldLayoutData.layoutPosition;
@@ -114,6 +115,14 @@ class LayoutService implements ILayoutService {
         oldLayoutData?.layoutState == LayoutState.VALID &&
         oldLayoutData?.bestSize == pLayoutData.bestSize) {
       FlutterUI.logLayout.d("${pLayoutData.id} size: ${pLayoutData.bestSize} is same as before");
+
+      List<LayoutData> updateChildren = [];
+      updateChildren.add(pLayoutData);
+      updateChildren.addAll(_getChildren(pParentLayout: pLayoutData));
+      updateChildren = updateChildren.where((entry) => (entry.receivedDate == null && entry.hasPosition && (entry.hasNewCalculatedSize || entry.hasNewCalculatedSize))).toList();
+
+      commands.add(UpdateLayoutPositionCommand(layoutDataList: updateChildren, reason: "Notify additional sub components"));
+
       return commands;
     }
 
@@ -228,7 +237,10 @@ class LayoutService implements ILayoutService {
 
       // Needs to register again if this layout has been newly constraint by its parent.
       panel.lastCalculatedSize = panel.calculatedSize;
-      panel.layout!.calculateLayout(panel, children);
+
+      if (panel.layout != null) {
+        panel.layout!.calculateLayout(panel, children);
+      }
 
       if (panel.hasNewCalculatedSize) {
         FlutterUI.logLayout.d(

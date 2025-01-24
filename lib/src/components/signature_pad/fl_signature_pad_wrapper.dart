@@ -76,8 +76,8 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     final FlSignaturePadWidget widget = FlSignaturePadWidget(
       model: model,
       controller: signatureController,
-      width: getWidthForPositioned(),
-      height: getHeightForPositioned(),
+      width: getWidthForPositioned(context),
+      height: getHeightForPositioned(context),
       dataRecord: _dataRecord,
       onClear: _handleClear,
       onDone: _handleDone,

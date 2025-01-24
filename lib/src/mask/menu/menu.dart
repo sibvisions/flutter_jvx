@@ -139,12 +139,15 @@ abstract class Menu extends StatelessWidget {
       return;
     }
 
-    FlPanelModel? model = IStorageService().getComponentByScreenClassName(pScreenClassName: item.screenLongName);
     CustomScreen? customScreen = IUiService().getCustomScreen(item.screenLongName);
 
     if (customScreen != null && !customScreen.sendOpenScreenRequests) {
+      IUiService().routeToWorkScreen(pScreenName: item.navigationName);
+
       return;
     }
+
+    FlPanelModel? model = IStorageService().getComponentByScreenClassName(pScreenClassName: item.screenLongName);
 
     if (model != null) {
       ICommandService()

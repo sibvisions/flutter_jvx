@@ -17,9 +17,7 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../custom/app_manager.dart';
-import '../../custom/custom_component.dart';
-import '../../model/component/fl_component_model.dart';
+import '../../../flutter_jvx.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 
@@ -63,15 +61,6 @@ class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperSt
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Widget build(BuildContext context) {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      postFrameCallback(context);
-    });
-
-    return wrapWidget(child: customComponent.componentBuilder.call(context, model));
-  }
-
-  @override
   void initState() {
     // Cant use model here, because it is not yet initialized
     // Will be initialized in initState of super
@@ -90,4 +79,13 @@ class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperSt
 
     super.modelUpdated();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      postFrameCallback(context);
+    });
+    return wrapWidget(child: customComponent.componentBuilder.call(context, model));
+  }
+
 }

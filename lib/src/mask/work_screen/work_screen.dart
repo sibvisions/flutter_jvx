@@ -17,15 +17,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
-import '../../flutter_ui.dart';
-import '../../model/command/api/set_parameter_command.dart';
-import '../../model/command/api/set_screen_parameter_command.dart';
-import '../../model/menu/menu_item_model.dart';
-import '../../service/command/i_command_service.dart';
 import '../../util/offline_util.dart';
-import '../../util/parse_util.dart';
-import '../state/app_style.dart';
 import 'error_screen.dart';
 import 'util/screen_wrapper.dart';
 import 'work_screen_page.dart';
@@ -118,19 +112,22 @@ class WorkScreen extends StatelessWidget {
             }
 
             Widget screenWidget = wrappedScreen.screen!;
-            if (!wrappedScreen.customScreen && screenWidget is FlPanelWrapper) {
-              Size size = Size(constraints.maxWidth, screenHeight);
-              updateSize(size);
-            } else {
+
+            if (screenWidget is FlPanelWrapper) {
+              updateSize(Size(constraints.maxWidth, screenHeight));
+            }
+
+            if (wrappedScreen.customScreen) {
               // Wrap custom screen in Positioned
               screenWidget = Positioned(
                 top: 0,
                 left: 0,
-                right: 0,
                 bottom: 0,
-                child: screenWidget,
+                right: 0,
+                child: Stack(children: [screenWidget]),
               );
             }
+
             return SingleChildScrollView(
               physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
