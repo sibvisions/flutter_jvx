@@ -340,30 +340,30 @@ class UiService implements IUiService {
     }
 
     if (appManager != null) {
-      appManager!.customScreens.forEach((customScreen) {
-        CustomMenuItem? customMenuItem = appManager!.customMenuItems[customScreen.key];
+      appManager!.customScreens.forEach((key, screen) {
+        CustomMenuItem? customMenuItem = appManager!.customMenuItems[key];
 
         MenuItemModel? originalItem = menuGroupModels
             .expand((element) => element.items)
-            .where((menuItem) => [menuItem.navigationName, menuItem.screenLongName].contains(customScreen.key))
+            .where((menuItem) => [menuItem.navigationName, menuItem.screenLongName].contains(key))
             .firstOrNull;
 
-        if (originalItem == null && customMenuItem == null && customScreen.screenBuilder != null) {
+        if (originalItem == null && customMenuItem == null && screen.screenBuilder != null) {
           // We have no menu item, therefore, create one on best-effort basis.
           customMenuItem = CustomMenuItem(
             group: "Custom",
-            label: customScreen.screenTitle ?? "Custom Screen",
+            label: screen.screenTitle ?? "Custom Screen",
             faIcon: FontAwesomeIcons.notdef,
           );
         }
 
         // Whether we should show the item in the current setting.
         if (customMenuItem != null &&
-            ((customScreen.showOnline && !IConfigService().offline.value) ||
-                (customScreen.showOffline && IConfigService().offline.value))) {
+            ((screen.showOnline && !IConfigService().offline.value) ||
+                (screen.showOffline && IConfigService().offline.value))) {
           MenuItemModel overrideMenuItem = MenuItemModel(
-            screenLongName: originalItem?.screenLongName ?? customScreen.key,
-            navigationName: originalItem?.navigationName ?? customScreen.keyNavigationName,
+            screenLongName: originalItem?.screenLongName ?? screen.key,
+            navigationName: originalItem?.navigationName ?? screen.keyNavigationName,
             label: customMenuItem.label,
             alternativeLabel: customMenuItem.alternativeLabel ?? originalItem?.alternativeLabel,
             imageBuilder: customMenuItem.imageBuilder,
@@ -824,23 +824,19 @@ class UiService implements IUiService {
 
   @override
   CustomScreen? getCustomScreen(String key) {
-    return appManager?.customScreens.firstWhereOrNull((customScreen) => customScreen.key == key);
+    return appManager?.customScreens[key];
   }
 
   @override
   CustomComponent? getCustomComponent({required String pComponentName}) {
-    List<CustomComponent>? comps = appManager?.replaceComponents;
+    Map<String, CustomComponent>? comps = appManager?.replaceComponents;
 
     if (comps != null) {
-      //in case of multiple custom components with same replacement -> use last custom component in list
-      for (CustomComponent custcomp in comps.reversed) {
-        if (custcomp.componentName == pComponentName) {
-          return custcomp;
-        }
-      }
+      return comps[pComponentName];
     }
-
-    return null;
+    else {
+      return null;
+    }
   }
 
   @override

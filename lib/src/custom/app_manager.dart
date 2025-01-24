@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -26,11 +27,11 @@ abstract class AppManager {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// List of all registered customs screens.
-  final List<CustomScreen> customScreens = [];
+  /// Map of all registered customs screens.
+  final LinkedHashMap<String, CustomScreen> customScreens = LinkedHashMap();
 
   /// Custom components that will replace original components.
-  final List<CustomComponent> replaceComponents = [];
+  final Map<String, CustomComponent> replaceComponents = {};
 
   /// The menu item, which is the way to access the registered screens.
   ///
@@ -80,12 +81,12 @@ abstract class AppManager {
     if (menuItem != null) {
       customMenuItems[customScreen.key] = menuItem;
     }
-    customScreens.add(customScreen);
+    customScreens[customScreen.key] = customScreen;
   }
 
   /// Defines a custom component which is a replacement for an existing component
   void replaceComponent(CustomComponent customComponent) {
-    replaceComponents.add(customComponent);
+    replaceComponents[customComponent.componentName] = customComponent;
   }
 
   /// Gets called on menu mode selection. Default implementation returns original [pCurrentMode]
