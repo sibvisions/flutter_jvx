@@ -350,7 +350,15 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       },
     );
   }
-
+/*
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+    (context as Element).visitChildren(rebuild);
+  }
+*/
   Widget _buildDummyScreen(AsyncSnapshot<bool> snapshot) {
     Widget body;
     if (snapshot.connectionState == ConnectionState.none) {
