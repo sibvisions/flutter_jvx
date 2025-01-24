@@ -16,8 +16,8 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 import '../config/app_config.dart';
 import '../flutter_ui.dart';
@@ -29,7 +29,12 @@ abstract class ConfigUtil {
       // Await here to trigger catch block
       return await _readConfigFile("app.conf.json");
     } catch (e, stack) {
-      FlutterUI.log.e("AppConfig failed to load:", error: e, stackTrace: stack);
+      if (kDebugMode) {
+        print(e);
+      }
+      else {
+        FlutterUI.log.d("Failed to load 'app.conf.json':", error: e, stackTrace: stack);
+      }
     }
     return null;
   }
@@ -40,13 +45,15 @@ abstract class ConfigUtil {
       // Await here to trigger catch block
       return await _readConfigFile("dev.conf.json");
     } catch (e, stack) {
-      if (e is FlutterError && e.message.startsWith("Unable to load asset")) {
-        FlutterUI.log.d("Unable to load asset", error: e, stackTrace: stack);
-        return null;
+      if (kDebugMode) {
+        print(e);
       }
-      FlutterUI.log.e("Dev AppConfig failed to load:", error: e, stackTrace: stack);
+      else {
+        FlutterUI.log.d("Failed to load 'dev.conf.json':", error: e, stackTrace: stack);
+      }
+
+      return null;
     }
-    return null;
   }
 
   /// Read file config

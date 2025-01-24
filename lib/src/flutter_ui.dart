@@ -72,7 +72,7 @@ import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
-import 'util/extensions/jvx_logger_extensions.dart';
+import 'util/jvx_logger.dart';
 import 'util/extensions/list_extensions.dart';
 import 'util/http_overrides.dart';
 import 'util/image/image_loader.dart';
@@ -116,23 +116,22 @@ class FlutterUI extends StatefulWidget {
   static const Level _defaultLogLevel = kDebugMode ? Level.info : Level.warning;
 
   /// The log filter used by [log].
-  static final LogFilter _generalLogFilter = JVxFilter();
+  static final LogFilter _generalLogFilter = JVxFilter(_defaultLogLevel);
 
   /// The log filter used by [logAPI].
-  static final LogFilter _apiLogFilter = JVxFilter();
+  static final LogFilter _apiLogFilter = JVxFilter(_defaultLogLevel);
 
   /// The log filter used by [logCommand].
-  static final LogFilter _commandLogFilter = JVxFilter();
+  static final LogFilter _commandLogFilter = JVxFilter(_defaultLogLevel);
 
   /// The log filter used by [logUI].
-  static final LogFilter _uiLogFilter = JVxFilter();
+  static final LogFilter _uiLogFilter = JVxFilter(_defaultLogLevel);
 
   /// The log filter used by [logLayout].
-  static final LogFilter _layoutLogFilter = JVxFilter();
+  static final LogFilter _layoutLogFilter = JVxFilter(_defaultLogLevel);
 
   /// General logger
   static final Logger log = Logger(
-    level: _defaultLogLevel,
     filter: _generalLogFilter,
     printer: JVxPrettyPrinter(
       prefix: "GENERAL",
@@ -144,7 +143,6 @@ class FlutterUI extends StatefulWidget {
 
   /// API logger
   static final Logger logAPI = Logger(
-    level: _defaultLogLevel,
     filter: _apiLogFilter,
     printer: JVxPrettyPrinter(
       prefix: "API",
@@ -156,7 +154,6 @@ class FlutterUI extends StatefulWidget {
 
   /// Command logger
   static final Logger logCommand = Logger(
-    level: _defaultLogLevel,
     filter: _commandLogFilter,
     printer: JVxPrettyPrinter(
       prefix: "COMMAND",
@@ -168,7 +165,6 @@ class FlutterUI extends StatefulWidget {
 
   /// UI logger
   static final Logger logUI = Logger(
-    level: _defaultLogLevel,
     filter: _uiLogFilter,
     printer: JVxPrettyPrinter(
       prefix: "UI",
@@ -180,7 +176,6 @@ class FlutterUI extends StatefulWidget {
 
   /// Layout logger
   static final Logger logLayout = Logger(
-    level: _defaultLogLevel,
     filter: _layoutLogFilter,
     printer: SimplePrinter(
       colors: false,
@@ -398,16 +393,26 @@ class FlutterUI extends StatefulWidget {
     services.registerSingleton(configService);
 
     // Load config files
+
+    AppConfig? appConfig = await ConfigUtil.readAppConfig();
+
+    if (appConfig != null) {
+      if (kDebugMode) {
+        print("Found app config, will override static config!");
+      }
+    }
+
     AppConfig? devConfig;
     if (!kReleaseMode) {
       devConfig = await ConfigUtil.readDevConfig();
       if (devConfig != null) {
-        FlutterUI.log.i("Found dev config, overriding values");
+        if (kDebugMode) {
+          print("Found dev config, will override static config!");
+        }
       }
     }
 
-    AppConfig appConfig =
-        const AppConfig.defaults().merge(pAppToRun.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
+    appConfig = const AppConfig.defaults().merge(pAppToRun.appConfig).merge(appConfig).merge(devConfig);
 
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
     Map<String, String> queryParameters = {...Uri.base.queryParameters};
@@ -418,7 +423,7 @@ class FlutterUI extends StatefulWidget {
     await appService.removeObsoletePredefinedApps();
     await appService.refreshStoredApps();
 
-    // Devconfig always overrides default app
+    // dev config always overrides default app
     await configService.refreshDefaultApp(devConfig != null);
 
     _generalLogFilter.level = appConfig.logConfig?.levels?.general ?? _defaultLogLevel;
@@ -426,6 +431,9 @@ class FlutterUI extends StatefulWidget {
     _commandLogFilter.level = appConfig.logConfig?.levels?.command ?? _defaultLogLevel;
     _uiLogFilter.level = appConfig.logConfig?.levels?.ui ?? _defaultLogLevel;
     _layoutLogFilter.level = appConfig.logConfig?.levels?.layout ?? _defaultLogLevel;
+
+    FlutterUI.log.d("Welcome home-1");
+    FlutterUI.log.d("Welcome home-2");
 
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService.create() : await IsolateLayoutService.create();
