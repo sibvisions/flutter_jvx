@@ -24,19 +24,30 @@ import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/text_field/fl_text_field_widget.dart';
 
 class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
-  final VoidCallback? onPress;
+  final GestureTapCallback? onTap;
+  final GestureTapCallback? onDoubleTap;
+  final GestureTapDownCallback? onTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapCancelCallback? onTapCancel;
+
+  final bool dummy;
 
   const FlLabelWidget({
     super.key,
     required super.model,
-    this.onPress,
+    this.onTap,
+    this.onDoubleTap,
+    this.onTapDown,
+    this.onTapUp,
+    this.onTapCancel,
+    this.dummy = false
   });
 
   @override
   Widget build(BuildContext context) {
     Widget child;
 
-    child = getTextWidget(model, pSelectable: true);
+    child = getTextWidget(model, pSelectable: onTap == null && onTapDown == null && onTapUp == null, pDummy: dummy);
 
     if (model.toolTipText != null) {
       child = getTooltipWidget(child);
@@ -44,10 +55,14 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
 
     EdgeInsets textPadding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle()).copyWith(left: 0, right: 0);
 
-    textPadding = adjustPaddingWithStyles(textPadding);
+    textPadding = adjustPaddingWithStyles(model, textPadding);
 
     return GestureDetector(
-      onTap: onPress,
+      onTap: onTap,
+      onDoubleTap:onDoubleTap,
+      onTapDown: onTapDown,
+      onTapUp: onTapUp,
+      onTapCancel: onTapCancel,
       child: Container(
         padding: textPadding,
         decoration: BoxDecoration(
@@ -63,39 +78,42 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     return Tooltip(message: model.toolTipText!, child: pChild);
   }
 
-  static Widget getTextWidget(FlLabelModel pModel, {TextStyle? pTextStyle, bool pSelectable = false}) {
+  static Widget getTextWidget(FlLabelModel pModel, {TextStyle? pTextStyle, bool pSelectable = false, bool pDummy = false}) {
     Widget textWidget;
 
-    if (ParseUtil.isHTML(pModel.text) && pSelectable) {
-      textWidget = SelectionArea(child: Html(data: pModel.text));
-    } else if (ParseUtil.isHTML(pModel.text)) {
-      textWidget = Html(data: pModel.text);
-    } else {
+    if (!pDummy && ParseUtil.isHTML(pModel.text)) {
+      textWidget = Html(data: pModel.text,
+          style: {"body": Style(margin: Margins(left: Margin(0),
+              top: Margin(0),
+              bottom: Margin(0),
+              right: Margin(0)))});
+    }
+    else {
       textWidget = Text(
-        pModel.text.replaceAll("\n", ""),
-        style: pTextStyle ?? pModel.createTextStyle(),
-        textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
-      );
-      if (pSelectable) {
-        textWidget = SelectionArea(child: textWidget);
-      }
+          pModel.text.replaceAll("\n", ""),
+          style: pTextStyle ?? pModel.createTextStyle(),
+          textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment));
+    }
+
+    if (!pDummy && pSelectable) {
+      textWidget = SelectionArea(child: textWidget);
     }
 
     return textWidget;
   }
 
-  EdgeInsets adjustPaddingWithStyles(EdgeInsets pPadding) {
+  static EdgeInsets adjustPaddingWithStyles(FlLabelModel pModel, EdgeInsets pPadding) {
     EdgeInsets padding = pPadding;
 
-    if (model.styles.contains(FlLabelModel.NO_BOTTOM_PADDING_STYLE)) {
+    if (pModel.styles.contains(FlLabelModel.NO_BOTTOM_PADDING_STYLE)) {
       padding = padding.copyWith(bottom: 0);
-    } else if (model.styles.contains(FlLabelModel.HALF_BOTTOM_PADDING_STYLE)) {
+    } else if (pModel.styles.contains(FlLabelModel.HALF_BOTTOM_PADDING_STYLE)) {
       padding = padding.copyWith(bottom: padding.bottom / 2);
     }
 
-    if (model.styles.contains(FlLabelModel.NO_TOP_PADDING_STYLE)) {
+    if (pModel.styles.contains(FlLabelModel.NO_TOP_PADDING_STYLE)) {
       padding = padding.copyWith(top: 0);
-    } else if (model.styles.contains(FlLabelModel.HALF_TOP_PADDING_STYLE)) {
+    } else if (pModel.styles.contains(FlLabelModel.HALF_TOP_PADDING_STYLE)) {
       padding = padding.copyWith(top: padding.top / 2);
     }
 

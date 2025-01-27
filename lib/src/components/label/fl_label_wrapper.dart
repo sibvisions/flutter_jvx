@@ -16,11 +16,13 @@
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/mouse_clicked_command.dart';
 import '../../model/command/api/mouse_pressed_command.dart';
 import '../../model/command/api/mouse_released_command.dart';
+import '../../util/measure_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 
@@ -43,10 +45,15 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
 
   @override
   Widget build(BuildContext context) {
-    final FlLabelWidget widget = FlLabelWidget(
+    Widget widget;
+
+    widget = FlLabelWidget(
       model: model,
-      onPress: hasOnPress ? onPress : null,
-    );
+      onTap: model.eventMouseClicked ? onClicked : null,
+      onDoubleTap: model.eventMouseClicked ? onDoubleClicked : null,
+      onTapDown: model.eventMousePressed ? onPressed : null,
+      onTapUp: model.eventMouseReleased ? onReleased : null,
+      onTapCancel: model.eventMouseReleased && model.eventMousePressed ? onCancelPressed : null);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
@@ -58,27 +65,64 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
   @override
   Size calculateSize(BuildContext context) {
     if (ParseUtil.isHTML(model.text)) {
-      return const Size(400, 100);
+      EdgeInsets textPadding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle()).copyWith(left: 0, right: 0);
+
+      textPadding = FlLabelWidget.adjustPaddingWithStyles(model, textPadding);
+
+      Html html = Html(data: model.text,
+          shrinkWrap: true,
+          style: {"body": Style(margin: Margins(left: Margin(textPadding.left),
+          top: Margin(textPadding.top),
+          bottom: Margin(textPadding.bottom),
+          right: Margin(textPadding.right)))});
+
+      TextDirection textDirection = Directionality.of(context);
+
+      Widget w = MediaQuery(data: MediaQuery.of(context),
+          child: Directionality(textDirection: textDirection,
+          child: Container(child: html)));
+
+      return MeasureUtil.measureWidget(w);
     }
+
     return super.calculateSize(context);
   }
 
-  bool get hasOnPress => model.eventMousePressed || model.eventMouseReleased || model.eventMouseClicked;
-
-  void onPress() {
-    if (model.eventMousePressed) {
-      ICommandService().sendCommand(
-          MousePressedCommand(reason: "Clicked on label ${model.id}:${model.text}", componentName: model.name));
-    }
-
-    if (model.eventMouseReleased) {
-      ICommandService().sendCommand(
-          MouseReleasedCommand(reason: "Clicked on label ${model.id}:${model.text}", componentName: model.name));
-    }
-
+  void onClicked() {
     if (model.eventMouseClicked) {
       ICommandService().sendCommand(
           MouseClickedCommand(reason: "Clicked on label ${model.id}:${model.text}", componentName: model.name));
+    }
+  }
+
+  void onDoubleClicked() {
+    if (model.eventMouseClicked) {
+      ICommandService().sendCommand(
+          MouseClickedCommand(reason: "Clicked on label ${model.id}:${model.text}", componentName: model.name));
+
+      ICommandService().sendCommand(
+          MouseClickedCommand(reason: "Double clicked on label ${model.id}:${model.text}", componentName: model.name, clickCount: 2));
+    }
+  }
+
+  void onPressed(TapDownDetails details) {
+    if (model.eventMousePressed) {
+      ICommandService().sendCommand(
+          MousePressedCommand(reason: "Pressed on label ${model.id}:${model.text}", componentName: model.name));
+    }
+  }
+
+  void onReleased(TapUpDetails details) {
+    if (model.eventMouseReleased) {
+      ICommandService().sendCommand(
+          MouseReleasedCommand(reason: "Released on label ${model.id}:${model.text}", componentName: model.name));
+    }
+  }
+
+  void onCancelPressed() {
+    if (model.eventMouseReleased) {
+      ICommandService().sendCommand(
+          MouseReleasedCommand(reason: "Released on label ${model.id}:${model.text}", componentName: model.name));
     }
   }
 }

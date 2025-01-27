@@ -121,7 +121,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   /// which will positioned itself inside the [Stack] of a [BaseContWrapperState]'s widget.
   Positioned wrapWidget({BuildContext? context, required Widget child}) {
     return Positioned(
-        key: ValueKey("Stack-BaseComp ${model.name}"),
       top: getTopForPositioned(context),
       left: getLeftForPositioned(context),
       width: getWidthForPositioned(context),
