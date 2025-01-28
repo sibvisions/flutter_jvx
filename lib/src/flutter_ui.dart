@@ -398,7 +398,7 @@ class FlutterUI extends StatefulWidget {
 
     if (appConfig != null) {
       if (kDebugMode) {
-        print("Found app config, will override static config!");
+        print("Found app config, will merge and override static config!");
       }
     }
 
@@ -407,7 +407,7 @@ class FlutterUI extends StatefulWidget {
       devConfig = await ConfigUtil.readDevConfig();
       if (devConfig != null) {
         if (kDebugMode) {
-          print("Found dev config, will override static config!");
+          print("Found dev config, will merge and override static config!");
         }
       }
     }
