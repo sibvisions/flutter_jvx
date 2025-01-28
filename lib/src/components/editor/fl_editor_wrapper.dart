@@ -207,8 +207,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   bool isLinkedEditor() {
-    return model.json[ApiObjectProperty.cellEditor][ApiObjectProperty.className] ==
-        FlCellEditorClassname.LINKED_CELL_EDITOR;
+    return (cellEditor is FlLinkedCellEditor) ||
+           (model.json[ApiObjectProperty.cellEditor][ApiObjectProperty.className] ==
+            FlCellEditorClassname.LINKED_CELL_EDITOR);
   }
 
   /// Unsubscribes the callback of the cell editor from value changes.
