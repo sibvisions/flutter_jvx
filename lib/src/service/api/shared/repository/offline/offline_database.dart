@@ -89,7 +89,7 @@ class OfflineDatabase {
     // Avoid errors caused by flutter upgrade.
     WidgetsFlutterBinding.ensureInitialized();
 
-    String? dbpath = join(await getDatabasesPath(), "jvx_offline_data.sqlite")
+    String? dbpath = join(await getDatabasesPath(), "jvx_offline_data.sqlite");
 
     if (kDebugMode) {
       print("Database path: $dbpath");
@@ -102,7 +102,7 @@ class OfflineDatabase {
       onUpgrade: (db, oldVersion, newVersion) => _createStructTables(db),
       // Set the version. This executes the onCreate/onUpgrade function and provides a
       // path to perform database upgrades and downgrades.
-      // TODO check version (sync with app_version?)
+      // We don't check the app_version here, but if it's a problem in the future, we could do a check
       version: 1,
     );
   }
