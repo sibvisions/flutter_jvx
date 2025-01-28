@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -88,10 +89,16 @@ class OfflineDatabase {
     // Avoid errors caused by flutter upgrade.
     WidgetsFlutterBinding.ensureInitialized();
 
+    String? dbpath = join(await getDatabasesPath(), "jvx_offline_data.sqlite")
+
+    if (kDebugMode) {
+      print("Database path: $dbpath");
+    }
+
     // Open the database and store the reference.
     db = await openDatabase(
       // Set the path to the database.
-      join(await getDatabasesPath(), "jvx_offline_data.sqlite"),
+      dbpath,
       onUpgrade: (db, oldVersion, newVersion) => _createStructTables(db),
       // Set the version. This executes the onCreate/onUpgrade function and provides a
       // path to perform database upgrades and downgrades.
@@ -181,14 +188,18 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       Batch batch = txn.batch();
 
       int? appId = await _queryAppId(appKey, txn: txn);
-      List<Map<String, Object?>> rows = await txn.query(
-        OFFLINE_METADATA_TABLE,
-        columns: ['TABLE_NAME'],
-        where: "APP_ID = ?",
-        whereArgs: [appId],
-      );
 
-      _dropDataTables(rows, batch: batch);
+      if (appId != null) {
+        List<Map<String, Object?>> rows = await txn.query(
+          OFFLINE_METADATA_TABLE,
+          columns: ['TABLE_NAME'],
+          where: "APP_ID = ?",
+          whereArgs: [appId],
+        );
+
+        _dropDataTables(rows, batch: batch);
+      }
+
       _clearStructTables(appId, batch: batch);
 
       await batch.commit(noResult: true);
