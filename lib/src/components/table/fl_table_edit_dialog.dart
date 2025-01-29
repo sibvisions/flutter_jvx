@@ -71,6 +71,12 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   /// If the dialog was dismissed by either button.
   bool dismissedByButton = false;
 
+  /// If cancel button was pressed
+  bool cancel = false;
+
+  /// whether data has changed
+  bool hasChanges = false;
+
   /// whether we ignore focus handling of cell editor
   bool ignoreCellEditorFocus = true;
 
@@ -96,7 +102,8 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         },
         onEndEditing: (value) {
           localValue = value;
-          if (!isSingleColumnEdit) {
+          //in case of cancel -> don't end editing because it fires events like select record
+          if (!isSingleColumnEdit && !cancel) {
             widget.onEndEditing(value, widget.rowIndex, colDef.name);
           }
         },
@@ -104,11 +111,13 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         isInTable: false,
         focusChecker: _focusHandlingEnabled
       );
+
       if (cellEditor is FlLinkedCellEditor) {
         cellEditor.setValue((widget.values[colDef.name], widget.values.values.toList()));
       } else {
         cellEditor.setValue(widget.values[colDef.name]);
       }
+
       cellEditors.add(cellEditor);
     });
 
@@ -274,10 +283,13 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     if (!dismissedByButton) {
       _handleCancel(true);
     }
+
     widget.newValueNotifier.removeListener(receiveNewValues);
+
     cellEditors.forEach((cellEditor) {
       cellEditor.dispose();
     });
+
     super.dispose();
   }
 
@@ -300,6 +312,18 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
               cellEditor.setValue(newValues[columnName]);
             }
           }
+
+          //check if value has changed
+          if (widget.values.containsKey(columnName)) {
+            if (widget.values[columnName] is Comparable) {
+              Comparable oldValue = widget.values[columnName] as Comparable;
+
+              hasChanges |= oldValue.compareTo(newValues[columnName]) != 0;
+            }
+          }
+          else {
+            hasChanges = true;
+          }
         }
       }
     });
@@ -307,6 +331,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
   Future<void> _handleOk() async {
     dismissedByButton = true;
+
     if (isSingleColumnEdit) {
       widget.onEndEditing(await cellEditors[0].getValue(), widget.rowIndex, widget.columnDefinitions.first.name);
     }
@@ -316,13 +341,19 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   }
 
   void _handleCancel([bool fromDispose = false]) {
+    cancel = true;
     dismissedByButton = true;
-    if (!isSingleColumnEdit) {
+
+    if (!isSingleColumnEdit && hasChanges) {
+      //this will restore all changes, made before opening the dialog, but it's a good option
+      //Another solution would be a reset to widget.values, but it's possible that not all changed values
+      //will be reset, so let us do a restore
       ICommandService().sendCommand(RestoreDataCommand(
         dataProvider: widget.model.dataProvider,
         reason: "Pressed cancel in table edit dialog",
       ));
     }
+
     if (!fromDispose) {
       Navigator.of(context).pop();
     }
