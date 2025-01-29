@@ -86,7 +86,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   );
                 }
 
-                if (isOffline) {
+                if (isOffline && !OfflineUtil.isGoingOffline) {
                   actions.add(
                     IconButton(
                       tooltip: FlutterUI.translate("Go Online"),
@@ -106,9 +106,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                           },
                         );
                       },
-                      icon: const FaIcon(
-                        FontAwesomeIcons.towerBroadcast,
-                      ),
+                      icon: const Icon(Icons.cloud_sync_outlined),
                       color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
                     ),
                   );
@@ -134,7 +132,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
               body ??= Column(
                 children: [
-                  if (isOffline) OfflineUtil.getOfflineBar(context),
+                  if (isOffline && !OfflineUtil.isGoingOffline) OfflineUtil.getOfflineBar(context),
                   Expanded(
                     child: Stack(
                       children: [

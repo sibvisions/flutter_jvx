@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -614,6 +615,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", TableContextMenuItem.SORT));
     }
 
+    if (pRowIndex == -1 && kDebugMode) {
+      popupMenuEntries.add(_createContextMenuItem(Icons.cloud_off, "Offline", TableContextMenuItem.OFFLINE));
+    }
+
     if (_isAnyCellInRowEditable(pRowIndex)) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
     }
@@ -923,8 +928,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Debug feature -> Takes one data provider offline
   void _debugGoOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
-    String workscreenName = state.pathParameters[MainLocation.screenNameKey]!;
-    OfflineUtil.initOffline(workscreenName);
+    OfflineUtil.initOffline(state.pathParameters[MainLocation.screenNameKey]!);
   }
 
   /// Creates a delete command for this row.

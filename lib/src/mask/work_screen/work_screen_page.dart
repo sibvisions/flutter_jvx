@@ -39,6 +39,7 @@ import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
+import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import '../frame/open_drawer_action.dart';
 import '../state/loading_bar.dart';
@@ -336,7 +337,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     screenTitle = builtScreen.screenTitle;
 
     return WorkScreen(
-      isOffline: isOffline,
+      isOffline: isOffline && !OfflineUtil.isGoingOffline,
       item: item!,
       screen: builtScreen,
       updateSize: (size) {
