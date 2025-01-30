@@ -472,9 +472,16 @@ class UiService implements IUiService {
   @override
   void setLayoutPosition({required LayoutData layoutData}) {
     // Copy list to avoid concurrent modification
-    List.of(_componentSubscriptions).where((element) => element.compId == layoutData.id).forEach((element) {
-      element.layoutCallback?.call(layoutData);
-    });
+    List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
+
+    ComponentSubscription cs;
+    for (int i = 0; i < copy.length; i++) {
+      cs = copy[i];
+
+      if (cs.compId == layoutData.id) {
+        cs.layoutCallback?.call(layoutData);
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

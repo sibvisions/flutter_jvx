@@ -106,7 +106,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlTableWidget({
+  FlTableWidget({
     super.key,
     required super.model,
     required this.chunkData,
@@ -135,7 +135,10 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   State<FlTableWidget> createState() => _FlTableWidgetState();
 }
 
-class _FlTableWidgetState extends State<FlTableWidget> {
+class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateMixin {
+
+  List<SlidableController> slideController = [];
+
   /// How many items the scrollable list should build.
   int get _itemCount {
     int itemCount = widget.chunkData.data.length;
@@ -148,7 +151,24 @@ class _FlTableWidgetState extends State<FlTableWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    FlutterUI.registerGlobalSubscription(GlobalSubscription(subbedObj: this, onTap: _closeSlidables));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    FlutterUI.disposeGlobalSubscription(this);
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    slideController.clear();
+
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
     if (widget.showFloatingButton && widget.floatingOnPress != null) {
@@ -213,9 +233,15 @@ class _FlTableWidgetState extends State<FlTableWidget> {
     table = SlidableAutoCloseBehavior(
       closeWhenOpened: true,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
-            ? (details) => widget.onLongPress?.call(-1, "", FlDummyCellEditor(), details.globalPosition)
+            ? (details) {
+                widget.onLongPress?.call(-1, "", FlDummyCellEditor(), details.globalPosition);
+
+                _closeSlidables();
+              }
             : null,
+        onTap: () => _closeSlidables(),
         child: NotificationListener<ScrollEndNotification>(
           onNotification: onInternalEndScroll,
           child: NotificationListener<ScrollNotification>(
@@ -297,6 +323,23 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       return const SizedBox(height: 0);
     }
 
+    SlidableController? slideCtrl;
+
+    if (!canScrollHorizontally && widget.slideActionFactory != null) {
+      if (index > slideController.length - 1) {
+        slideCtrl = SlidableController(this);
+
+        slideController.add(slideCtrl);
+      }
+      else {
+        slideCtrl = slideController.elementAt(index);
+      }
+    }
+
+    if (widget.chunkData.data[index]!.last == "DISMISSED") {
+      return Container();
+    }
+
     return FlTableRow(
       model: widget.model,
       onEndEditing: widget.onEndEditing,
@@ -304,7 +347,21 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       columnDefinitions: widget.chunkData.columnDefinitions,
       onLongPress: widget.onLongPress,
       onTap: widget.onTap,
+      slideController: slideCtrl,
       slideActionFactory: !canScrollHorizontally ? widget.slideActionFactory : null,
+      onDismissed: (index) {
+        SlidableController ctrl = slideController.elementAt(index);
+        ctrl.close(duration: const Duration(milliseconds: 0));
+        setState(() {
+          List<dynamic>? record = widget.chunkData.data[index];
+
+          if (record != null) {
+            record[record.length - 1] = "DISMISSED";
+          }
+
+          slideController.removeAt(index);
+        });
+      },
       tableSize: widget.tableSize,
       values: widget.chunkData.data[index]!,
       recordFormats: widget.chunkData.recordFormats?[widget.model.name],
@@ -320,8 +377,21 @@ class _FlTableWidgetState extends State<FlTableWidget> {
     return FlTableHeaderRow(
       model: widget.model,
       columnDefinitions: widget.chunkData.columnDefinitions,
-      onTap: widget.onHeaderTap,
-      onDoubleTap: widget.onHeaderDoubleTap,
+      onTap: (String column) {
+        _closeSlidablesImmediate();
+
+        if (widget.onHeaderTap != null) {
+          widget.onHeaderTap!(column);
+        }
+      },
+    onDoubleTap: (column) {
+      _closeSlidablesImmediate();
+
+      if (widget.onHeaderDoubleTap != null) {
+        widget.onHeaderDoubleTap!(column);
+      }
+
+    },
       tableSize: widget.tableSize,
       onLongPress: widget.onLongPress,
       sortDefinitions: widget.metaData?.sortDefinitions,
@@ -341,4 +411,45 @@ class _FlTableWidgetState extends State<FlTableWidget> {
 
     return true;
   }
+
+  /// Closes all slidables immediately without delay
+  void _closeSlidablesImmediate() {
+    _closeSlidables(null, const Duration(milliseconds:  0));
+  }
+
+  /// Closes all slidables with given or default delay. If an [event] is given
+  /// the position of the table widget shouldn't collide with event position.
+  /// Only events outside the table widget will be recognized
+  void _closeSlidables([PointerEvent? event, Duration? duration]) {
+    if (!mounted) return;
+
+    bool collide = false;
+
+    if (event != null) {
+      final RenderBox table = context.findRenderObject() as RenderBox;
+
+      final size1 = table.size;
+      final size2 = event.size;
+
+      final position1 = table.localToGlobal(Offset.zero);
+      final position2 = event.position;
+
+      collide = (position1.dx < position2.dx + size2 &&
+          position1.dx + size1.width > position2.dx &&
+          position1.dy < position2.dy + size2 &&
+          position1.dy + size1.height > position2.dy);
+    }
+
+    if (!collide) {
+      slideController.toList(growable: false).forEach((element) {
+        if (duration != null) {
+          element.close(duration: duration);
+        }
+        else {
+          element.close();
+        }
+      });
+    }
+  }
+
 }

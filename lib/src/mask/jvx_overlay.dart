@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
@@ -273,148 +274,148 @@ class JVxOverlayState extends State<JVxOverlay> {
     _subject.add(MediaQuery.sizeOf(context));
 
     return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-        SystemChannels.textInput.invokeMethod('TextInput.hide');
-      },
-      child: AppStyle(
-        applicationStyle: IConfigService().applicationStyle.value,
-        applicationSettings: IUiService().applicationSettings.value,
-        child: FutureBuilder(
-          future: _loadingDelayFuture,
-          builder: (context, snapshot) {
-            return LoadingBar(
-              show: _loading && snapshot.connectionState == ConnectionState.done,
-              child: Stack(
-                children: [
-                  if (widget.child != null) widget.child!,
-                  DialogsWidget(key: _dialogsKey),
-                  if (_isLocked && (!_lockDelayed || snapshot.connectionState == ConnectionState.done))
-                    const ModalBarrier(
-                      dismissible: false,
-                    ),
-                  if (_showConnectedBarrier)
-                    const ModalBarrier(
-                      dismissible: false,
-                      color: Colors.black26,
-                    ),
-                  if (_showExit)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 25,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25),
-                          child: Opacity(
-                            opacity: 0.9,
-                            child: Material(
-                              type: MaterialType.button,
-                              elevation: 20.0,
-                              borderRadius: BorderRadius.circular(16),
-                              color: Theme.of(context).colorScheme.surface,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(16),
-                                onTap: () async {
-                                  await IUiService().routeToAppOverview();
-                                },
+              onTap: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                SystemChannels.textInput.invokeMethod('TextInput.hide');
+              },
+              child: AppStyle(
+                applicationStyle: IConfigService().applicationStyle.value,
+                applicationSettings: IUiService().applicationSettings.value,
+                child: FutureBuilder(
+                  future: _loadingDelayFuture,
+                  builder: (context, snapshot) {
+                    return LoadingBar(
+                      show: _loading && snapshot.connectionState == ConnectionState.done,
+                      child: Stack(
+                        children: [
+                          if (widget.child != null) widget.child!,
+                          DialogsWidget(key: _dialogsKey),
+                          if (_isLocked && (!_lockDelayed || snapshot.connectionState == ConnectionState.done))
+                            const ModalBarrier(
+                              dismissible: false,
+                            ),
+                          if (_showConnectedBarrier)
+                            const ModalBarrier(
+                              dismissible: false,
+                              color: Colors.black26,
+                            ),
+                          if (_showExit)
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 25,
+                              child: Align(
+                                alignment: Alignment.center,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 4.0),
-                                        child: Icon(
-                                          AppOverviewPage.appsIcon,
-                                          size: 24,
-                                          color: Theme.of(context).colorScheme.onSurface,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          FlutterUI.translate("Exit App"),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Theme.of(context).colorScheme.onSurface,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
+                                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                                  child: Opacity(
+                                    opacity: 0.9,
+                                    child: Material(
+                                      type: MaterialType.button,
+                                      elevation: 20.0,
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Theme.of(context).colorScheme.surface,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(16),
+                                        onTap: () async {
+                                          await IUiService().routeToAppOverview();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: 4.0),
+                                                child: Icon(
+                                                  AppOverviewPage.appsIcon,
+                                                  size: 24,
+                                                  color: Theme.of(context).colorScheme.onSurface,
+                                                ),
+                                              ),
+                                              Flexible(
+                                                child: Text(
+                                                  FlutterUI.translate("Exit App"),
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Theme.of(context).colorScheme.onSurface,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  if (_connectedMessage != null)
-                    StatusBanner(
-                      key: _statusBannerKey,
-                      edgePadding: 8,
-                      useMaxWidth: true,
-                      backgroundColor: _connected == true
-                          ? const Color(0xFF1A964A)
-                          : Theme.of(context).snackBarTheme.backgroundColor,
-                      color: _connected == true
-                          ? (JVxColors.isLightTheme(context) ? const Color(0xFF141414) : Colors.white) : null,
-                      onClose: () => _removeStatusBanner(),
-                      onTap: _connected == false
-                          ? () {
-                              ICommandService().sendCommand(
-                                  AliveCommand(reason: "User requested retry", retryRequest: false),
-                                  showDialogOnError: false);
-                            }
-                          : null,
-                      dismissible: _connected != false,
-                      child: Text(
-                        FlutterUI.translate(_connectedMessage),
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  if (showInternalUrl)
-                    Positioned(
-                      top: kToolbarHeight - 16,
-                      left: 0,
-                      right: 0,
-                      child: SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 50),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Opacity(
-                              opacity: 0.8,
-                              child: Material(
-                                clipBehavior: Clip.hardEdge,
-                                borderRadius: BorderRadius.circular(20),
+                          if (_connectedMessage != null)
+                            StatusBanner(
+                              key: _statusBannerKey,
+                              edgePadding: 8,
+                              useMaxWidth: true,
+                              backgroundColor: _connected == true
+                                  ? const Color(0xFF1A964A)
+                                  : Theme.of(context).snackBarTheme.backgroundColor,
+                              color: _connected == true
+                                  ? (JVxColors.isLightTheme(context) ? const Color(0xFF141414) : Colors.white) : null,
+                              onClose: () => _removeStatusBanner(),
+                              onTap: _connected == false
+                                  ? () {
+                                      ICommandService().sendCommand(
+                                          AliveCommand(reason: "User requested retry", retryRequest: false),
+                                          showDialogOnError: false);
+                                    }
+                                  : null,
+                              dismissible: _connected != false,
+                              child: Text(
+                                FlutterUI.translate(_connectedMessage),
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          if (showInternalUrl)
+                            Positioned(
+                              top: kToolbarHeight - 16,
+                              left: 0,
+                              right: 0,
+                              child: SafeArea(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: ListenableBuilder(
-                                    listenable: routerDelegate,
-                                    builder: (context, child) {
-                                      return Text(
-                                        routerDelegate.configuration.uri.toString(),
-                                        textAlign: TextAlign.center,
-                                      );
-                                    },
+                                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Opacity(
+                                      opacity: 0.8,
+                                      child: Material(
+                                        clipBehavior: Clip.hardEdge,
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ListenableBuilder(
+                                            listenable: routerDelegate,
+                                            builder: (context, child) {
+                                              return Text(
+                                                routerDelegate.configuration.uri.toString(),
+                                                textAlign: TextAlign.center,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
+                        ],
                       ),
-                    ),
-                ],
-              ),
-            );
-          },
-        ),
+                    );
+                  },
+                ),
       ),
     );
   }
@@ -426,6 +427,7 @@ class JVxOverlayState extends State<JVxOverlay> {
     backButtonDispatcher.removeCallback(_onBackPress);
     super.dispose();
   }
+
 }
 
 class DialogsWidget extends StatefulWidget {

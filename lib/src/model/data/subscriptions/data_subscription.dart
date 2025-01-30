@@ -29,8 +29,6 @@ typedef OnPageCallback = void Function(String pageKey, DataChunk dataChunk);
 typedef OnDataToDisplayMapChanged = void Function();
 
 /// Used for subscribing in [IUiService] to receive data.
-///
-///
 class DataSubscription {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

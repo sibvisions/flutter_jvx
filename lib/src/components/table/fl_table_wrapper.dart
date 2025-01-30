@@ -363,6 +363,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Loads data from the server.
   void _receiveTableData(DataChunk pDataChunk) {
+
     bool recalculateWidth = (currentState & LOADED_DATA) != LOADED_DATA;
     currentState |= LOADED_DATA;
 
@@ -1035,12 +1036,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (_isAnyCellInRowEditable(pRowIndex)) {
       slideActions.add(
         SlidableAction(
+
           onPressed: (context) {
             _editRow(pRowIndex);
           },
           autoClose: true,
           backgroundColor: isLight ? Colors.green : const Color(0xFF2c662f),
-          foregroundColor: isLight ? Colors.white : Theme.of(context).textTheme.labelSmall!.color,
+          foregroundColor: isLight ? Colors.white : Theme
+              .of(context)
+              .textTheme
+              .labelSmall!
+              .color,
           label: FlutterUI.translate("Edit"),
           icon: FontAwesomeIcons.penToSquare,
           padding: const EdgeInsets.only(left: 8, right: 8),
@@ -1059,7 +1065,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           },
           autoClose: true,
           backgroundColor: isLight ? Colors.red : const Color(0xFF932821),
-          foregroundColor: isLight ? Colors.white : Theme.of(context).textTheme.labelSmall!.color,
+          foregroundColor: isLight ? Colors.white : Theme
+              .of(context)
+              .textTheme
+              .labelSmall!
+              .color,
           label: FlutterUI.translate("Delete"),
           icon: FontAwesomeIcons.trash,
           padding: const EdgeInsets.only(left: 8, right: 8),

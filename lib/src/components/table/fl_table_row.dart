@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -21,6 +23,8 @@ import '../../../flutter_jvx.dart';
 import '../../model/response/record_format.dart';
 import '../../util/column_list.dart';
 import 'fl_table_cell.dart';
+
+typedef DismissedCallback = void Function(int index);
 
 class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
@@ -41,6 +45,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// Provides the celleditor of this cell, allowing to click the cell editor.
   /// Allows validation of the click before allowing the cell editor to be clicked.
   final TableTapCallback? onTap;
+
+  /// The callback for dismissed row
+  final DismissedCallback? onDismissed;
 
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
@@ -66,6 +73,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// The record formats
   final RecordFormat? recordFormats;
 
+  /// the slide controller
+  final SlidableController? slideController;
+
   /// Which slide actions are to be allowed to the row.
   final TableSlideActionFactory? slideActionFactory;
 
@@ -83,6 +93,8 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     this.onValueChanged,
     this.onTap,
     this.onLongPress,
+    this.onDismissed,
+    this.slideController,
     this.slideActionFactory,
     required this.columnDefinitions,
     required this.tableSize,
@@ -203,12 +215,20 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
             iconSize: 16))
       ),
       child: Slidable(
+        key: UniqueKey(),
+        controller: slideController,
         closeOnScroll: true,
         direction: Axis.horizontal,
         enabled: slideActionFactory != null && slideActions.isNotEmpty == true && model.isEnabled,
         groupTag: slideActionFactory,
         endActionPane: ActionPane(
           extentRatio: slideableExtentRatio,
+          dismissible: DismissiblePane(closeOnCancel: true, onDismissed: () {
+            if (onDismissed != null) {
+              onDismissed!(index);
+            }
+            slideActions.last.onPressed!(context);
+          },),
           motion: const StretchMotion(),
           children: slideActions,
         ),

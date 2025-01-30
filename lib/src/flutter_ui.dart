@@ -84,6 +84,8 @@ import 'util/parse_util.dart';
 import 'util/push_util.dart';
 import 'util/widgets/future_nested_navigator.dart';
 
+T? cast<T>(x) => x is T ? x : null;
+
 /// Builder function for dynamic color creation
 typedef ColorBuilder = Color? Function(BuildContext context);
 
@@ -206,7 +208,10 @@ class FlutterUI extends StatefulWidget {
   /// show or hide the debug banner in dev mode
   final bool debugBanner;
 
+  /// Application metadata
   static late PackageInfo packageInfo;
+
+  static List<GlobalSubscription> _globalSubscriptions = [];
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -570,6 +575,24 @@ class FlutterUI extends StatefulWidget {
 
     return null;
   }
+
+  /// Registers a global subscription
+  static void registerGlobalSubscription(GlobalSubscription pSubscription) {
+    if (!_globalSubscriptions.contains(pSubscription)) {
+      _globalSubscriptions.add(pSubscription);
+    }
+  }
+
+  /// Disposes a global subscription
+  static void disposeGlobalSubscription(Object pSubscriber) {
+    _globalSubscriptions.remove(pSubscriber);
+  }
+
+  static List<GlobalSubscription> globalSubscriptions() {
+    //Return a copy to avoid concurrent modification problems
+    return _globalSubscriptions.toList(growable: false);
+  }
+
 }
 
 late BeamerDelegate routerDelegate;
@@ -1114,4 +1137,36 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 }
 
-T? cast<T>(x) => x is T ? x : null;
+typedef OnTapCallback = void Function([PointerEvent? pEvent]);
+
+/// Used for subscribing in [JVxOverlay] to receive data.
+@immutable
+class GlobalSubscription {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Reference to creator of this subscription
+  final Object subbedObj;
+
+  /// Callback will be called with selected row.
+  final OnTapCallback? onTap;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  const GlobalSubscription({
+    required this.subbedObj,
+    this.onTap,
+  });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  bool same(GlobalSubscription subscription) {
+    return subscription.subbedObj == subbedObj;
+  }
+
+}
