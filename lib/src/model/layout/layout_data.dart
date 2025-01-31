@@ -86,7 +86,24 @@ class LayoutData implements ICloneable {
   Map<double, double> widthConstrains;
 
   /// Time when layout was received from component
-  DateTime? receivedDate;
+  DateTime? _receivedDate;
+
+  set receivedDate(DateTime? date) {
+    _receivedDate = date;
+
+    //reset flat because it's already received
+    if (_receivedDate != null) {
+      preparedForSubmission = false;
+    }
+  }
+
+  DateTime? get receivedDate => _receivedDate;
+
+  /// This flag means that this object is marked for submission to the widget.
+  /// It should get the receive date immediately. There's a delay between mark for submission
+  /// and received. It's important to know that submission is "planned"
+  /* don't clone/compare this field. */
+  bool preparedForSubmission = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -112,8 +129,11 @@ class LayoutData implements ICloneable {
     this.indexOf,
     this.layout,
     this.isFixedSize = false,
-    this.receivedDate
-  });
+    DateTime? receivedDate
+  })
+  {
+    _receivedDate = receivedDate;
+  }
 
   /// Clones [LayoutData] as a deep copy.
   factory LayoutData.from(LayoutData pLayoutData) {
@@ -146,7 +166,7 @@ class LayoutData implements ICloneable {
       heightConstrains: Map.of(heightConstrains),
       widthConstrains: Map.of(widthConstrains),
       isFixedSize: isFixedSize,
-      receivedDate: receivedDate
+      receivedDate: receivedDate,
     );
   }
 

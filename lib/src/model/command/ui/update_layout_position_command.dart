@@ -24,7 +24,12 @@ class UpdateLayoutPositionCommand extends UiCommand {
   UpdateLayoutPositionCommand({
     required this.layoutDataList,
     required super.reason,
-  });
+  }) {
+    //mark for submission to close the information gap between submission and received
+    for (int i = 0; i < layoutDataList.length; i++) {
+        layoutDataList[i].preparedForSubmission = true;
+    }
+  }
 
   @override
   String toString() {

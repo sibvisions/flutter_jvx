@@ -16,13 +16,19 @@
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_layout_position_command.dart';
+import '../../../../../model/layout/layout_data.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class UpdateLayoutPositionCommandProcessor extends ICommandProcessor<UpdateLayoutPositionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UpdateLayoutPositionCommand command, BaseCommand? origin) {
-    command.layoutDataList.forEach((data) => IUiService().setLayoutPosition(layoutData: data));
+    List<LayoutData> copy = command.layoutDataList.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      IUiService().setLayoutPosition(layoutData: copy[i]);
+    }
+
     return Future.value([]);
   }
 }

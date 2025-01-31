@@ -61,14 +61,16 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    FlutterUI.logLayout.d(
-        "${pLayoutData.name}|${pLayoutData.id} reportLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
+
+    FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} reportLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
+
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child it's treated as the top most panel
     if (!pLayoutData.isChild) {
       applyScreenSize(pLayoutData);
     }
+
     _layoutDataSet[pLayoutData.id] = pLayoutData;
 
     // Handle possible re-layout
@@ -91,9 +93,13 @@ class LayoutService implements ILayoutService {
     List<BaseCommand> commands = [];
 
     // If child lost its position, give it back the old one.
-    if (!pLayoutData.hasPosition && oldLayoutData != null && oldLayoutData.hasPosition == true) {
+    if (oldLayoutData != null && !pLayoutData.hasPosition && oldLayoutData.hasPosition == true) {
       pLayoutData.layoutPosition = oldLayoutData.layoutPosition;
       commands.add(UpdateLayoutPositionCommand(layoutDataList: [pLayoutData], reason: "Receive old position"));
+    }
+
+    if (oldLayoutData != null && pLayoutData.receivedDate == null && oldLayoutData.receivedDate != null) {
+      pLayoutData.receivedDate = oldLayoutData.receivedDate;
     }
 
     // Handle possible re-layout, check if parentId exists -> special case for first panel
@@ -112,16 +118,28 @@ class LayoutService implements ILayoutService {
     }
 
     if (parentData.hasPosition &&
+        //without this check, layouting would fail if e.g. FirstWorkScreen added panel has a preferred size
+        //also Popup of SimpleWorkScreen would look empty
+        pLayoutData.hasPosition &&
         oldLayoutData?.layoutState == LayoutState.VALID &&
         oldLayoutData?.bestSize == pLayoutData.bestSize) {
       FlutterUI.logLayout.d("${pLayoutData.id} size: ${pLayoutData.bestSize} is same as before");
 
+      //this is important for replaced components e.g. Custom contacts of example application
+      //because custom component won't receive the layout position - because it's a custom widget
       List<LayoutData> updateChildren = [];
       updateChildren.add(pLayoutData);
       updateChildren.addAll(_getChildren(pParentLayout: pLayoutData));
-      updateChildren = updateChildren.where((entry) => (entry.receivedDate == null && entry.hasPosition && (entry.hasNewCalculatedSize || entry.hasNewCalculatedSize))).toList();
+      updateChildren = updateChildren.where((entry) => (entry.receivedDate == null && !entry.preparedForSubmission &&
+                                                        entry.hasPosition && (entry.hasNewCalculatedSize || entry.hasNewCalculatedSize))).toList();
 
-      commands.add(UpdateLayoutPositionCommand(layoutDataList: updateChildren, reason: "Notify additional sub components"));
+      updateChildren.forEach((element) {
+        element.preparedForSubmission = true;
+      });
+
+      if (updateChildren.isNotEmpty) {
+        commands.add(UpdateLayoutPositionCommand(layoutDataList: updateChildren, reason: "Notify additional sub components"));
+      }
 
       return commands;
     }
@@ -132,9 +150,11 @@ class LayoutService implements ILayoutService {
   @override
   Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) async {
     FlutterUI.logLayout.d("setScreenSize: $pScreenComponentId: $pSize");
+
     screenSizes[pScreenComponentId] = pSize;
 
     LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
+
     if (existingLayout != null && existingLayout.layoutPosition?.toSize() != pSize) {
       applyScreenSize(existingLayout);
 
@@ -221,6 +241,7 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   List<BaseCommand> _performLayout({required LayoutData pLayoutData}) {
+
     FlutterUI.logLayout.d(
         "${pLayoutData.name}|${pLayoutData.id} performLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
     _currentlyLayouting.add(pLayoutData.id);
