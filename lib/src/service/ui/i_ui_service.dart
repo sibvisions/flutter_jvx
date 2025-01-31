@@ -345,6 +345,8 @@ abstract class IUiService implements Service {
 
   void closeJVxDialogs();
 
+  void disposeContents();
+
   Future<bool> saveAllEditors({String? pId, required String pReason});
 
   void setFocus(String pComponentId);

@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../components/components_factory.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../service/command/i_command_service.dart';
@@ -101,6 +102,7 @@ class ContentState extends State<Content> {
           Widget screenWidget = ComponentsFactory.buildWidget(widget.model);
 
           Size size = Size(constraints.maxWidth, screenHeight);
+
           if (!sentSize) {
             _setScreenSize(size);
             sentSize = true;
@@ -108,19 +110,27 @@ class ContentState extends State<Content> {
             subject.add(size);
           }
 
-          return SingleChildScrollView(
-            physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            child: Stack(
-              children: [
-                SizedBox(
-                  height: screenHeight,
-                  width: constraints.maxWidth,
-                  child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
-                ),
-                screenWidget
-              ],
-            ),
+          return Listener(onPointerDown: (event) {
+                            List<GlobalSubscription> copy = FlutterUI.globalSubscriptions();
+
+                            for (int i = 0; i < copy.length; i++) {
+                              copy[i].onTap?.call(event);
+                            }
+                          },
+                          child: SingleChildScrollView(
+                            physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  height: screenHeight,
+                                  width: constraints.maxWidth,
+                                  child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
+                                ),
+                                screenWidget
+                              ],
+                            ),
+                          )
           );
         },
       ),
@@ -229,7 +239,8 @@ class ContentBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+
+    Widget content = Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
@@ -250,5 +261,14 @@ class ContentBottomSheet extends StatelessWidget {
         ),
       ),
     );
+
+    //should be possible to use a custom height
+    if (model.preferredSize != null) {
+      content = SizedBox(
+        height: model.preferredSize!.height,
+        child: content);
+    }
+
+    return content;
   }
 }

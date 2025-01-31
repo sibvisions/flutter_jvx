@@ -911,6 +911,43 @@ class UiService implements IUiService {
   }
 
   @override
+  void disposeContents() {
+    _activeContents.clear();
+
+    BuildContext? uicontext = FlutterUI.getCurrentContext();
+
+    //also clean routes, otherwise the navigator of the cached route would be the old navigator and
+    //this would throw an exception in Navigator
+    if (uicontext != null) {
+      List<Route<dynamic>>? routes = FlutterUI.maybeOf(uicontext)?.jvxRouteObserver.knownRoutes;
+
+      if (routes?.isNotEmpty == true) {
+        List<Route<dynamic>>? copy = routes?.toList(growable: false);
+
+        if (copy != null) {
+          NavigatorState nav = Navigator.of(uicontext);
+
+          for (int i = 0; i < copy.length; i++) {
+            if (copy[i].settings.name?.startsWith(Content.ROUTE_SETTINGS_PREFIX) == true
+                // different navigator state -> remove
+                || copy[i].navigator != nav) {
+              routes!.remove(copy[i]);
+
+              try {
+                copy[i].navigator?.removeRoute(copy[i]);
+              }
+              catch (e) {
+                //not relevant because of old navigator
+                FlutterUI.logUI.e(e);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @override
   Future<bool> saveAllEditors({String? pId, required String pReason}) async {
     return ICommandService().sendCommands(
       await collectAllEditorSaveCommands(pId, pReason),
@@ -967,6 +1004,7 @@ class UiService implements IUiService {
     }
 
     FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
+
     if (panelModel == null || panelModel is! FlPanelModel) {
       FlutterUI.logUI.e("Tried to open a content which is not panel!", stackTrace: StackTrace.current);
       return;
@@ -977,6 +1015,7 @@ class UiService implements IUiService {
     );
 
     _activeContents.add(pContentName);
+
     if (Frame.isWebFrame()) {
       showDialog(
         context: FlutterUI.getCurrentContext()!,
@@ -1004,7 +1043,8 @@ class UiService implements IUiService {
           borderRadius: BorderRadius.only(topLeft: kDefaultBarTopRadius, topRight: kDefaultBarTopRadius),
         ),
         enableDrag: true,
-        expand: true,
+        //otherwise the full height will be used - independent of the ContentBottomSheet
+        expand: panelModel.preferredSize != null ? false : true,
         bounce: false,
         settings: routeSettings,
         builder: (context) => ContentBottomSheet(
@@ -1045,6 +1085,7 @@ class UiService implements IUiService {
       unawaited(
           ICommandService().sendCommand(CloseContentCommand(componentName: pContentName, reason: "I got closed")));
     }
+
     IStorageService().deleteScreen(screenName: pContentName);
     await ILayoutService().deleteScreen(pComponentId: panelModel.id);
   }
