@@ -178,7 +178,7 @@ class TableSize {
 
       int calculateUntilRow = math.min(rowsToCalculate, dataChunk.data.length);
 
-      ColumnDefinition? columnDefinition = dataChunk.columnDefinitions.byName(columnName);
+      ColumnDefinition? columnDefinition = metaData.columnDefinitions.byName(columnName);
 
       // If there is no column definition found for this column, we can't calculate the width based on data
       if (columnDefinition != null) {
@@ -252,16 +252,16 @@ class TableSize {
     // Redistribute the remaining width. AutoSize forces all columns inside the table.
     if (remainingWidth > 0) {
       //add some space to other columns
-      divideOut(tableModel, dataChunk, remainingWidth, availableWidth);
+      divideOut(tableModel, metaData, remainingWidth, availableWidth);
     } else if (tableModel.autoResize && remainingWidth < 0) {
-      autoSize(tableModel, dataChunk, remainingWidth, availableWidth);
+      autoSize(tableModel, metaData, remainingWidth, availableWidth);
     }
 
     sumColumnWidth = columnWidths.values.sum;
   }
 
   ///Adds the remaining width to the available columns, if not set to fixed width.
-  void divideOut(FlTableModel tableModel, DataChunk dataChunk, double width, double availableWidth) {
+  void divideOut(FlTableModel tableModel, DalMetaData metaData, double width, double availableWidth) {
 
     List<String> divideOutColumnNames = [];
 
@@ -279,7 +279,7 @@ class TableSize {
     for (int i = 0; i < tableModel.columnNames.length; i++) {
       String columnName = tableModel.columnNames[i];
 
-      ColumnDefinition? columnDefinition = dataChunk.columnDefinitions.byName(columnName);
+      ColumnDefinition? columnDefinition = metaData.columnDefinitions.byName(columnName);
 
       if (columnDefinition != null) {
         if (columnDefinition.width == null) {
@@ -336,7 +336,7 @@ class TableSize {
   }
 
   ///Tries to fit all tables in [availableWidth]
-  void autoSize(FlTableModel tableModel, DataChunk dataChunk, double width, double availableWidth) {
+  void autoSize(FlTableModel tableModel, DalMetaData metaData, double width, double availableWidth) {
     double calculated10th = sumCalculatedColumnWidth / 10;
 
     List<String> divideOutColumnNames = [];
@@ -354,7 +354,7 @@ class TableSize {
     for (int i = 0; i < tableModel.columnNames.length; i++) {
       String columnName = tableModel.columnNames[i];
 
-      ColumnDefinition? columnDefinition = dataChunk.columnDefinitions.byName(columnName);
+      ColumnDefinition? columnDefinition = metaData.columnDefinitions.byName(columnName);
 
       if (columnDefinition != null) {
         if (columnDefinition.width == null) {
