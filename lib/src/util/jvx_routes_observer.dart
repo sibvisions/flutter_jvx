@@ -21,8 +21,15 @@ class JVxRoutesObserver extends NavigatorObserver {
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    knownRoutes.remove(oldRoute);
-    if (newRoute != null) {
+    int pos = oldRoute != null ? knownRoutes.indexOf(oldRoute) : -1;
+
+    if (pos >= 0) {
+      if (newRoute != null) {
+        knownRoutes[pos] = newRoute;
+      }
+      knownRoutes.removeAt(pos);
+    }
+    else if (newRoute != null) {
       knownRoutes.add(newRoute);
     }
   }
