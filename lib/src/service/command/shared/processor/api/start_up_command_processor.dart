@@ -47,6 +47,7 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
     // Close frames on (re-)start
     if (FlutterUI.getCurrentContext() != null) {
       IUiService().closeJVxDialogs();
+      IUiService().disposeContents();
     }
 
     Size? phoneSize = MediaQuery.maybeSizeOf(FlutterUI.getEffectiveContext()!);
