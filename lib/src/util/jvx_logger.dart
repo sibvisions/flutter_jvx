@@ -16,6 +16,59 @@
 
 import 'package:logger/logger.dart';
 
+enum Lvl {
+  a(Level.all),
+  all(Level.all),
+  o(Level.off),
+  off(Level.off),
+  e(Level.error),
+  error(Level.error),
+  d(Level.debug),
+  debug(Level.debug),
+  f(Level.fatal),
+  fatal(Level.fatal),
+  i(Level.info),
+  info(Level.info),
+  t(Level.trace),
+  trace(Level.trace),
+  w(Level.warning),
+  warning(Level.warning);
+
+  final Level level;
+
+  get value => level.value;
+
+  const Lvl(this.level);
+}
+
+class JVxLogger extends Logger {
+
+  final LogFilter _filter;
+
+  JVxLogger({required LogFilter filter, required LogPrinter printer}): _filter = filter, super(filter: filter, printer: printer);
+
+  bool cl(Lvl level) {
+    return _canLog(level.value);
+  }
+
+  bool canLog(Level level) {
+    return _canLog(level.value);
+  }
+
+  bool _canLog(int value) {
+    if (value == Level.off.value) {
+      return false;
+    }
+
+    if (_filter.level == null) {
+      return value >= Logger.level.value;
+    }
+    else {
+      return value >= _filter.level!.value;
+    }
+  }
+}
+
 class JVxFilter extends LogFilter {
 
   JVxFilter([Level? level]) {

@@ -39,6 +39,7 @@ import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
+import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import '../frame/open_drawer_action.dart';
@@ -157,7 +158,11 @@ class WorkScreenPageState extends State<WorkScreenPage> {
         onNewModel: (newModel) {
           if (newModel.id != model?.id) {
             model = newModel as FlPanelModel;
-            FlutterUI.logUI.d("Received new model for className: $className");
+
+            if (FlutterUI.logUI.cl(Lvl.d)) {
+              FlutterUI.logUI.d("Received new model for className: $className");
+            }
+
             rebuild();
           }
         },
@@ -255,6 +260,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
             Widget? body;
             Widget? title;
+
             if (snapshot.connectionState == ConnectionState.done && snapshot.data == true) {
               // Has to called first as it initializes [screenTitle].
               body = _buildWorkScreen(context, isOffline);

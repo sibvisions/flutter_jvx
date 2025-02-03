@@ -28,6 +28,7 @@ import '../../../flutter_ui.dart';
 import '../../../mask/frame/frame.dart';
 import '../../../model/config/translation/i18n.dart';
 import '../../../model/config/user/user_info.dart';
+import '../../../util/jvx_logger.dart';
 import '../../apps/app.dart';
 import '../../apps/i_app_service.dart';
 import '../../file/file_manager.dart';
@@ -278,7 +279,9 @@ class ConfigService implements IConfigService {
         try {
           await getFileManager().renameIndependentDirectory([id], newAppId);
         } catch (e, stack) {
-          FlutterUI.log.w("Failed to migrate app directory ($id)", error: e, stackTrace: stack);
+          if (FlutterUI.log.cl(Lvl.w)) {
+            FlutterUI.log.w("Failed to migrate app directory ($id)", error: e, stackTrace: stack);
+          }
         }
       }
 
@@ -302,7 +305,9 @@ class ConfigService implements IConfigService {
           try {
             await getFileManager().deleteIndependentDirectory([id], recursive: true);
           } catch (e, stack) {
-            FlutterUI.log.w("Failed to delete old app directory ($id)", error: e, stackTrace: stack);
+            if (FlutterUI.log.cl(Lvl.w)) {
+              FlutterUI.log.w("Failed to delete old app directory ($id)", error: e, stackTrace: stack);
+            }
           }
         });
       }
@@ -330,7 +335,9 @@ class ConfigService implements IConfigService {
             await removeApp(id);
           }
         } catch (e, stack) {
-          FlutterUI.log.e("Failed to migrate app ($id)", error: e, stackTrace: stack);
+          if (FlutterUI.log.cl(Lvl.e)) {
+            FlutterUI.log.e("Failed to migrate app ($id)", error: e, stackTrace: stack);
+          }
         }
       }
 

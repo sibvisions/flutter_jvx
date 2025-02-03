@@ -78,7 +78,7 @@ export 'model/command/ui/route/route_command.dart';
 export 'model/command/ui/route/route_to_command.dart';
 export 'model/command/ui/route/route_to_login_command.dart';
 export 'model/command/ui/route/route_to_menu_command.dart';
-export 'model/command/ui/route/route_to_work_command.dart';
+export 'model/command/ui/route/route_to_workscreen_command.dart';
 export 'model/command/ui/save_menu_command.dart';
 export 'model/command/ui/ui_command.dart';
 export 'model/command/ui/update_components_command.dart';

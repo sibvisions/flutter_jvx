@@ -26,6 +26,7 @@ import '../../../../mask/frame/frame.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
+import '../../../../util/jvx_logger.dart';
 import '../../../../util/misc/jvx_notifier.dart';
 import '../../../api/shared/api_object_property.dart';
 import '../../../api/shared/fl_component_classname.dart';
@@ -222,11 +223,13 @@ class StorageService implements IStorageService {
       }
     }
 
-    FlutterUI.logUI.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
-    FlutterUI.logUI.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
-    FlutterUI.logUI.d("Changed {${changedUiComponents.length}}:${changedUiComponents.toList()..sort()}");
-    FlutterUI.logUI
-        .d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.map((e) => e.id).toList()..sort()}");
+    if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
+      FlutterUI.logUI.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
+      FlutterUI.logUI.d("Changed {${changedUiComponents.length}}:${changedUiComponents.toList()..sort()}");
+      FlutterUI.logUI
+          .d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.map((e) => e.id).toList()..sort()}");
+    }
 
     // Enable to print "tree" of screen
     // getAllComponentsBelowByWhere(
@@ -249,9 +252,10 @@ class StorageService implements IStorageService {
 
   @override
   void deleteScreen({required String screenName}) {
-    FlutterUI.logUI.d("Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
-
-    FlutterUI.logUI.d(_componentMap.keys.toList().toString());
+    if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+      FlutterUI.logUI.d(_componentMap.keys.toList().toString());
+    }
 
     var list = _componentMap.values.where((componentModel) => componentModel.name == screenName).toList();
 
@@ -270,7 +274,9 @@ class StorageService implements IStorageService {
       _childrenTree.remove(screenModel.id);
     }
 
-    FlutterUI.logUI.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+    if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+    }
   }
 
   @override

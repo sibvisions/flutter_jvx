@@ -117,6 +117,7 @@ import '../../../../model/response/view/message/message_dialog_response.dart';
 import '../../../../model/response/view/message/message_view.dart';
 import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
+import '../../../../util/jvx_logger.dart';
 import '../../../../util/parse_util.dart';
 import '../../../apps/i_app_service.dart';
 import '../../../command/i_command_service.dart';
@@ -656,7 +657,11 @@ class OnlineApiRepository extends IRepository {
 
       if (response.statusCode != null && response.statusCode! >= 400 && response.statusCode! <= 599) {
         String body = _decodeUTF8(response.data);
-        FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
+
+        if (FlutterUI.logAPI.cl(Lvl.e)) {
+          FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
+        }
+
         if (response.statusCode == 400 && pRequest is ApiStartupRequest) {
           APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
           String routeString = route!.route.replaceAll("api", "");
@@ -706,7 +711,10 @@ class OnlineApiRepository extends IRepository {
 
       return apiInteraction;
     } catch (_) {
-      FlutterUI.logAPI.e("Error while sending ${pRequest.runtimeType}");
+      if (FlutterUI.logAPI.cl(Lvl.e)) {
+        FlutterUI.logAPI.e("Error while sending ${pRequest.runtimeType}");
+      }
+
       rethrow;
     }
   }

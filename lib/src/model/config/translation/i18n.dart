@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import '../../../flutter_ui.dart';
 import '../../../service/config/i_config_service.dart';
 import '../../../service/file/file_manager.dart';
+import '../../../util/jvx_logger.dart';
 
 class I18n {
   static final RegExp langRegex = RegExp("_(?<name>[a-z]+)");
@@ -123,7 +124,9 @@ class I18n {
       String transFilePath = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/translation_$lang.json");
       File? transFile = fileManager.getFileSync(transFilePath);
       if (transFile == null) {
-        FlutterUI.logUI.t("Translation file for code $lang could not be found.");
+        if (FlutterUI.logUI.cl(Lvl.w)) {
+          FlutterUI.logUI.w("Translation file for code $lang could not be found.");
+        }
       } else {
         addFromFile(transFile);
       }

@@ -10,6 +10,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../util/external/retry.dart';
 import '../../../../util/import_handler/import_handler.dart';
+import '../../../../util/jvx_logger.dart';
 import '../../../config/i_config_service.dart';
 import '../../../ui/i_ui_service.dart';
 
@@ -114,7 +115,9 @@ class JVxWebSocket {
 
     Uri? uri = uriSupplier.call();
     if (uri == null) {
-      FlutterUI.logAPI.d("${_logPrefix}WebSocket connect canceled: missing URI");
+      if (FlutterUI.logAPI.cl(Lvl.d)) {
+        FlutterUI.logAPI.d("${_logPrefix}WebSocket connect canceled: missing URI");
+      }
       return;
     }
 
@@ -157,30 +160,43 @@ class JVxWebSocket {
 
         if (data.isNotEmpty) {
           try {
-            FlutterUI.logAPI.d("${_logPrefix}Received data via WebSocket#${webSocket.hashCode}: $data");
+            if (FlutterUI.logAPI.cl(Lvl.d)) {
+              FlutterUI.logAPI.d("${_logPrefix}Received data via WebSocket#${webSocket.hashCode}: $data");
+            }
+
             if (data == "OK") {
-              FlutterUI.logAPI.d("${_logPrefix}Received pong (OK)");
+              if (FlutterUI.logAPI.cl(Lvl.d)) {
+                FlutterUI.logAPI.d("${_logPrefix}Received pong (OK)");
+              }
+
               resetPingInterval();
             }
+
             onData.call(data);
           } catch (e, stack) {
-            FlutterUI.logAPI.e("${_logPrefix}Error handling websocket message:", error: e, stackTrace: stack);
+            if (FlutterUI.logAPI.cl(Lvl.e)) {
+              FlutterUI.logAPI.e("${_logPrefix}Error handling websocket message:", error: e, stackTrace: stack);
+            }
           }
         }
       },
       onError: (error) {
         // As there is no cancel of a currently connecting websocket (yet),
         // this is only triggered when the connection websocket fails to initially connect.
-        FlutterUI.logAPI.w("${_logPrefix}Connection to WebSocket#${webSocket.hashCode} failed", error: error);
+        if (FlutterUI.logAPI.cl(Lvl.w)) {
+          FlutterUI.logAPI.w("${_logPrefix}Connection to WebSocket#${webSocket.hashCode} failed", error: error);
+        }
 
         _handleError(error);
       },
       onDone: () {
-        FlutterUI.logAPI.w(
-          "${_logPrefix}Connection to WebSocket#${webSocket.hashCode} closed ${_manualClose ? "manually " : ""}"
-          "(${webSocket.closeCode ?? "No CloseCode"})"
-          "${webSocket.closeReason?.isNotEmpty ?? false ? ": ${webSocket.closeReason}" : ""}",
-        );
+        if (FlutterUI.logAPI.cl(Lvl.w)) {
+          FlutterUI.logAPI.w(
+            "${_logPrefix}Connection to WebSocket#${webSocket.hashCode} closed ${_manualClose ? "manually " : ""}"
+                "(${webSocket.closeCode ?? "No CloseCode"})"
+                "${webSocket.closeReason?.isNotEmpty ?? false ? ": ${webSocket.closeReason}" : ""}",
+          );
+        }
 
         _connectedState.value = false;
         resetPingInterval();
@@ -246,7 +262,10 @@ class JVxWebSocket {
   /// * When web socket stops
   void resetPingInterval() {
     _pingTimer?.cancel();
-    FlutterUI.logAPI.d("${_logPrefix}Ping Interval reset");
+
+    if (FlutterUI.logAPI.cl(Lvl.d)) {
+      FlutterUI.logAPI.d("${_logPrefix}Ping Interval reset");
+    }
 
     if (pingInterval == null || pingInterval == Duration.zero || pingInterval!.isNegative) return;
     // No connection.
@@ -262,21 +281,31 @@ class JVxWebSocket {
 
       try {
         _webSocket!.sink.add("PING");
-        FlutterUI.logAPI.d("${_logPrefix}Ping sent");
+
+        if (FlutterUI.logAPI.cl(Lvl.d)) {
+          FlutterUI.logAPI.d("${_logPrefix}Ping sent");
+        }
 
         if (pingInterval == null || pingInterval == Duration.zero) return;
         _pingTimer = Timer(pingInterval!, () {
-          FlutterUI.logAPI.w("${_logPrefix}No pong received in ${pingInterval!.inSeconds}s.");
+          if (FlutterUI.logAPI.cl(Lvl.w)) {
+            FlutterUI.logAPI.w("${_logPrefix}No pong received in ${pingInterval!.inSeconds}s.");
+            }
           // No pong received.
           _closeWebSocket(WebSocketStatus.goingAway);
           onConnectedChange?.call(false);
           reconnectWebSocket();
         });
       } on IOException catch (e, stack) {
-        FlutterUI.logAPI.w("${_logPrefix}Ping failed", error: e, stackTrace: stack);
+        if (FlutterUI.logAPI.cl(Lvl.w)) {
+          FlutterUI.logAPI.w("${_logPrefix}Ping failed", error: e, stackTrace: stack);
+        }
       }
     });
-    FlutterUI.logAPI.d("${_logPrefix}Ping Interval started");
+
+    if (FlutterUI.logAPI.cl(Lvl.d)) {
+      FlutterUI.logAPI.d("${_logPrefix}Ping Interval started");
+    }
   }
 
   void reconnectWebSocket() {
@@ -288,7 +317,9 @@ class JVxWebSocket {
         FlutterUI.logAPI.i("${_logPrefix}Retrying WebSocket connection");
         await _openWebSocket(retryAttempts: 0);
       } catch (e, stack) {
-        FlutterUI.logAPI.w("${_logPrefix}WebSocket Retry failed", error: e, stackTrace: stack);
+        if (FlutterUI.logAPI.cl(Lvl.w)) {
+          FlutterUI.logAPI.w("${_logPrefix}WebSocket Retry failed", error: e, stackTrace: stack);
+        }
         _handleError(e);
       }
     });

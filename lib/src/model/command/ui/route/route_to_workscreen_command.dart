@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 SIB Visions GmbH
+ * Copyright 2022 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,31 +15,24 @@
  */
 
 import 'route_command.dart';
-import 'route_to_login_command.dart';
-import 'route_to_menu_command.dart';
 
-/// Command to route to a general uri.
-///
-/// See also:
-/// * [RouteToLoginCommand]
-/// * [RouteToMenuCommand]
-/// * [RouteToWorkCommand]
-class RouteToCommand extends RouteCommand {
+/// Command to route to the currently active workScreen
+class RouteToWorkScreenCommand extends RouteCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final String uri;
+  final String screenName;
 
-  /// Whether the route should replace the the current one in the stack.
+  /// 'True' if the route should replace the the current one in the stack
   final bool replaceRoute;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  RouteToCommand({
-    required this.uri,
+  RouteToWorkScreenCommand({
+    required this.screenName,
     this.replaceRoute = false,
     required super.reason,
   });
@@ -50,6 +43,6 @@ class RouteToCommand extends RouteCommand {
 
   @override
   String toString() {
-    return "RouteToCommand{uri: $uri, replaceRoute: $replaceRoute, ${super.toString()}}";
+    return "RouteToWorkScreenCommand{screenName: $screenName, replaceRoute: $replaceRoute, ${super.toString()}}";
   }
 }

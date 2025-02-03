@@ -27,6 +27,7 @@ import '../../../model/command/api/alive_command.dart';
 import '../../../model/command/api/session_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/menu/menu_item_model.dart';
+import '../../../util/jvx_logger.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
 import '../../api/i_api_service.dart';
 import '../../api/shared/repository/online_api_repository.dart';
@@ -156,11 +157,16 @@ class CommandService implements ICommandService {
 
       // Discard SessionCommands which are sent from an older session (e.g. dispose sends an command).
       if (pCommand is SessionCommand && pCommand.clientId != IUiService().clientId.value) {
-        FlutterUI.logCommand.d("${pCommand.runtimeType} uses old/invalid Client ID, discarding.");
+        if (FlutterUI.logCommand.cl(Lvl.d)) {
+          FlutterUI.logCommand.d("${pCommand.runtimeType} uses old/invalid Client ID, discarding.");
+        }
+
         return false;
       }
 
-      FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
+      if (FlutterUI.logCommand.cl(Lvl.d)) {
+        FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
+      }
 
       List<BaseCommand>? followCommands = await processCommand(pCommand, null, showDialogOnError);
       ErrorCommand? firstErrorCommand;
@@ -183,7 +189,9 @@ class CommandService implements ICommandService {
 
       await getProcessor(pCommand)?.onFinish(pCommand);
 
-      FlutterUI.logCommand.d("Finished ${pCommand.runtimeType}-chain");
+      if (FlutterUI.logCommand.cl(Lvl.d)) {
+        FlutterUI.logCommand.d("Finished ${pCommand.runtimeType}-chain");
+      }
 
       if (firstErrorCommand != null) {
         throw firstErrorCommand;
@@ -191,7 +199,10 @@ class CommandService implements ICommandService {
 
       return true;
     } catch (error) {
-      FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
+      if (FlutterUI.logCommand.cl(Lvl.e)) {
+        FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
+      }
+
       if (throwFirstErrorCommand) {
         rethrow;
       } else {
@@ -218,7 +229,10 @@ class CommandService implements ICommandService {
     ICommandProcessor<BaseCommand>? processor = getProcessor(pCommand);
 
     if (processor == null) {
-      FlutterUI.logCommand.e("Command (${pCommand.runtimeType}) without Processor found");
+      if (FlutterUI.logCommand.cl(Lvl.e)) {
+        FlutterUI.logCommand.e("Command (${pCommand.runtimeType}) without Processor found");
+      }
+
       return null;
     }
 
@@ -242,14 +256,18 @@ class CommandService implements ICommandService {
         return null;
       }
 
-      FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");
+      if (FlutterUI.logCommand.cl(Lvl.d)) {
+        FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");
+      }
       await processor.afterProcessing(pCommand, origin);
 
       modifyCommands(commands, pCommand);
       IUiService().getAppManager()?.modifyFollowUpCommands(pCommand, commands);
 
-      if (commands.isNotEmpty) {
-        FlutterUI.logCommand.d("$pCommand\n->\n\t$commands");
+      if (FlutterUI.logCommand.cl(Lvl.d)) {
+        if (commands.isNotEmpty) {
+          FlutterUI.logCommand.d("$pCommand\n->\n\t$commands");
+        }
       }
     } catch (error, stackTrace) {
       bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException;
@@ -348,7 +366,7 @@ class CommandService implements ICommandService {
       }
 
       return commands
-          .whereType<RouteToWorkCommand>()
+          .whereType<RouteToWorkScreenCommand>()
           .any((routeToWork) => setNamesOfScreen.contains(routeToWork.screenName));
     }).forEach((element) {
       element.popPage = false;

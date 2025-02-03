@@ -17,6 +17,7 @@
 import 'dart:ui';
 
 import '../../../flutter_jvx.dart';
+import '../../util/jvx_logger.dart';
 import '../component/i_font_style.dart';
 
 /// A RecordFormat represents the cell formats of all records inside a specific component.
@@ -117,7 +118,9 @@ class CellFormat {
             }
           break;
         default:
-          FlutterUI.log.e("Invalid form index: ($entryIndex)");
+          if (FlutterUI.log.cl(Lvl.e)) {
+            FlutterUI.log.e("Invalid form index: ($entryIndex)");
+          }
       }
     }
   }

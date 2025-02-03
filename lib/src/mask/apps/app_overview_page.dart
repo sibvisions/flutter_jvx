@@ -31,6 +31,7 @@ import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
+import '../../util/jvx_logger.dart';
 import '../../util/widgets/jvx_scanner.dart';
 import '../camera/qr_parser.dart';
 import 'app_change_urls_dialog.dart';
@@ -68,7 +69,9 @@ class AppOverviewPage extends StatefulWidget {
         callback: (barcodes) async {
           var messengerState = ScaffoldMessenger.of(context);
           for (var barcode in barcodes) {
-            FlutterUI.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
+            if (FlutterUI.logUI.cl(Lvl.d)) {
+              FlutterUI.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
+            }
             try {
               final QRConfig config = QRParser.parse(barcode.rawValue!);
               await callback.call(config);

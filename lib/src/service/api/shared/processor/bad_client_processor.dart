@@ -19,6 +19,7 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/bad_client_response.dart';
+import '../../../../util/jvx_logger.dart';
 import '../i_response_processor.dart';
 
 class BadClientProcessor implements IResponseProcessor<BadClientResponse> {
@@ -29,7 +30,10 @@ class BadClientProcessor implements IResponseProcessor<BadClientResponse> {
   @override
   List<BaseCommand> processResponse(BadClientResponse pResponse, ApiRequest? pRequest) {
     String? info = pResponse.info;
-    FlutterUI.log.e("Server Version mismatch: $info");
+
+    if (FlutterUI.log.cl(Lvl.e)) {
+      FlutterUI.log.e("Server Version mismatch: $info");
+    }
 
     String? parsedServerVersion;
     if (info != null) {

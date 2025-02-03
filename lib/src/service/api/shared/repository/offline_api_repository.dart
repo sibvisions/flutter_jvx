@@ -34,6 +34,7 @@ import '../../../../model/request/filter.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
+import '../../../../util/jvx_logger.dart';
 import '../../../config/i_config_service.dart';
 import '../../../data/i_data_service.dart';
 import '../api_object_property.dart';
@@ -103,8 +104,10 @@ class OfflineApiRepository extends IRepository {
     await offlineDatabase!.dropTables(IConfigService().currentApp.value!);
     await offlineDatabase!.createTables(IConfigService().currentApp.value!, dalMetaData);
 
-    FlutterUI.logAPI.d(
-        "Sum of all dataBook entries: ${dataBooks.isNotEmpty ? dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element) : 0}");
+    if (FlutterUI.logAPI.cl(Lvl.d)) {
+      FlutterUI.logAPI.d(
+          "Sum of all dataBook entries: ${dataBooks.isNotEmpty ? dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element) : 0}");
+    }
 
     await offlineDatabase!.db.transaction((txn) async {
       Batch batch = txn.batch();

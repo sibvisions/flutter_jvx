@@ -16,6 +16,7 @@
 
 import '../../../../flutter_ui.dart';
 import '../../../../service/api/shared/api_object_property.dart';
+import '../../../../util/jvx_logger.dart';
 import 'message_view.dart';
 
 class ErrorViewResponse extends MessageView {
@@ -56,7 +57,9 @@ class ErrorViewResponse extends MessageView {
         exceptions =
             (json[ApiObjectProperty.exceptions] as List<dynamic>?)?.map((e) => ServerException.fromJson(e)).toList(),
         super.fromJson() {
-    FlutterUI.log.w(toString());
+    if (FlutterUI.log.cl(Lvl.w)) {
+      FlutterUI.log.w(toString());
+    }
   }
 
   @override

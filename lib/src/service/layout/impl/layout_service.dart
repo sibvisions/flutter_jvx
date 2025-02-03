@@ -27,6 +27,7 @@ import '../../../model/command/layout/register_parent_command.dart';
 import '../../../model/command/ui/update_layout_position_command.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/layout/layout_position.dart';
+import '../../../util/jvx_logger.dart';
 import '../../service.dart';
 import '../i_layout_service.dart';
 
@@ -62,7 +63,9 @@ class LayoutService implements ILayoutService {
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
 
-    FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} reportLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
+    if (FlutterUI.logLayout.cl(Lvl.d)) {
+      FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} reportLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
+    }
 
     pLayoutData.layoutState = LayoutState.VALID;
 
@@ -83,7 +86,10 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
-    FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} reportPreferredSize: ${pLayoutData.bestSize}");
+    if (FlutterUI.logLayout.cl(Lvl.d)) {
+      FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} reportPreferredSize: ${pLayoutData.bestSize}");
+    }
+
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data.
@@ -123,7 +129,9 @@ class LayoutService implements ILayoutService {
         pLayoutData.hasPosition &&
         oldLayoutData?.layoutState == LayoutState.VALID &&
         oldLayoutData?.bestSize == pLayoutData.bestSize) {
-      FlutterUI.logLayout.d("${pLayoutData.id} size: ${pLayoutData.bestSize} is same as before");
+      if (FlutterUI.logLayout.cl(Lvl.d)) {
+        FlutterUI.logLayout.d("${pLayoutData.id} size: ${pLayoutData.bestSize} is same as before");
+      }
 
       //this is important for replaced components e.g. Custom contacts of example application
       //because custom component won't receive the layout position - because it's a custom widget
@@ -149,7 +157,9 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) async {
-    FlutterUI.logLayout.d("setScreenSize: $pScreenComponentId: $pSize");
+    if (FlutterUI.logLayout.cl(Lvl.d)) {
+      FlutterUI.logLayout.d("setScreenSize: $pScreenComponentId: $pSize");
+    }
 
     screenSizes[pScreenComponentId] = pSize;
 
@@ -171,7 +181,9 @@ class LayoutService implements ILayoutService {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if (data != null) {
-      FlutterUI.logLayout.d("$pComponentId marked as DIRTY");
+      if (FlutterUI.logLayout.cl(Lvl.d)) {
+        FlutterUI.logLayout.d("$pComponentId marked as DIRTY");
+      }
       data.layoutState = LayoutState.DIRTY;
 
       return true;
@@ -242,8 +254,10 @@ class LayoutService implements ILayoutService {
   /// Performs a layout operation.
   List<BaseCommand> _performLayout({required LayoutData pLayoutData}) {
 
-    FlutterUI.logLayout.d(
-        "${pLayoutData.name}|${pLayoutData.id} performLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
+    if (FlutterUI.logLayout.cl(Lvl.d)) {
+      FlutterUI.logLayout.d(
+          "${pLayoutData.name}|${pLayoutData.id} performLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
+    }
     _currentlyLayouting.add(pLayoutData.id);
 
     try {
@@ -263,9 +277,11 @@ class LayoutService implements ILayoutService {
         panel.layout!.calculateLayout(panel, children);
       }
 
-      if (panel.hasNewCalculatedSize) {
-        FlutterUI.logLayout.d(
-            "${pLayoutData.name}|${pLayoutData.id} new calc size ${panel.calculatedSize}; old: ${panel.lastCalculatedSize}");
+      if (FlutterUI.logLayout.cl(Lvl.d)) {
+        if (panel.hasNewCalculatedSize) {
+          FlutterUI.logLayout.d(
+              "${pLayoutData.name}|${pLayoutData.id} new calc size ${panel.calculatedSize}; old: ${panel.lastCalculatedSize}");
+        }
       }
 
       // Check if any children have been newly constrained.
@@ -287,8 +303,11 @@ class LayoutService implements ILayoutService {
       var commands = <BaseCommand>[];
 
       if (panel.isChild && panel.hasNewCalculatedSize) {
-        FlutterUI.logLayout.d(
-            "${pLayoutData.name}|${pLayoutData.id} has new calc size: ${panel.calculatedSize} -> PreferredSizeCommand");
+        if (FlutterUI.logLayout.cl(Lvl.d)) {
+          FlutterUI.logLayout.d(
+              "${pLayoutData.name}|${pLayoutData.id} has new calc size: ${panel.calculatedSize} -> PreferredSizeCommand");
+        }
+
         return [PreferredSizeCommand(layoutData: panel, reason: "Has new calc size")];
       } else {
         // Only save information AFTER calculations after constrained children.
@@ -298,7 +317,10 @@ class LayoutService implements ILayoutService {
 
         for (LayoutData child in children) {
           if (child.isParent) {
-            FlutterUI.logLayout.d("${child.name}|${child.id} register after parent calc: ${child.layoutPosition}");
+            if (FlutterUI.logLayout.cl(Lvl.d)) {
+              FlutterUI.logLayout.d("${child.name}|${child.id} register after parent calc: ${child.layoutPosition}");
+            }
+
             commands.add(RegisterParentCommand(layoutData: child, reason: "New position"));
           }
         }
@@ -315,12 +337,18 @@ class LayoutService implements ILayoutService {
   /// Checks if [pLayoutData] is valid and all it's children layout data are present and valid as well.
   bool _isLegalState({required LayoutData pLayoutData}) {
     if (!_isValid) {
-      FlutterUI.logLayout.d("${pLayoutData.id} not valid, layoutService is not valid");
+      if (FlutterUI.logLayout.cl(Lvl.d)) {
+        FlutterUI.logLayout.d("${pLayoutData.id} not valid, layoutService is not valid");
+      }
+
       return false;
     }
 
     if (pLayoutData.layoutState != LayoutState.VALID) {
-      FlutterUI.logLayout.d("${pLayoutData.id} not valid, layoutState: ${pLayoutData.layoutState}");
+      if (FlutterUI.logLayout.cl(Lvl.d)) {
+        FlutterUI.logLayout.d("${pLayoutData.id} not valid, layoutState: ${pLayoutData.layoutState}");
+      }
+
       return false;
     }
 
@@ -329,22 +357,32 @@ class LayoutService implements ILayoutService {
     if (children.length != pLayoutData.children.length) {
       int diff = pLayoutData.children.length - children.length;
       if (diff > 5) {
-        FlutterUI.logLayout.d("${pLayoutData.id} not valid, missing children count: $diff");
+        if (FlutterUI.logLayout.cl(Lvl.d)) {
+          FlutterUI.logLayout.d("${pLayoutData.id} not valid, missing children count: $diff");
+        }
       } else {
-        var listMissing = pLayoutData.children.where((childId) => !children.any((child) => child.id == childId));
-        FlutterUI.logLayout.d("${pLayoutData.id} not valid, missing children: $listMissing");
+        if (FlutterUI.logLayout.cl(Lvl.d)) {
+          var listMissing = pLayoutData.children.where((childId) => !children.any((child) => child.id == childId));
+          FlutterUI.logLayout.d("${pLayoutData.id} not valid, missing children: $listMissing");
+        }
       }
       return false;
     }
 
     return children.none((child) {
       if (child.layoutState != LayoutState.VALID) {
-        FlutterUI.logLayout.d("${pLayoutData.id} not valid because ${child.id} not valid");
+        if (FlutterUI.logLayout.cl(Lvl.d)) {
+          FlutterUI.logLayout.d("${pLayoutData.id} not valid because ${child.id} not valid");
+        }
+
         return true;
       }
 
       if (!child.hasCalculatedSize && !child.hasPreferredSize) {
-        FlutterUI.logLayout.d("${pLayoutData.id} not valid because ${child.id} has no size");
+        if (FlutterUI.logLayout.cl(Lvl.d)) {
+          FlutterUI.logLayout.d("${pLayoutData.id} not valid because ${child.id} has no size");
+        }
+
         return true;
       }
 

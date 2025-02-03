@@ -28,6 +28,7 @@ import '../model/layout/form_layout/form_layout_used_border.dart';
 import '../model/layout/gaps.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
+import '../util/jvx_logger.dart';
 import 'i_layout.dart';
 
 class FormLayout extends ILayout {
@@ -94,11 +95,14 @@ class FormLayout extends ILayout {
     try {
       componentConstraints = _getComponentConstraints(pChildren, anchors);
     } catch (error, stacktrace) {
-      FlutterUI.logLayout.w(
-        "FormLayout of {${pParent.id}} crashed while getting the component constraints.",
-        error: error,
-        stackTrace: stacktrace,
-      );
+      if (FlutterUI.logLayout.cl(Lvl.w)) {
+        FlutterUI.logLayout.w(
+          "FormLayout of {${pParent.id}} crashed while getting the component constraints.",
+          error: error,
+          stackTrace: stacktrace,
+        );
+      }
+
       return;
     }
 
@@ -579,14 +583,19 @@ class FormLayout extends ILayout {
             bottomAnchor: bottomAnchor, leftAnchor: leftAnchor, rightAnchor: rightAnchor, topAnchor: topAnchor);
         componentConstraints[value.id] = constraint;
       } catch (error, stacktrace) {
-        FlutterUI.logLayout.e("Parent id: ${value.parentId!}");
-        FlutterUI.logLayout.e("Child id: ${value.id}");
-        var keys = anchors.keys.toList()..sort();
-        anchorNames.sort();
-        FlutterUI.logLayout.e(keys.toString());
-        FlutterUI.logLayout.e(anchorNames.toString());
-        FlutterUI.logLayout.e(anchorNames.where((anchorName) => !keys.contains(anchorName)).toString(),
-            error: error, stackTrace: stacktrace);
+        if (FlutterUI.logLayout.cl(Lvl.e)) {
+          FlutterUI.logLayout.e("Parent id: ${value.parentId!}");
+          FlutterUI.logLayout.e("Child id: ${value.id}");
+
+          var keys = anchors.keys.toList()..sort();
+          anchorNames.sort();
+
+          FlutterUI.logLayout.e(keys.toString());
+          FlutterUI.logLayout.e(anchorNames.toString());
+          FlutterUI.logLayout.e(anchorNames.where((anchorName) => !keys.contains(anchorName)).toString(),
+              error: error, stackTrace: stacktrace);
+        }
+
         rethrow;
       }
     }

@@ -42,6 +42,7 @@ import '../service/data/i_data_service.dart';
 import '../service/service.dart';
 import '../service/storage/i_storage_service.dart';
 import '../service/ui/i_ui_service.dart';
+import 'jvx_logger.dart';
 import 'misc/dialog_result.dart';
 import 'widgets/progress/progress_dialog_widget.dart';
 
@@ -379,7 +380,9 @@ abstract class OfflineUtil {
       await _insertOfflineRecord(dataBook, insertedRow);
       await offlineApiRepository.resetState(dataBook.dataProvider, insertedRow);
     } catch (e, stack) {
-      FlutterUI.logAPI.e("Error while syncing inserted row: $insertedRow", error: e, stackTrace: stack);
+      if (FlutterUI.logAPI.cl(Lvl.e)) {
+        FlutterUI.logAPI.e("Error while syncing inserted row: $insertedRow", error: e, stackTrace: stack);
+      }
       return false;
     }
     return true;
@@ -391,7 +394,9 @@ abstract class OfflineUtil {
       await _updateOfflineRecord(updatedRow, dataBook);
       await offlineApiRepository.resetState(dataBook.dataProvider, updatedRow);
     } catch (e, stack) {
-      FlutterUI.logAPI.e("Error while syncing updated row: $updatedRow", error: e, stackTrace: stack);
+      if (FlutterUI.logAPI.cl(Lvl.e)) {
+        FlutterUI.logAPI.e("Error while syncing updated row: $updatedRow", error: e, stackTrace: stack);
+      }
       return false;
     }
     return true;
@@ -403,7 +408,12 @@ abstract class OfflineUtil {
       await _deleteOfflineRecord(dataBook, deletedRow);
       await offlineApiRepository.resetState(dataBook.dataProvider, deletedRow);
     } catch (e, stack) {
-      FlutterUI.logAPI.e("Error while syncing updated row: $deletedRow", error: e, stackTrace: stack);
+      if (FlutterUI.logAPI.cl(Lvl.e)) {
+        if (FlutterUI.logAPI.cl(Lvl.e)) {
+          FlutterUI.logAPI.e("Error while syncing updated row: $deletedRow", error: e, stackTrace: stack);
+        }
+      }
+
       return false;
     }
     return true;

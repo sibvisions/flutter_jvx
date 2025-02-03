@@ -106,7 +106,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTableWidget({
+  const FlTableWidget({
     super.key,
     required super.model,
     required this.chunkData,

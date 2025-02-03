@@ -118,71 +118,75 @@ class FlutterUI extends StatefulWidget {
   static const Level _defaultLogLevel = kDebugMode ? Level.info : Level.warning;
 
   /// The log filter used by [log].
-  static final LogFilter _generalLogFilter = JVxFilter(_defaultLogLevel);
+  static final JVxFilter _generalLogFilter = JVxFilter(_defaultLogLevel);
 
   /// The log filter used by [logAPI].
-  static final LogFilter _apiLogFilter = JVxFilter(_defaultLogLevel);
+  static final JVxFilter _apiLogFilter = JVxFilter(_defaultLogLevel);
 
   /// The log filter used by [logCommand].
-  static final LogFilter _commandLogFilter = JVxFilter(_defaultLogLevel);
+  static final JVxFilter _commandLogFilter = JVxFilter(_defaultLogLevel);
 
   /// The log filter used by [logUI].
-  static final LogFilter _uiLogFilter = JVxFilter(_defaultLogLevel);
+  static final JVxFilter _uiLogFilter = JVxFilter(_defaultLogLevel);
 
   /// The log filter used by [logLayout].
-  static final LogFilter _layoutLogFilter = JVxFilter(_defaultLogLevel);
+  static final JVxFilter _layoutLogFilter = JVxFilter(_defaultLogLevel);
 
   /// General logger
-  static final Logger log = Logger(
+  static final JVxLogger log = JVxLogger(
     filter: _generalLogFilter,
-    printer: JVxPrettyPrinter(
+    printer: PrefixPrinter(JVxPrettyPrinter(
+      colors: false,
       prefix: "GENERAL",
       printTime: true,
       methodCount: 0,
       errorMethodCount: 30,
-    ),
+    )),
   );
 
   /// API logger
-  static final Logger logAPI = Logger(
+  static final JVxLogger logAPI = JVxLogger(
     filter: _apiLogFilter,
-    printer: JVxPrettyPrinter(
+    printer: PrefixPrinter(JVxPrettyPrinter(
+      colors: false,
       prefix: "API",
       printTime: true,
       methodCount: 0,
       errorMethodCount: 30,
-    ),
+    )),
   );
 
   /// Command logger
-  static final Logger logCommand = Logger(
+  static final JVxLogger logCommand = JVxLogger(
     filter: _commandLogFilter,
-    printer: JVxPrettyPrinter(
+    printer: PrefixPrinter(JVxPrettyPrinter(
+      colors: false,
       prefix: "COMMAND",
       printTime: true,
       methodCount: 0,
       errorMethodCount: 30,
-    ),
+    )),
   );
 
   /// UI logger
-  static final Logger logUI = Logger(
+  static final JVxLogger logUI = JVxLogger(
     filter: _uiLogFilter,
-    printer: JVxPrettyPrinter(
+    printer: PrefixPrinter(JVxPrettyPrinter(
+      colors: false,
       prefix: "UI",
       printTime: true,
       methodCount: 0,
       errorMethodCount: 30,
-    ),
+    )),
   );
 
   /// Layout logger
-  static final Logger logLayout = Logger(
+  static final JVxLogger logLayout = JVxLogger(
     filter: _layoutLogFilter,
-    printer: SimplePrinter(
+    printer: PrefixPrinter(SimplePrinter(
       colors: false,
       printTime: true,
-    ),
+    )),
   );
 
   /// The initial application configuration
@@ -211,7 +215,7 @@ class FlutterUI extends StatefulWidget {
   /// Application metadata
   static late PackageInfo packageInfo;
 
-  static List<GlobalSubscription> _globalSubscriptions = [];
+  static final List<GlobalSubscription> _globalSubscriptions = [];
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -349,6 +353,13 @@ class FlutterUI extends StatefulWidget {
   }
 
   static start([FlutterUI pAppToRun = const FlutterUI()]) async {
+    SimplePrinter.levelPrefixes[Level.debug] = '';
+    SimplePrinter.levelPrefixes[Level.warning] = '';
+    SimplePrinter.levelPrefixes[Level.trace] = '';
+    SimplePrinter.levelPrefixes[Level.info] = '';
+    SimplePrinter.levelPrefixes[Level.error] = '';
+    SimplePrinter.levelPrefixes[Level.fatal] = '';
+
     WidgetsFlutterBinding.ensureInitialized();
 
     Logger.addOutputListener((event) {
@@ -437,9 +448,6 @@ class FlutterUI extends StatefulWidget {
     _uiLogFilter.level = appConfig.logConfig?.levels?.ui ?? _defaultLogLevel;
     _layoutLogFilter.level = appConfig.logConfig?.levels?.layout ?? _defaultLogLevel;
 
-    FlutterUI.log.d("Welcome home-1");
-    FlutterUI.log.d("Welcome home-2");
-
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService.create() : await IsolateLayoutService.create();
     services.registerSingleton(layoutService);
@@ -464,6 +472,7 @@ class FlutterUI extends StatefulWidget {
     App? urlApp = await _handleURIParameters(queryParameters);
 
     // API
+    //always online repository because app service will set the right repository
     IApiService apiService = ApiService.create(OnlineApiRepository());
     apiService.setController(ApiController());
     services.registerSingleton(apiService);

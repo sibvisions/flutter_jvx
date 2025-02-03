@@ -28,6 +28,7 @@ import '../../../../../model/data/column_definition.dart';
 import '../../../../../model/data/data_book.dart';
 import '../../../../../model/data/filter_condition.dart';
 import '../../../../../util/i_types.dart';
+import '../../../../../util/jvx_logger.dart';
 import '../../../../config/i_config_service.dart';
 
 /// Manages the offline database, has to be closed with [close].
@@ -175,7 +176,10 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   void _createDataTable(DalMetaData table, {required Batch batch}) {
     String createTableSQL = _buildCreateTableSQL(table);
-    FlutterUI.logAPI.d("Create Table SQL:\n$createTableSQL");
+
+    if (FlutterUI.logAPI.cl(Lvl.d)) {
+      FlutterUI.logAPI.d("Create Table SQL:\n$createTableSQL");
+    }
     // Run the CREATE TABLE statement on the database.
     batch.execute(createTableSQL);
   }

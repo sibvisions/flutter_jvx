@@ -19,6 +19,7 @@ import 'dart:async';
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
+import '../../../../../util/jvx_logger.dart';
 import '../../../../layout/i_layout_service.dart';
 import '../../../../storage/i_storage_service.dart';
 import '../../../../ui/i_ui_service.dart';
@@ -45,7 +46,9 @@ class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponent
     stopwatch.stop();
 
     if (stopwatch.elapsedMilliseconds > 50) {
-      FlutterUI.logUI.w("Layout was busy for ${stopwatch.elapsedMilliseconds}ms");
+      if (FlutterUI.logUI.cl(Lvl.w)) {
+        FlutterUI.logUI.w("Layout was busy for ${stopwatch.elapsedMilliseconds}ms");
+      }
     }
 
     List<Future> futureList = [];

@@ -58,13 +58,12 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
     // if update == false => new screen that should be routed to
     if (!pResponse.update && !IConfigService().offline.value) {
       if (panel?.screenNavigationName != null) {
-        commands.add(RouteToWorkCommand(
+        commands.add(RouteToWorkScreenCommand(
           screenName: panel!.screenNavigationName!,
           reason: "Server sent screen.generic response with update = 'false'",
         ));
       } else {
-        FlutterUI.logUI.w("Server sent screen.generic response with update = 'false' "
-            "but no panel with a matching screen name");
+        FlutterUI.logUI.w("Server sent screen.generic response with update = 'false' but no panel with a matching screen name");
       }
     }
 

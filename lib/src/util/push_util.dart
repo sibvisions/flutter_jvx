@@ -28,6 +28,7 @@ import '../service/apps/i_app_service.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
 import '../service/ui/i_ui_service.dart';
+import 'jvx_logger.dart';
 import 'parse_util.dart';
 
 abstract class PushUtil {
@@ -169,7 +170,10 @@ abstract class PushUtil {
 
   /// Handles device token updates.
   static FutureOr<void> handleTokenUpdates(String token) async {
-    FlutterUI.log.d("New APNS/FCM registration token: $token");
+    if (FlutterUI.log.cl(Lvl.d)) {
+      FlutterUI.log.d("New APNS/FCM registration token: $token");
+    }
+
     await PushUtil.sendPushData({parameterPushToken: token});
   }
 }

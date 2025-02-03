@@ -34,6 +34,7 @@ import '../../model/data/sort_definition.dart';
 import '../../model/layout/layout_data.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
+import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
 import '../../util/sort_list.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -535,31 +536,48 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
-    FlutterUI.logUI.d("Table cell tapped: $pRowIndex, $pColumnName");
-    FlutterUI.logUI.d("Active last single tap timer: ${lastSingleTapTimer?.isActive}");
+    if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("Table cell tapped: $pRowIndex, $pColumnName");
+      FlutterUI.logUI.d("Active last single tap timer: ${lastSingleTapTimer?.isActive}");
+    }
+
     if (lastTappedColumn == pColumnName && lastTappedRow == pRowIndex && lastSingleTapTimer?.isActive == true) {
-      FlutterUI.logUI.d("Tap type: double");
+      if (FlutterUI.logUI.cl(Lvl.d)) {
+        FlutterUI.logUI.d("Tap type: double");
+      }
       lastTappedColumn = null;
       lastTappedRow = null;
       lastSingleTapTimer?.cancel();
       lastSelectionTapFuture?.then((value) {
-        FlutterUI.logUI.d("Selecting was: $value");
+        if (FlutterUI.logUI.cl(Lvl.d)) {
+          FlutterUI.logUI.d("Selecting was: $value");
+        }
+
         if (value) {
-          FlutterUI.logUI.d("Double tap action");
+          if (FlutterUI.logUI.cl(Lvl.d)) {
+            FlutterUI.logUI.d("Double tap action");
+          }
+
           _onDoubleTap(pRowIndex, pColumnName, pCellEditor);
         }
       });
     } else {
-      FlutterUI.logUI.d("Tap type: single");
+      if (FlutterUI.logUI.cl(Lvl.d)) {
+        FlutterUI.logUI.d("Tap type: single");
+      }
       lastTappedColumn = pColumnName;
       lastTappedRow = pRowIndex;
       lastSingleTapTimer?.cancel();
       lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
       lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
         lastSelectionTapFuture?.then((value) {
-          FlutterUI.logUI.d("Selecting was: $value");
+          if (FlutterUI.logUI.cl(Lvl.d)) {
+            FlutterUI.logUI.d("Selecting was: $value");
+          }
+
           if (value) {
             FlutterUI.logUI.d("Single tap action");
+
             _onSingleTap(pRowIndex, pColumnName, pCellEditor);
           }
         });
@@ -786,7 +804,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     Filter? filter = _createFilter(pRowIndex: pRowIndex);
     if (filter == null) {
-      FlutterUI.logUI.w("Filter of table(${model.id}) null");
+      if (FlutterUI.logUI.cl(Lvl.w)) {
+        FlutterUI.logUI.w("Filter of table(${model.id}) null");
+      }
       return false;
     }
 
@@ -937,7 +957,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     Filter? filter = _createFilter(pRowIndex: pIndex);
 
     if (filter == null) {
-      FlutterUI.logUI.w("Filter of table(${model.id}) null");
+      if (FlutterUI.logUI.cl(Lvl.w)) {
+        FlutterUI.logUI.w("Filter of table(${model.id}) null");
+      }
       return null;
     }
     return DeleteRecordCommand(

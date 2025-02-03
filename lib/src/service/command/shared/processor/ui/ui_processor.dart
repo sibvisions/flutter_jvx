@@ -21,7 +21,7 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../../../model/command/ui/route/route_to_command.dart';
 import '../../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../../model/command/ui/route/route_to_menu_command.dart';
-import '../../../../../model/command/ui/route/route_to_work_command.dart';
+import '../../../../../model/command/ui/route/route_to_workscreen_command.dart';
 import '../../../../../model/command/ui/save_menu_command.dart';
 import '../../../../../model/command/ui/set_focus_command.dart';
 import '../../../../../model/command/ui/ui_command.dart';
@@ -40,7 +40,7 @@ import 'open_error_dialog_command_processor.dart';
 import 'route/route_to_command_processor.dart';
 import 'route/route_to_login_command_processor.dart';
 import 'route/route_to_menu_command_processor.dart';
-import 'route/route_to_work_command_processor.dart';
+import 'route/route_to_workscreen_command_processor.dart';
 import 'save_menu_command_processor.dart';
 import 'set_focus_command_processor.dart';
 import 'update_components_command_processor.dart';
@@ -55,7 +55,7 @@ class UiProcessor implements ICommandProcessorHandler<UiCommand> {
   final UpdateComponentsCommandProcessor _updateComponentsProcessor = UpdateComponentsCommandProcessor();
   final UpdateLayoutPositionCommandProcessor _updateLayoutPositionProcessor = UpdateLayoutPositionCommandProcessor();
   final RouteToMenuCommandProcessor _routeToMenuProcessor = RouteToMenuCommandProcessor();
-  final RouteToWorkCommandProcessor _routeToWorkProcessor = RouteToWorkCommandProcessor();
+  final RouteToWorkScreenCommandProcessor _routeToWorkScreenProcessor = RouteToWorkScreenCommandProcessor();
   final SaveMenuCommandProcessor _saveMenuProcessor = SaveMenuCommandProcessor();
   final RouteToLoginCommandProcessor _routeToLoginProcessor = RouteToLoginCommandProcessor();
   final RouteToCommandProcessor _routeToProcessor = RouteToCommandProcessor();
@@ -80,8 +80,8 @@ class UiProcessor implements ICommandProcessorHandler<UiCommand> {
       return _routeToMenuProcessor;
     } else if (command is SaveMenuCommand) {
       return _saveMenuProcessor;
-    } else if (command is RouteToWorkCommand) {
-      return _routeToWorkProcessor;
+    } else if (command is RouteToWorkScreenCommand) {
+      return _routeToWorkScreenProcessor;
     } else if (command is RouteToLoginCommand) {
       return _routeToLoginProcessor;
     } else if (command is RouteToCommand) {

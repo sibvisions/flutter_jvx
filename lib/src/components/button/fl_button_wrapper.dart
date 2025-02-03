@@ -28,6 +28,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/ui/set_focus_command.dart';
+import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -261,7 +262,9 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   Future<BaseCommand> locateDevice() async {
     Position position = await getPosition();
-    FlutterUI.logUI.d("Received geolocation data: $position");
+    if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("Received geolocation data: $position");
+    }
 
     return SetValuesCommand(
       dataProvider: model.dataProvider,

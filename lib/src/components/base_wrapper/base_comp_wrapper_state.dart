@@ -30,6 +30,7 @@ import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_logger.dart';
 import 'base_comp_wrapper_widget.dart';
 import 'base_cont_wrapper_state.dart';
 
@@ -268,7 +269,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new Model
   void modelUpdated() {
-    FlutterUI.logUI.d("${model.name}|${model.id} received new Model");
+    if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("${model.name}|${model.id} received new Model");
+    }
 
     setState(() {
       // Set potentially new layout data contained in the new model
@@ -308,7 +311,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       calcPosition = null;
     }
 
-    FlutterUI.logLayout.d("${model.name}|${model.id} receiveNewLayoutData ${pLayoutData.layoutPosition}");
+    if (FlutterUI.logLayout.cl(Lvl.d)) {
+      FlutterUI.logLayout.d("${model.name}|${model.id} receiveNewLayoutData ${pLayoutData.layoutPosition}");
+    }
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (calcPosition != null && lastContext != null) {
@@ -377,7 +382,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     }
 
     if (eWidth != null && eHeight != null) {
-      FlutterUI.logUI.d("It's not possible to get the size of widget $runtimeType");
+      if (FlutterUI.logUI.cl(Lvl.d)) {
+        FlutterUI.logUI.d("It's not possible to get the size of widget $runtimeType");
+      }
       throw eWidth;
     }
 

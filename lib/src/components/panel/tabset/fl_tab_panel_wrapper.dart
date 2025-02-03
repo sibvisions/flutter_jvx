@@ -28,6 +28,7 @@ import '../../../service/command/i_command_service.dart';
 import '../../../service/storage/i_storage_service.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
+import '../../../util/jvx_logger.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
@@ -154,14 +155,16 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       tabHeaderList.add(createTab(tabContentList[i], i));
     }
 
-    FlutterUI.logLayout.d("BUILD CHILDREN");
-    FlutterUI.logLayout.d("Children count: ${children.values.length}");
-    FlutterUI.logLayout.d("TabContent list: $tabContentList");
-    FlutterUI.logLayout.d("TabHeader list: $tabHeaderList");
-    FlutterUI.logLayout.d("Model Selected index:${model.selectedIndex}");
-    FlutterUI.logLayout
-        .d("Tab Controller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
-    FlutterUI.logLayout.d("Set state: $returnValue");
+    if (FlutterUI.logLayout.cl(Lvl.d)) {
+      FlutterUI.logLayout.d("BUILD CHILDREN");
+      FlutterUI.logLayout.d("Children count: ${children.values.length}");
+      FlutterUI.logLayout.d("TabContent list: $tabContentList");
+      FlutterUI.logLayout.d("TabHeader list: $tabHeaderList");
+      FlutterUI.logLayout.d("Model Selected index:${model.selectedIndex}");
+      FlutterUI.logLayout
+          .d("Tab Controller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
+      FlutterUI.logLayout.d("Set state: $returnValue");
+    }
 
     if (returnValue && pSetStateOnChange) {
       setState(() {});
@@ -175,7 +178,10 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     List<BaseCompWrapperWidget> childrenToHide = tabContentList.where((e) {
       return !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e));
     }).toList();
-    FlutterUI.logUI.d("ChildrenToHide: $childrenToHide");
+
+    if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("ChildrenToHide: $childrenToHide");
+    }
 
     return wrapWidget(
       child: Wrap(

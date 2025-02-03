@@ -28,6 +28,7 @@ import '../../service/apps/app.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/file/file_manager.dart';
 import '../icon_util.dart';
+import '../jvx_logger.dart';
 
 abstract class ImageLoader {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +67,9 @@ abstract class ImageLoader {
 
   static ImageErrorWidgetBuilder createImageErrorBuilder(ImageProvider imageProvider) {
     return (BuildContext context, Object error, StackTrace? stackTrace) {
-      FlutterUI.logUI.e("Failed to load image $imageProvider", error: error, stackTrace: stackTrace);
+      if (FlutterUI.logUI.cl(Lvl.e)) {
+        FlutterUI.logUI.e("Failed to load image $imageProvider", error: error, stackTrace: stackTrace);
+      }
 
       return ImageLoader.DEFAULT_IMAGE;
     };

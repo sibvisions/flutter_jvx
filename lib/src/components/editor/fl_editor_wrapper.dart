@@ -35,6 +35,7 @@ import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_logger.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'cell_editor/date/fl_date_cell_editor.dart';
@@ -312,7 +313,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   SetValuesCommand _sendValueToServer(pValue) {
     if (pValue is HashMap<String, dynamic>) {
-      FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
+      if (FlutterUI.logUI.cl(Lvl.d)) {
+        FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
+      }
+
       return SetValuesCommand(
         editorColumnName: model.columnName,
         dataProvider: model.dataProvider,
@@ -321,7 +325,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         reason: "Value of ${model.id} set to $pValue",
       );
     } else {
-      FlutterUI.logUI.d("Value of ${model.id} set to $pValue");
+      if (FlutterUI.logUI.cl(Lvl.d)) {
+        FlutterUI.logUI.d("Value of ${model.id} set to $pValue");
+      }
+
       return SetValuesCommand(
         dataProvider: model.dataProvider,
         editorColumnName: model.columnName,
