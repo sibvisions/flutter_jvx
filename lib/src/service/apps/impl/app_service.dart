@@ -27,6 +27,7 @@ import '../../../model/command/api/startup_command.dart';
 import '../../../model/request/api_exit_request.dart';
 import '../../../model/response/menu_view_response.dart';
 import '../../../routing/locations/main_location.dart';
+import '../../../util/jvx_logger.dart';
 import '../../api/i_api_service.dart';
 import '../../api/shared/repository/offline_api_repository.dart';
 import '../../api/shared/repository/online_api_repository.dart';
@@ -161,8 +162,8 @@ class AppService implements IAppService {
 
   @override
   Future<void> removePreviousAppVersions(String appId, String currentVersion) async {
-    await IConfigService().getFileManager().removePreviousAppVersions(appId, currentVersion).catchError(
-        (e, stack) => FlutterUI.log.e("Failed to delete old app directories ($appId)", error: e, stackTrace: stack));
+    await IConfigService().getFileManager().removePreviousAppVersions(appId, currentVersion).
+              catchError((e, stack) => FlutterUI.log.e("Failed to delete old app directories ($appId)", error: e, stackTrace: stack));
   }
 
   @override
@@ -170,7 +171,9 @@ class AppService implements IAppService {
     for (String id in await IConfigService().getConfigHandler().getAppKeys()) {
       App? app = await App.getApp(id, forceIfMissing: true);
       if (app!.predefined && App.getPredefinedConfig(app.id) == null) {
-        FlutterUI.log.i("Removing data from an now obsolete predefined app: ${app.id}");
+        if (FlutterUI.log.cl(Lvl.i)) {
+          FlutterUI.log.i("Removing data from an now obsolete predefined app: ${app.id}");
+        }
         return app.delete();
       }
     }
