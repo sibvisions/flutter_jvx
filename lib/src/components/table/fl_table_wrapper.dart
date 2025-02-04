@@ -364,7 +364,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Loads data from the server.
   void _receiveTableData(DataChunk pDataChunk) {
-
     bool recalculateWidth = (currentState & LOADED_DATA) != LOADED_DATA;
     currentState |= LOADED_DATA;
 
@@ -390,7 +389,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     if (recalculateWidth || _calcOnDataReceived || changedDataCount) {
       _closeDialog();
-      _recalculateTableSize(recalculateWidth || _calcOnDataReceived);
+      _recalculateTableSize(recalculateWidth || _calcOnDataReceived || dataChunk.from == 0);
       _calcOnDataReceived = false;
     } else {
       setState(() {});
@@ -504,13 +503,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Refreshes this data provider
   Future<void> _refresh() {
-    IUiService().notifySubscriptionsOfReload(pDataProvider: model.dataProvider);
+    IUiService().notifySubscriptionsOfReload(model.dataProvider);
 
     return ICommandService().sendCommand(
       FetchCommand(
         fromRow: 0,
         reload: true,
-        rowCount: IUiService().getSubscriptionRowCount(pDataProvider: model.dataProvider),
+        rowCount: IUiService().getSubscriptionRowCount(model.dataProvider),
         dataProvider: model.dataProvider,
         reason: "Table refreshed",
       ),

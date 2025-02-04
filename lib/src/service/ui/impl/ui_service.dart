@@ -203,7 +203,8 @@ class UiService implements IUiService {
     // Clear the history of the screen we are going to so we don't jump back into the history.
     if (!kIsWeb) {
       FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
-        location.history.removeWhere((element) => element.routeInformation.location.endsWith(resolvedScreenName));
+        location.history.removeWhere((element) {
+          return element.routeInformation.uri.toString().endsWith(resolvedScreenName);});
       });
     }
 
@@ -470,16 +471,13 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setLayoutPosition({required LayoutData layoutData}) {
+  void setLayoutPosition(LayoutData layoutData) {
     // Copy list to avoid concurrent modification
     List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
 
-    ComponentSubscription cs;
     for (int i = 0; i < copy.length; i++) {
-      cs = copy[i];
-
-      if (cs.compId == layoutData.id) {
-        cs.layoutCallback?.call(layoutData);
+      if (copy[i].compId == layoutData.id) {
+        copy[i].layoutCallback?.call(layoutData);
       }
     }
   }
@@ -489,7 +487,7 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void registerAsLiveComponent({required ComponentSubscription pComponentSubscription}) {
+  void registerAsLiveComponent(ComponentSubscription pComponentSubscription) {
     _componentSubscriptions.add(pComponentSubscription);
   }
 
@@ -516,7 +514,6 @@ class UiService implements IUiService {
       //if we don't fetch metadata, we have
 
       if (needsToFetch || fetchMetaData) {
-
         //metadata before data!
         if (!fetchMetaData && pDataSubscription.onMetaData != null) {
           //in this case, we have metadata and we should handle it
@@ -534,12 +531,11 @@ class UiService implements IUiService {
           fromRow: dataBook?.records.keys.maxOrNull ?? pDataSubscription.from,
           rowCount: pDataSubscription.to != null
               ? pDataSubscription.to! - pDataSubscription.from
-              : IUiService().getSubscriptionRowCount(pDataProvider: pDataSubscription.dataProvider),
+              : IUiService().getSubscriptionRowCount(pDataSubscription.dataProvider),
           reason: "Fetch for DataSubscription [${pDataSubscription.dataProvider}]",
           includeMetaData: fetchMetaData,
         ));
       } else {
-
         //metadata before data!
         if (pDataSubscription.onMetaData != null) {
           ICommandService().sendCommand(GetMetaDataCommand(
@@ -586,39 +582,67 @@ class UiService implements IUiService {
   }
 
   @override
-  void notifySubscriptionsOfReload({required String pDataProvider}) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((dataSubscription) {
-      if (dataSubscription.onReload != null && dataSubscription.onDataChunk != null && dataSubscription.from >= 0) {
-        dataSubscription.to = dataSubscription.onReload!.call();
+  void notifySubscriptionsOfReload(String pDataProvider) {
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider && copy[i].onReload != null && copy[i].onDataChunk != null && copy[i].from >= 0) {
+        copy[i].to = copy[i].onReload!.call();
       }
-    });
+    }
   }
 
   @override
-  void disposeSubscriptions({required Object pSubscriber}) {
-    _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
-    _componentSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
-    _modelSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
+  void disposeSubscriptions(Object pSubscriber) {
+    disposeDataSubscription(pSubscriber: pSubscriber);
+    _disposeComponentSubscription(pSubscriber);
+    _disposeModelSubscription(pSubscriber);
+  }
+
+  void _disposeModelSubscription(Object pSubscriber) {
+    List<ModelSubscription> copy = _modelSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].subbedObj == pSubscriber) {
+        _modelSubscriptions.remove(copy[i]);
+      }
+    }
+  }
+
+  void _disposeComponentSubscription(Object pSubscriber) {
+    List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].subbedObj == pSubscriber) {
+        _componentSubscriptions.remove(copy[i]);
+      }
+    }
   }
 
   @override
   void disposeDataSubscription({required Object pSubscriber, String? pDataProvider}) {
-    _dataSubscriptions.removeWhere((element) =>
-        element.subbedObj == pSubscriber && (pDataProvider == null || element.dataProvider == pDataProvider));
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].subbedObj == pSubscriber && (pDataProvider == null || copy[i].dataProvider == pDataProvider)) {
+        _dataSubscriptions.remove(copy[i]);
+      }
+    }
   }
 
   @override
   Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId, String pReason) async {
     // Copy list to avoid concurrent modification
+    List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
+
     List<BaseCommand> saveCommands = [];
 
-    List<ComponentSubscription> listOfSubs =
-        List.of(_componentSubscriptions).where((element) => element.compId != pId).toList();
-
-    for (var sub in listOfSubs) {
-      var command = await sub.saveCallback?.call(pReason);
-      if (command != null) {
-        saveCommands.add(command);
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].compId == pId && copy[i].saveCallback != null) {
+        var command = await copy[i].saveCallback!.call(pReason);
+        if (command != null) {
+          saveCommands.add(command);
+        }
       }
     }
 
@@ -630,41 +654,58 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void notifyAffectedComponents({required Set<String> affectedIds}) {
-    for (String affectedId in affectedIds) {
+  void notifyAffectedComponents(Set<String> affectedIds) {
+
+    for (int i = 0; i < affectedIds.length; i++) {
       // Copy list to avoid concurrent modification
-      List.of(_componentSubscriptions).where((element) => element.compId == affectedId && element.affectedCallback != null).forEach((element) {
-        element.affectedCallback!.call();
-      });
+      List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
+
+      String id = affectedIds.elementAt(i);
+
+      for (int j = 0; j < copy.length; j++) {
+        if (copy[j].compId == id && copy[j].affectedCallback != null) {
+          copy[j].affectedCallback!.call();
+        }
+      }
     }
   }
 
   @override
   void notifyBeforeModelUpdate(String modelId, Set<String> changedProperties) {
     // Copy list to avoid concurrent modification
-    List.of(_componentSubscriptions).where((element) => element.compId == modelId && element.beforeModelUpdateCallback != null).forEach((element) {
-      // Notify active component
-      element.beforeModelUpdateCallback!.call(changedProperties);
-    });
+    List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].compId == modelId && copy[i].beforeModelUpdateCallback != null) {
+        // Notify active component
+        copy[i].beforeModelUpdateCallback!.call(changedProperties);
+      }
+    }
   }
 
   @override
-  void notifyModelUpdated({required List<String> updatedModels}) {
-    for (String updatedModelId in updatedModels) {
+  void notifyModelUpdated(List<String> updatedModels) {
+    for (int i = 0; i < updatedModels.length; i++) {
       // Copy list to avoid concurrent modification
-      List.of(_componentSubscriptions).where((element) => element.compId == updatedModelId && element.modelUpdatedCallback != null).forEach((element) {
-        // Notify active component
-        element.modelUpdatedCallback!.call();
-      });
+      List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
+
+      for (int j = 0; j < copy.length; j++) {
+        if (copy[j].compId == updatedModels[i] && copy[j].modelUpdatedCallback != null) {
+          // Notify active component
+          copy[j].modelUpdatedCallback!.call();
+        }
+      }
     }
   }
 
   @override
   void notifyModels() {
     List<FlComponentModel> models = IStorageService().getComponentModels();
+
     for (var sub in _modelSubscriptions) {
       var model = models.firstWhereOrNull((model) => sub.check.call(model));
-      if (model != null && sub.check.call(model)) {
+
+      if (model != null) {
         sub.onNewModel.call(model);
       }
     }
@@ -676,95 +717,103 @@ class UiService implements IUiService {
     bool pUpdatedCurrentPage = true,
     String? pUpdatedPage,
   }) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
-      // Check if selected data changed
-      if (pUpdatedPage != null) {
-        if (sub.onPage != null) {
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider) {
+        // Check if selected data changed
+        if (pUpdatedPage != null && copy[i].onPage != null) {
           ICommandService().sendCommand(GetPageChunkCommand(
             reason: "Notify data was called",
             dataProvider: pDataProvider,
-            from: sub.from,
-            to: sub.to,
-            subId: sub.id,
+            subId: copy[i].id,
+            from: copy[i].from,
+            to: copy[i].to,
             pageKey: pUpdatedPage,
           ));
         }
-      }
-      if (pUpdatedCurrentPage) {
-        if (sub.onSelectedRecord != null) {
-          ICommandService().sendCommand(GetSelectedDataCommand(
-            subId: sub.id,
-            reason: "Notify data was called with pFrom -1",
-            dataProvider: sub.dataProvider,
-            columnNames: sub.dataColumns,
-          ));
+
+        if (pUpdatedCurrentPage) {
+          if (copy[i].onSelectedRecord != null) {
+            ICommandService().sendCommand(GetSelectedDataCommand(
+              reason: "Notify data was called with pFrom -1",
+              dataProvider: pDataProvider,
+              subId: copy[i].id,
+              columnNames: copy[i].dataColumns,
+            ));
+          }
+
+          if (copy[i].from != -1 && copy[i].onDataChunk != null) {
+            ICommandService().sendCommand(GetDataChunkCommand(
+              reason: "Notify data was called",
+              dataProvider: pDataProvider,
+              subId: copy[i].id,
+              from: copy[i].from,
+              to: copy[i].to,
+              dataColumns: copy[i].dataColumns,
+            ));
+          }
         }
-        if (sub.from != -1 && sub.onDataChunk != null) {
-          ICommandService().sendCommand(GetDataChunkCommand(
-            reason: "Notify data was called",
-            dataProvider: pDataProvider,
-            from: sub.from,
-            to: sub.to,
-            subId: sub.id,
-            dataColumns: sub.dataColumns,
-          ));
-        }
       }
-    });
+    }
   }
 
   @override
-  void notifyDataToDisplayMapChanged({required String pDataProvider}) {
-    _dataSubscriptions
-        .where((sub) => sub.dataProvider == pDataProvider && sub.onDataToDisplayMapChanged != null)
-        .toList()
-        .forEach((sub) {
-      sub.onDataToDisplayMapChanged?.call();
-    });
+  void notifyDataToDisplayMapChanged(String pDataProvider) {
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider && copy[i].onDataToDisplayMapChanged != null) {
+        copy[i].onDataToDisplayMapChanged?.call();
+      }
+    }
   }
 
   @override
-  void notifySelectionChange({
-    required String pDataProvider,
-  }) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
-      if (sub.onSelectedRecord != null) {
+  void notifySelectionChange(String pDataProvider) {
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider && copy[i].onSelectedRecord != null) {
         ICommandService().sendCommand(GetSelectedDataCommand(
-          subId: sub.id,
+          subId: copy[i].id,
           reason: "Notify data was called with pFrom -1",
-          dataProvider: sub.dataProvider,
-          columnNames: sub.dataColumns,
+          dataProvider: pDataProvider,
+          columnNames: copy[i].dataColumns,
         ));
       }
-    });
+    }
   }
 
   @override
-  void notifyMetaDataChange({
-    required String pDataProvider,
-  }) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
-      if (sub.onMetaData != null) {
+  void notifyMetaDataChange(String pDataProvider) {
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider && copy[i].onMetaData != null) {
         // Check if selected data changed
         ICommandService().sendCommand(GetMetaDataCommand(
-          subId: sub.id,
+          subId: copy[i].id,
           reason: "Notify data was called with pFrom -1",
-          dataProvider: sub.dataProvider,
+          dataProvider: pDataProvider,
         ));
       }
-    });
+    }
   }
 
   @override
   void sendSubsSelectedData({
     required String pSubId,
     required String pDataProvider,
-    required DataRecord? pDataRow,
+    DataRecord? pDataRow,
   }) {
-    _dataSubscriptions
-        .where((element) => element.dataProvider == pDataProvider && element.id == pSubId)
-        .toList()
-        .forEach((element) => element.onSelectedRecord?.call(pDataRow));
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider && copy[i].id == pSubId && copy[i].onSelectedRecord != null) {
+        copy[i].onSelectedRecord!.call(pDataRow);
+      }
+    }
   }
 
   @override
@@ -773,12 +822,13 @@ class UiService implements IUiService {
     required DataChunk pDataChunk,
     required String pDataProvider,
   }) {
-    List<DataSubscription> subs =
-        _dataSubscriptions.where((element) => element.dataProvider == pDataProvider && element.id == pSubId).toList();
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
-    subs.forEach((element) {
-      element.onDataChunk?.call(pDataChunk);
-    });
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider && copy[i].id == pSubId && copy[i].onDataChunk != null) {
+        copy[i].onDataChunk!.call(pDataChunk);
+      }
+    }
   }
 
   @override
@@ -788,12 +838,13 @@ class UiService implements IUiService {
     required DataChunk pDataChunk,
     required String pPageKey,
   }) {
-    List<DataSubscription> subs =
-        _dataSubscriptions.where((element) => element.dataProvider == pDataProvider && element.id == pSubId).toList();
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
-    subs.forEach((element) {
-      element.onPage?.call(pPageKey, pDataChunk);
-    });
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider && copy[i].id == pSubId && copy[i].onPage != null) {
+        copy[i].onPage?.call(pPageKey, pDataChunk);
+      }
+    }
   }
 
   @override
@@ -802,24 +853,29 @@ class UiService implements IUiService {
     required String pDataProvider,
     required DalMetaData pMetaData,
   }) {
-    _dataSubscriptions
-        .where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null)
-        .toList()
-        .forEach((element) {
-      element.onMetaData!(pMetaData);
-    });
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider && copy[i].id == pSubId && copy[i].onMetaData != null) {
+        copy[i].onMetaData!(pMetaData);
+      }
+    }
   }
 
   @override
-  int getSubscriptionRowCount({required String pDataProvider}) {
+  int getSubscriptionRowCount(String pDataProvider) {
     int rowCount = 0;
 
-    var subscriptions = _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider).toList();
-    for (DataSubscription subscription in subscriptions) {
-      if (subscription.to == null) {
-        return -1;
+    List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].dataProvider == pDataProvider) {
+        if (copy[i].to == null) {
+          return -1;
+        }
+
+        rowCount = max(rowCount, copy[i].to!);
       }
-      rowCount = max(rowCount, subscription.to!);
     }
 
     return rowCount;
@@ -835,7 +891,7 @@ class UiService implements IUiService {
   }
 
   @override
-  CustomComponent? getCustomComponent({required String pComponentName}) {
+  CustomComponent? getCustomComponent(String pComponentName) {
     Map<String, CustomComponent>? comps = appManager?.replaceComponents;
 
     if (comps != null) {
@@ -899,7 +955,7 @@ class UiService implements IUiService {
   }
 
   @override
-  void closeMessageDialog({required String componentId}) {
+  void closeMessageDialog(String componentId) {
     _activeDialogs.removeWhere((element) => element is MessageDialog && element.command.componentId == componentId);
     JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }

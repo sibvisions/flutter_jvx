@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -44,25 +46,33 @@ class ManualCard extends StatefulWidget {
 }
 
 class _ManualCardState extends State<ManualCard> {
-  /// Controller for username text field
   late TextEditingController usernameController;
-
-  /// Controller for password text field
   late TextEditingController passwordController;
-
-  /// Value holder for the checkbox
-  late bool rememberMeChecked;
 
   ButtonState progressButtonState = ButtonState.idle;
 
-  bool showRememberMe = false;
+  Timer? _timerReset;
+
+  late bool showRememberMe;
+  late bool rememberMeChecked;
   bool _passwordHidden = true;
+
+  bool _isAuthenticating = false;
 
   @override
   void initState() {
     super.initState();
+
     usernameController = TextEditingController(text: IConfigService().username.value);
     passwordController = TextEditingController();
+
+    showRememberMe = IUiService().applicationMetaData.value?.rememberMeEnabled ?? false;
+
+    //this option is server controlled, but we can disable it
+    if (showRememberMe && IConfigService().getAppConfig()?.uiConfig!.showRememberMe == false) {
+      showRememberMe = false;
+    }
+
     rememberMeChecked = IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
   }
 
@@ -70,8 +80,6 @@ class _ManualCardState extends State<ManualCard> {
   Widget build(BuildContext context) {
     String? loginTitle = AppStyle.of(context).style(context, 'login.title');
 
-    showRememberMe = (IUiService().applicationMetaData.value?.rememberMeEnabled ?? false) ||
-        (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -131,6 +139,8 @@ class _ManualCardState extends State<ManualCard> {
               onToggle: () => setState(() => rememberMeChecked = !rememberMeChecked),
             ),
           ),
+        if (!showRememberMe)
+          const SizedBox(height: 25),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         ProgressButton.icon(
           radius: 4.0,
@@ -155,7 +165,7 @@ class _ManualCardState extends State<ManualCard> {
             ),
           },
           onPressed: _onLoginPressed,
-          state: LoadingBar.maybeOf(context)?.show ?? false ? ButtonState.loading : progressButtonState,
+          state: (LoadingBar.maybeOf(context)?.show ?? _isAuthenticating) ? ButtonState.loading : progressButtonState,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         if (IUiService().applicationMetaData.value?.lostPasswordEnabled == true)
@@ -178,11 +188,23 @@ class _ManualCardState extends State<ManualCard> {
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
+
     super.dispose();
   }
 
   void resetButton() {
-    setState(() => progressButtonState = ButtonState.idle);
+    _timerReset?.cancel();
+
+    setState(() {
+      _isAuthenticating = false;
+      progressButtonState = ButtonState.idle;
+    });
+  }
+
+  void _resetButtonByTimeout() {
+    if (!_isAuthenticating && progressButtonState == ButtonState.fail) {
+      resetButton();
+    }
   }
 
   Widget _createBottomRow() {
@@ -203,6 +225,9 @@ class _ManualCardState extends State<ManualCard> {
   }
 
   void _onLoginPressed() {
+    _isAuthenticating = true;
+    _timerReset?.cancel();
+
     FocusManager.instance.primaryFocus?.unfocus();
 
     LoginPage.doLogin(
@@ -211,10 +236,19 @@ class _ManualCardState extends State<ManualCard> {
       createAuthKey: showRememberMe && rememberMeChecked,
     ).then((success) {
       if (success) {
-        setState(() => progressButtonState = ButtonState.success);
+        setState(() {
+          _isAuthenticating = false;
+          progressButtonState = ButtonState.success;
+        });
       } else {
         HapticFeedback.heavyImpact();
-        setState(() => progressButtonState = ButtonState.fail);
+
+        _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
+
+        setState(() {
+          _isAuthenticating = false;
+          progressButtonState = ButtonState.fail;
+        });
       }
     });
   }

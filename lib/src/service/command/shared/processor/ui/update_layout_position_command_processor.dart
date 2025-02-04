@@ -26,7 +26,7 @@ class UpdateLayoutPositionCommandProcessor extends ICommandProcessor<UpdateLayou
     List<LayoutData> copy = command.layoutDataList.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      IUiService().setLayoutPosition(layoutData: copy[i]);
+      IUiService().setLayoutPosition(copy[i]);
     }
 
     return Future.value([]);

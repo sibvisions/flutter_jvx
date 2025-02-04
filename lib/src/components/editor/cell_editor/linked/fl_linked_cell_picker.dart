@@ -271,9 +271,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   @override
   void dispose() {
-    IUiService().disposeSubscriptions(
-      pSubscriber: this,
-    );
+    IUiService().disposeSubscriptions(this);
 
     ICommandService().sendCommand(
       FilterCommand.none(
@@ -507,13 +505,13 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   /// Refreshes this data provider
   Future<void> _refresh() {
-    IUiService().notifySubscriptionsOfReload(pDataProvider: model.linkReference.referencedDataBook);
+    IUiService().notifySubscriptionsOfReload(model.linkReference.referencedDataBook);
 
     return ICommandService().sendCommand(
       FetchCommand(
         fromRow: 0,
         reload: true,
-        rowCount: IUiService().getSubscriptionRowCount(pDataProvider: model.linkReference.referencedDataBook),
+        rowCount: IUiService().getSubscriptionRowCount(model.linkReference.referencedDataBook),
         dataProvider: model.linkReference.referencedDataBook,
         reason: "Table refreshed",
       ),

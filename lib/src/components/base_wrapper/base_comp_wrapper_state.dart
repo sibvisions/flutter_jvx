@@ -96,12 +96,12 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       modelUpdatedCallback: modelUpdated,
       saveCallback: createSaveCommand,
     );
-    IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
+    IUiService().registerAsLiveComponent(componentSubscription);
   }
 
   @override
   void dispose() {
-    IUiService().disposeSubscriptions(pSubscriber: this);
+    IUiService().disposeSubscriptions(this);
     super.dispose();
   }
 

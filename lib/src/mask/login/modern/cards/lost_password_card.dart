@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -41,6 +43,10 @@ class LostPasswordCard extends StatefulWidget {
 class _LostPasswordCardState extends State<LostPasswordCard> {
   final TextEditingController identifierController = TextEditingController();
   ButtonState progressButtonState = ButtonState.idle;
+
+  Timer? _timerReset;
+
+  bool _isResetting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +165,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                                 ),
                               },
                               onPressed: () => _onResetPasswordPressed(),
-                              state: LoadingBar.maybeOf(context)?.show ?? false
+                              state: (LoadingBar.maybeOf(context)?.show ?? _isResetting)
                                   ? ButtonState.loading
                                   : progressButtonState,
                             ),
@@ -189,24 +195,48 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
   @override
   void dispose() {
     identifierController.dispose();
+
     super.dispose();
   }
 
   void resetButton() {
-    setState(() => progressButtonState = ButtonState.idle);
+    _timerReset?.cancel();
+
+    setState(() {
+      _isResetting = false;
+      progressButtonState = ButtonState.idle;
+    });
+  }
+
+  void _resetButtonByTimeout() {
+    if (!_isResetting && progressButtonState == ButtonState.fail) {
+      resetButton();
+    }
   }
 
   void _onResetPasswordPressed() {
+    _isResetting = true;
+    _timerReset?.cancel();
+
     FocusManager.instance.primaryFocus?.unfocus();
 
     LoginPage.doResetPassword(
       identifier: identifierController.text,
     ).then((success) {
       if (success) {
-        setState(() => progressButtonState = ButtonState.success);
+        setState(() {
+          _isResetting = false;
+          progressButtonState = ButtonState.success;
+        });
       } else {
         HapticFeedback.heavyImpact();
-        setState(() => progressButtonState = ButtonState.fail);
+
+        _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
+
+        setState(() {
+          _isResetting = false;
+          progressButtonState = ButtonState.fail;
+        });
       }
     });
   }

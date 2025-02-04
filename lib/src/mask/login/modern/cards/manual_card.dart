@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -48,21 +50,32 @@ class ManualCard extends StatefulWidget {
 
 class _ManualCardState extends State<ManualCard> {
   late final TextEditingController usernameController;
-  late final TextEditingController passwordController = TextEditingController();
+  late final TextEditingController passwordController;
 
   ButtonState progressButtonState = ButtonState.idle;
 
-  late final bool showRememberMe;
+  Timer? _timerReset;
+
+  late bool showRememberMe;
   late bool rememberMeChecked;
   bool _passwordHidden = true;
+
+  bool _isAuthenticating = false;
 
   @override
   void initState() {
     super.initState();
-    usernameController = TextEditingController(text: IConfigService().username.value);
 
-    showRememberMe = (IUiService().applicationMetaData.value?.rememberMeEnabled ?? false) ||
-        (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
+    usernameController = TextEditingController(text: IConfigService().username.value);
+    passwordController = TextEditingController();
+
+    showRememberMe = IUiService().applicationMetaData.value?.rememberMeEnabled ?? false;
+
+    //this option is server controlled, but we can disable it
+    if (showRememberMe && IConfigService().getAppConfig()?.uiConfig!.showRememberMe == false) {
+      showRememberMe = false;
+    }
+
     rememberMeChecked = IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
   }
 
@@ -116,7 +129,7 @@ class _ManualCardState extends State<ManualCard> {
                             IconButton(
                               tooltip: FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
                               splashRadius: 30,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Theme.of(context).textTheme.labelSmall!.color,
                               style: IconButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -151,7 +164,7 @@ class _ManualCardState extends State<ManualCard> {
                             onTap: resetButton,
                             onChanged: (_) => resetButton(),
                             decoration: InputDecoration(
-                              icon: const FaIcon(FontAwesomeIcons.user),
+                              icon: const Icon(Icons.person_outline, size: 22),
                               labelText: FlutterUI.translate("Username"),
                               border: InputBorder.none,
                               suffixIcon: usernameController.text.isNotEmpty
@@ -182,7 +195,7 @@ class _ManualCardState extends State<ManualCard> {
                             onChanged: (_) => resetButton(),
                             obscureText: _passwordHidden,
                             decoration: InputDecoration(
-                              icon: const FaIcon(FontAwesomeIcons.key),
+                              icon: const Icon(Icons.password, size: 22),
                               labelText: FlutterUI.translate("Password"),
                               border: InputBorder.none,
                               suffixIcon: passwordController.text.isNotEmpty
@@ -209,6 +222,8 @@ class _ManualCardState extends State<ManualCard> {
                           context,
                           rememberMeChecked,
                           onTap: () => setState(() {
+                            resetButton();
+
                             rememberMeChecked = !rememberMeChecked;
                           }),
                         ),
@@ -257,7 +272,7 @@ class _ManualCardState extends State<ManualCard> {
                                 ),
                               },
                               onPressed: () => _onLoginPressed(),
-                              state: LoadingBar.maybeOf(context)?.show ?? false
+                              state: (LoadingBar.maybeOf(context)?.show ?? _isAuthenticating)
                                   ? ButtonState.loading
                                   : progressButtonState,
                             ),
@@ -289,11 +304,23 @@ class _ManualCardState extends State<ManualCard> {
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
+
     super.dispose();
   }
 
   void resetButton() {
-    setState(() => progressButtonState = ButtonState.idle);
+    _timerReset?.cancel();
+
+    setState(() {
+      _isAuthenticating = false;
+      progressButtonState = ButtonState.idle;
+    });
+  }
+
+  void _resetButtonByTimeout() {
+    if (!_isAuthenticating && progressButtonState == ButtonState.fail) {
+      resetButton();
+    }
   }
 
   Widget _buildCheckbox(BuildContext context, bool value, {required GestureTapCallback onTap}) {
@@ -303,16 +330,15 @@ class _ManualCardState extends State<ManualCard> {
         borderRadius: BorderRadius.circular(20),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0),
+          padding: const EdgeInsets.symmetric(vertical: 1.0),
           child: Row(
-            children: [
+            children: [Stack(alignment: Alignment.center, children: [
+              if (value == true) ClipOval(
+                child: Container(height: 30, width: 30, color: Theme.of(context).colorScheme.primary)),
               Checkbox(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
                 value: value,
                 onChanged: (bool? value) => onTap.call(),
-              ),
+              ),]),
               Text(
                 FlutterUI.translate("Remember me?"),
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -325,6 +351,9 @@ class _ManualCardState extends State<ManualCard> {
   }
 
   void _onLoginPressed() {
+    _isAuthenticating = true;
+    _timerReset?.cancel();
+
     FocusManager.instance.primaryFocus?.unfocus();
 
     LoginPage.doLogin(
@@ -333,10 +362,19 @@ class _ManualCardState extends State<ManualCard> {
       createAuthKey: showRememberMe && rememberMeChecked,
     ).then((success) {
       if (success) {
-        setState(() => progressButtonState = ButtonState.success);
+        setState(() {
+          _isAuthenticating = false;
+          progressButtonState = ButtonState.success;
+        });
       } else {
         HapticFeedback.heavyImpact();
-        setState(() => progressButtonState = ButtonState.fail);
+
+        _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
+
+        setState(() {
+          _isAuthenticating = false;
+          progressButtonState = ButtonState.fail;
+        });
       }
     });
   }

@@ -89,7 +89,7 @@ class ReferencedCellEditor {
           });
         }
 
-        IUiService().notifyDataToDisplayMapChanged(pDataProvider: dataProvider);
+        IUiService().notifyDataToDisplayMapChanged(dataProvider);
       }
     }
   }

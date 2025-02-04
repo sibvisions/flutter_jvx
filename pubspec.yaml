@@ -119,7 +119,9 @@ dependencies:
   card_loading: ^0.3.0
   flutter_treeview: #^1.0.7+1
     git:
-      url: https://github.com/sibvisions/flutter_treeview
+      url: https://github.com/kee-org/flutter_treeview
+      ref: v1.1.1
+#      url: https://github.com/sibvisions/flutter_treeview
 
   modal_bottom_sheet: ^3.0.0-pre
   qr_flutter: ^4.1.0

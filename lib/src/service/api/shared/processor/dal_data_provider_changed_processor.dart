@@ -34,20 +34,21 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
         deleteAll: true,
       ));
 
-      IUiService().notifySubscriptionsOfReload(pDataProvider: pResponse.dataProvider);
+      IUiService().notifySubscriptionsOfReload(pResponse.dataProvider);
 
       commands.add(
         FetchCommand(
           reason: "Data provider changed response was reload -1",
           fromRow: 0,
-          rowCount: IUiService().getSubscriptionRowCount(pDataProvider: pResponse.dataProvider),
+          rowCount: IUiService().getSubscriptionRowCount(pResponse.dataProvider),
           dataProvider: pResponse.dataProvider,
-          includeMetaData: true,
+          //if no metadata available -> include it with next fetch
+          includeMetaData: IDataService().getMetaData(pResponse.dataProvider) == null,
         ),
       );
     } else {
       if (IDataService().updateMetaDataChanged(pChangedResponse: pResponse)) {
-        IUiService().notifyMetaDataChange(pDataProvider: pResponse.dataProvider);
+        IUiService().notifyMetaDataChange(pResponse.dataProvider);
       }
       bool dataChanged = IDataService().updateDataChanged(pChangedResponse: pResponse);
       bool selectionChanged = IDataService().updateSelectionChanged(pChangedResponse: pResponse);
@@ -55,7 +56,7 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
       if (dataChanged) {
         IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
       } else if (selectionChanged) {
-        IUiService().notifySelectionChange(pDataProvider: pResponse.dataProvider);
+        IUiService().notifySelectionChange(pResponse.dataProvider);
       }
 
       if (pResponse.reload != null) {

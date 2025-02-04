@@ -96,9 +96,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   Future<List<BaseCommand>> _saveMetaData(SaveMetaDataCommand pCommand) async {
     IDataService().updateMetaData(pChangedResponse: pCommand.response);
 
-    IUiService().notifyMetaDataChange(
-      pDataProvider: pCommand.response.dataProvider,
-    );
+    IUiService().notifyMetaDataChange(pCommand.response.dataProvider);
 
     return [];
   }
@@ -117,7 +115,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
         FetchCommand(
           dataProvider: pCommand.dataProvider,
           fromRow: 0,
-          rowCount: IUiService().getSubscriptionRowCount(pDataProvider: pCommand.dataProvider),
+          rowCount: IUiService().getSubscriptionRowCount(pCommand.dataProvider),
           reason: "Fetch for ${pCommand.runtimeType}",
           includeMetaData: true,
         )

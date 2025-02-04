@@ -216,14 +216,14 @@ abstract class IUiService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Notify component of new [LayoutData].
-  void setLayoutPosition({required LayoutData layoutData});
+  void setLayoutPosition(LayoutData layoutData);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Component registration management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Register as an active component, callback will be called when model
-  void registerAsLiveComponent({required ComponentSubscription pComponentSubscription});
+  void registerAsLiveComponent(ComponentSubscription pComponentSubscription);
 
   void registerModelSubscription(ModelSubscription pModelSubscription);
 
@@ -231,10 +231,10 @@ abstract class IUiService implements Service {
   void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatelyRetrieveData = true});
 
   /// Notifies all subscriptions of a reload.
-  void notifySubscriptionsOfReload({required String pDataProvider});
+  void notifySubscriptionsOfReload(String pDataProvider);
 
   /// Removes all active subscriptions
-  void disposeSubscriptions({required Object pSubscriber});
+  void disposeSubscriptions(Object pSubscriber);
 
   /// Removes [DataSubscription] from [IUiService]
   void disposeDataSubscription({required Object pSubscriber, String? pDataProvider});
@@ -248,13 +248,13 @@ abstract class IUiService implements Service {
 
   /// Notify affected parents that their children changed, should only be used
   /// when parent model hasn't been changed as well.
-  void notifyAffectedComponents({required Set<String> affectedIds});
+  void notifyAffectedComponents(Set<String> affectedIds);
 
   /// Notify changed live component before the model has changed
   void notifyBeforeModelUpdate(String modelId, Set<String> changedProperties);
 
   /// Notify changed live components that their model has changed
-  void notifyModelUpdated({required List<String> updatedModels});
+  void notifyModelUpdated(List<String> updatedModels);
 
   void notifyModels();
 
@@ -268,21 +268,17 @@ abstract class IUiService implements Service {
 
   /// Notify all components belonging to [pDataProvider] that their underlying
   /// data selection has changed.
-  void notifySelectionChange({
-    required String pDataProvider,
-  });
+  void notifySelectionChange(String pDataProvider);
 
   /// Notify all components belonging to [pDataProvider] that the meta data has been changed.
-  void notifyMetaDataChange({
-    required String pDataProvider,
-  });
+  void notifyMetaDataChange(String pDataProvider);
 
   /// Calls the callback of all subscribed [DataSubscription]s with the new selected record.
   /// Null if no record is selected or if the selected record is not fetched.
   void sendSubsSelectedData({
     required String pSubId,
     required String pDataProvider,
-    required DataRecord? pDataRow,
+    DataRecord? pDataRow,
   });
 
   /// Calls the callback of all subscribed [DataSubscription]s with the changed data.
@@ -308,7 +304,7 @@ abstract class IUiService implements Service {
   });
 
   /// Returns the highest row which any component is subscribed to on this data provider
-  int getSubscriptionRowCount({required String pDataProvider});
+  int getSubscriptionRowCount(String pDataProvider);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom
@@ -321,7 +317,7 @@ abstract class IUiService implements Service {
   CustomScreen? getCustomScreen(String key);
 
   /// Gets a custom component with given name (ignores screen)
-  CustomComponent? getCustomComponent({required String pComponentName});
+  CustomComponent? getCustomComponent(String pComponentName);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unsorted method definitions
@@ -335,7 +331,7 @@ abstract class IUiService implements Service {
     bool sendFeedback = false,
   });
 
-  void closeMessageDialog({required String componentId});
+  void closeMessageDialog(String componentId);
 
   List<JVxDialog> getJVxDialogs();
 
@@ -368,5 +364,5 @@ abstract class IUiService implements Service {
 
   bool isContentVisible(String pContentName);
 
-  void notifyDataToDisplayMapChanged({required String pDataProvider});
+  void notifyDataToDisplayMapChanged(String pDataProvider);
 }

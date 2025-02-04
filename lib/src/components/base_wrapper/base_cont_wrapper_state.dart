@@ -88,7 +88,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
     for (FlComponentModel model in childModels) {
       if (!children.containsKey(model.id)) {
         // If custom component with name exits create a custom widget instead of a normal one
-        CustomComponent? customComp = IUiService().getCustomComponent(pComponentName: model.name);
+        CustomComponent? customComp = IUiService().getCustomComponent(model.name);
         if (customComp != null) {
           updatedChildren[model.id] = ComponentsFactory.buildCustomWidget(model, customComp);
         } else {

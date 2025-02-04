@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -54,9 +56,13 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
 
   ButtonState progressButtonState = ButtonState.idle;
 
+  Timer? _timerReset;
+
   bool _passwordHidden = true;
   bool _newPasswordHidden = true;
   bool _confirmPasswordHidden = true;
+
+  bool _isChanging = false;
 
   @override
   void initState() {
@@ -301,7 +307,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                                 ),
                               },
                               onPressed: () => _onChangePasswordPressed(),
-                              state: LoadingBar.maybeOf(context)?.show ?? false
+                              state: (LoadingBar.maybeOf(context)?.show ?? _isChanging)
                                   ? ButtonState.loading
                                   : progressButtonState,
                             ),
@@ -335,14 +341,29 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
     newPasswordController.dispose();
     confirmPasswordController.dispose();
     oneTimePasswordController.dispose();
+
     super.dispose();
   }
 
   void resetButton() {
-    setState(() => progressButtonState = ButtonState.idle);
+    _timerReset?.cancel();
+
+    setState(() {
+      _isChanging = false;
+      progressButtonState = ButtonState.idle;
+    });
+  }
+
+  void _resetButtonByTimeout() {
+    if (!_isChanging && progressButtonState == ButtonState.fail) {
+      resetButton();
+    }
   }
 
   void _onChangePasswordPressed() {
+    _isChanging = true;
+    _timerReset?.cancel();
+
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (newPasswordController.text == confirmPasswordController.text) {
@@ -361,12 +382,33 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
         );
       }
       loginFuture.then((success) {
-        if (!success) {
+        if (success) {
+          setState(() {
+            _isChanging = false;
+            progressButtonState = ButtonState.success;
+          });
+        }
+        else {
+          _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
+
           HapticFeedback.heavyImpact();
+
+          setState(() {
+            _isChanging = false;
+            progressButtonState = ButtonState.fail;
+          });
         }
       });
     } else {
+      _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
+
       HapticFeedback.heavyImpact();
+
+      setState(() {
+        _isChanging = false;
+        progressButtonState = ButtonState.fail;
+      });
+
       IUiService().openDialog(
         pIsDismissible: true,
         pBuilder: (context) => AlertDialog(

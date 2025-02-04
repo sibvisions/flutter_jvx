@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -45,6 +47,10 @@ class _MFATextCardState extends State<MFATextCard> {
   late final TextEditingController codeController = TextEditingController();
 
   ButtonState progressButtonState = ButtonState.idle;
+
+  Timer? _timerReset;
+
+  bool _isAuthenticating = false;
 
   @override
   Widget build(BuildContext context) {
@@ -144,10 +150,24 @@ class _MFATextCardState extends State<MFATextCard> {
   }
 
   void resetButton() {
-    setState(() => progressButtonState = ButtonState.idle);
+    _timerReset?.cancel();
+
+    setState(() {
+      _isAuthenticating = false;
+      progressButtonState = ButtonState.idle;
+    });
+  }
+
+  void _resetButtonByTimeout() {
+    if (!_isAuthenticating && progressButtonState == ButtonState.fail) {
+      resetButton();
+    }
   }
 
   void _onLoginPressed() {
+    _isAuthenticating = true;
+    _timerReset?.cancel();
+
     FocusManager.instance.primaryFocus?.unfocus();
 
     LoginPage.doMFALogin(
@@ -155,10 +175,19 @@ class _MFATextCardState extends State<MFATextCard> {
       confirmationCode: codeController.text,
     ).then((success) {
       if (success) {
-        setState(() => progressButtonState = ButtonState.success);
+        setState(() {
+          _isAuthenticating = false;
+          progressButtonState = ButtonState.success;
+        });
       } else {
         HapticFeedback.heavyImpact();
-        setState(() => progressButtonState = ButtonState.fail);
+
+        _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
+
+        setState(() {
+          _isAuthenticating = false;
+          progressButtonState = ButtonState.fail;
+        });
       }
     });
   }

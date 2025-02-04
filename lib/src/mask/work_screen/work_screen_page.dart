@@ -398,7 +398,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   void dispose() {
     subscription.cancel();
     subject.close();
-    IUiService().disposeSubscriptions(pSubscriber: this);
+    IUiService().disposeSubscriptions(this);
     super.dispose();
   }
 

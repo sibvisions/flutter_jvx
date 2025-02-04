@@ -214,6 +214,7 @@ class _LoginPageState extends State<LoginPage> {
     String? loginLayout = appStyle.style(context, 'login.layout');
 
     Widget login;
+
     if (loginLayout == "modern") {
       login = ModernLogin(mode: widget.loginMode);
     } else {

@@ -61,7 +61,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
 
   @override
   void dispose() {
-    IUiService().disposeSubscriptions(pSubscriber: this);
+    IUiService().disposeSubscriptions(this);
     super.dispose();
   }
 
@@ -87,13 +87,13 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
   void _registerDescendantModels() {
     List<FlComponentModel> descendantModels = IStorageService().getAllComponentsBelowById(pParentId: model.id);
     for (var childModel in descendantModels) {
-      IUiService().disposeSubscriptions(pSubscriber: childModel.id);
+      IUiService().disposeSubscriptions(childModel.id);
       ComponentSubscription componentSubscription = ComponentSubscription(
         compId: childModel.id,
         subbedObj: this,
         modelUpdatedCallback: () => setState(() {}),
       );
-      IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
+      IUiService().registerAsLiveComponent(componentSubscription);
     }
   }
 

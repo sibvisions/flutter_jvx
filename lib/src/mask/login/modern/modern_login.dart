@@ -98,6 +98,8 @@ class ModernLogin extends StatelessWidget implements Login {
                   bottom: 35,
                   child: TextButton.icon(
                     style: TextButton.styleFrom(
+                      foregroundColor: Theme.of(context).textTheme.labelSmall?.color,
+                      iconColor: Theme.of(context).textTheme.labelSmall?.color,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
