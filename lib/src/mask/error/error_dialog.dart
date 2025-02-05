@@ -19,10 +19,11 @@ import 'package:flutter/material.dart';
 import '../../flutter_ui.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../apps/app_overview_page.dart';
-import '../frame_dialog.dart';
+import '../jvx_dialog.dart';
+import 'ierror.dart';
 
 /// This is a standard template for an error message.
-class ErrorDialog extends JVxDialog {
+class ErrorDialog extends StatelessWidget with JVxDialog implements IError {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,14 +44,17 @@ class ErrorDialog extends JVxDialog {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const ErrorDialog({
+  ErrorDialog({
     super.key,
     required this.message,
     this.title,
     this.goToAppOverview = false,
     this.retry = false,
-    super.dismissible,
-  });
+    dismissible,
+  }) {
+    dismissible = dismissible;
+    modal = true;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

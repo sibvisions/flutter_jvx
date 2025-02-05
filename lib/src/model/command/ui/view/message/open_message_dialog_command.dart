@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'package:flutter/cupertino.dart';
+
 import 'message_view_command.dart';
 
 /// This command will open a popup containing the provided message
@@ -25,7 +27,7 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   /// Name of the message screen used for closing the message
   final String componentId;
 
-  /// If the dialog should be dismissible
+  /// If the dialog should be closeable
   final bool closable;
 
   /// Types of button to be displayed
@@ -58,6 +60,8 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   /// The column name of dataProvider
   final String? columnName;
 
+  late ValueNotifier<OpenMessageDialogCommand> current;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,7 +82,9 @@ class OpenMessageDialogCommand extends MessageViewCommand {
     this.columnName,
     this.inputLabel,
     required super.reason,
-  });
+  }) {
+    current = ValueNotifier<OpenMessageDialogCommand>(this);
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -94,4 +100,9 @@ class OpenMessageDialogCommand extends MessageViewCommand {
            "dataProvider: $dataProvider, columnName: $columnName,"
            "inputLabel: $inputLabel, ${super.toString()}";
   }
+
+  void apply(OpenMessageDialogCommand command) {
+    current.value = command;
+  }
+
 }

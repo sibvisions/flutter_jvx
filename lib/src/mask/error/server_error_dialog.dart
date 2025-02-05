@@ -22,10 +22,11 @@ import '../../model/command/ui/view/message/open_server_error_dialog_command.dar
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../apps/app_overview_page.dart';
-import '../frame_dialog.dart';
+import '../jvx_dialog.dart';
+import 'ierror.dart';
 
 /// This is a standard template for a server side error message.
-class ServerErrorDialog extends JVxDialog {
+class ServerErrorDialog extends StatelessWidget with JVxDialog implements IError {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,11 +40,14 @@ class ServerErrorDialog extends JVxDialog {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const ServerErrorDialog({
+  ServerErrorDialog({
     super.key,
     required this.command,
     this.goToAppOverview = false,
-  }) : super(dismissible: true);
+  }) {
+    dismissible = true;
+    modal = true;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -70,7 +74,6 @@ class ServerErrorDialog extends JVxDialog {
       actions.add(
         TextButton.icon(
           onPressed: () {
-            onClose();
             IUiService().closeJVxDialog(this);
             IUiService().routeToAppOverview();
           },
@@ -87,7 +90,6 @@ class ServerErrorDialog extends JVxDialog {
       actions.add(
         TextButton(
           onPressed: () {
-            onClose();
             IUiService().closeJVxDialog(this);
           },
           child: Text(

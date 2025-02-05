@@ -21,9 +21,10 @@ import '../../model/command/ui/view/message/open_session_expired_dialog_command.
 import '../../service/api/i_api_service.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/ui/i_ui_service.dart';
-import '../frame_dialog.dart';
+import '../jvx_dialog.dart';
+import 'ierror.dart';
 
-class ServerSessionExpiredDialog extends JVxDialog {
+class ServerSessionExpiredDialog extends StatelessWidget with JVxDialog implements IError {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,11 +35,14 @@ class ServerSessionExpiredDialog extends JVxDialog {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const ServerSessionExpiredDialog({
+  ServerSessionExpiredDialog({
     super.key,
     required this.command,
-    super.dismissible,
-  });
+    dismissible,
+  }) {
+    dismissible = dismissible;
+    modal = true;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

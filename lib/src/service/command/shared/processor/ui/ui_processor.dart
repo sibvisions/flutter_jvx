@@ -61,8 +61,7 @@ class UiProcessor implements ICommandProcessorHandler<UiCommand> {
   final RouteToCommandProcessor _routeToProcessor = RouteToCommandProcessor();
   final OpenServerErrorDialogCommandProcessor _openServerErrorDialogProcessor = OpenServerErrorDialogCommandProcessor();
   final OpenErrorDialogCommandProcessor _openErrorDialogProcessor = OpenErrorDialogCommandProcessor();
-  final OpenSessionExpiredDialogCommandProcessor _openSessionExpiredDialogProcessor =
-      OpenSessionExpiredDialogCommandProcessor();
+  final OpenSessionExpiredDialogCommandProcessor _openSessionExpiredDialogProcessor = OpenSessionExpiredDialogCommandProcessor();
   final OpenMessageDialogCommandProcessor _openMessageDialogProcessor = OpenMessageDialogCommandProcessor();
   final UploadActionCommandProcessor _uploadActionProcessor = UploadActionCommandProcessor();
   final DownloadActionCommandProcessor _downloadActionProcessor = DownloadActionCommandProcessor();

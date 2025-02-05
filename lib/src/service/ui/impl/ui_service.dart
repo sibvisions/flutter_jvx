@@ -5,6 +5,7 @@ import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -14,9 +15,10 @@ import '../../../custom/custom_component.dart';
 import '../../../custom/custom_menu_item.dart';
 import '../../../custom/custom_screen.dart';
 import '../../../flutter_ui.dart';
+import '../../../mask/error/ierror.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame/frame.dart';
-import '../../../mask/frame_dialog.dart';
+import '../../../mask/jvx_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
 import '../../../mask/work_screen/content.dart';
 import '../../../model/command/api/close_content_command.dart';
@@ -935,21 +937,47 @@ class UiService implements IUiService {
 
   @override
   List<JVxDialog> getJVxDialogs() {
-    return _activeDialogs;
+    return _activeDialogs.toList(growable: false);
   }
 
   @override
   void showJVxDialog(JVxDialog pDialog) {
-    if (pDialog is! MessageDialog ||
-        _activeDialogs.none(
-            (element) => element is MessageDialog && element.command.componentId == pDialog.command.componentId)) {
+
+    List<JVxDialog> copy = _activeDialogs.toList(growable: false);
+
+    MessageDialog? msg;
+
+    if (pDialog is MessageDialog) {
+      for (int i = 0; i < copy.length && msg == null; i++) {
+        if (copy[i] is MessageDialog && (copy[i] as MessageDialog).command.componentId == pDialog.command.componentId) {
+          msg = copy[i] as MessageDialog;
+        }
+      }
+    }
+
+    //not found means that all "other" JVxDialogs will be shown more than once
+    if (msg == null) {
       _activeDialogs.add(pDialog);
       JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
+
+      //feedback for the user
+      if (pDialog is IError) {
+        HapticFeedback.heavyImpact();
+
+        //better not
+        //SystemSound.play(SystemSoundType.click);
+      }
+    } else {
+      //it would also be possible to replace the dialog in _activeDialogs
+      //but in this special case, we always re-use the same widget
+      msg.command.apply((pDialog as MessageDialog).command);
     }
   }
 
   @override
   void closeJVxDialog(JVxDialog pDialog) {
+    pDialog.onClose();
+
     _activeDialogs.remove(pDialog);
     JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
@@ -957,6 +985,7 @@ class UiService implements IUiService {
   @override
   void closeMessageDialog(String componentId) {
     _activeDialogs.removeWhere((element) => element is MessageDialog && element.command.componentId == componentId);
+
     JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 

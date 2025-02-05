@@ -14,14 +14,10 @@
  * the License.
  */
 
-import 'package:flutter/widgets.dart';
+mixin JVxDialog {
+  late final bool dismissible;
 
-abstract class JVxDialog extends StatelessWidget {
-  final bool dismissible;
-
-  final bool isModal;
-
-  const JVxDialog({super.key, this.dismissible = false, this.isModal = true});
+  late final bool modal;
 
   void onClose() {}
 }
