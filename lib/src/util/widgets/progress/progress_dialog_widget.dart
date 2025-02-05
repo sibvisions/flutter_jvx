@@ -72,9 +72,9 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
   Widget build(BuildContext context) {
     double? progress =
         _config.progress == 0 || _config.maxProgress == 0 ? null : _config.progress! / _config.maxProgress!;
-    Color effectiveBackgroundColor = _config.backgroundColor ?? Theme.of(context).colorScheme.background;
+    Color effectiveBackgroundColor = _config.backgroundColor ?? Theme.of(context).colorScheme.surface;
     Color effectiveValueColor = _config.progressValueColor ?? Theme.of(context).colorScheme.primary;
-    Color effectiveProgressBgColor = _config.progressBgColor ?? Theme.of(context).colorScheme.background;
+    Color effectiveProgressBgColor = _config.progressBgColor ?? Theme.of(context).colorScheme.surface;
 
     return WillPopScope(
       child: AlertDialog(
@@ -122,7 +122,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                         style: TextStyle(
                           color: progress > 0.6
                               ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.onBackground,
+                              : Theme.of(context).colorScheme.onSurface,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -138,7 +138,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                 textAlign: _config.messageTextAlign,
                 style: TextStyle(
                   fontSize: 17.0,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                 ).merge(_config.messageTextStyle),
               ),

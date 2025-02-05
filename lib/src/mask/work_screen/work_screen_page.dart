@@ -314,7 +314,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           color: safeAreaColor,
           child: SafeArea(
               child: Container(
-                color: safeAreaColor != null ? Theme.of(context).colorScheme.background : null,
+                color: safeAreaColor != null ? Theme.of(context).colorScheme.surface : null,
                 child: body,
               )
           )

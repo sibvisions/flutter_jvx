@@ -167,7 +167,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 aspectRatio: 1.0,
                 child: CircleAvatar(
                   radius: 100,
-                  backgroundColor: Theme.of(context).colorScheme.background,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
                   child: profileImage == null
                       ? FaIcon(
@@ -190,7 +190,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       valueListenable: IUiService().getMenuNotifier(),
       builder: (context, _, child) {
         return Material(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           child: ListTileTheme.merge(
             iconColor: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white,
             style: ListTileStyle.drawer,

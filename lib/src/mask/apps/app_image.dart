@@ -79,7 +79,7 @@ class AppImage extends StatelessWidget {
               width: avatarRadius * 2,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
               ),
             ),
         ],

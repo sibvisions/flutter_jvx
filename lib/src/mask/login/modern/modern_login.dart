@@ -217,7 +217,7 @@ class ModernLogin extends StatelessWidget implements Login {
                   color: bottomColor ??
                       JVxColors.adjustByBrightness(
                         Theme.of(context).brightness,
-                        Theme.of(context).colorScheme.background,
+                        Theme.of(context).colorScheme.surface,
                         0.05,
                       ),
                   gradient: colorGradient && bottomColor != null

@@ -95,7 +95,7 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
         // https://github.com/flutter/flutter/issues/78748
         height: constraints.maxHeight,
         // Idk why, but tileColor doesn't seem to do the trick, when scrolling.
-        color: Theme.of(context).colorScheme.background/* ListTileTheme.of(context).tileColor != null
+        color: Theme.of(context).colorScheme.surface/* ListTileTheme.of(context).tileColor != null
             ? JVxColors.lighten(ListTileTheme.of(context).tileColor!)
             : Theme.of(context).colorScheme.surface*/,
         child: child,

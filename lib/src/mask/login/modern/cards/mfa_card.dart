@@ -52,7 +52,7 @@ class MFACard extends StatelessWidget {
           textTheme: Theme.of(context).textTheme.copyWith(
                 titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
-          canvasColor: JVxColors.darken(Theme.of(context).colorScheme.background, 0.05),
+          canvasColor: JVxColors.darken(Theme.of(context).colorScheme.surface, 0.05),
         ),
         child: DefaultTextStyle.merge(
           style: const TextStyle(fontWeight: FontWeight.bold),

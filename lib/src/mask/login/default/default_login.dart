@@ -76,7 +76,7 @@ class DefaultLogin extends StatelessWidget implements Login {
     }
 
     return Scaffold(
-      backgroundColor: bottomColor ?? JVxColors.lighten(Theme.of(context).colorScheme.background, 0.05),
+      backgroundColor: bottomColor ?? JVxColors.lighten(Theme.of(context).colorScheme.surface, 0.05),
       body: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -90,7 +90,7 @@ class DefaultLogin extends StatelessWidget implements Login {
                   // Is there to allow scrolling the login if there is not enough space.
                   // E.g.: Holding a phone horizontally and trying to login needs scrolling to be possible.
                   child: Card(
-                    color: Theme.of(context).colorScheme.background.withAlpha(Color.getAlphaFromOpacity(0.85)),
+                    color: Theme.of(context).colorScheme.surface.withAlpha(Color.getAlphaFromOpacity(0.85)),
                     elevation: 10,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),

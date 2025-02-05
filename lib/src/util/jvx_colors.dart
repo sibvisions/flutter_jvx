@@ -89,14 +89,12 @@ abstract class JVxColors {
         onTertiary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         brightness: selectedBrightness,
         surface: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
-        background: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
       );
     } else {
       colorScheme = ColorScheme.fromSeed(
         seedColor: seedColor,
         brightness: selectedBrightness,
         surface: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
-        background: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
       );
     }
 
@@ -116,8 +114,8 @@ abstract class JVxColors {
                                  foregroundColor: isSelectedLight ? (isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white) : themeData.textTheme.labelSmall!.color),
         cardTheme: CardTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
         dividerTheme: DividerThemeData(color: dividerColor(themeData)),
-        dialogTheme: DialogTheme(backgroundColor: isSelectedLight ? Colors.white : Colors.grey[850],
-            surfaceTintColor: isSelectedLight ? Colors.white : Colors.grey[850],
+        dialogTheme: DialogTheme(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
+            surfaceTintColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5))),
 //        dialogBackgroundColor: isSelectedLight ? Colors.white : Colors.grey[850],
@@ -126,16 +124,16 @@ abstract class JVxColors {
         floatingActionButtonTheme: const FloatingActionButtonThemeData(shape: CircleBorder(side: BorderSide(width: 0, style: BorderStyle.none))),
         elevatedButtonTheme: evbTheme,
         outlinedButtonTheme: otbTheme,
-        datePickerTheme: DatePickerThemeData(backgroundColor: isSelectedLight ? Colors.white : Colors.grey[850],
+        datePickerTheme: DatePickerThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
-        timePickerTheme: TimePickerThemeData(backgroundColor: isSelectedLight ? Colors.white : Colors.grey[850],
-            dialBackgroundColor: isSelectedLight ? Colors.white : Colors.grey[850],
+        timePickerTheme: TimePickerThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
+            dialBackgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             hourMinuteShape: const OutlineInputBorder(
               //same as in text field widget
                 borderSide: BorderSide(
                   color: COMPONENT_BORDER,
                 )),
-            hourMinuteColor: themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.background,
+            hourMinuteColor: themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.surface,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
         typography: Typography.material2014()
     );

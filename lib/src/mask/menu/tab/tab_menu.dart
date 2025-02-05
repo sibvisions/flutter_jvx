@@ -43,7 +43,7 @@ class TabMenu extends Menu {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: ColoredBox(
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.surface,
             child: TabBar(
               indicatorColor: Theme.of(context).colorScheme.primary,
               labelStyle: const TextStyle(

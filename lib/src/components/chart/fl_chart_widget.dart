@@ -332,7 +332,7 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     return RectCoord(
       transposed: model.isHorizontalBarChart(),
       verticalRange: model.isHorizontalBarChart() ? [0, 0.95] : null,
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
     );
   }
 

@@ -166,7 +166,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
             onHorizontalDragUpdate: model.orientation == SplitOrientation.VERTICAL ? _horizontalDrag : null,
             onHorizontalDragEnd: model.orientation == SplitOrientation.VERTICAL ? _dragEnd : null,
             child: Container(
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.surface,
               child: Center(
                 child: Container(
                   width: max(splitterWidth, 0.0),
