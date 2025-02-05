@@ -1057,7 +1057,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (_isAnyCellInRowEditable(pRowIndex)) {
       slideActions.add(
         SlidableAction(
-
           onPressed: (context) {
             _editRow(pRowIndex);
           },

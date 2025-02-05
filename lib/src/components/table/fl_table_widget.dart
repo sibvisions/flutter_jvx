@@ -18,6 +18,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -30,8 +31,7 @@ import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
 
-typedef TableLongPressCallback = void Function(
-    int rowIndex, String column, ICellEditor cellEditor, Offset pGlobalPosition);
+typedef TableLongPressCallback = void Function(int rowIndex, String column, ICellEditor cellEditor, Offset pGlobalPosition);
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
 typedef TableHeaderTapCallback = void Function(String column);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
@@ -128,7 +128,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.onEndEditing,
     this.onValueChanged,
     this.showFloatingButton = false,
-    this.floatingOnPress,
+    this.floatingOnPress
   });
 
   @override
@@ -166,7 +166,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-
+    _closeSlidablesImmediate();
     slideController.clear();
 
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
@@ -182,7 +182,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
           width: widget.tableSize.borderWidth,
           color: JVxColors.COMPONENT_BORDER,
         ),
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
       ),
       child: ClipRRect(
         // The clip rect is there to stop the rendering of the children.
@@ -247,6 +247,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
           child: NotificationListener<ScrollNotification>(
             onNotification: (notification) {
               widget.onScroll?.call(notification);
+
               // Let it bubble upwards to our end notification listener!
               return false;
             },
@@ -328,7 +329,6 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     if (!canScrollHorizontally && widget.slideActionFactory != null) {
       if (index > slideController.length - 1) {
         slideCtrl = SlidableController(this);
-
         slideController.add(slideCtrl);
       }
       else {
@@ -360,6 +360,8 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
           }
 
           slideController.removeAt(index);
+
+          HapticFeedback.mediumImpact();
         });
       },
       tableSize: widget.tableSize,
