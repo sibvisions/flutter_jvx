@@ -1173,7 +1173,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return model.isEnabled &&
         _isDataRow(pRowIndex) &&
         model.deleteEnabled &&
-        ((selectedRow == pRowIndex && metaData.deleteEnabled) ||
+        ((selectedRow == pRowIndex && (metaData.deleteEnabled || metaData.modelDeleteEnabled)) ||
             (selectedRow != pRowIndex && metaData.modelDeleteEnabled)) &&
         (!metaData.additionalRowVisible || pRowIndex != 0) &&
         !metaData.readOnly;
@@ -1189,7 +1189,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     if (selectedRow == pRowIndex) {
-      if (!metaData.updateEnabled && dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED) {
+      if (!metaData.updateEnabled && !metaData.modelUpdateEnabled && dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED) {
         return false;
       }
     } else {
