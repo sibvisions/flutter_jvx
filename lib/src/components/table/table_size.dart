@@ -72,6 +72,9 @@ class TableSize {
   /// The calculated size of the columns
   Map<String, double> calculatedColumnWidths = {};
 
+  /// The calculated size of the column headers
+  Map<String, double> calculatedHeaderWidths = {};
+
   /// The size of the columns
   Map<String, double> columnWidths = {};
 
@@ -94,7 +97,7 @@ class TableSize {
     this.borderWidth = 1.0,
     this.columnDividerWidth = 1.0,
     this.minColumnWidth = 50,
-    this.maxColumnWidth = 300,
+    this.maxColumnWidth = 400,
     this.tableHeaderHeight = 50,
     this.rowHeight = 50,
     this.checkCellWidth = 55.0,
@@ -108,7 +111,7 @@ class TableSize {
     this.borderWidth = 1.0,
     this.columnDividerWidth = 1.0,
     this.minColumnWidth = 50,
-    this.maxColumnWidth = 300,
+    this.maxColumnWidth = 400,
     this.tableHeaderHeight = 50,
     this.rowHeight = 50,
     this.checkCellWidth = 55.0,
@@ -136,6 +139,7 @@ class TableSize {
     double scaling = 1.0,
   }) {
     calculatedColumnWidths.clear();
+    calculatedHeaderWidths.clear();
     columnFormatWidths.clear();
 
     availableWidth = math.max((availableWidth ?? 0.0) - (borderWidth * 2), 0);
@@ -173,8 +177,13 @@ class TableSize {
         calculatedHeaderWidth += 21;
       }
 
+      double adjustedCalculatedHeaderWidth = _adjustColumnWidth(0, calculatedHeaderWidth);
+
+      //save calculated header width (min/max check)
+      calculatedHeaderWidths[columnName] = adjustedCalculatedHeaderWidth;
+
       //header-width is start value for column width calculation
-      calculatedColumnWidths[columnName] = _adjustColumnWidth(0, calculatedHeaderWidth);
+      calculatedColumnWidths[columnName] = adjustedCalculatedHeaderWidth;
 
       int calculateUntilRow = math.min(rowsToCalculate, dataChunk.data.length);
 
@@ -251,9 +260,13 @@ class TableSize {
 
     // Redistribute the remaining width. AutoSize forces all columns inside the table.
     if (remainingWidth > 0) {
-      //add some space to other columns
+      //add some space to other columns (fill the empty space)
       divideOut(tableModel, metaData, remainingWidth, availableWidth);
     } else if (tableModel.autoResize && remainingWidth < 0) {
+      //shrink as good as possible
+      autoSize(tableModel, metaData, remainingWidth, availableWidth);
+    } else if (!tableModel.autoResize && remainingWidth < 0 && remainingWidth > -8) {
+      //if the current width is only 8px wider than the table, try to fit exactly
       autoSize(tableModel, metaData, remainingWidth, availableWidth);
     }
 
@@ -335,7 +348,7 @@ class TableSize {
     columnWidths[divideOutColumnNames.last] = columnWidths[divideOutColumnNames.last]! + rest;
   }
 
-  ///Tries to fit all tables in [availableWidth]
+  ///Tries to fit all columns in [availableWidth]
   void autoSize(FlTableModel tableModel, DalMetaData metaData, double width, double availableWidth) {
     double calculated10th = sumCalculatedColumnWidth / 10;
 
@@ -389,7 +402,7 @@ class TableSize {
       }
     }
 
-    //calculated width is only 1/10 more than the available width -> make columns smaller
+    //calculated width is only max. 1/10 more than the available width -> make columns smaller
     if (availableWidth + calculated10th >= sumCalculatedColumnWidth) {
       divideOutColumnNames.addAll(noWidthText);
 
@@ -399,6 +412,61 @@ class TableSize {
       if (divideOutColumnNames.length < 5) { divideOutColumnNames.addAll(withWidthNumber); }
       if (divideOutColumnNames.isEmpty)    { divideOutColumnNames.addAll(noWidth); }
       if (divideOutColumnNames.isEmpty)    { divideOutColumnNames.addAll(withWidth); }
+
+      //special mode to shrink the table but don't change the width of "all" columns
+      //only 10px difference -> try to find a columns which are already large and make them smaller
+      if (!tableModel.autoResize && width.abs() < 10) {
+        double part = width / divideOutColumnNames.length;
+
+        List<String> longColumns = [];
+        List<String> extraLongColumns = [];
+
+        String? longestColumn;
+        double maxDiff = 0;
+
+        double subtracted = 0;
+        double diff;
+
+        //find columns which are "long" enough after subtraction. The header should be fully visible
+        for (int i = 0; i < divideOutColumnNames.length; i++) {
+          if (columnWidths[divideOutColumnNames[i]]! + part > calculatedHeaderWidths[divideOutColumnNames[i]]!) {
+            longColumns.add(divideOutColumnNames[i]);
+
+            subtracted += part;
+          }
+
+          if (columnWidths[divideOutColumnNames[i]]! - 10 > calculatedHeaderWidths[divideOutColumnNames[i]]!) {
+            extraLongColumns.add(divideOutColumnNames[i]);
+          }
+
+          diff = columnWidths[divideOutColumnNames[i]]! - calculatedHeaderWidths[divideOutColumnNames[i]]!;
+
+          //find the column with most space between header label and width
+          if (diff > maxDiff) {
+            maxDiff = diff;
+            longestColumn = divideOutColumnNames[i];
+          }
+        }
+
+        double rest = width - subtracted;
+
+        //if we have a rest, it will be negative, for sure
+        //if there's a column with enough space left -> update width
+        if (rest < 0 && rest > -maxDiff) {
+          for (int i = 0; i < longColumns.length; i++) {
+            columnWidths[longColumns[i]] = columnWidths[longColumns[i]]! + part;
+          }
+
+          columnWidths[longestColumn!] = columnWidths[longestColumn]! + rest;
+
+          return;
+        }
+        else if (extraLongColumns.isNotEmpty) {
+          //only use extra long column names to update width
+          divideOutColumnNames.clear();
+          divideOutColumnNames.addAll(extraLongColumns);
+        }
+      }
 
       double part = width / divideOutColumnNames.length;
 

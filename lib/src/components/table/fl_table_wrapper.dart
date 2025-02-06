@@ -387,7 +387,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       dialogValueNotifier.value = valueMap;
     }
 
-    if (recalculateWidth || _calcOnDataReceived || changedDataCount) {
+    if (recalculateWidth || _calcOnDataReceived || changedDataCount || dataChunk.from == 0) {
       _closeDialog();
       _recalculateTableSize(recalculateWidth || _calcOnDataReceived || dataChunk.from == 0);
       _calcOnDataReceived = false;
