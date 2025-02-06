@@ -16,7 +16,6 @@
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/mouse_clicked_command.dart';
@@ -66,23 +65,9 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
   Size calculateSize(BuildContext context) {
     if (ParseUtil.isHTML(model.text)) {
       EdgeInsets textPadding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle()).copyWith(left: 0, right: 0);
-
       textPadding = FlLabelWidget.adjustPaddingWithStyles(model, textPadding);
 
-      Html html = Html(data: model.text,
-          shrinkWrap: true,
-          style: {"body": Style(margin: Margins(left: Margin(textPadding.left),
-          top: Margin(textPadding.top),
-          bottom: Margin(textPadding.bottom),
-          right: Margin(textPadding.right)))});
-
-      TextDirection textDirection = Directionality.of(context);
-
-      Widget w = MediaQuery(data: MediaQuery.of(context),
-          child: Directionality(textDirection: textDirection,
-          child: Container(child: html)));
-
-      return MeasureUtil.measureWidget(w);
+      return MeasureUtil.measureHtml(context, model.text, textPadding).size;
     }
 
     return super.calculateSize(context);

@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../util/measure_util.dart';
@@ -135,24 +134,10 @@ class _MessageDialogState extends State<MessageDialog> {
     List<Widget> widgets = [];
 
     if (ParseUtil.isHTML(_command.message)) {
-
-      Html html = Html(data: _command.message,
-          shrinkWrap: true,
-          style: {"body": Style(margin: Margins(left: Margin(0),
-              top: Margin(0),
-              bottom: Margin(0),
-              right: Margin(0)))});
-
-      TextDirection textDirection = Directionality.of(context);
-
-      Widget w = MediaQuery(data: MediaQuery.of(context),
-          child: Directionality(textDirection: textDirection,
-              child: Container(child: html)));
-
-      Size size = MeasureUtil.measureWidget(w);
+      var measure = MeasureUtil.measureHtml(context, _command.message!);
 
       //will be shown in full width, because of Padding
-      widgets.add(Padding(padding: const EdgeInsets.all(0), child: SizedBox(width: size.width, height: size.height, child: html)));
+      widgets.add(Padding(padding: const EdgeInsets.all(0), child: SizedBox(width: measure.size.width, height: measure.size.height, child: measure.html)));
     }
     else{
       widgets.add(_command.message != null ? Text(_command.message!) : const Text(""));
