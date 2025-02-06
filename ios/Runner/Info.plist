@@ -33,7 +33,7 @@
 				<key>CFBundleTypeRole</key>
 				<string>Editor</string>
 				<key>CFBundleURLName</key>
-				<string>com.sibvisions.flutterJvx</string>
+				<string>com.sibvisions.flutter_jvx</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>jvx</string>
