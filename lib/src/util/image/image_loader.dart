@@ -37,6 +37,8 @@ abstract class ImageLoader {
 
   static const Widget DEFAULT_IMAGE = FaIcon(FontAwesomeIcons.circleQuestion, size: IconUtil.DEFAULT_ICON_SIZE);
 
+  static Map<String, (MemoryImage image, Size? size)> _imageCache = {};
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,11 +165,49 @@ abstract class ImageLoader {
       }
     }
 
+    var listener_ = imageStreamListener;
+
     double? width_;
     double? height_;
 
     if (base64Decoded != null) {
-      imageProvider = MemoryImage(base64Decoded);
+      MemoryImage? memImage;
+
+//      clearImageCache();
+
+      (MemoryImage image, Size? size)? cacheInfo = _imageCache[imageDefinition];
+
+      if (cacheInfo != null) {
+        memImage = cacheInfo.$1;
+
+        Size? size = cacheInfo.$2;
+
+        if (size != null) {
+          width_ = size.width;
+          height_ = size.height;
+        }
+      }
+
+      if (memImage == null) {
+        memImage = MemoryImage(base64Decoded);
+
+        //images < 500Kb will be cached
+        if (base64Decoded.lengthInBytes < 512000) {
+          //we need a listener wrapper to update the cache with size
+          listener_ = (Size size, bool synchronousCall) {
+            _imageCache[imageDefinition] = (memImage!, size);
+
+            //foward to original listener
+            if (imageStreamListener != null) {
+              imageStreamListener(size, synchronousCall);
+            }
+          };
+
+          _imageCache[imageDefinition] = (memImage, null);
+        }
+      }
+
+      imageProvider = memImage;
     }
     else {
       Uri? parsedURI;
@@ -226,10 +266,10 @@ abstract class ImageLoader {
     }
 
     if (width_ != null || height_ != null) {
-      imageStreamListener?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
+      listener_?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
     }
     else {
-      _addImageListener(imageProvider, imageStreamListener);
+      _addImageListener(imageProvider, listener_);
     }
 
     return imageProvider;
@@ -280,14 +320,23 @@ abstract class ImageLoader {
 
   ///Checks whether the given [value] is base64 encoded
   static bool isBase64(dynamic value) {
+    if (value == null) {
+      return false;
+    }
+
     if (value.runtimeType == String) {
-      final RegExp rx = RegExp(r'^([A-Za-z\d+/]{4})*([A-Za-z\d+/]{3}=|[A-Za-z\d+/]{2}==)?$',
+      final RegExp rx = RegExp(r'^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$',
         multiLine: true,
         unicode: true,
       );
       return rx.hasMatch(value);
     }
     return false;
+  }
+
+  ///Clears the image cache
+  static void clearImageCache() {
+    _imageCache.clear();
   }
 
 }

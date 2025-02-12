@@ -360,6 +360,8 @@ class FlutterUI extends StatefulWidget {
     SimplePrinter.levelPrefixes[Level.error] = '';
     SimplePrinter.levelPrefixes[Level.fatal] = '';
 
+    ImageLoader.clearImageCache();
+
     WidgetsFlutterBinding.ensureInitialized();
 
     Logger.addOutputListener((event) {
