@@ -34,6 +34,7 @@ import 'editor/text_field/fl_text_field_wrapper.dart';
 import 'gauge/fl_gauge_wrapper.dart';
 import 'icon/fl_icon_wrapper.dart';
 import 'label/fl_label_wrapper.dart';
+import 'list/fl_list_wrapper.dart';
 import 'map/fl_map_wrapper.dart';
 import 'panel/fl_panel_wrapper.dart';
 import 'panel/group/fl_group_panel_wrapper.dart';
@@ -45,6 +46,7 @@ import 'table/fl_table_wrapper.dart';
 import 'tree/fl_tree_wrapper.dart';
 
 abstract class ComponentsFactory {
+
   static Widget buildWidget(FlComponentModel model) {
     switch (model.className) {
       // Containers
@@ -74,10 +76,6 @@ abstract class ComponentsFactory {
         return FlTextAreaWrapper(model: model as FlTextAreaModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.ICON:
         return FlIconWrapper(model: model as FlIconModel, key: GlobalObjectKey(model.id));
-      case FlComponentClassname.POPUP_MENU:
-        continue alsoDefault;
-      case FlComponentClassname.MENU_ITEM:
-        continue alsoDefault;
       case FlComponentClassname.POPUP_MENU_BUTTON:
         return FlPopupMenuButtonWrapper(model: model as FlPopupMenuButtonModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.CHECK_BOX:
@@ -85,7 +83,14 @@ abstract class ComponentsFactory {
       case FlComponentClassname.PASSWORD_FIELD:
         return FlPasswordFieldWrapper(model: model as FlTextFieldModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.TABLE:
-        return FlTableWrapper(model: model as FlTableModel, key: GlobalObjectKey(model.id));
+        FlTableModel tableModel = model as FlTableModel;
+
+        if (tableModel.asList) {
+          return FlListWrapper(model: tableModel, key: GlobalObjectKey(model.id));
+        }
+        else {
+          return FlTableWrapper(model: tableModel, key: GlobalObjectKey(model.id));
+        }
       case FlComponentClassname.RADIO_BUTTON:
         return FlRadioButtonWrapper(model: model as FlRadioButtonModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.MAP:
@@ -96,6 +101,14 @@ abstract class ComponentsFactory {
         return FlGaugeWrapper(model: model as FlGaugeModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.TREE:
         return FlTreeWrapper(model: model as FlTreeModel, key: GlobalObjectKey(model.id));
+      case FlComponentClassname.POPUP_MENU:
+        continue defaultUnknown;
+      case FlComponentClassname.MENU_ITEM:
+        continue defaultUnknown;
+
+      // Cell editors:
+      case FlComponentClassname.EDITOR:
+        return FlEditorWrapper(model: model as FlEditorModel, key: GlobalObjectKey(model.id));
 
       // Custom
       case FlContainerClassname.CUSTOM_CONTAINER:
@@ -104,13 +117,10 @@ abstract class ComponentsFactory {
           case FlComponentClassname.SIGNATURE_PAD:
             return FlSignaturePadWrapper(model: model as FlCustomContainerModel, key: GlobalObjectKey(model.id));
         }
-        continue alsoDefault;
 
-      // Cell editors:
-      case FlComponentClassname.EDITOR:
-        return FlEditorWrapper(model: model as FlEditorModel, key: GlobalObjectKey(model.id));
+        continue defaultUnknown;
 
-      alsoDefault:
+      defaultUnknown:
       default:
         return FlDummyWrapper(model: model, key: GlobalObjectKey(model.id));
     }

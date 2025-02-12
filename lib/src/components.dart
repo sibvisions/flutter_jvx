@@ -50,4 +50,6 @@ export '../../src/components/panel/tabset/fl_tab_controller.dart';
 export '../../src/components/panel/tabset/fl_tab_header.dart';
 export '../../src/components/signature_pad/fl_signature_pad_widget.dart';
 export '../../src/components/table/fl_table_widget.dart';
+export '../../src/components/table/fl_table_edit_dialog.dart';
+export '../../src/components/list/fl_list_widget.dart';
 export '../../src/components/table/table_size.dart';
