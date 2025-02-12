@@ -41,7 +41,7 @@ dependencies:
   android_id: ^0.4.0
 
   # Util
-  dio: ^5.2.1+1
+  dio: ^5.8.0
   logger: ^2.0.0
   collection: ^1.19.0
   rxdart: ^0.28.0
