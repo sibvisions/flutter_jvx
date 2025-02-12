@@ -50,6 +50,7 @@ import '../../../../model/request/api_device_status_request.dart';
 import '../../../../model/request/api_download_images_request.dart';
 import '../../../../model/request/api_download_request.dart';
 import '../../../../model/request/api_download_style_request.dart';
+import '../../../../model/request/api_download_templates_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
 import '../../../../model/request/api_exit_request.dart';
 import '../../../../model/request/api_feedback_request.dart';
@@ -104,6 +105,7 @@ import '../../../../model/response/download_action_response.dart';
 import '../../../../model/response/download_images_response.dart';
 import '../../../../model/response/download_response.dart';
 import '../../../../model/response/download_style_response.dart';
+import '../../../../model/response/download_templates_response.dart';
 import '../../../../model/response/download_translation_response.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
 import '../../../../model/response/language_response.dart';
@@ -168,6 +170,7 @@ class OnlineApiRepository extends IRepository {
     ApiCloseScreenRequest: (_) => APIRoute.POST_CLOSE_SCREEN,
     ApiDeleteRecordRequest: (_) => APIRoute.POST_DELETE_RECORD,
     ApiDownloadImagesRequest: (_) => APIRoute.POST_DOWNLOAD,
+    ApiDownloadTemplatesRequest: (_) => APIRoute.POST_DOWNLOAD,
     ApiDownloadTranslationRequest: (_) => APIRoute.POST_DOWNLOAD,
     ApiDownloadStyleRequest: (_) => APIRoute.POST_DOWNLOAD,
     ApiCloseFrameRequest: (_) => APIRoute.POST_CLOSE_FRAME,
@@ -864,6 +867,11 @@ class OnlineApiRepository extends IRepository {
       parsedResponse.add(DownloadImagesResponse(
         responseBody: pBody,
         name: ApiResponseNames.downloadImages,
+      ));
+    } else if (pRequest is ApiDownloadTemplatesRequest) {
+      parsedResponse.add(DownloadTemplatesResponse(
+        responseBody: pBody,
+        name: ApiResponseNames.downloadTemplates,
       ));
     } else if (pRequest is ApiDownloadTranslationRequest) {
       parsedResponse.add(DownloadTranslationResponse(

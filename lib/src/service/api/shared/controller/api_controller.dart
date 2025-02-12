@@ -19,6 +19,7 @@ import 'dart:collection';
 import '../../../../model/api_interaction.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/response/api_response.dart';
+import '../../../command/shared/processor/api/download_templates_command_processor.dart';
 import '../api_response_names.dart';
 import '../i_controller.dart';
 import '../i_response_processor.dart';
@@ -39,6 +40,7 @@ import '../processor/download_action_processor.dart';
 import '../processor/download_images_processor.dart';
 import '../processor/download_processor.dart';
 import '../processor/download_style_processor.dart';
+import '../processor/download_templates_processor.dart';
 import '../processor/download_translation_processor.dart';
 import '../processor/error_view_processor.dart';
 import '../processor/generic_screen_view_processor.dart';
@@ -73,6 +75,7 @@ class ApiController implements IController {
   final IResponseProcessor _dalDataProviderChangedProcessor = DalDataProviderChangedProcessor();
   final IResponseProcessor _authenticationDataProcessor = AuthenticationDataProcessor();
   final IResponseProcessor _downloadImagesProcessor = DownloadImagesProcessor();
+  final IResponseProcessor _downloadTemplatesProcessor = DownloadTemplatesProcessor();
   final IResponseProcessor _downloadTranslationProcessor = DownloadTranslationProcessor();
   final IResponseProcessor _downloadStyleProcessor = DownloadStyleProcessor();
   final IResponseProcessor _messageDialogProcessor = MessageDialogProcessor();
@@ -111,6 +114,7 @@ class ApiController implements IController {
       ApiResponseNames.dalDataProviderChanged: _dalDataProviderChangedProcessor,
       ApiResponseNames.authenticationData: _authenticationDataProcessor,
       ApiResponseNames.downloadImages: _downloadImagesProcessor,
+      ApiResponseNames.downloadTemplates: _downloadTemplatesProcessor,
       ApiResponseNames.downloadTranslation: _downloadTranslationProcessor,
       ApiResponseNames.messageDialog: _messageDialogProcessor,
       ApiResponseNames.downloadStyle: _downloadStyleProcessor,

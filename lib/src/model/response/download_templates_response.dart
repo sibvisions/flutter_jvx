@@ -14,21 +14,25 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:json_dynamic_widget/json_dynamic_widget.dart';
+import 'dart:typed_data';
 
-import 'export_json_page.dart';
+import 'api_response.dart';
 
-void main() {
-    testWidgets("Example json creation", (WidgetTester tester) async {
-        ExportJsonPage widget = const ExportJsonPage(0);
+/// Used when downloading application templates archive
+class DownloadTemplatesResponse extends ApiResponse {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        await tester.pumpWidget(MaterialApp(home: widget));
+  /// Body of the response
+  final Uint8List responseBody;
 
-        Finder f = find.byType(IconButton);
-        f.tryEvaluate();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        await tester.tap(f);
-    });
+  DownloadTemplatesResponse({
+    required this.responseBody,
+    required super.name,
+  });
 }

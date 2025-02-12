@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart';
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
+import '../../../../../model/command/api/download_templates_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_meta_data_command.dart';
@@ -50,25 +51,37 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
 
     IUiService().updateApplicationMetaData(command.metaData);
 
-    String languagesPath = IConfigService().getFileManager().getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/");
-    String imagesPath = IConfigService().getFileManager().getAppSpecificPath("${IFileManager.IMAGES_PATH}/");
-    Directory? languagesDir = IConfigService().getFileManager().getDirectory(languagesPath);
-    Directory? imagesDir = IConfigService().getFileManager().getDirectory(imagesPath);
+    IFileManager fileManager = IConfigService().getFileManager();
+
+    String languagesPath = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/");
+    String imagesPath = fileManager.getAppSpecificPath("${IFileManager.IMAGES_PATH}/");
+    String templatesPath = fileManager.getAppSpecificPath("${IFileManager.TEMPLATES_PATH}/");
+
+    Directory? languagesDir = fileManager.getDirectory(languagesPath);
+    Directory? imagesDir = fileManager.getDirectory(imagesPath);
+    Directory? templatesDir = fileManager.getDirectory(templatesPath);
 
     // Start WebSocket
     unawaited((IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket().catchError(
         (e, stack) => FlutterUI.logAPI.w("Initial WebSocket connection failed", error: e, stackTrace: stack)));
 
     List<BaseCommand> commands = [];
+
     if (kDebugMode || !(languagesDir?.existsSync() ?? false)) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
     } else {
       await IConfigService().reloadSupportedLanguages();
       await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     }
+
     if (!kIsWeb && (kDebugMode || !(imagesDir?.existsSync() ?? false))) {
-      commands.add(DownloadImagesCommand(reason: "Resources should be downloaded"));
+      commands.add(DownloadImagesCommand(reason: "Images should be downloaded"));
     }
+
+    if (!kIsWeb && (kDebugMode || !(templatesDir?.existsSync() ?? false))) {
+      commands.add(DownloadTemplatesCommand(reason: "Templates should be downloaded"));
+    }
+
     commands.add(DownloadStyleCommand(reason: "Styles should be downloaded"));
     return commands;
   }

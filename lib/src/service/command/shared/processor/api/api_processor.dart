@@ -29,6 +29,7 @@ import '../../../../../model/command/api/delete_record_command.dart';
 import '../../../../../model/command/api/device_status_command.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
+import '../../../../../model/command/api/download_templates_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/api/exit_command.dart';
 import '../../../../../model/command/api/feedback_command.dart';
@@ -75,6 +76,7 @@ import 'delete_record_command_processor.dart';
 import 'device_status_command_processor.dart';
 import 'download_images_command_processor.dart';
 import 'download_style_command_processor.dart';
+import 'download_templates_command_processor.dart';
 import 'download_translation_command_processor.dart';
 import 'exit_command_processor.dart';
 import 'feedback_command_processor.dart';
@@ -108,50 +110,60 @@ import 'upload_command_processor.dart';
 
 /// Handles the processors of [ApiCommand].
 class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
-  final StartupCommandProcessor _startupProcessorCommand = StartupCommandProcessor();
-  final LoginCommandProcessor _loginCommandProcessor = LoginCommandProcessor();
-  final CancelLoginCommandProcessor _cancelLoginCommandProcessor = CancelLoginCommandProcessor();
-  final OpenScreenCommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
-  final ActivateScreenCommandProcessor _activateScreenCommandProcessor = ActivateScreenCommandProcessor();
-  final ReloadMenuCommandProcessor _reloadMenuCommandProcessor = ReloadMenuCommandProcessor();
-  final DeviceStatusCommandProcessor _deviceStatusProcessor = DeviceStatusCommandProcessor();
-  final PressButtonCommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
-  final SetValueCommandProcessor _setValueProcessor = SetValueCommandProcessor();
-  final SetValuesCommandProcessor _setValuesProcessor = SetValuesCommandProcessor();
+  //resources
   final DownloadImagesCommandProcessor _downloadImagesProcessor = DownloadImagesCommandProcessor();
-  final CloseTabCommandProcessor _tabCloseProcessor = CloseTabCommandProcessor();
-  final OpenTabCommandProcessor _tabOpenProcessor = OpenTabCommandProcessor();
-  final ChangePasswordCommandProcessor _changePasswordProcessor = ChangePasswordCommandProcessor();
-  final ResetPasswordCommandProcessor _resetPasswordProcessor = ResetPasswordCommandProcessor();
-  final NavigationCommandProcessor _navigationProcessor = NavigationCommandProcessor();
-  final FilterCommandProcessor _filterProcessor = FilterCommandProcessor();
-  final FetchCommandProcessor _fetchProcessor = FetchCommandProcessor();
-  final LogoutCommandProcessor _logoutProcessor = LogoutCommandProcessor();
-  final SelectRecordCommandProcessor _selectRecordProcessor = SelectRecordCommandProcessor();
-  final DeleteRecordCommandProcessor _deleteRecordCommandProcessor = DeleteRecordCommandProcessor();
-  final DalSaveCommandProcessor _dalSaveProcessor = DalSaveCommandProcessor();
-  final CloseScreenCommandProcessor _closeScreenProcessor = CloseScreenCommandProcessor();
-  final InsertRecordCommandProcessor _insertRecordProcessor = InsertRecordCommandProcessor();
+  final DownloadTemplatesCommandProcessor _downloadTemplatesProcessor = DownloadTemplatesCommandProcessor();
   final DownloadTranslationCommandProcessor _downloadTranslationProcessor = DownloadTranslationCommandProcessor();
   final DownloadStyleCommandProcessor _downloadStyleProcessor = DownloadStyleCommandProcessor();
+
+  //application
+  final StartupCommandProcessor _startupProcessorCommand = StartupCommandProcessor();
+  final ExitCommandProcessor _exitProcessor = ExitCommandProcessor();
+  final AliveCommandProcessor _aliveProcessor = AliveCommandProcessor();
+  final DeviceStatusCommandProcessor _deviceStatusProcessor = DeviceStatusCommandProcessor();
+  final NavigationCommandProcessor _navigationProcessor = NavigationCommandProcessor();
+  final ReloadMenuCommandProcessor _reloadMenuCommandProcessor = ReloadMenuCommandProcessor();
+  final UploadCommandProcessor _uploadProcessor = UploadCommandProcessor();
+  final FeedbackCommandProcessor _feedbackProcessor = FeedbackCommandProcessor();
+  final ChangesCommandProcessor _changesProcessor = ChangesCommandProcessor();
+
+  final LoginCommandProcessor _loginCommandProcessor = LoginCommandProcessor();
+  final CancelLoginCommandProcessor _cancelLoginCommandProcessor = CancelLoginCommandProcessor();
+  final ChangePasswordCommandProcessor _changePasswordProcessor = ChangePasswordCommandProcessor();
+  final ResetPasswordCommandProcessor _resetPasswordProcessor = ResetPasswordCommandProcessor();
+  final LogoutCommandProcessor _logoutProcessor = LogoutCommandProcessor();
+
+  final SetParameterCommandProcessor _setParameterProcessor = SetParameterCommandProcessor();
+  final OpenScreenCommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
+  final CloseScreenCommandProcessor _closeScreenProcessor = CloseScreenCommandProcessor();
+  final ActivateScreenCommandProcessor _activateScreenCommandProcessor = ActivateScreenCommandProcessor();
+  final SetScreenParameterCommandProcessor _setScreenParameterProcessor = SetScreenParameterCommandProcessor();
+  final PressButtonCommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
+  final SetValueCommandProcessor _setValueProcessor = SetValueCommandProcessor();
+  final OpenTabCommandProcessor _tabOpenProcessor = OpenTabCommandProcessor();
+  final CloseTabCommandProcessor _tabCloseProcessor = CloseTabCommandProcessor();
   final CloseFrameCommandProcessor _closeFrameProcessor = CloseFrameCommandProcessor();
   final CloseContentCommandProcessor _closeContentProcessor = CloseContentCommandProcessor();
-  final UploadCommandProcessor _uploadProcessor = UploadCommandProcessor();
-  final ChangesCommandProcessor _changesProcessor = ChangesCommandProcessor();
-  final MouseCommandProcessor _mouseProcessor = MouseCommandProcessor();
-  final FocusGainedCommandProcessor _focusGainedProcessor = FocusGainedCommandProcessor();
-  final FocusLostCommandProcessor _focusLostProcessor = FocusLostCommandProcessor();
-  final AliveCommandProcessor _aliveProcessor = AliveCommandProcessor();
-  final ExitCommandProcessor _exitProcessor = ExitCommandProcessor();
-  final FeedbackCommandProcessor _feedbackProcessor = FeedbackCommandProcessor();
+
   final SaveCommandProcessor _saveProcessor = SaveCommandProcessor();
   final ReloadCommandProcessor _reloadProcessor = ReloadCommandProcessor();
   final RollbackCommandProcessor _rollbackProcessor = RollbackCommandProcessor();
+
+  //data access
+  final SetValuesCommandProcessor _setValuesProcessor = SetValuesCommandProcessor();
+  final FilterCommandProcessor _filterProcessor = FilterCommandProcessor();
+  final FetchCommandProcessor _fetchProcessor = FetchCommandProcessor();
+  final SelectRecordCommandProcessor _selectRecordProcessor = SelectRecordCommandProcessor();
+  final DeleteRecordCommandProcessor _deleteRecordCommandProcessor = DeleteRecordCommandProcessor();
+  final DalSaveCommandProcessor _dalSaveProcessor = DalSaveCommandProcessor();
+  final InsertRecordCommandProcessor _insertRecordProcessor = InsertRecordCommandProcessor();
   final SortCommandProcessor _sortProcessor = SortCommandProcessor();
-  final SetParameterCommandProcessor _setParameterProcessor = SetParameterCommandProcessor();
-  final SetScreenParameterCommandProcessor _setScreenParameterProcessor = SetScreenParameterCommandProcessor();
   final RestoreDataCommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
   final SelectTreeCommandProcessor _selectTreeCommand = SelectTreeCommandProcessor();
+
+  final MouseCommandProcessor _mouseProcessor = MouseCommandProcessor();
+  final FocusGainedCommandProcessor _focusGainedProcessor = FocusGainedCommandProcessor();
+  final FocusLostCommandProcessor _focusLostProcessor = FocusLostCommandProcessor();
 
   @override
   ICommandProcessor<ApiCommand>? getProcessor(ApiCommand command) {
@@ -175,8 +187,6 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _setValueProcessor;
     } else if (command is SetValuesCommand) {
       return _setValuesProcessor;
-    } else if (command is DownloadImagesCommand) {
-      return _downloadImagesProcessor;
     } else if (command is CloseTabCommand) {
       return _tabCloseProcessor;
     } else if (command is OpenTabCommand) {
@@ -203,6 +213,10 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _closeScreenProcessor;
     } else if (command is InsertRecordCommand) {
       return _insertRecordProcessor;
+    } else if (command is DownloadImagesCommand) {
+      return _downloadImagesProcessor;
+    } else if (command is DownloadTemplatesCommand) {
+      return _downloadTemplatesProcessor;
     } else if (command is DownloadTranslationCommand) {
       return _downloadTranslationProcessor;
     } else if (command is DownloadStyleCommand) {

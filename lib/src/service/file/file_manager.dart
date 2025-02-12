@@ -27,6 +27,7 @@ import 'file_manager_web.dart';
 /// "independent" means this method does not prefix the path with an app name and version.
 abstract class IFileManager {
   static const String IMAGES_PATH = "images";
+  static const String TEMPLATES_PATH = "templates";
   static const String LANGUAGES_PATH = "languages";
 
   /// Constructs a FileManager depending on the platform

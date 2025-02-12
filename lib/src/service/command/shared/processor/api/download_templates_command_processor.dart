@@ -14,21 +14,15 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:json_dynamic_widget/json_dynamic_widget.dart';
+import '../../../../../model/command/api/download_templates_command.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../../../../model/request/api_download_templates_request.dart';
+import '../../../../api/i_api_service.dart';
+import '../../i_command_processor.dart';
 
-import 'export_json_page.dart';
-
-void main() {
-    testWidgets("Example json creation", (WidgetTester tester) async {
-        ExportJsonPage widget = const ExportJsonPage(0);
-
-        await tester.pumpWidget(MaterialApp(home: widget));
-
-        Finder f = find.byType(IconButton);
-        f.tryEvaluate();
-
-        await tester.tap(f);
-    });
+class DownloadTemplatesCommandProcessor extends ICommandProcessor<DownloadTemplatesCommand> {
+  @override
+  Future<List<BaseCommand>> processCommand(DownloadTemplatesCommand command, BaseCommand? origin) {
+    return IApiService().sendRequest(ApiDownloadTemplatesRequest());
+  }
 }

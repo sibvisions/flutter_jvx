@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2025 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,19 +19,19 @@ import 'dart:typed_data';
 import 'package:archive/archive.dart';
 
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/config/save_application_images_command.dart';
+import '../../../../../model/command/config/save_application_templates_command.dart';
 import '../../../../config/i_config_service.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
-class SaveApplicationImagesCommandProcessor extends ICommandProcessor<SaveApplicationImagesCommand> {
+class SaveApplicationTemplatesCommandProcessor extends ICommandProcessor<SaveApplicationTemplatesCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveApplicationImagesCommand command, BaseCommand? origin) async {
+  Future<List<BaseCommand>> processCommand(SaveApplicationTemplatesCommand command, BaseCommand? origin) async {
     IFileManager fileManager = IConfigService().getFileManager();
 
     Uint8List content;
 
-    for (ArchiveFile file in command.images) {
+    for (ArchiveFile file in command.templates) {
       content = file.content;
 
       String name = file.name;
@@ -39,7 +39,7 @@ class SaveApplicationImagesCommandProcessor extends ICommandProcessor<SaveApplic
         name.replaceFirst("/", "");
       }
 
-      String path = fileManager.getAppSpecificPath("${IFileManager.IMAGES_PATH}/$name");
+      String path = fileManager.getAppSpecificPath("${IFileManager.TEMPLATES_PATH}/$name");
       await fileManager.saveFile(path, pContent: content);
     }
 

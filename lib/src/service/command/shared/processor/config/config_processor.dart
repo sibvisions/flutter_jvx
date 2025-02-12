@@ -20,6 +20,7 @@ import '../../../../../model/command/config/save_application_meta_data_command.d
 import '../../../../../model/command/config/save_application_parameters_command.dart';
 import '../../../../../model/command/config/save_application_settings_command.dart';
 import '../../../../../model/command/config/save_application_style_command.dart';
+import '../../../../../model/command/config/save_application_templates_command.dart';
 import '../../../../../model/command/config/save_application_translation_command.dart';
 import '../../../../../model/command/config/save_auth_key_command.dart';
 import '../../../../../model/command/config/save_download_command.dart';
@@ -31,6 +32,7 @@ import 'save_application_meta_data_command_processor.dart';
 import 'save_application_parameters_command_processor.dart';
 import 'save_application_settings_command_processor.dart';
 import 'save_application_style_command_processor.dart';
+import 'save_application_templates_command_processor.dart';
 import 'save_application_translation_command_processor.dart';
 import 'save_auth_key_command_processor.dart';
 import 'save_or_show_file_command_processor.dart';
@@ -48,6 +50,8 @@ class ConfigProcessor implements ICommandProcessorHandler<ConfigCommand> {
   final SaveAuthKeyCommandProcessor _authKeyCommandProcessor = SaveAuthKeyCommandProcessor();
   final SaveApplicationImagesCommandProcessor _applicationImagesCommandProcessor =
       SaveApplicationImagesCommandProcessor();
+  final SaveApplicationTemplatesCommandProcessor _applicationTemplatesCommandProcessor =
+      SaveApplicationTemplatesCommandProcessor();
   final SaveApplicationTranslationCommandProcessor _applicationTranslationCommandProcessor =
       SaveApplicationTranslationCommandProcessor();
   final SaveApplicationStyleCommandProcessor _applicationStyleCommandProcessor = SaveApplicationStyleCommandProcessor();
@@ -67,6 +71,8 @@ class ConfigProcessor implements ICommandProcessorHandler<ConfigCommand> {
       return _authKeyCommandProcessor;
     } else if (command is SaveApplicationImagesCommand) {
       return _applicationImagesCommandProcessor;
+    } else if (command is SaveApplicationTemplatesCommand) {
+      return _applicationTemplatesCommandProcessor;
     } else if (command is SaveApplicationTranslationCommand) {
       return _applicationTranslationCommandProcessor;
     } else if (command is SaveApplicationStyleCommand) {

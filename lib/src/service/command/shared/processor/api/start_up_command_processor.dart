@@ -60,7 +60,7 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
       authKey: IConfigService().authKey.value,
       screenHeight: phoneSize?.height.toInt(),
       screenWidth: phoneSize?.width.toInt(),
-      readAheadLimit: 100,
+      readAheadLimit: FlutterUI.readAheadLimit,
       deviceMode: (kIsWeb && !IUiService().mobileOnly.value) || IUiService().webOnly.value ? "mobileDesktop" : "mobile",
       darkMode: MediaQuery.platformBrightnessOf(FlutterUI.getEffectiveContext()!) == Brightness.dark,
       username: command.username ?? IConfigService().username.value,
