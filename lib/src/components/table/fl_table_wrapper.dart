@@ -43,7 +43,7 @@ import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_data_mixin.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
-  static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
+  static const int DEFAULT_ITEM_COUNT_PER_PAGE = FlutterUI.readAheadLimit;
 
   const FlTableWrapper({super.key, required super.model});
 
