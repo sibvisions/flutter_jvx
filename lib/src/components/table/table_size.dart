@@ -51,6 +51,9 @@ class TableSize {
   /// The maximum width of a column
   double maxColumnWidth;
 
+  /// The temporary max column width
+  double? _maxColumnWidth;
+
   /// The table header height
   double tableHeaderHeight;
 
@@ -143,6 +146,16 @@ class TableSize {
     columnFormatWidths.clear();
 
     availableWidth = math.max((availableWidth ?? 0.0) - (borderWidth * 2), 0);
+
+    //it's not nice if a column is larger than the available space of the whole table,
+    //so adjust the max column width
+    if (maxColumnWidth > 0  && maxColumnWidth > availableWidth ) {
+
+      _maxColumnWidth = availableWidth - 20;
+    }
+    else {
+      _maxColumnWidth = maxColumnWidth;
+    }
 
     ApplicationMetaDataResponse? appMetaData = IUiService().applicationMetaData.value;
 
@@ -656,7 +669,7 @@ class TableSize {
   double _adjustColumnWidth(double oldWidth, double newWidth) {
     if (newWidth > oldWidth) {
       //new width between min and max column width
-      return math.min(math.max(newWidth, minColumnWidth), maxColumnWidth);
+      return math.min(math.max(newWidth, minColumnWidth), _maxColumnWidth ?? maxColumnWidth);
     } else {
       return oldWidth;
     }
