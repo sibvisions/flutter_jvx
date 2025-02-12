@@ -33,6 +33,7 @@ import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
+import '../../../model/response/record_format.dart';
 import '../../../util/column_list.dart';
 import '../../api/shared/api_object_property.dart';
 import '../../command/i_command_service.dart';
@@ -308,9 +309,10 @@ class DataService implements IDataService {
 
     // Build rows out of column data
     Map<int, List<dynamic>> resultData = HashMap();
+    Map<int, List<bool>> resultReadOnly = HashMap();
+    Map<String, RecordFormat> resultRecordFormats = HashMap();
 
-    Map<int, List<dynamic>> currentDataMap =
-        pPageKey != null ? (dataBook.pageRecords[pPageKey] ?? HashMap()) : dataBook.records;
+    Map<int, List<dynamic>> currentDataMap = pPageKey != null ? (dataBook.pageRecords[pPageKey] ?? HashMap()) : dataBook.records;
     int toIndex = min(pTo ?? currentDataMap.length, currentDataMap.length);
 
     for (int i = pFrom; i < toIndex; i++) {
@@ -323,15 +325,51 @@ class DataService implements IDataService {
 
       resultRow.last = dataRow.last;
       resultData[i] = resultRow;
+
+      //currently, the formats are not saved per page, so we can't support it
+      if (pPageKey == null) {
+        List<bool>? readOnlyFormat = dataBook.recordReadOnly[i];
+
+        //use only readonly information of matching records
+
+        if (readOnlyFormat != null) {
+          resultReadOnly[i] = readOnlyFormat;
+        }
+
+        //use only formats of matching records
+
+        RecordFormat formats;
+        RecordFormat? formatsNew;
+        RowFormat? rowformat;
+
+        for (String key in dataBook.recordFormats.keys) {
+          formats = dataBook.recordFormats[key]!;
+
+          rowformat = formats.rowFormats[i];
+
+          if (rowformat != null) {
+            formatsNew = resultRecordFormats[key];
+
+            if (formatsNew == null) {
+              formatsNew = RecordFormat();
+
+              resultRecordFormats[key] = formatsNew;
+            }
+
+            formatsNew.rowFormats[i] = rowformat;
+          }
+        }
+      }
     }
 
     return DataChunk(
       data: resultData,
-      isAllFetched: dataBook.isAllFetched,
+      //this chunk is only all fetched if it contains all records
+      isAllFetched: dataBook.isAllFetched && resultData.length == currentDataMap.length,
       columnDefinitions: ColumnList(columnDefinitions),
       from: pFrom,
-      recordFormats: dataBook.recordFormats,
-      dataReadOnly: dataBook.recordReadOnly,
+      recordFormats: resultRecordFormats,
+      dataReadOnly: resultReadOnly,
     );
   }
 

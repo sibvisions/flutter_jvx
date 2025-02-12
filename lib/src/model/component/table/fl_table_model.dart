@@ -27,6 +27,9 @@ class FlTableModel extends FlComponentModel {
   /// This style removes the alternating table row colors.
   static const String NO_ALTERNATING_ROW_COLOR_STYLE = "f_no_alternating_row_color";
 
+  /// This style uses a list widget instead a table widget.
+  static const String TABLE_AS_LIST_STYLE = "f_as_list";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +80,9 @@ class FlTableModel extends FlComponentModel {
 
   /// If the table removes the alternating table row colors.
   bool get disabledAlternatingRowColor => styles.contains(NO_ALTERNATING_ROW_COLOR_STYLE);
+
+  /// If the table should be visualized as list
+  bool get asList => styles.contains(TABLE_AS_LIST_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

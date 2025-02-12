@@ -69,7 +69,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   final String? selectedColumn;
 
   /// The record formats
-  final RecordFormat? recordFormats;
+  final RowFormat? recordFormat;
 
   /// the slide controller
   final SlidableController? slideController;
@@ -99,7 +99,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     required this.values,
     required this.index,
     required this.isSelected,
-    this.recordFormats,
+    this.recordFormat,
     this.selectedColumn,
     this.recordReadOnly,
   });
@@ -145,7 +145,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
             readOnly: recordReadOnly?[cdIndex] ?? false,
             rowIndex: index,
             cellIndex: ++cellIndex,
-            cellFormat: recordFormats?.getCellFormat(index, cdIndex),
+            cellFormat: recordFormat?.getCellFormat(cdIndex),
             isSelected: isSelected && selectedColumn == cd.name,
           ));
         }

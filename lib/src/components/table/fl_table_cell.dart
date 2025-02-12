@@ -314,11 +314,11 @@ class _FlTableCellState extends State<FlTableCell> {
       return null;
     }
 
-    Widget tableWidget = cellEditor.createWidget(widget.model.json);
+    Widget cellWidget = cellEditor.createWidget(widget.model.json);
 
     return AbsorbPointer(
       absorbing: !widget.model.isEnabled || !widget.model.editable || widget.readOnly,
-      child: tableWidget,
+      child: cellWidget,
     );
   }
 

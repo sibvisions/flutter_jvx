@@ -47,25 +47,7 @@ class RecordFormat {
       return null;
     }
 
-    RowFormat rowFormat = rowFormats[row]!;
-    // Every row has column indexes. The last one counts for all following columns
-    // E.g. 5 Columns, indexes are 0, 1, 2 -> Format applied is 0, 1, 2, 2, 2
-
-    int formatIndex;
-
-    if (rowFormat.columnIndexToFormatIndex.isEmpty) {
-      formatIndex = 0;
-    } else if (column < rowFormat.columnIndexToFormatIndex.length) {
-      formatIndex = rowFormat.columnIndexToFormatIndex[column];
-    } else {
-      formatIndex = rowFormat.columnIndexToFormatIndex.last;
-    }
-
-    if (formatIndex >= rowFormat.formats.length) {
-      return null;
-    }
-
-    return rowFormat.formats[formatIndex];
+    return rowFormats[row]!.getCellFormat(column);
   }
 }
 
@@ -74,6 +56,27 @@ class RowFormat {
   List<CellFormat?> formats = [];
 
   RowFormat(this.columnIndexToFormatIndex, this.formats);
+
+  CellFormat? getCellFormat(int column) {
+    // Every row has column indexes. The last one counts for all following columns
+    // E.g. 5 Columns, indexes are 0, 1, 2 -> Format applied is 0, 1, 2, 2, 2
+
+    int formatIndex;
+
+    if (columnIndexToFormatIndex.isEmpty) {
+      formatIndex = 0;
+    } else if (column < columnIndexToFormatIndex.length) {
+      formatIndex = columnIndexToFormatIndex[column];
+    } else {
+      formatIndex = columnIndexToFormatIndex.last;
+    }
+
+    if (formatIndex >= formats.length) {
+      return null;
+    }
+
+    return formats[formatIndex];
+  }
 }
 
 class CellFormat {

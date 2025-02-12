@@ -621,7 +621,7 @@ class DalMetaData {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DalMetaData(this.dataProvider);
+  DalMetaData([String? dataProvider]) : dataProvider = dataProvider ?? "";
 
   DalMetaData.fromJson(Map<String, dynamic> pJson)
       : dataProvider = pJson[ApiObjectProperty.dataProvider],

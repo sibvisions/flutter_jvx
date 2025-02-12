@@ -35,19 +35,13 @@ typedef TableLongPressCallback = void Function(int rowIndex, String column, ICel
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
 typedef TableHeaderTapCallback = void Function(String column);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
-typedef TableSlideActionFactory = List<SlidableAction> Function(BuildContext context, int pRowIndex);
+typedef TableSlideActionFactory = List<SlidableAction> Function(BuildContext context, int row);
+typedef TableScrollCallback = Function(ScrollNotification scrollNotification);
 
 class FlTableWidget extends FlStatefulWidget<FlTableModel> {
-  /// The scroll controller of the table.
-  final ItemScrollController? itemScrollController;
-
-  /// The scroll controller for the table.
-  final ScrollController? tableHorizontalController;
-
-  /// The scroll controller for the headers if they are set to sticky.
-  final ScrollController? headerHorizontalController;
-
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Callbacks
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The callback if a value has ended beeing changed in the table.
   final TableValueChangedCallback? onEndEditing;
@@ -71,12 +65,35 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   final VoidCallback? onEndScroll;
 
   /// Gets called when the user scrolled the table.
-  final Function(ScrollNotification pScrollNotification)? onScroll;
+  final TableScrollCallback? onScroll;
 
   /// Gets called when the list should refresh
   final Future<void> Function()? onRefresh;
 
-  // Fields
+  /// The action the floating button calls.
+  final VoidCallback? onFloatingPress;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The scroll controller of the table.
+  final ItemScrollController? itemScrollController;
+
+  /// The scroll controller for the table.
+  final ScrollController? tableHorizontalController;
+
+  /// The scroll controller for the headers if they are set to sticky.
+  final ScrollController? headerHorizontalController;
+
+  /// Which slide actions are to be allowed to the row.
+  final TableSlideActionFactory? slideActionFactory;
+
+  /// The data of the table.
+  final DataChunk chunkData;
+
+  /// The meta data of the table.
+  final DalMetaData? metaData;
 
   /// Contains all relevant table size information.
   final TableSize tableSize;
@@ -87,20 +104,8 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The selected column;
   final String? selectedColumn;
 
-  /// The data of the table.
-  final DataChunk chunkData;
-
   /// If a button is shown at the bottom.
   final bool showFloatingButton;
-
-  /// The action the floating button calls.
-  final VoidCallback? floatingOnPress;
-
-  /// Which slide actions are to be allowed to the row.
-  final TableSlideActionFactory? slideActionFactory;
-
-  /// The meta data of the table.
-  final DalMetaData? metaData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -112,10 +117,13 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     required this.chunkData,
     required this.tableSize,
     required this.metaData,
-    this.tableHorizontalController,
-    this.headerHorizontalController,
     this.selectedRowIndex = -1,
     this.selectedColumn,
+    this.showFloatingButton = false,
+    this.tableHorizontalController,
+    this.headerHorizontalController,
+    this.slideActionFactory,
+    this.itemScrollController,
     this.onTap,
     this.onHeaderTap,
     this.onHeaderDoubleTap,
@@ -123,12 +131,9 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.onEndScroll,
     this.onScroll,
     this.onRefresh,
-    this.slideActionFactory,
-    this.itemScrollController,
     this.onEndEditing,
     this.onValueChanged,
-    this.showFloatingButton = false,
-    this.floatingOnPress
+    this.onFloatingPress
   });
 
   @override
@@ -137,7 +142,8 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
 
 class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateMixin {
 
-  List<SlidableController> slideController = [];
+  /// cached slidable controller
+  final List<SlidableController> _slideController = [];
 
   /// How many items the scrollable list should build.
   int get _itemCount {
@@ -167,11 +173,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     _closeSlidablesImmediate();
-    slideController.clear();
+    _slideController.clear();
 
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
-    if (widget.showFloatingButton && widget.floatingOnPress != null) {
+    if (widget.showFloatingButton && widget.onFloatingPress != null) {
       children.add(createFloatingButton(context));
     }
 
@@ -203,7 +209,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       child: FloatingActionButton(
         heroTag: null,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        onPressed: widget.floatingOnPress,
+        onPressed: widget.onFloatingPress,
         child: FaIcon(
           FontAwesomeIcons.squarePlus,
           color: widget.model.foreground ?? Theme.of(context).colorScheme.onPrimary,
@@ -243,7 +249,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
             : null,
         onTap: () => _closeSlidables(),
         child: NotificationListener<ScrollEndNotification>(
-          onNotification: onInternalEndScroll,
+          onNotification: _onInternalEndScroll,
           child: NotificationListener<ScrollNotification>(
             onNotification: (notification) {
               widget.onScroll?.call(notification);
@@ -327,12 +333,12 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     SlidableController? slideCtrl;
 
     if (!canScrollHorizontally && widget.slideActionFactory != null) {
-      if (index > slideController.length - 1) {
+      if (index > _slideController.length - 1) {
         slideCtrl = SlidableController(this);
-        slideController.add(slideCtrl);
+        _slideController.add(slideCtrl);
       }
       else {
-        slideCtrl = slideController.elementAt(index);
+        slideCtrl = _slideController.elementAt(index);
       }
     }
 
@@ -350,7 +356,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       slideController: slideCtrl,
       slideActionFactory: !canScrollHorizontally ? widget.slideActionFactory : null,
       onDismissed: (index) {
-        SlidableController ctrl = slideController.elementAt(index);
+        SlidableController ctrl = _slideController.elementAt(index);
         ctrl.close(duration: const Duration(milliseconds: 0));
         setState(() {
           List<dynamic>? record = widget.chunkData.data[index];
@@ -359,14 +365,14 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
             record[record.length - 1] = "DISMISSED";
           }
 
-          slideController.removeAt(index);
+          _slideController.removeAt(index);
 
           HapticFeedback.mediumImpact();
         });
       },
       tableSize: widget.tableSize,
       values: widget.chunkData.data[index]!,
-      recordFormats: widget.chunkData.recordFormats?[widget.model.name],
+      recordFormat: widget.chunkData.recordFormats?[widget.model.name]?.rowFormats[index],
       recordReadOnly: widget.chunkData.dataReadOnly?[index],
       index: index,
       isSelected: index == widget.selectedRowIndex,
@@ -401,7 +407,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   }
 
   /// Notifies if the bottom of the table has been reached
-  bool onInternalEndScroll(ScrollEndNotification notification) {
+  bool _onInternalEndScroll(ScrollEndNotification notification) {
     // 25 is a grace value.
     if (widget.model.isEnabled &&
         notification.metrics.extentAfter < 25 &&
@@ -443,7 +449,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
 
     if (!collide) {
-      slideController.toList(growable: false).forEach((element) {
+      _slideController.toList(growable: false).forEach((element) {
         if (duration != null) {
           element.close(duration: duration);
         }

@@ -40,7 +40,7 @@ import '../../util/sort_list.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import 'fl_table_edit_dialog.dart';
+import 'fl_data_mixin.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
@@ -51,7 +51,7 @@ class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   BaseCompWrapperState<FlComponentModel> createState() => _FlTableWrapperState();
 }
 
-class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
+class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDataMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,17 +81,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// How many "pages" of the table data have been loaded multiplied by: [FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE]
   int pageCount = 1;
 
-  /// The currently selected row. -1 is none selected.
-  int selectedRow = -1;
-
   /// The currently selected column. null is none.
   String? selectedColumn;
-
-  /// The meta data of the table.
-  DalMetaData metaData = DalMetaData("");
-
-  /// The data of the table.
-  DataChunk dataChunk = DataChunk.empty();
 
   /// The columns to show (based on [model.columnNames])
   ColumnList? columnsToShow;
@@ -157,7 +148,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       model.isEnabled &&
       !metaData.readOnly &&
       metaData.insertEnabled &&
-      // Only shows the floating button if we are bigger than 150x150
+      // Only shows the floating button if we are bigger than 100x150
       ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
       ((layoutData.layoutPosition?.width ?? 0.0) >= 100);
 
@@ -197,15 +188,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     widget ??= FlTableWidget(
-      headerHorizontalController: headerHorizontalController,
-      itemScrollController: itemScrollController,
-      tableHorizontalController: tableHorizontalController,
       model: model,
       chunkData: dataChunk,
       metaData: metaData,
       tableSize: tableSize,
       selectedRowIndex: selectedRow,
       selectedColumn: selectedColumn,
+      slideActionFactory: createSlideActions,
+      showFloatingButton: showFloatingButton,
+      headerHorizontalController: headerHorizontalController,
+      itemScrollController: itemScrollController,
+      tableHorizontalController: tableHorizontalController,
       onEndEditing: _setValueEnd,
       onValueChanged: _setValueChanged,
       onRefresh: _refresh,
@@ -215,9 +208,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onTap: _onCellTap,
       onHeaderTap: _sortColumn,
       onHeaderDoubleTap: (pColumn) => _sortColumn(pColumn, true),
-      slideActionFactory: createSlideActions,
-      showFloatingButton: showFloatingButton,
-      floatingOnPress: _insertRecord,
+      onFloatingPress: _insertRecord,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -480,11 +471,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
         if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
           if (pValue is HashMap<String, dynamic>) {
-            if (pValue.keys.none((columnName) => !_isCellEditable(pRow, columnName))) {
+            if (pValue.keys.none((columnName) => !isCellEditable(pRow, columnName))) {
               return [_setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName)];
             }
           } else {
-            if (_isCellEditable(pRow, pColumnName)) {
+            if (isCellEditable(pRow, pColumnName)) {
               return [
                 _setValues(pRow, [pColumnName], [pValue], pColumnName)
               ];
@@ -587,7 +578,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   Future<void> _onSingleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) async {
     if (IStorageService().isVisibleInUI(model.id)) {
       if (!pCellEditor.allowedInTable &&
-          _isCellEditable(pRowIndex, pColumnName) &&
+          isCellEditable(pRowIndex, pColumnName) &&
           pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
         _showDialog(
           rowIndex: pRowIndex,
@@ -604,7 +595,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   Future<void> _onDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) async {
     if (IStorageService().isVisibleInUI(model.id)) {
       if (!pCellEditor.allowedInTable &&
-          _isCellEditable(pRowIndex, pColumnName) &&
+          isCellEditable(pRowIndex, pColumnName) &&
           pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
         _showDialog(
           rowIndex: pRowIndex,
@@ -625,7 +616,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squarePlus, "New", TableContextMenuItem.INSERT));
     }
 
-    if (_isRowDeletable(pRowIndex)) {
+    if (isRowDeletable(pRowIndex)) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", TableContextMenuItem.DELETE));
     }
 
@@ -1029,16 +1020,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pAfterSelect: () {
         if (IStorageService().isVisibleInUI(model.id) && _isAnyCellInRowEditable(pRowIndex)) {
 
-          List<ColumnDefinition> columnsToShow = _getColumnsToShow().where((colDef) => _isCellEditable(pRowIndex, colDef.name)).toList();
+          List<ColumnDefinition> editableColumns = _getColumnsToShow().where((colDef) => isCellEditable(pRowIndex, colDef.name)).toList();
 
           Map<String, dynamic> values = {};
-          for (ColumnDefinition colDef in columnsToShow) {
+          for (ColumnDefinition colDef in editableColumns) {
             values[colDef.name] = dataChunk.getValue(colDef.name, pRowIndex);
           }
 
           _showDialog(
             rowIndex: pRowIndex,
-            columnDefinitions: ColumnList(columnsToShow),
+            columnDefinitions: ColumnList(editableColumns),
             values: values,
             onEndEditing: _setValueEnd,
             newValueNotifier: dialogValueNotifier,
@@ -1049,16 +1040,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     );
   }
 
-  List<SlidableAction> createSlideActions(BuildContext pContext, int pRowIndex) {
+  List<SlidableAction> createSlideActions(BuildContext context, int row) {
     List<SlidableAction> slideActions = [];
 
-    bool isLight = JVxColors.isLightTheme(pContext);
+    bool isLight = JVxColors.isLightTheme(context);
 
-    if (_isAnyCellInRowEditable(pRowIndex)) {
+    if (_isAnyCellInRowEditable(row)) {
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
-            _editRow(pRowIndex);
+            _editRow(row);
           },
           autoClose: true,
           backgroundColor: isLight ? Colors.green : const Color(0xFF2c662f),
@@ -1074,11 +1065,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       );
     }
 
-    if (_isRowDeletable(pRowIndex)) {
+    if (isRowDeletable(row)) {
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
-            BaseCommand? deleteCommand = _createDeleteCommand(pRowIndex);
+            BaseCommand? deleteCommand = _createDeleteCommand(row);
             if (deleteCommand != null) {
               ICommandService().sendCommand(deleteCommand);
             }
@@ -1165,76 +1156,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
   }
 
-  bool _isDataRow(int pRowIndex) {
-    return pRowIndex >= 0 && pRowIndex < dataChunk.data.length;
-  }
-
-  bool _isRowDeletable(int pRowIndex) {
-    return model.isEnabled &&
-        _isDataRow(pRowIndex) &&
-        model.deleteEnabled &&
-        ((selectedRow == pRowIndex && (metaData.deleteEnabled || metaData.modelDeleteEnabled)) ||
-            (selectedRow != pRowIndex && metaData.modelDeleteEnabled)) &&
-        (!metaData.additionalRowVisible || pRowIndex != 0) &&
-        !metaData.readOnly;
-  }
-
-  bool _isRowEditable(int pRowIndex) {
-    if (!_isDataRow(pRowIndex)) {
-      return false;
-    }
-
-    if (metaData.readOnly) {
-      return false;
-    }
-
-    if (selectedRow == pRowIndex) {
-      if (!metaData.updateEnabled && !metaData.modelUpdateEnabled && dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED) {
-        return false;
-      }
-    } else {
-      if (!metaData.modelUpdateEnabled && dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  bool _isCellEditable(int pRowIndex, String pColumn) {
-    if (!model.isEnabled) {
-      return false;
-    }
-
-    ColumnDefinition? colDef = dataChunk.columnDefinitions.byName(pColumn);
-
-    if (colDef == null) {
-      return false;
-    }
-
-    if (!colDef.forcedStateless) {
-      if (!_isRowEditable(pRowIndex)) {
-        return false;
-      }
-
-      if (!model.editable) {
-        return false;
-      }
-    }
-
-    if (colDef.readOnly) {
-      return false;
-    }
-
-    if (dataChunk.dataReadOnly?[pRowIndex]?[dataChunk.columnDefinitions.indexByName(pColumn)] ?? false) {
-      return false;
-    }
-
-    return true;
-  }
-
   bool _isAnyCellInRowEditable(int pRowIndex) {
-    return _getColumnsToShow().any((column) => _isCellEditable(pRowIndex, column.name));
+    return _getColumnsToShow().any((column) => isCellEditable(pRowIndex, column.name));
   }
 
   List<ColumnDefinition> _getColumnsToShow() {
