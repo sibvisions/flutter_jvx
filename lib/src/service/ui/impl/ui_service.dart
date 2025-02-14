@@ -640,7 +640,7 @@ class UiService implements IUiService {
     List<BaseCommand> saveCommands = [];
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].compId == pId && copy[i].saveCallback != null) {
+      if (copy[i].compId != pId && copy[i].saveCallback != null) {
         var command = await copy[i].saveCallback!.call(pReason);
         if (command != null) {
           saveCommands.add(command);
