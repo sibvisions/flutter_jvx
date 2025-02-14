@@ -31,7 +31,7 @@ abstract class _ListImageBuilder extends JsonWidgetBuilder {
   });
 
   @override
-  _ListImage buildCustom({
+  ListImage buildCustom({
     ChildWidgetBuilder? childBuilder,
     required BuildContext context,
     required JsonWidgetData data,
@@ -39,13 +39,14 @@ abstract class _ListImageBuilder extends JsonWidgetBuilder {
   });
 }
 
-class _ListImage extends StatelessWidget {
+class ListImage extends StatelessWidget {
   final String? imageDefinition;
   final Uint8List? bytes;
   final double? width;
   final double? height;
 
-  const _ListImage({
+  const ListImage({
+    super.key,
     this.imageDefinition,
     this.bytes,
     this.width,

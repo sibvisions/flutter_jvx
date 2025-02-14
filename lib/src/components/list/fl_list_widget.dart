@@ -33,6 +33,15 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// This style defines the marker for custom card templates
   static const String STYLE_TEMPLATE_MARKER = "f_template_";
 
+  /// With this style list will show card items
+  static const String STYLE_AS_CARD = "f_as_card";
+
+  /// With this style list entry will show an arrow
+  static const String STYLE_WITH_ARROW = "f_with_arrow";
+
+  /// The style for column count per text row
+  static const String STYLE_COLUMN_COUNT = "f_list_columncount_";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Callbacks
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,32 +102,28 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   void initState() {
     super.initState();
 
+    /*
     _controller.addListener(() {
       if (_controller.position.userScrollDirection ==
-          ScrollDirection.forward) {
-//        print("Down");
+        ScrollDirection.forward) {
+        print("Down");
       } else if (_controller.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-//        print("Up");
+        ScrollDirection.reverse) {
+        print("Up");
       }
     });
+    */
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  final GlobalKey<JsonWidgetExporterData> _exportKey = GlobalKey<JsonWidgetExporterData>();
 
   @override
   Widget build(BuildContext context) {
-
     Set<String> styles = widget.model.styles;
 
     String? tpl;
-    String? tplEven;
-    String? tplOdd;
+
+    bool asCard = false;
+
+    Map<int, int>? mapColumnsPerRow;
 
     if (styles.isNotEmpty) {
 
@@ -131,10 +136,26 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
         if (styledef.startsWith(FlListWidget.STYLE_TEMPLATE_MARKER)) {
           styledef = styledef.substring(FlListWidget.STYLE_TEMPLATE_MARKER.length);
         }
+        else if (!asCard && styledef == FlListWidget.STYLE_AS_CARD) {
+            asCard = true;
+        }
+        else if (styledef.startsWith(FlListWidget.STYLE_COLUMN_COUNT)) {
+            //e.g. 1_2_2 (means first row = 1 column, second row = 2 columns, third row = 3 columns
+            styledef = styledef.substring(FlListWidget.STYLE_COLUMN_COUNT.length);
+
+            mapColumnsPerRow = {};
+            List<String> colcount = styledef.split("_");
+
+            for (int i = 0; i < colcount.length; i++) {
+                mapColumnsPerRow[i] = int.parse(colcount[i]);
+            }
+        }
       }
 
       tpl = styledef;
     }
+
+    asCard = true;
 
     _closeSlidablesImmediate();
     _slideController.clear();
@@ -149,7 +170,14 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                 controller: _controller,
                 slivers: [
                   SliverList.separated(
-                    separatorBuilder: (context, index) => Divider(height: 1.0, color: JVxColors.isLightTheme(context) ?  Colors.grey.shade300 : Colors.white70),
+                    separatorBuilder: (context, index) {
+                        if (asCard) {
+                            return const Divider(height: 4, color: Colors.transparent);
+                        }
+                        else {
+                            return Divider(height: 1.0, color: JVxColors.isLightTheme(context) ?  Colors.grey.shade300 : Colors.white70);
+                        }
+                    },
                     itemCount: widget.chunkData.data.length,
                     itemBuilder: (context, index) {
                       SlidableController? slideCtrl;
@@ -169,7 +197,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                         return Container();
                       }
 
-                      return ListTile(
+                      Widget listTile = ListTile(
                         minTileHeight: 10,
                         contentPadding: const EdgeInsets.all(0),
                         minVerticalPadding: 0,
@@ -179,6 +207,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                             slideController: slideCtrl,
                             slideActionFactory: widget.slideActionFactory,
                             template: tpl,
+                            columnsPerRow: mapColumnsPerRow,
                             onDismissed: (index) {
                               SlidableController ctrl = _slideController.elementAt(index);
                               ctrl.close(duration: const Duration(milliseconds: 0));
@@ -199,6 +228,22 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                             index: index,
                             isSelected: index == widget.selectedRowIndex),
                       );
+
+                      if (asCard) {
+                          listTile = Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
+                              ),
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(2),
+                              child: ClipPath(
+                                  clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS))),
+                                  child: listTile
+                              )
+                          );
+                      }
+                      return listTile;
                     },
                   ),
                 ],

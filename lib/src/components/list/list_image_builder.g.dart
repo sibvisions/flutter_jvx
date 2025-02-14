@@ -24,7 +24,7 @@ part of 'list_image_builder.dart';
 
 // ignore_for_file: avoid_init_to_null
 // ignore_for_file: deprecated_member_use
-// ignore_for_file: library_private_types_in_public_api
+
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_constructors_in_immutables
 // ignore_for_file: prefer_final_locals
@@ -65,7 +65,7 @@ class ListImageBuilder extends _ListImageBuilder {
   }
 
   @override
-  _ListImage buildCustom({
+  ListImage buildCustom({
     ChildWidgetBuilder? childBuilder,
     required BuildContext context,
     required JsonWidgetData data,
@@ -76,10 +76,11 @@ class ListImageBuilder extends _ListImageBuilder {
       data: data,
     );
 
-    return _ListImage(
+    return ListImage(
       bytes: model.bytes,
       height: model.height,
       imageDefinition: model.imageDefinition,
+      key: key,
       width: model.width,
     );
   }
@@ -227,7 +228,7 @@ class ListImageSchema {
   static final schema = <String, Object>{
     r'$schema': 'http://json-schema.org/draft-07/schema#',
     r'$id': id,
-    'title': '_ListImage',
+    'title': 'ListImage',
     'type': 'object',
     'additionalProperties': false,
     'properties': {

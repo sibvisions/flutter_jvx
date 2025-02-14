@@ -53,14 +53,14 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
   static Widget wrapWithStandardBorder(Widget pPanelWidget) {
     return Container(
       foregroundDecoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS - 1),
         border: Border.all(
           color: JVxColors.STANDARD_BORDER,
         ),
       ),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
       ),
       child: pPanelWidget,
     );

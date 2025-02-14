@@ -33,6 +33,9 @@ abstract class JVxColors {
   static const Color TEXT_HINT_LABEL_COLOR = Color(0xFF999999);
   static const Color STANDARD_BORDER = Color(0xFF999999);
 
+  /// The default border radius
+  static const double BORDER_RADIUS = 5;
+
   /// Specifically requested color mix.
   static Color dividerColor(ThemeData theme) {
     return theme.colorScheme.onPrimary.withAlpha(Color.getAlphaFromOpacity(0.15));
@@ -103,7 +106,7 @@ abstract class JVxColors {
     ElevatedButtonThemeData evbTheme = ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         backgroundColor: colorScheme.primary,
         iconColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))));
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(BORDER_RADIUS)))));
 
     OutlinedButtonThemeData otbTheme = OutlinedButtonThemeData(style: OutlinedButton.styleFrom(
         foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
@@ -117,7 +120,7 @@ abstract class JVxColors {
         dialogTheme: DialogTheme(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             surfaceTintColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5))),
+            borderRadius: BorderRadius.circular(BORDER_RADIUS))),
 //        dialogBackgroundColor: isSelectedLight ? Colors.white : Colors.grey[850],
         textButtonTheme: TextButtonThemeData(style: ButtonStyle(foregroundColor: WidgetStateProperty.all(isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color),
                                                                 overlayColor: WidgetStateProperty.all(isSelectedLight ? null : JVxColors.WHITE))),
@@ -125,7 +128,7 @@ abstract class JVxColors {
         elevatedButtonTheme: evbTheme,
         outlinedButtonTheme: otbTheme,
         datePickerTheme: DatePickerThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BORDER_RADIUS))),
         timePickerTheme: TimePickerThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             dialBackgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             hourMinuteShape: const OutlineInputBorder(
@@ -134,7 +137,7 @@ abstract class JVxColors {
                   color: COMPONENT_BORDER,
                 )),
             hourMinuteColor: themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.surface,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BORDER_RADIUS))),
         typography: Typography.material2014()
     );
 

@@ -24,7 +24,9 @@ import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/response/record_format.dart';
+import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
+import '../../util/i_types.dart';
 import 'list_image_builder.dart';
 
 typedef DismissedCallback = void Function(int index);
@@ -65,11 +67,24 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   /// custom card template as json
   final String? template;
 
+  final Map<int, int>? columnsPerRow;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlListEntry({super.key, required super.model, this.slideController, this.slideActionFactory, required this.columnDefinitions, required this.values, required this.index, required this.isSelected, this.recordFormat, this.template, this.onDismissed});
+  const FlListEntry({super.key,
+    required super.model,
+    this.slideController,
+    this.slideActionFactory,
+    required this.columnDefinitions,
+    required this.values,
+    required this.index,
+    required this.isSelected,
+    this.recordFormat,
+    this.template,
+    this.columnsPerRow,
+    this.onDismissed});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -160,16 +175,13 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       registry.registerCustomBuilder("list_image", const JsonWidgetBuilderContainer(builder: ListImageBuilder.fromDynamic));
       registry.clearValues();
 
-      //similar code is in fl_table_wrapper.dart -> _getColumnsToShow
-      model.columnNames.forEach((colName) {
-        ColumnDefinition? cd = columnDefinitions.byName(colName);
+      for (int i = 0; i < model.columnNames.length; i++) {
+        int columnIndex = columnDefinitions.indexByName(model.columnNames[i]);
 
-        if (cd != null) {
-          int cdIndex = columnDefinitions.indexOf(cd);
-
-          registry.setValue(colName, values[cdIndex]);
+        if (columnIndex >= 0) {
+          registry.setValue(model.columnNames[i], values[columnIndex]);
         }
-      });
+      }
 
       return JsonWidgetData.fromDynamic(
         jsonDecode(jsonTemplate),
@@ -181,6 +193,44 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   }
 
   Widget _defaultEntry(BuildContext context) {
-      return Container(height: 30, color: Colors.red.shade300);
+    String? imageColumn;
+    List<String> valueColumns = [];
+
+    for (int i = 0; i < model.columnNames.length; i++) {
+      int columnIndex = columnDefinitions.indexByName(model.columnNames[i]);
+
+      if (columnIndex >= 0) {
+        ColumnDefinition cdef = columnDefinitions[columnIndex];
+
+        if (cdef.dataTypeIdentifier == Types.BINARY) {
+          //fifo
+          imageColumn ??= model.columnNames[i];
+        }
+        else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != cdef.cellEditorClassName &&
+              FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != cdef.cellEditorClassName) {
+          valueColumns.add(model.columnNames[i]);
+        }
+      }
+    }
+
+    Widget? w;
+
+    if (imageColumn != null) {
+        w = Row(children: [
+            Container(
+                color: Colors.grey.shade200,
+                child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Column(children:
+                    [
+                      ListImage(imageDefinition: values[columnDefinitions.indexByName(imageColumn)])
+                    ]
+                    ))),
+            Expanded(child: Padding(padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5), child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [Text("A"), Text("B"), Text("C")])))
+        ]);
+//        w = Padding(padding: const EdgeInsets.only(top: 1, bottom: 1), child: w);
+    }
+
+    return w ?? Container(height: 30, color: Colors.red.shade300);
   }
 }
