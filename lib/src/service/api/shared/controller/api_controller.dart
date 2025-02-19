@@ -19,7 +19,6 @@ import 'dart:collection';
 import '../../../../model/api_interaction.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/response/api_response.dart';
-import '../../../command/shared/processor/api/download_templates_command_processor.dart';
 import '../api_response_names.dart';
 import '../i_controller.dart';
 import '../i_response_processor.dart';

@@ -137,6 +137,7 @@ abstract class JVxColors {
                   color: COMPONENT_BORDER,
                 )),
             hourMinuteColor: themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.surface,
+            dayPeriodColor: isSelectedLight ? JVxColors.lighten(seedColor, 0.3) : JVxColors.darken(seedColor, 0.3),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BORDER_RADIUS))),
         typography: Typography.material2014()
     );
