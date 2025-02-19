@@ -78,10 +78,9 @@ class ListImageBuilder extends _ListImageBuilder {
 
     return ListImage(
       bytes: model.bytes,
-      height: model.height,
       imageDefinition: model.imageDefinition,
       key: key,
-      width: model.width,
+      radius: model.radius,
     );
   }
 }
@@ -91,16 +90,14 @@ class JsonListImage extends JsonWidgetData {
     Map<String, dynamic> args = const {},
     JsonWidgetRegistry? registry,
     this.bytes,
-    this.height,
     this.imageDefinition,
-    this.width,
+    this.radius,
   }) : super(
           jsonWidgetArgs: ListImageBuilderModel.fromDynamic(
             {
               'bytes': bytes,
-              'height': height,
               'imageDefinition': imageDefinition,
-              'width': width,
+              'radius': radius,
               ...args,
             },
             args: args,
@@ -110,9 +107,8 @@ class JsonListImage extends JsonWidgetData {
             args: ListImageBuilderModel.fromDynamic(
               {
                 'bytes': bytes,
-                'height': height,
                 'imageDefinition': imageDefinition,
-                'width': width,
+                'radius': radius,
                 ...args,
               },
               args: args,
@@ -124,29 +120,24 @@ class JsonListImage extends JsonWidgetData {
 
   final Uint8List? bytes;
 
-  final double? height;
-
   final String? imageDefinition;
 
-  final double? width;
+  final double? radius;
 }
 
 class ListImageBuilderModel extends JsonWidgetBuilderModel {
   const ListImageBuilderModel(
     super.args, {
     this.bytes,
-    this.height,
     this.imageDefinition,
-    this.width,
+    this.radius,
   });
 
   final Uint8List? bytes;
 
-  final double? height;
-
   final String? imageDefinition;
 
-  final double? width;
+  final double? radius;
 
   static ListImageBuilderModel fromDynamic(
     dynamic map, {
@@ -191,14 +182,9 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
         result = ListImageBuilderModel(
           args,
           bytes: map['bytes'],
-          height: () {
-            dynamic parsed = JsonClass.maybeParseDouble(map['height']);
-
-            return parsed;
-          }(),
           imageDefinition: map['imageDefinition'],
-          width: () {
-            dynamic parsed = JsonClass.maybeParseDouble(map['width']);
+          radius: () {
+            dynamic parsed = JsonClass.maybeParseDouble(map['radius']);
 
             return parsed;
           }(),
@@ -213,9 +199,8 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
   Map<String, dynamic> toJson() {
     return JsonClass.removeNull({
       'bytes': bytes,
-      'height': height,
       'imageDefinition': imageDefinition,
-      'width': width,
+      'radius': radius,
       ...args,
     });
   }
@@ -233,9 +218,8 @@ class ListImageSchema {
     'additionalProperties': false,
     'properties': {
       'bytes': SchemaHelper.anySchema,
-      'height': SchemaHelper.numberSchema,
       'imageDefinition': SchemaHelper.stringSchema,
-      'width': SchemaHelper.numberSchema,
+      'radius': SchemaHelper.numberSchema,
     },
   };
 }

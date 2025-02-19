@@ -92,7 +92,7 @@ class _ExportExamplePageState extends State<ExportJsonPage> {
                     decoration: null,
                     child: JsonRow(
                         children: [
-                            JsonPadding(padding: EdgeInsets.all(5), child: JsonText("Welcome"),),
+                            JsonPadding(padding: const EdgeInsets.all(5), child: JsonText("Welcome"),),
                             JsonIcon(Icons.add,
                                 color: Colors.grey.shade400),
                             JsonIcon(FontAwesomeIcons.adn,

@@ -39,6 +39,9 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// With this style list entry will show an arrow
   static const String STYLE_WITH_ARROW = "f_with_arrow";
 
+  /// With this style list entry will be vertically centered
+  static const String STYLE_VCENTER = "f_vcenter";
+
   /// The style for column count per text row
   static const String STYLE_COLUMN_COUNT = "f_list_columncount_";
 
@@ -92,8 +95,6 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
 }
 
 class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMixin {
-  final UniqueKey _center = UniqueKey();
-
   final _controller = ScrollController();
 
   final List<SlidableController> _slideController = [];
@@ -122,43 +123,53 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     String? tpl;
 
     bool asCard = false;
+    bool withArrow = false;
+    bool vCenter = false;
 
     Map<int, int>? mapColumnsPerRow;
 
     if (styles.isNotEmpty) {
 
-      String? styledef;
+      String? styleDef;
 
       for (int i = 0; i < styles.length; i++)
       {
-        styledef = styles.elementAt(i);
+        styleDef = styles.elementAt(i);
 
-        if (styledef.startsWith(FlListWidget.STYLE_TEMPLATE_MARKER)) {
-          styledef = styledef.substring(FlListWidget.STYLE_TEMPLATE_MARKER.length);
+        if (styleDef.startsWith(FlListWidget.STYLE_TEMPLATE_MARKER)) {
+          styleDef = styleDef.substring(FlListWidget.STYLE_TEMPLATE_MARKER.length);
+
+          tpl = styleDef;
         }
-        else if (!asCard && styledef == FlListWidget.STYLE_AS_CARD) {
+        else if (!asCard && styleDef == FlListWidget.STYLE_AS_CARD) {
             asCard = true;
         }
-        else if (styledef.startsWith(FlListWidget.STYLE_COLUMN_COUNT)) {
+        else if (styleDef.startsWith(FlListWidget.STYLE_COLUMN_COUNT)) {
             //e.g. 1_2_2 (means first row = 1 column, second row = 2 columns, third row = 3 columns
-            styledef = styledef.substring(FlListWidget.STYLE_COLUMN_COUNT.length);
+            styleDef = styleDef.substring(FlListWidget.STYLE_COLUMN_COUNT.length);
 
             mapColumnsPerRow = {};
-            List<String> colcount = styledef.split("_");
+            List<String> colCount = styleDef.split("_");
 
-            for (int i = 0; i < colcount.length; i++) {
-                mapColumnsPerRow[i] = int.parse(colcount[i]);
+            for (int i = 0; i < colCount.length; i++) {
+                mapColumnsPerRow[i] = int.parse(colCount[i]);
             }
         }
+        else if (!withArrow && styleDef == FlListWidget.STYLE_WITH_ARROW) {
+          withArrow = true;
+        }
+        else if (!vCenter && styleDef == FlListWidget.STYLE_VCENTER) {
+          vCenter = true;
+        }
       }
-
-      tpl = styledef;
     }
-
-    asCard = true;
 
     _closeSlidablesImmediate();
     _slideController.clear();
+
+//    asCard = false;
+//    withArrow = false;
+    vCenter = true;
 
     return _wrapList(_wrapSlider(
         NotificationListener<ScrollNotification>(
@@ -197,52 +208,109 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                         return Container();
                       }
 
+                      Widget listEntry = FlListEntry(
+                          model: widget.model,
+                          index: index,
+                          columnDefinitions: widget.chunkData.columnDefinitions,
+                          isSelected: index == widget.selectedRowIndex,
+                          values: widget.chunkData.data[index]!,
+                          recordFormat: widget.chunkData.recordFormats?[widget.model.name],
+                          template: tpl,
+                          columnsPerRow: mapColumnsPerRow,
+                          verticalCenter: vCenter
+                      );
+
+                      if (withArrow) {
+                        listEntry = Flex(direction: Axis.horizontal,
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              fit: FlexFit.tight,
+                              child: listEntry
+                            ),
+                            Flexible(
+                              flex: 0,
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Icon(Icons.arrow_forward_ios,
+                                color: Colors.grey.shade300)
+                              )
+                            )
+                          ],
+                        );
+                      }
+
+                      if (widget.slideActionFactory != null) {
+                        List<SlidableAction> slideActions = widget.slideActionFactory?.call(context, index) ?? [];
+
+                        listEntry = Theme(
+                          data: Theme.of(context).copyWith(
+                            outlinedButtonTheme: OutlinedButtonThemeData(
+                              style: OutlinedButton.styleFrom(
+                                iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white,
+                                textStyle: const TextStyle(fontWeight: FontWeight.normal),
+                                iconSize: 16))),
+                          child: Slidable(
+                            key: UniqueKey(),
+                            controller: slideCtrl,
+                            closeOnScroll: true,
+                            direction: Axis.horizontal,
+                            enabled: widget.slideActionFactory != null && slideActions.isNotEmpty == true && widget.model.isEnabled,
+                            groupTag: widget.slideActionFactory,
+                            endActionPane: ActionPane(
+                              extentRatio: 0.50,
+                              dismissible: DismissiblePane(
+                                closeOnCancel: true,
+                                onDismissed: () {
+                                  SlidableController ctrl = _slideController.elementAt(index);
+                                  ctrl.close(duration: const Duration(milliseconds: 0));
+                                  setState(() {
+                                    List<dynamic>? record = widget.chunkData.data[index];
+
+                                    if (record != null) {
+                                      record[record.length - 1] = "DISMISSED";
+                                    }
+
+                                    _slideController.removeAt(index);
+
+                                    HapticFeedback.mediumImpact();
+                                  });
+
+                                  slideActions.last.onPressed!(context);
+                                },
+                              ),
+                              motion: const StretchMotion(),
+                              children: slideActions,
+                            ),
+                            child: listEntry
+                          )
+                        );
+                      }
+
+                      if (asCard) {
+                        listEntry = Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
+                            ),
+                            color: Colors.white,
+                            margin: const EdgeInsets.all(2),
+                            child: ClipPath(
+                                clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS))),
+                                child: listEntry
+                            )
+                        );
+                      }
+
                       Widget listTile = ListTile(
                         minTileHeight: 10,
                         contentPadding: const EdgeInsets.all(0),
+                        horizontalTitleGap: 0,
                         minVerticalPadding: 0,
-                        title: FlListEntry(
-                            model: widget.model,
-                            columnDefinitions: widget.chunkData.columnDefinitions,
-                            slideController: slideCtrl,
-                            slideActionFactory: widget.slideActionFactory,
-                            template: tpl,
-                            columnsPerRow: mapColumnsPerRow,
-                            onDismissed: (index) {
-                              SlidableController ctrl = _slideController.elementAt(index);
-                              ctrl.close(duration: const Duration(milliseconds: 0));
-                              setState(() {
-                                List<dynamic>? record = widget.chunkData.data[index];
-
-                                if (record != null) {
-                                  record[record.length - 1] = "DISMISSED";
-                                }
-
-                                _slideController.removeAt(index);
-
-                                HapticFeedback.mediumImpact();
-                              });
-                            },
-                            values: widget.chunkData.data[index]!,
-                            recordFormat: widget.chunkData.recordFormats?[widget.model.name],
-                            index: index,
-                            isSelected: index == widget.selectedRowIndex),
+                        title: listEntry
                       );
 
-                      if (asCard) {
-                          listTile = Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
-                              ),
-                              color: Colors.white,
-                              margin: const EdgeInsets.all(2),
-                              child: ClipPath(
-                                  clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS))),
-                                  child: listTile
-                              )
-                          );
-                      }
                       return listTile;
                     },
                   ),

@@ -16,10 +16,9 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 
-import 'package:avatars/avatars.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
@@ -33,36 +32,26 @@ typedef DismissedCallback = void Function(int index);
 
 class FlListEntry extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Callbacks
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// The callback for dismissed row
-  final DismissedCallback? onDismissed;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The colum definitions to build.
+  /// The colum definitions to build
   final ColumnList columnDefinitions;
 
-  /// The value of the cell;
+  /// The value of the cell
   final List<dynamic> values;
 
-  /// The index of the row this column is in.
+  /// The index of the row this column is in
   final int index;
 
-  /// If this row is selected.
+  /// If this row is selected
   final bool isSelected;
+
+  /// If vertical centered
+  final bool verticalCenter;
 
   /// The record formats
   final RecordFormat? recordFormat;
-
-  /// the slide controller
-  final SlidableController? slideController;
-
-  /// Which slide actions are to be allowed to the row.
-  final TableSlideActionFactory? slideActionFactory;
 
   /// custom card template as json
   final String? template;
@@ -75,8 +64,6 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
   const FlListEntry({super.key,
     required super.model,
-    this.slideController,
-    this.slideActionFactory,
     required this.columnDefinitions,
     required this.values,
     required this.index,
@@ -84,7 +71,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     this.recordFormat,
     this.template,
     this.columnsPerRow,
-    this.onDismissed});
+    this.verticalCenter = false});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -92,38 +79,6 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
   @override
   Widget build(BuildContext context) {
-    Widget card = _createCard(context);
-
-    List<SlidableAction> slideActions = slideActionFactory?.call(context, index) ?? [];
-
-    return Theme(
-      data: Theme.of(context).copyWith(outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white, textStyle: const TextStyle(fontWeight: FontWeight.normal), iconSize: 16))),
-      child: Slidable(
-          key: UniqueKey(),
-          controller: slideController,
-          closeOnScroll: true,
-          direction: Axis.horizontal,
-          enabled: slideActionFactory != null && slideActions.isNotEmpty == true && model.isEnabled,
-          groupTag: slideActionFactory,
-          endActionPane: ActionPane(
-            extentRatio: 0.50,
-            dismissible: DismissiblePane(
-              closeOnCancel: true,
-              onDismissed: () {
-                if (onDismissed != null) {
-                  onDismissed!(index);
-                }
-                slideActions.last.onPressed!(context);
-              },
-            ),
-            motion: const StretchMotion(),
-            children: slideActions,
-          ),
-          child: card),
-    );
-  }
-
-  Widget _createCard(BuildContext context) {
     Widget? card;
 
     if (template != null) {
@@ -193,6 +148,20 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   }
 
   Widget _defaultEntry(BuildContext context) {
+/*
+    return Container(color: Colors.grey, child: Padding(padding: EdgeInsets.all(0), child: Container(color: Colors.yellow, child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children:
+    [
+      Container(color: Colors.red, child: Column(children: [Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          child: Icon(Icons.arrow_forward_ios,
+              color: Colors.grey.shade300)
+      )])),
+      Column(mainAxisAlignment: MainAxisAlignment.end, children: [Text("A"), Text("B"), Text("C"), Text("D"), Text("E")],),
+    ],))));
+*/
     String? imageColumn;
     List<String> valueColumns = [];
 
@@ -213,22 +182,120 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       }
     }
 
+    int maxColumns = valueColumns.length;
+    int colPos = 0;
+    int cols;
+
+    List<Widget> liRows = [];
+
+    Row? row;
+
+    dynamic value;
+    String valueAsText;
+
+    //We use the theme style and ignore card styling
+    TextStyle? textStyle = Theme.of(context).textTheme.labelLarge;
+
+    print(math.max(3, columnsPerRow?.length ?? 0));
+
+
+    //we show per default max. 3 Rows, but it's possible to show more than 1 column per row
+    //also if more rows are defined per columns, it's possible to have more than 3 rows
+    for (int i = 0; i < math.max(3, columnsPerRow?.length ?? 0) && colPos < maxColumns; i++) {
+      row = null;
+
+      if (columnsPerRow?[i] != null) {
+        cols = columnsPerRow![i]!;
+
+        List<Widget> liColumns = [];
+
+        for (int j = 0; j < cols && colPos < maxColumns; j++) {
+          value = values[columnDefinitions.indexByName(valueColumns[colPos++])];
+
+          if (value != null) {
+            valueAsText = value.toString();
+          }
+          else {
+            valueAsText = "";
+          }
+
+          if (liColumns.isNotEmpty && valueAsText.isNotEmpty && j > 0) {
+            valueAsText = " $valueAsText";
+          }
+
+          if (valueAsText.isNotEmpty) {
+            liColumns.add(Text(valueAsText, style: textStyle));
+          }
+        }
+
+        if (liColumns.isNotEmpty) {
+          row = Row(children: liColumns);
+        }
+      }
+      else {
+        value = values[columnDefinitions.indexByName(valueColumns[colPos++])];
+
+        if (value != null) {
+          valueAsText = value.toString();
+        }
+        else {
+          valueAsText = "";
+        }
+
+        if (valueAsText.isNotEmpty) {
+          row = Row(children: [Text(valueAsText, style: textStyle)]);
+        }
+      }
+
+      //if we don't have a image column -> show exactly 3 rows, otherwise rows have different height
+      if (row == null && imageColumn == null) {
+        row = Row(children: [Text("", style: textStyle)]);
+      }
+
+      if (row != null) {
+        liRows.add(row);
+
+        if (liRows.length > 1) {
+          //Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0)
+          liRows[liRows.length - 1] = Padding(padding: const EdgeInsets.only(top: 5), child: liRows[liRows.length - 1]);
+        }
+      }
+    }
+
     Widget? w;
 
     if (imageColumn != null) {
-        w = Row(children: [
+      w = IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
             Container(
-                color: Colors.grey.shade200,
-                child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Column(children:
-                    [
-                      ListImage(imageDefinition: values[columnDefinitions.indexByName(imageColumn)])
-                    ]
-                    ))),
-            Expanded(child: Padding(padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5), child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [Text("A"), Text("B"), Text("C")])))
-        ]);
-//        w = Padding(padding: const EdgeInsets.only(top: 1, bottom: 1), child: w);
+              color: Colors.grey.shade200,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: ListImage(imageDefinition: values[columnDefinitions.indexByName(imageColumn)])
+              )
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                child: Column(
+                  mainAxisAlignment: verticalCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
+                  children: liRows
+                )
+              )
+            )
+          ]
+        )
+      );
+    }
+    else {
+      w = Padding(
+            padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+            child: Column(
+                    mainAxisAlignment: verticalCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
+                    children: liRows)
+          );
     }
 
     return w ?? Container(height: 30, color: Colors.red.shade300);

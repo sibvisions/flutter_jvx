@@ -16,6 +16,7 @@
 
 import 'dart:math';
 
+import 'package:avatars/avatars.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
@@ -42,40 +43,36 @@ abstract class _ListImageBuilder extends JsonWidgetBuilder {
 class ListImage extends StatelessWidget {
   final String? imageDefinition;
   final Uint8List? bytes;
-  final double? width;
-  final double? height;
+  final double? radius;
 
   const ListImage({
     super.key,
     this.imageDefinition,
     this.bytes,
-    this.width,
-    this.height,
+    this.radius,
   });
 
   @override
   Widget build(BuildContext context) {
+    double radius_ = radius ?? 30;
+
     if (bytes != null) {
-      return Container(
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: MemoryImage(bytes!),
-              )),
-          width: width ?? 60,
-          height: height ?? 60);
+      return CircleAvatar(
+        minRadius: radius_,
+        backgroundImage: MemoryImage(bytes!),
+      );
     } else if (imageDefinition != null) {
-        return ClipRRect(
-            borderRadius: BorderRadius.circular(30.0),
-            child: ImageLoader.loadImage(imageDefinition!, width: width ?? 60, height: height ?? 60),
-        );
+      return CircleAvatar(
+          minRadius: radius_,
+          backgroundImage: ImageLoader.getImageProvider(imageDefinition!));
     }
     else {
       return CircleAvatar(
-          radius: max(width ?? 30, height ?? 30),
+          radius: radius_,
           backgroundColor: Colors.grey.shade300,
-          child: Icon(Icons.person, size: max(width ?? 45, height ?? 45), color: Colors.grey.shade700));
+          child: Icon(Icons.person,
+              size: radius_ * 1.5,
+              color: Colors.grey.shade700));
     }
   }
 }
