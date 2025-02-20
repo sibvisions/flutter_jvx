@@ -52,7 +52,7 @@ class ErrorDialog extends StatelessWidget with JVxDialog implements IError {
     this.retry = false,
     dismissible,
   }) {
-    dismissible = dismissible;
+    this.dismissible = dismissible;
     modal = true;
   }
 
