@@ -85,16 +85,18 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
   ICellEditor({
     required this.model,
     required this.cellEditorJson,
-    required this.onValueChange,
-    required this.onEndEditing,
     required this.dataProvider,
     required this.columnName,
-    this.isInTable = false,
+    required this.onValueChange,
+    required this.onEndEditing,
     this.name,
     this.columnDefinition,
+    this.isInTable = false,
   }) {
     model.applyFromJson(cellEditorJson);
   }
+
+  static void _noop(dynamic object) {}
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
@@ -135,9 +137,9 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
     required String pName,
     ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
-    required Function(dynamic) onChange,
-    required Function(dynamic) onEndEditing,
-    required Function(bool) onFocusChanged,
+    Function(dynamic)? onChange,
+    Function(dynamic)? onEndEditing,
+    Function(bool)? onFocusChanged,
     required bool isInTable,
     RecalculateCallback? pRecalculateCallback,
     required String dataProvider,
@@ -151,8 +153,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
         return FlTextCellEditor(
           columnDefinition: columnDefinition,
           cellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
+          onValueChange: onChange ?? _noop,
+          onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           columnName: columnName,
@@ -162,8 +164,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
         return FlCheckBoxCellEditor(
           columnDefinition: columnDefinition,
           cellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
+          onValueChange: onChange ?? _noop,
+          onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           columnName: columnName,
@@ -173,8 +175,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
         return FlNumberCellEditor(
           columnDefinition: columnDefinition,
           cellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
+          onValueChange: onChange ?? _noop,
+          onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           columnName: columnName,
@@ -184,8 +186,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
         return FlImageCellEditor(
           columnDefinition: columnDefinition,
           cellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
+          onValueChange: onChange ?? _noop,
+          onEndEditing: onEndEditing ?? _noop,
           isInTable: isInTable,
           recalculateSizeCallback: pRecalculateCallback,
           columnName: columnName,
@@ -195,8 +197,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
         return FlChoiceCellEditor(
           columnDefinition: columnDefinition,
           cellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
+          onValueChange: onChange ?? _noop,
+          onEndEditing: onEndEditing ?? _noop,
           isInTable: isInTable,
           recalculateSizeCallback: pRecalculateCallback,
           columnName: columnName,
@@ -206,8 +208,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
         return FlDateCellEditor(
           columnDefinition: columnDefinition,
           cellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
+          onValueChange: onChange ?? _noop,
+          onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           columnName: columnName,
@@ -219,8 +221,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
           name: pName,
           columnDefinition: columnDefinition,
           cellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
+          onValueChange: onChange ?? _noop,
+          onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           columnName: columnName,

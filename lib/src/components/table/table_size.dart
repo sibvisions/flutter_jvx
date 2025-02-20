@@ -675,18 +675,12 @@ class TableSize {
     }
   }
 
-  ///no operation
-  static void _noop(dynamic object) {}
-
   ICellEditor _createCellEditor(ColumnDefinition colDef, DalMetaData metaData) {
     return ICellEditor.getCellEditor(
       pName: "",
       pCellEditorJson: colDef.cellEditorJson,
       columnName: colDef.name,
       dataProvider: metaData.dataProvider,
-      onChange: _noop,
-      onEndEditing: _noop,
-      onFocusChanged: _noop,
       isInTable: true,
     );
   }
