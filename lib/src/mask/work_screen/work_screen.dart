@@ -128,29 +128,19 @@ class WorkScreen extends StatelessWidget {
               );
             }
 
-            //Use a listener to handle work-screen global events
-            return Listener(
-                onPointerDown: (event) {
-                    List<GlobalSubscription> copy = FlutterUI.globalSubscriptions();
-
-                    for (int i = 0; i < copy.length; i++) {
-                      copy[i].onTap?.call(event);
-                    }
-                },
-              child: SingleChildScrollView(
-                physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      height: screenHeight,
-                      width: constraints.maxWidth,
-                      child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
-                    ),
-                    screenWidget
-                  ],
-                ),
-              )
+            return SingleChildScrollView(
+              physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              child: Stack(
+                children: [
+                  SizedBox(
+                    height: screenHeight,
+                    width: constraints.maxWidth,
+                    child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
+                  ),
+                  screenWidget
+                ],
+              ),
             );
           },
         ),

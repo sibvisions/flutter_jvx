@@ -104,27 +104,19 @@ class ContentState extends State<Content> {
             subject.add(size);
           }
 
-          return Listener(onPointerDown: (event) {
-                            List<GlobalSubscription> copy = FlutterUI.globalSubscriptions();
-
-                            for (int i = 0; i < copy.length; i++) {
-                              copy[i].onTap?.call(event);
-                            }
-                          },
-                          child: SingleChildScrollView(
-                            physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            child: Stack(
-                              children: [
-                                SizedBox(
-                                  height: screenHeight,
-                                  width: constraints.maxWidth,
-                                  child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
-                                ),
-                                screenWidget
-                              ],
-                            ),
-                          )
+          return SingleChildScrollView(
+            physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: screenHeight,
+                  width: constraints.maxWidth,
+                  child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
+                ),
+                screenWidget
+              ],
+            ),
           );
         },
       ),
@@ -180,9 +172,18 @@ class ContentDialog extends StatelessWidget {
             automaticallyImplyLeading: false,
           ),
           Expanded(
-            child: Content(
-              model: model,
-            ),
+            child: Listener(
+              onPointerDown: (event) {
+                List<GlobalSubscription> copy = FlutterUI.globalSubscriptions();
+
+                for (int i = 0; i < copy.length; i++) {
+                  copy[i].onTap?.call(event);
+                }
+              },
+              child: Content(
+                model: model,
+              )
+            )
           ),
         ],
       ),
@@ -241,18 +242,28 @@ class ContentBottomSheet extends StatelessWidget {
         title: Text(model.contentTitle ?? model.name),
         automaticallyImplyLeading: false,
       ),
-      body: SafeArea(
-        top: false,
-        child: NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification notification) {
-            // This is a hack to prevent the bottom sheet from scrolling
-            // when the content is scrollable.
-            return true;
-          },
-          child: Content(
-            model: model,
-          ),
-        ),
+      body: Listener(
+        onPointerDown: (event) {
+          List<GlobalSubscription> copy = FlutterUI.globalSubscriptions();
+
+          for (int i = 0; i < copy.length; i++) {
+            copy[i].onTap?.call(event);
+          }
+        },
+        child: Container(
+          decoration: const BoxDecoration(),
+          child: SafeArea(
+            top: false,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                // This is a hack to prevent the bottom sheet from scrolling
+                // when the content is scrollable.
+                return true;
+              },
+              child: Content(model: model)
+            ),
+          )
+        )
       ),
     );
 

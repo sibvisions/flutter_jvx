@@ -307,19 +307,50 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   ///Wraps the body (= screen) with a SafeArea or without if noSafeArea property is set
   Widget _wrapBody(Widget body) {
+    safeAreaColor = null;
+    Widget wrappedBody;
+
     if (model?.fullSize == true) {
-      return body;
+      wrappedBody = body;
     } else {
-      return Container(
+      if (safeAreaColor != null) {
+        wrappedBody = Container(
           color: safeAreaColor,
           child: SafeArea(
-              child: Container(
-                color: safeAreaColor != null ? Theme.of(context).colorScheme.surface : null,
-                child: body,
-              )
+            child: Container(
+              color: safeAreaColor != null ? Theme.of(context).colorScheme.surface : null,
+              child: body,
+            )
           )
+        );
+      }
+      else {
+        //we need a container with BoxDecoration around, because without we don't receive
+        //events from [Listener]
+        wrappedBody = Container(
+          decoration: const BoxDecoration(),
+          child: SafeArea(
+            child: body
+          )
+        );
+      }
+    }
+
+    if (body is WorkScreen) {
+      //Use a listener to handle work-screen global events
+      wrappedBody = Listener(
+          onPointerDown: (event) {
+            List<GlobalSubscription> copy = FlutterUI.globalSubscriptions();
+
+            for (int i = 0; i < copy.length; i++) {
+              copy[i].onTap?.call(event);
+            }
+          },
+          child: wrappedBody
       );
     }
+
+    return wrappedBody;
   }
 
   Widget _buildWorkScreen(BuildContext context, bool isOffline) {
