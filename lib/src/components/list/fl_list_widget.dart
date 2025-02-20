@@ -14,13 +14,17 @@
  * the License.
  */
 
+import 'dart:ui';
+
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
+import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_list_entry.dart';
 
+typedef ListTapCallback = void Function(int rowIndex);
 typedef ListSlideActionFactory = List<SlidableAction> Function(BuildContext context, int row);
 typedef ListScrollCallback = Function(ScrollNotification scrollNotification);
 typedef ListScrollEndCallback = bool Function();
@@ -39,11 +43,17 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// With this style list entry will show an arrow
   static const String STYLE_WITH_ARROW = "f_with_arrow";
 
-  /// With this style list entry will be vertically centered
-  static const String STYLE_VCENTER = "f_vcenter";
+  /// With this style list entry will be vertically top aligned
+  static const String STYLE_VALIGN_TOP = "f_valign_top";
+
+  /// With this style list entry will be vertically bottom aligned
+  static const String STYLE_VALIGN_BOTTOM = "f_valign_bottom";
 
   /// The style for column count per text row
   static const String STYLE_COLUMN_COUNT = "f_list_columncount_";
+
+  /// The style for column separation character
+  static const String STYLE_COLUMN_SEPARATOR = "f_list_columnseparator_";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Callbacks
@@ -58,6 +68,8 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// Gets called when the user scrolled the list.
   final ListScrollCallback? onScroll;
 
+  final ListTapCallback? onTap;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +83,9 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// Which slide actions are to be allowed to the row.
   final ListSlideActionFactory? slideActionFactory;
 
+  /// the cell editors
+  final Map<String, ICellEditor> cellEditors;
+
   /// The selected current row.
   final int selectedRowIndex;
 
@@ -83,11 +98,13 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
     required super.model,
     required this.chunkData,
     required this.metaData,
+    required this.cellEditors,
     this.slideActionFactory,
     this.selectedRowIndex = -1,
     this.onRefresh,
     this.onScroll,
-    this.onEndScroll
+    this.onEndScroll,
+    this.onTap
   });
 
   @override
@@ -103,6 +120,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   void initState() {
     super.initState();
 
+    FlutterUI.registerGlobalSubscription(GlobalSubscription(subbedObj: this, onTap: _closeSlidables));
     /*
     _controller.addListener(() {
       if (_controller.position.userScrollDirection ==
@@ -117,6 +135,13 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+    FlutterUI.disposeGlobalSubscription(this);
+  }
+
+  @override
   Widget build(BuildContext context) {
     Set<String> styles = widget.model.styles;
 
@@ -124,9 +149,10 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
     bool asCard = false;
     bool withArrow = false;
-    bool vCenter = false;
+    MainAxisAlignment? vAlign;
 
     Map<int, int>? mapColumnsPerRow;
+    List<String>? columnSeparator;
 
     if (styles.isNotEmpty) {
 
@@ -142,24 +168,43 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
           tpl = styleDef;
         }
         else if (!asCard && styleDef == FlListWidget.STYLE_AS_CARD) {
-            asCard = true;
+          asCard = true;
         }
         else if (styleDef.startsWith(FlListWidget.STYLE_COLUMN_COUNT)) {
-            //e.g. 1_2_2 (means first row = 1 column, second row = 2 columns, third row = 3 columns
-            styleDef = styleDef.substring(FlListWidget.STYLE_COLUMN_COUNT.length);
+          //e.g. 1_2_3 (means first row = 1 column, second row = 2 columns, third row = 3 columns)
+          styleDef = styleDef.substring(FlListWidget.STYLE_COLUMN_COUNT.length);
 
-            mapColumnsPerRow = {};
-            List<String> colCount = styleDef.split("_");
+          mapColumnsPerRow = {};
+          List<String> colCount = styleDef.split("_");
 
-            for (int i = 0; i < colCount.length; i++) {
-                mapColumnsPerRow[i] = int.parse(colCount[i]);
-            }
+          for (int i = 0; i < colCount.length; i++) {
+            mapColumnsPerRow[i] = int.parse(colCount[i]);
+          }
+        }
+        else if (styleDef.startsWith(FlListWidget.STYLE_COLUMN_SEPARATOR)) {
+          //e.g. :_,_%20,%20 (first separator = colon, second = comma, third = space colon space)
+          styleDef = styleDef.substring(FlListWidget.STYLE_COLUMN_SEPARATOR.length);
+
+          columnSeparator = [];
+          List<String> separators = styleDef.split("_");
+
+          for (int i = 0; i < separators.length; i++) {
+            columnSeparator.add(separators[i].
+              replaceAll("%20", " ").
+              replaceAll("%5f", "_").
+              replaceAll("%5F", "_").
+              replaceAll("%2c", ",").
+              replaceAll("%2C", ","));
+          }
         }
         else if (!withArrow && styleDef == FlListWidget.STYLE_WITH_ARROW) {
           withArrow = true;
         }
-        else if (!vCenter && styleDef == FlListWidget.STYLE_VCENTER) {
-          vCenter = true;
+        else if (styleDef == FlListWidget.STYLE_VALIGN_TOP) {
+          vAlign = MainAxisAlignment.start;
+        }
+        else if (styleDef == FlListWidget.STYLE_VALIGN_BOTTOM) {
+          vAlign = MainAxisAlignment.end;
         }
       }
     }
@@ -167,9 +212,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     _closeSlidablesImmediate();
     _slideController.clear();
 
+//    mapColumnsPerRow?.clear();
 //    asCard = false;
 //    withArrow = false;
-    vCenter = true;
+//    vAlign = MainAxisAlignment.start;
+    vAlign = null;
 
     return _wrapList(_wrapSlider(
         NotificationListener<ScrollNotification>(
@@ -208,16 +255,20 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                         return Container();
                       }
 
+                      bool selected = index == widget.selectedRowIndex;
+
                       Widget listEntry = FlListEntry(
                           model: widget.model,
                           index: index,
                           columnDefinitions: widget.chunkData.columnDefinitions,
-                          isSelected: index == widget.selectedRowIndex,
+                          cellEditors: widget.cellEditors,
+                          isSelected: selected,
                           values: widget.chunkData.data[index]!,
                           recordFormat: widget.chunkData.recordFormats?[widget.model.name],
                           template: tpl,
                           columnsPerRow: mapColumnsPerRow,
-                          verticalCenter: vCenter
+                          columnSeparator: columnSeparator,
+                          mainAxisAlignment: vAlign
                       );
 
                       if (withArrow) {
@@ -239,6 +290,24 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                             )
                           ],
                         );
+                      }
+
+                      if (selected && widget.model.showSelection) {
+                        ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
+
+                        Color? colSelection;
+
+                        if (JVxColors.isLightTheme(context)) {
+                          colSelection = applicationSettings.colors?.activeSelectionBackground;
+                        } else {
+                          colSelection = applicationSettings.darkColors?.activeSelectionBackground;
+                        }
+
+                        colSelection ??= Theme.of(context).colorScheme.primary;
+
+                        colSelection = colSelection.withAlpha(Color.getAlphaFromOpacity(0.10));
+
+                        listEntry = Container(color: colSelection, child: listEntry);
                       }
 
                       if (widget.slideActionFactory != null) {
@@ -310,6 +379,15 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                         minVerticalPadding: 0,
                         title: listEntry
                       );
+
+                      if (widget.onTap != null) {
+                        listTile = GestureDetector(
+                          onTap: widget.onTap != null && widget.model.isEnabled
+                            ? () => widget.onTap!(index)
+                            : null,
+                          child: listTile,
+                        );
+                      }
 
                       return listTile;
                     },

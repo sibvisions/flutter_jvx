@@ -13,10 +13,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
-import 'dart:math';
-
-import 'package:avatars/avatars.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
@@ -44,12 +40,18 @@ class ListImage extends StatelessWidget {
   final String? imageDefinition;
   final Uint8List? bytes;
   final double? radius;
+  final IconData? icon;
+  final Color? iconColor;
+  final Color? iconBackgroundColor;
 
   const ListImage({
     super.key,
     this.imageDefinition,
     this.bytes,
     this.radius,
+    this.icon,
+    this.iconColor,
+    this.iconBackgroundColor
   });
 
   @override
@@ -69,10 +71,10 @@ class ListImage extends StatelessWidget {
     else {
       return CircleAvatar(
           radius: radius_,
-          backgroundColor: Colors.grey.shade300,
-          child: Icon(Icons.person,
+          backgroundColor: iconBackgroundColor ?? Colors.grey.shade300,
+          child: Icon(icon ?? Icons.person,
               size: radius_ * 1.5,
-              color: Colors.grey.shade700));
+              color: iconColor ?? Colors.grey.shade700));
     }
   }
 }

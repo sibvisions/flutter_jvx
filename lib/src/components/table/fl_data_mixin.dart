@@ -100,4 +100,38 @@ mixin FlDataMixin {
         return true;
     }
 
+    /// Creates an identifying filter for the given row [index].
+    Filter? createFilter(int index) {
+        List<String> listColumnNames = [];
+        List<dynamic> listValues = [];
+
+        if (metaData.primaryKeyColumns.isNotEmpty) {
+            listColumnNames.addAll(metaData.primaryKeyColumns);
+        } else {
+            listColumnNames.addAll(metaData.columnDefinitions.map((e) => e.name));
+        }
+
+        for (String column in listColumnNames) {
+            listValues.add(_getValue(column, index));
+        }
+
+        return Filter(values: listValues, columnNames: listColumnNames);
+    }
+
+    /// Gets the value of a specified column for a specific row [index] or the selected row
+    dynamic _getValue(String columnName, [int? index]) {
+        int rowIndex = index ?? selectedRow;
+        if (rowIndex == -1 || rowIndex >= dataChunk.data.length) {
+            return;
+        }
+
+        int colIndex = dataChunk.columnDefinitions.indexByName(columnName);
+
+        if (colIndex == -1) {
+            return;
+        }
+
+        return dataChunk.data[rowIndex]![colIndex];
+    }
+
 }

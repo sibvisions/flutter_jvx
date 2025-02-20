@@ -24,9 +24,12 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/command/ui/set_focus_command.dart';
 import '../../util/column_list.dart';
+import '../../util/jvx_logger.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import '../editor/cell_editor/i_cell_editor.dart';
 import '../table/fl_data_mixin.dart';
 import '../table/fl_table_wrapper.dart';
 
@@ -68,6 +71,9 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// The columns to show (based on [model.columnNames])
   ColumnList? columnsToShow;
+
+  /// The cell editors
+  Map<String, ICellEditor> cellEditors = {};
 
   /// The item scroll controller.
   final ItemScrollController itemScrollController = ItemScrollController();
@@ -154,11 +160,13 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       model: model,
       chunkData: dataChunk,
       metaData: metaData,
-      slideActionFactory: createSlideActions,
+      cellEditors: cellEditors,
+      slideActionFactory: _createSlideActions,
       selectedRowIndex: selectedRow,
       onRefresh: _refresh,
       onEndScroll: _loadMore,
       onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
+      onTap: _onListTap
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -182,6 +190,8 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   @override
   void dispose() {
     _unsubscribe();
+
+    _disposeCellEditors();
 
     super.dispose();
   }
@@ -267,6 +277,9 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// Receives which row is selected.
   void _receiveSelectedRecord(DataRecord? pRecord) {
+
+    print("Received selected record: ${pRecord?.index}");
+
     currentState |= LOADED_SELECTED_RECORD;
 
     if (pRecord != null) {
@@ -298,12 +311,43 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
     metaData = pMetaData;
 
+    _rebuildCellEditors();
+
     setState(() {});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Disposes all created cell editors
+  void _disposeCellEditors() {
+    for (ICellEditor ced in cellEditors.values) {
+      ced.dispose();
+    }
+
+    cellEditors.clear();
+  }
+
+  /// Rebuilds cell editors for all columns
+  void _rebuildCellEditors() {
+    _disposeCellEditors();
+
+    ColumnList colDef = metaData.columnDefinitions;
+
+    for (int i = 0; i < colDef.length; i++) {
+      ICellEditor ced = ICellEditor.getCellEditor(
+        pName: widget.model.name,
+        columnDefinition: colDef[i],
+        columnName: colDef[i].name,
+        dataProvider: widget.model.dataProvider,
+        pCellEditorJson: colDef[i].cellEditorJson,
+        isInTable: true,
+      );
+
+      cellEditors[colDef[i].name] = ced;
+    }
+  }
 
   /// Refreshes this data provider
   Future<void> _refresh() {
@@ -328,8 +372,6 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       _loadingData = true;
       _lastLoad = now;
 
-      print("=> Load more from backend ${dataChunk.data.length}");
-
       pageCount++;
       _subscribe();
 
@@ -350,7 +392,8 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     lastScrolledToIndex = selectedRow;
   }
 
-  List<SlidableAction> createSlideActions(BuildContext context, int row) {
+  /// Creates actions for row slidable
+  List<SlidableAction> _createSlideActions(BuildContext context, int row) {
     List<SlidableAction> slideActions = [];
 
     bool isLight = JVxColors.isLightTheme(context);
@@ -398,6 +441,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     return slideActions;
   }
 
+  /// Gets whether any cell in a row is editable
   bool _isAnyCellInRowEditable(int pRowIndex) {
     return _getColumnsToShow().any((column) => isCellEditable(pRowIndex, column.name));
   }
@@ -416,6 +460,91 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     }
 
     return columnsToShow!;
+  }
+
+  void _onListTap(int index) {
+      if (FlutterUI.logUI.cl(Lvl.d)) {
+        FlutterUI.logUI.d("List cell tapped: $index");
+//        FlutterUI.logUI.d("Active last single tap timer: ${lastSingleTapTimer?.isActive}");
+      }
+
+      _sendSelectRecord(index);
+/*
+      if (lastTappedColumn == pColumnName && lastTappedRow == pRowIndex && lastSingleTapTimer?.isActive == true) {
+        if (FlutterUI.logUI.cl(Lvl.d)) {
+          FlutterUI.logUI.d("Tap type: double");
+        }
+        lastTappedColumn = null;
+        lastTappedRow = null;
+        lastSingleTapTimer?.cancel();
+        lastSelectionTapFuture?.then((value) {
+          if (FlutterUI.logUI.cl(Lvl.d)) {
+            FlutterUI.logUI.d("Selecting was: $value");
+          }
+
+          if (value) {
+            if (FlutterUI.logUI.cl(Lvl.d)) {
+              FlutterUI.logUI.d("Double tap action");
+            }
+
+            _onDoubleTap(pRowIndex, pColumnName, pCellEditor);
+          }
+        });
+      } else {
+        if (FlutterUI.logUI.cl(Lvl.d)) {
+          FlutterUI.logUI.d("Tap type: single");
+        }
+        lastTappedColumn = pColumnName;
+        lastTappedRow = pRowIndex;
+        lastSingleTapTimer?.cancel();
+        lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
+        lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
+          lastSelectionTapFuture?.then((value) {
+            if (FlutterUI.logUI.cl(Lvl.d)) {
+              FlutterUI.logUI.d("Selecting was: $value");
+            }
+
+            if (value) {
+              FlutterUI.logUI.d("Single tap action");
+
+              _onSingleTap(pRowIndex, pColumnName, pCellEditor);
+            }
+          });
+        });
+      }
+ */
+  }
+
+  /// Selects the record.
+  Future<bool> _sendSelectRecord(int index) async {
+    if (index >= dataChunk.data.length) {
+      FlutterUI.logUI.i("Row index out of range: $index");
+      return false;
+    }
+
+    Filter? filter = createFilter(index);
+
+    if (filter == null) {
+      if (FlutterUI.logUI.cl(Lvl.w)) {
+        FlutterUI.logUI.w("Filter of table(${model.id}) null");
+      }
+      return false;
+    }
+
+    List<BaseCommand> commands = await IUiService().collectAllEditorSaveCommands(model.id, "Selecting row in table.");
+
+    commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+
+    commands.add(
+      SelectRecordCommand(
+        dataProvider: model.dataProvider,
+        rowNumber: index,
+        reason: "Tapped",
+        filter: filter,
+      ),
+    );
+
+    return ICommandService().sendCommands(commands, delayUILocking: true);
   }
 
 }

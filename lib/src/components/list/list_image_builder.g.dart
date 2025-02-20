@@ -78,6 +78,9 @@ class ListImageBuilder extends _ListImageBuilder {
 
     return ListImage(
       bytes: model.bytes,
+      icon: model.icon,
+      iconBackgroundColor: model.iconBackgroundColor,
+      iconColor: model.iconColor,
       imageDefinition: model.imageDefinition,
       key: key,
       radius: model.radius,
@@ -90,12 +93,18 @@ class JsonListImage extends JsonWidgetData {
     Map<String, dynamic> args = const {},
     JsonWidgetRegistry? registry,
     this.bytes,
+    this.icon,
+    this.iconBackgroundColor,
+    this.iconColor,
     this.imageDefinition,
     this.radius,
   }) : super(
           jsonWidgetArgs: ListImageBuilderModel.fromDynamic(
             {
               'bytes': bytes,
+              'icon': icon,
+              'iconBackgroundColor': iconBackgroundColor,
+              'iconColor': iconColor,
               'imageDefinition': imageDefinition,
               'radius': radius,
               ...args,
@@ -107,6 +116,9 @@ class JsonListImage extends JsonWidgetData {
             args: ListImageBuilderModel.fromDynamic(
               {
                 'bytes': bytes,
+                'icon': icon,
+                'iconBackgroundColor': iconBackgroundColor,
+                'iconColor': iconColor,
                 'imageDefinition': imageDefinition,
                 'radius': radius,
                 ...args,
@@ -120,6 +132,12 @@ class JsonListImage extends JsonWidgetData {
 
   final Uint8List? bytes;
 
+  final IconData? icon;
+
+  final Color? iconBackgroundColor;
+
+  final Color? iconColor;
+
   final String? imageDefinition;
 
   final double? radius;
@@ -129,11 +147,20 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
   const ListImageBuilderModel(
     super.args, {
     this.bytes,
+    this.icon,
+    this.iconBackgroundColor,
+    this.iconColor,
     this.imageDefinition,
     this.radius,
   });
 
   final Uint8List? bytes;
+
+  final IconData? icon;
+
+  final Color? iconBackgroundColor;
+
+  final Color? iconColor;
 
   final String? imageDefinition;
 
@@ -182,6 +209,30 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
         result = ListImageBuilderModel(
           args,
           bytes: map['bytes'],
+          icon: () {
+            dynamic parsed = ThemeDecoder.decodeIconData(
+              map['icon'],
+              validate: false,
+            );
+
+            return parsed;
+          }(),
+          iconBackgroundColor: () {
+            dynamic parsed = ThemeDecoder.decodeColor(
+              map['iconBackgroundColor'],
+              validate: false,
+            );
+
+            return parsed;
+          }(),
+          iconColor: () {
+            dynamic parsed = ThemeDecoder.decodeColor(
+              map['iconColor'],
+              validate: false,
+            );
+
+            return parsed;
+          }(),
           imageDefinition: map['imageDefinition'],
           radius: () {
             dynamic parsed = JsonClass.maybeParseDouble(map['radius']);
@@ -199,6 +250,15 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
   Map<String, dynamic> toJson() {
     return JsonClass.removeNull({
       'bytes': bytes,
+      'icon': ThemeEncoder.encodeIconData(
+        icon,
+      ),
+      'iconBackgroundColor': ThemeEncoder.encodeColor(
+        iconBackgroundColor,
+      ),
+      'iconColor': ThemeEncoder.encodeColor(
+        iconColor,
+      ),
       'imageDefinition': imageDefinition,
       'radius': radius,
       ...args,
@@ -218,6 +278,9 @@ class ListImageSchema {
     'additionalProperties': false,
     'properties': {
       'bytes': SchemaHelper.anySchema,
+      'icon': SchemaHelper.objectSchema(IconDataSchema.id),
+      'iconBackgroundColor': SchemaHelper.objectSchema(ColorSchema.id),
+      'iconColor': SchemaHelper.objectSchema(ColorSchema.id),
       'imageDefinition': SchemaHelper.stringSchema,
       'radius': SchemaHelper.numberSchema,
     },

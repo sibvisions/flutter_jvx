@@ -792,7 +792,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       return false;
     }
 
-    Filter? filter = _createFilter(pRowIndex: pRowIndex);
+    Filter? filter = createFilter(pRowIndex);
+
     if (filter == null) {
       if (FlutterUI.logUI.cl(Lvl.w)) {
         FlutterUI.logUI.w("Filter of table(${model.id}) null");
@@ -827,7 +828,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       dataProvider: model.dataProvider,
       columnNames: pColumnNames,
       values: pValues,
-      filter: _createFilter(pRowIndex: pRowIndex),
+      filter: createFilter(pRowIndex),
       rowNumber: pRowIndex,
       reason: "Values changed in table",
     );
@@ -854,57 +855,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   InsertRecordCommand _createInsertCommand() {
     return InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted");
-  }
-
-  /// Gets the value of a specified column
-  dynamic _getValue({required String pColumnName, int? pRowIndex}) {
-    int rowIndex = pRowIndex ?? selectedRow;
-    if (rowIndex == -1 || rowIndex >= dataChunk.data.length) {
-      return;
-    }
-
-    int colIndex = dataChunk.columnDefinitions.indexWhere((element) => element.name == pColumnName);
-
-    if (colIndex == -1) {
-      return;
-    }
-
-    return dataChunk.data[rowIndex]![colIndex];
-  }
-
-  /// Creates an identifying filter for this row.
-  Filter? _createFilter({required int pRowIndex}) {
-    int rowIndex = pRowIndex;
-
-    List<String> listColumnNames = [];
-    List<dynamic> listValues = [];
-
-    /* Old way of doing it.
-     if (metaData!.primaryKeyColumns.isNotEmpty) {
-      listColumnNames.addAll(metaData!.primaryKeyColumns);
-    } else if (metaData!.primaryKeyColumns.contains("ID")) {
-      listColumnNames.add("ID");
-    } else {
-      listColumnNames.addAll(
-        metaData!.columns
-            .where((column) =>
-                column.cellEditorClassName == FlCellEditorClassname.TEXT_CELL_EDITOR ||
-                column.cellEditorClassName == FlCellEditorClassname.NUMBER_CELL_EDITOR)
-            .map((column) => column.name),
-      );
-    */
-
-    if (metaData.primaryKeyColumns.isNotEmpty) {
-      listColumnNames.addAll(metaData.primaryKeyColumns);
-    } else {
-      listColumnNames.addAll(metaData.columnDefinitions.map((e) => e.name));
-    }
-
-    for (String column in listColumnNames) {
-      listValues.add(_getValue(pColumnName: column, pRowIndex: rowIndex));
-    }
-
-    return Filter(values: listValues, columnNames: listColumnNames);
   }
 
   PopupMenuItem<TableContextMenuItem> _createContextMenuItem(IconData icon, String text, TableContextMenuItem value) {
@@ -944,7 +894,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   /// Creates a delete command for this row.
   DeleteRecordCommand? _createDeleteCommand(int pIndex) {
-    Filter? filter = _createFilter(pRowIndex: pIndex);
+    Filter? filter = createFilter(pIndex);
 
     if (filter == null) {
       if (FlutterUI.logUI.cl(Lvl.w)) {
@@ -1110,9 +1060,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
           pName: model.name,
           pCellEditorJson: columnDefinitions.first.cellEditorJson,
           columnDefinition: colDef,
-          onChange: (_) {},
           onEndEditing: (value) => onEndEditing(value, rowIndex, colDef.name),
-          onFocusChanged: (_) {},
           columnName: colDef.name,
           dataProvider: model.dataProvider,
           isInTable: true,

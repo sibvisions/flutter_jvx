@@ -22,10 +22,13 @@ import 'package:flutter/foundation.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/layout/alignments.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
 import '../../util/i_types.dart';
+import '../editor/cell_editor/i_cell_editor.dart';
+import '../table/fl_table_cell.dart';
 import 'list_image_builder.dart';
 
 typedef DismissedCallback = void Function(int index);
@@ -48,7 +51,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   final bool isSelected;
 
   /// If vertical centered
-  final bool verticalCenter;
+  final MainAxisAlignment mainAxisAlignment;
 
   /// The record formats
   final RecordFormat? recordFormat;
@@ -56,7 +59,14 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   /// custom card template as json
   final String? template;
 
+  /// the column separators
+  final List<String>? columnSeparator;
+
+  /// column count per row, from [columnDefinitions]
   final Map<int, int>? columnsPerRow;
+
+  /// the cell editors
+  final Map<String, ICellEditor> cellEditors;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -65,13 +75,15 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   const FlListEntry({super.key,
     required super.model,
     required this.columnDefinitions,
+    required this.cellEditors,
     required this.values,
     required this.index,
     required this.isSelected,
     this.recordFormat,
     this.template,
     this.columnsPerRow,
-    this.verticalCenter = false});
+    this.columnSeparator,
+    mainAxisAlignment}) : mainAxisAlignment = mainAxisAlignment ?? MainAxisAlignment.center;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -148,35 +160,22 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   }
 
   Widget _defaultEntry(BuildContext context) {
-/*
-    return Container(color: Colors.grey, child: Padding(padding: EdgeInsets.all(0), child: Container(color: Colors.yellow, child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children:
-    [
-      Container(color: Colors.red, child: Column(children: [Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: Icon(Icons.arrow_forward_ios,
-              color: Colors.grey.shade300)
-      )])),
-      Column(mainAxisAlignment: MainAxisAlignment.end, children: [Text("A"), Text("B"), Text("C"), Text("D"), Text("E")],),
-    ],))));
-*/
     String? imageColumn;
     List<String> valueColumns = [];
 
+    //search image column and collect all "text" columns
     for (int i = 0; i < model.columnNames.length; i++) {
       int columnIndex = columnDefinitions.indexByName(model.columnNames[i]);
 
       if (columnIndex >= 0) {
-        ColumnDefinition cdef = columnDefinitions[columnIndex];
+        ColumnDefinition colDef = columnDefinitions[columnIndex];
 
-        if (cdef.dataTypeIdentifier == Types.BINARY) {
+        if (colDef.dataTypeIdentifier == Types.BINARY) {
           //fifo
           imageColumn ??= model.columnNames[i];
         }
-        else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != cdef.cellEditorClassName &&
-              FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != cdef.cellEditorClassName) {
+        else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != colDef.cellEditorClassName &&
+              FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != colDef.cellEditorClassName) {
           valueColumns.add(model.columnNames[i]);
         }
       }
@@ -188,16 +187,15 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
     List<Widget> liRows = [];
 
-    Row? row;
+    Widget? row;
 
-    dynamic value;
-    String valueAsText;
+    Widget? valueAsText;
 
-    //We use the theme style and ignore card styling
-    TextStyle? textStyle = Theme.of(context).textTheme.labelLarge;
+    CellFormat? cellFormat;
 
-    print(math.max(3, columnsPerRow?.length ?? 0));
-
+    String colName;
+    int colIndex;
+    int sepIndex = 0;
 
     //we show per default max. 3 Rows, but it's possible to show more than 1 column per row
     //also if more rows are defined per columns, it's possible to have more than 3 rows
@@ -205,56 +203,79 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       row = null;
 
       if (columnsPerRow?[i] != null) {
+        //if we have columns per row, "join" text in one row
         cols = columnsPerRow![i]!;
 
-        List<Widget> liColumns = [];
-
-        for (int j = 0; j < cols && colPos < maxColumns; j++) {
-          value = values[columnDefinitions.indexByName(valueColumns[colPos++])];
-
-          if (value != null) {
-            valueAsText = value.toString();
-          }
-          else {
-            valueAsText = "";
-          }
-
-          if (liColumns.isNotEmpty && valueAsText.isNotEmpty && j > 0) {
-            valueAsText = " $valueAsText";
-          }
-
-          if (valueAsText.isNotEmpty) {
-            liColumns.add(Text(valueAsText, style: textStyle));
-          }
+        if (cols == 0) {
+          //0 per definition is special (means: empty row)
+          row = const Row(children: [Text("")]);
         }
+        else {
+          List<Widget> liColumns = [];
 
-        if (liColumns.isNotEmpty) {
-          row = Row(children: liColumns);
+          for (int j = 0; j < cols && colPos < maxColumns; j++) {
+            colName = valueColumns[colPos++];
+            colIndex = columnDefinitions.indexByName(colName);
+            cellFormat = recordFormat?.getCellFormat(index, colIndex);
+
+            valueAsText = _createTextWidget(cellEditors[colName], values[colIndex], cellFormat);
+            valueAsText = _applyCellProfileImageOrIndent(valueAsText, cellFormat);
+
+            String? separator;
+
+            if (j > 0) {
+              if (columnSeparator != null && sepIndex < columnSeparator!.length) {
+                separator = columnSeparator![sepIndex++];
+              }
+              else {
+                separator = " ";
+              }
+            }
+
+            if (valueAsText != null) {
+              if (liColumns.isNotEmpty) {
+                liColumns.add(Text(separator ?? " "));
+              }
+
+              liColumns.add(valueAsText);
+            }
+          }
+
+          if (liColumns.isNotEmpty) {
+            if (liColumns.length == 1) {
+              //no wrapping needed to avoid overflow
+              row = Row(children: [Flexible(child: liColumns[0])]);
+            }
+            else {
+              //wrap to avoid overflow
+              row = Wrap(children: liColumns);
+            }
+          }
         }
       }
       else {
-        value = values[columnDefinitions.indexByName(valueColumns[colPos++])];
+        colName = valueColumns[colPos++];
+        colIndex = columnDefinitions.indexByName(colName);
+        cellFormat = recordFormat?.getCellFormat(index, colIndex);
 
-        if (value != null) {
-          valueAsText = value.toString();
-        }
-        else {
-          valueAsText = "";
-        }
+        valueAsText = _createTextWidget(cellEditors[colName], values[colIndex], cellFormat);
+        valueAsText = _applyCellProfileImageOrIndent(valueAsText, cellFormat);
 
-        if (valueAsText.isNotEmpty) {
-          row = Row(children: [Text(valueAsText, style: textStyle)]);
+        if (valueAsText != null) {
+          //avoid overflow
+          row = Row(children: [Flexible(child: valueAsText)]);
         }
       }
 
-      //if we don't have a image column -> show exactly 3 rows, otherwise rows have different height
+      //if we don't have an image column -> show empty rows, otherwise list entries will have different height
       if (row == null && imageColumn == null) {
-        row = Row(children: [Text("", style: textStyle)]);
+        row = const Row(children: [Text("")]);
       }
 
       if (row != null) {
         liRows.add(row);
 
+        //add gap to text rows
         if (liRows.length > 1) {
           //Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0)
           liRows[liRows.length - 1] = Padding(padding: const EdgeInsets.only(top: 5), child: liRows[liRows.length - 1]);
@@ -262,25 +283,36 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       }
     }
 
-    Widget? w;
+    //No rows, show an info text
+    if (liRows.isEmpty) {
+      return Container(height: 30, color: Colors.red.shade300, child: const Text("No columns"));
+    }
+
+    Widget? widget;
 
     if (imageColumn != null) {
-      w = IntrinsicHeight(
+      CellFormat? format = recordFormat?.getCellFormat(index, columnDefinitions.indexByName(imageColumn));
+
+      widget = IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              color: Colors.grey.shade200,
+              color: format?.background ?? Colors.grey.shade200,
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: ListImage(imageDefinition: values[columnDefinitions.indexByName(imageColumn)])
+                child: ListImage(
+                  imageDefinition: values[columnDefinitions.indexByName(imageColumn)],
+                  iconColor: format?.foreground,
+                )
               )
             ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
                 child: Column(
-                  mainAxisAlignment: verticalCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: mainAxisAlignment,
                   children: liRows
                 )
               )
@@ -290,14 +322,109 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       );
     }
     else {
-      w = Padding(
-            padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
-            child: Column(
-                    mainAxisAlignment: verticalCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
-                    children: liRows)
-          );
+      widget = Padding(
+        padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+        child: Column(
+          mainAxisAlignment: mainAxisAlignment,
+          children: liRows
+        )
+      );
     }
 
-    return w ?? Container(height: 30, color: Colors.red.shade300);
+    return widget;
+  }
+
+  /// Creates a normal text widget for the cell.
+  Text? _createTextWidget(ICellEditor? cellEditor, dynamic value, CellFormat? format) {
+
+    //similar code available in [FlTableCell]
+    if (cellEditor != null) {
+
+      String cellText = cellEditor.formatValue(value);
+      TextStyle style = model.createTextStyle();
+
+      style = style.copyWith(
+        backgroundColor: format?.background,
+        color: format?.foreground,
+        fontWeight: format?.font?.isBold == true ? FontWeight.bold : null,
+        fontStyle: format?.font?.isItalic == true ? FontStyle.italic : null,
+        fontFamily: format?.font?.fontName,
+        fontSize: format?.font?.fontSize.toDouble(),
+      );
+
+      TextAlign textAlign;
+      if (cellEditor.model.horizontalAlignment == HorizontalAlignment.RIGHT) {
+        textAlign = TextAlign.right;
+      } else {
+        textAlign = TextAlign.left;
+      }
+
+      if (cellEditor.model.className == FlCellEditorClassname.TEXT_CELL_EDITOR &&
+          cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_PASSWORD) {
+        cellText = "•" * cellText.length;
+      }
+
+      if (cellText.isNotEmpty) {
+        return Text(
+          cellText,
+          style: style,
+          overflow: TextOverflow.ellipsis,
+          maxLines: model.wordWrapEnabled ? null : 1,
+          textAlign: textAlign,
+        );
+      }
+      else {
+        return null;
+      }
+    }
+    else {
+      return null;
+    }
+  }
+
+  /// Applies cell format image or indent to given text widget
+  Widget? _applyCellProfileImageOrIndent(Widget? text, CellFormat? cellFormat) {
+    //similar code available in [FlTableCell]
+    List<Widget> widgets;
+
+    double indent = cellFormat?.leftIndent?.toDouble() ?? 0;
+
+    if (cellFormat?.imageString == null
+        || cellFormat?.imageString?.isEmpty == true) {
+
+      if (indent > 0) {
+        widgets = [Padding(padding: EdgeInsets.only(left: indent))];
+      }
+      else {
+        widgets = [];
+      }
+    }
+    else {
+      Widget? cellImage = ImageLoader.loadImage(
+        cellFormat!.imageString!,
+        color: cellFormat.foreground,
+      );
+
+      if (text != null) {
+        widgets = [Padding(padding: EdgeInsets.only(right: FlTableCell.formatImageGap, left: indent), child: cellImage)];
+      }
+      else {
+        widgets = [cellImage];
+      }
+    }
+
+    //No indent or image -> use text as it is
+    if (widgets.isEmpty) {
+      return text;
+    }
+
+    //for the height!
+    widgets.add(text ?? const Text(""));
+
+    //row would use the fill width without IntrinsicWidth
+    return IntrinsicWidth(child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: widgets,
+    ));
   }
 }

@@ -293,20 +293,17 @@ class _FlTableCellState extends State<FlTableCell> {
       columnName: widget.columnDefinition.name,
       dataProvider: widget.model.dataProvider,
       pCellEditorJson: widget.columnDefinition.cellEditorJson,
-      onChange: widget.model.isEnabled && widget.model.editable
-          ? (value) => widget.onValueChanged?.call(value, widget.rowIndex, widget.columnDefinition.name)
-          : _doNothing,
-      onEndEditing: widget.model.isEnabled && widget.model.editable
-          ? (value) => widget.onEndEditing?.call(value, widget.rowIndex, widget.columnDefinition.name)
-          : _doNothing,
-      onFocusChanged: (_) {},
+      onChange: widget.onValueChanged != null && widget.model.isEnabled && widget.model.editable
+          ? (value) => widget.onValueChanged!.call(value, widget.rowIndex, widget.columnDefinition.name)
+          : null,
+      onEndEditing: widget.onEndEditing != null && widget.model.isEnabled && widget.model.editable
+          ? (value) => widget.onEndEditing!.call(value, widget.rowIndex, widget.columnDefinition.name)
+          : null,
       isInTable: true,
     );
 
     cellEditor.cellFormat = widget.cellFormat;
   }
-
-  void _doNothing(dynamic pNothing) {}
 
   /// Creates the cell editor widget for the cell if possible
   Widget? _createCellEditorWidget() {
@@ -323,7 +320,7 @@ class _FlTableCellState extends State<FlTableCell> {
   }
 
   /// Creates a normal text widget for the cell.
-  Widget _createTextWidget() {
+  Text _createTextWidget() {
     String cellText = cellEditor.formatValue(widget.value);
     TextStyle style = widget.model.createTextStyle();
 
