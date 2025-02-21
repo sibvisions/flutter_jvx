@@ -134,7 +134,11 @@ dependencies:
 
   push: ^3.0.0
   flutter_local_notifications: ^18.0.0
-  open_filex: ^4.5.0
+  #open_filex: ^4.5.0
+
+  #temp required for: https://github.com/javaherisaber/open_filex/pull/19 (flutter 3.29)
+  open_filex:
+    git: https://github.com/mufassalhussain/open_filex
 
   json_dynamic_widget: ^9.0.0+2
 
