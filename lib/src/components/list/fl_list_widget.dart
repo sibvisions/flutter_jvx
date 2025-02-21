@@ -228,8 +228,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
 
 //    mapColumnsPerRow?.clear();
-    asCard = false;
-    withArrow = false;
+//    asCard = false;
+//    withArrow = false;
 //    withBorder = true;
 //    vAlign = MainAxisAlignment.start;
 
