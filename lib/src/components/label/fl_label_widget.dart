@@ -105,15 +105,15 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   static EdgeInsets adjustPaddingWithStyles(FlLabelModel pModel, EdgeInsets pPadding) {
     EdgeInsets padding = pPadding;
 
-    if (pModel.styles.contains(FlLabelModel.NO_BOTTOM_PADDING_STYLE)) {
+    if (pModel.styles.contains(FlLabelModel.STYLE_NO_BOTTOM_PADDING)) {
       padding = padding.copyWith(bottom: 0);
-    } else if (pModel.styles.contains(FlLabelModel.HALF_BOTTOM_PADDING_STYLE)) {
+    } else if (pModel.styles.contains(FlLabelModel.STYLE_HALF_BOTTOM_PADDING)) {
       padding = padding.copyWith(bottom: padding.bottom / 2);
     }
 
-    if (pModel.styles.contains(FlLabelModel.NO_TOP_PADDING_STYLE)) {
+    if (pModel.styles.contains(FlLabelModel.STYLE_NO_TOP_PADDING)) {
       padding = padding.copyWith(top: 0);
-    } else if (pModel.styles.contains(FlLabelModel.HALF_TOP_PADDING_STYLE)) {
+    } else if (pModel.styles.contains(FlLabelModel.STYLE_HALF_TOP_PADDING)) {
       padding = padding.copyWith(top: padding.top / 2);
     }
 

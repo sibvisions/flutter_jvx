@@ -22,13 +22,13 @@ class FlTableModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// This style hides the floating insert button.
-  static const String NO_FLOATING_BUTTON_STYLE = "f_no_float_insert";
+  static const String STYLE_NO_FLOATING_BUTTON = "f_no_float_insert";
 
   /// This style removes the alternating table row colors.
-  static const String NO_ALTERNATING_ROW_COLOR_STYLE = "f_no_alternating_row_color";
+  static const String STYLE_NO_ALTERNATING_ROW_COLOR = "f_no_alternating_row_color";
 
   /// This style uses a list widget instead a table widget.
-  static const String TABLE_AS_LIST_STYLE = "f_as_list";
+  static const String STYLE_TABLE_AS_LIST = "f_as_list";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -76,13 +76,13 @@ class FlTableModel extends FlComponentModel {
   bool deleteEnabled = true;
 
   /// If the table hides the floating insert button.
-  bool get showFloatButton => !styles.contains(NO_FLOATING_BUTTON_STYLE);
+  bool get showFloatButton => !styles.contains(STYLE_NO_FLOATING_BUTTON);
 
   /// If the table removes the alternating table row colors.
-  bool get disabledAlternatingRowColor => styles.contains(NO_ALTERNATING_ROW_COLOR_STYLE);
+  bool get disabledAlternatingRowColor => styles.contains(STYLE_NO_ALTERNATING_ROW_COLOR);
 
   /// If the table should be visualized as list
-  bool get asList => styles.contains(TABLE_AS_LIST_STYLE);
+  bool get asList => styles.contains(STYLE_TABLE_AS_LIST);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

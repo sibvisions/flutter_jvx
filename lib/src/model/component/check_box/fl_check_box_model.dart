@@ -22,16 +22,16 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The styles to make the checkbox to a switch.
-  static const String SWITCH_STYLE = "f_switch";
+  static const String STYLE_SWITCH = "f_switch";
 
-  static const String CELL_SWITCH_STYLE = "ui-switch";
+  static const String STYLE_CELL_SWITCH = "ui-switch";
 
   /// The style to make the checkbox to a checkbox.
   ///
   /// This serves as an override to allow editors to override a switch style,
   /// allowing a cell editor to be a switch inside a table,
   /// and the cell editor to be overridden by an editor style.
-  static const String CHECKBOX_STYLE = "f_checkbox";
+  static const String STYLE_CHECKBOX = "f_checkbox";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -46,7 +46,7 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   FlCheckBoxModel get defaultModel => FlCheckBoxModel();
 
   bool get isSwitch =>
-      (styles.contains(SWITCH_STYLE) || styles.contains(CELL_SWITCH_STYLE)) && !styles.contains(CHECKBOX_STYLE);
+      (styles.contains(STYLE_SWITCH) || styles.contains(STYLE_CELL_SWITCH)) && !styles.contains(STYLE_CHECKBOX);
 
   /// The image of a checkbox
   String? imageName;

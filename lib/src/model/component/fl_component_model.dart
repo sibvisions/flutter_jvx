@@ -73,25 +73,25 @@ abstract class FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The style if an editor should not have a clear button.
-  static const String NO_CLEAR_ICON_STYLE = "f_no_clear";
+  static const String STYLE_NO_CLEAR_ICON = "f_no_clear";
 
   /// If the component has disabled the mobile scaling
-  static const String NO_SCALING_STYLE = "f_no_scaling";
+  static const String STYLE_NO_SCALING = "f_no_scaling";
 
   /// The marker of icon styles.
   static const String STYLE_ICON_MARKER = "f_icon";
 
   /// The icon on the left side of the component.
-  static const String PREFIX_ICON_STYLE = "${STYLE_ICON_MARKER}_prefix_";
+  static const String STYLE_PREFIX_ICON = "${STYLE_ICON_MARKER}_prefix_";
 
   /// The icon on the right side of the component.
-  static const String SUFFIX_ICON_STYLE = "${STYLE_ICON_MARKER}_suffix_";
+  static const String STYLE_SUFFIX_ICON = "${STYLE_ICON_MARKER}_suffix_";
 
   /// The color of the border.
-  static const String BORDER_COLOR_STYLE = "f_border_color_";
+  static const String STYLE_BORDER_COLOR = "f_border_color_";
 
   /// The color of the border when focused.
-  static const String BORDER_COLOR_FOCUSED_STYLE = "f_border_focused_color_";
+  static const String STYLE_BORDER_COLOR_FOCUSED = "f_border_focused_color_";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -536,7 +536,7 @@ abstract class FlComponentModel {
     font = cellFormat.font ?? font;
   }
 
-  bool get scalingEnabled => !styles.contains(NO_SCALING_STYLE);
+  bool get scalingEnabled => !styles.contains(STYLE_NO_SCALING);
 
   double get scaling => scalingEnabled ? IConfigService().getScaling() : 1.0;
 

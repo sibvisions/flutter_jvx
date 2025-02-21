@@ -33,10 +33,10 @@ class TableSize {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// standard cell paddings
+  /// Standard cell paddings
   static const EdgeInsets paddingsDefault = EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0);
 
-  /// small cell paddings
+  /// Small cell paddings.
   static const EdgeInsets paddingsSmall = EdgeInsets.only(left: 1.0, right: 1.0, top: 4.0, bottom: 4.0);
 
   /// The border width outside.
@@ -97,7 +97,7 @@ class TableSize {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   TableSize({
-    this.borderWidth = 1.0,
+    this.borderWidth = JVxColors.BORDER_WIDTH_DEFAULT,
     this.columnDividerWidth = 1.0,
     this.minColumnWidth = 50,
     this.maxColumnWidth = 400,
@@ -111,7 +111,7 @@ class TableSize {
 
   /// Always calculates the table size.
   TableSize.direct({
-    this.borderWidth = 1.0,
+    this.borderWidth = JVxColors.BORDER_WIDTH_DEFAULT,
     this.columnDividerWidth = 1.0,
     this.minColumnWidth = 50,
     this.maxColumnWidth = 400,

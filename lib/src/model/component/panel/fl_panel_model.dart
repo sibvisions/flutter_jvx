@@ -22,26 +22,26 @@ class FlPanelModel extends FlComponentModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// If a panel should have a default 1px border with [JVxColors.COMPONENT_DISABLED_LIGHTER] color.
-  static const String STANDARD_BORDER_STYLE = "f_standard_border";
+  /// If a panel should have a default border.
+  static const String STYLE_STANDARD_BORDER = "f_standard_border";
 
   /// If a panel should the same background color as the default editor background color.
-  static const String DEFAULT_EDITOR_BACKGROUND_STYLE = "f_default_editorbackground";
+  static const String STYLE_DEFAULT_EDITOR_BACKGROUND = "f_default_editorbackground";
 
   /// If a work-screen should not have a back button.
-  static const String NO_BACK_STYLE = "f_no_back";
+  static const String STYLE_NO_BACK = "f_no_back";
 
   /// If a work-screen should route to app overview on back.
-  static const String OVERVIEW_BACK_STYLE = "f_overview_back";
+  static const String STYLE_OVERVIEW_BACK = "f_overview_back";
 
   /// If a work-screen should have no menu.
-  static const String NO_MENU_STYLE = "f_no_menu";
+  static const String STYLE_NO_MENU = "f_no_menu";
 
   /// If a work-screen should have no safe area.
-  static const String FULL_SIZE_STYLE = "f_full_size";
+  static const String STYLE_FULL_SIZE = "f_full_size";
 
   /// If a work-screen should have a simple menu.
-  static const String SIMPLE_MENU_STYLE = "f_simple_menu";
+  static const String STYLE_SIMPLE_MENU = "f_simple_menu";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -81,25 +81,25 @@ class FlPanelModel extends FlComponentModel {
   String? contentClassName;
 
   /// If the panel has a standard border.
-  bool get hasStandardBorder => styles.contains(STANDARD_BORDER_STYLE);
+  bool get hasStandardBorder => styles.contains(STYLE_STANDARD_BORDER);
 
   /// If the panel has the same background color as the default editor background color.
-  bool get hasDefaultEditorBackground => styles.contains(DEFAULT_EDITOR_BACKGROUND_STYLE);
+  bool get hasDefaultEditorBackground => styles.contains(STYLE_DEFAULT_EDITOR_BACKGROUND);
 
   /// If the screen cannot go back.
-  bool get noBack => styles.contains(NO_BACK_STYLE) && !overviewBack;
+  bool get noBack => styles.contains(STYLE_NO_BACK) && !overviewBack;
 
   /// If the screen should route to app overview on back.
-  bool get overviewBack => styles.contains(OVERVIEW_BACK_STYLE);
+  bool get overviewBack => styles.contains(STYLE_OVERVIEW_BACK);
 
   /// If the screen has a drawer menu.
-  bool get noMenu => styles.contains(NO_MENU_STYLE) || hasSimpleMenu;
+  bool get noMenu => styles.contains(STYLE_NO_MENU) || hasSimpleMenu;
 
   /// If the screen has no safe are.
-  bool get fullSize => styles.contains(FULL_SIZE_STYLE);
+  bool get fullSize => styles.contains(STYLE_FULL_SIZE);
 
   /// If the screen has a simple menu.
-  bool get hasSimpleMenu => styles.contains(SIMPLE_MENU_STYLE);
+  bool get hasSimpleMenu => styles.contains(STYLE_SIMPLE_MENU);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

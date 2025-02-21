@@ -38,7 +38,7 @@ class FlTextFieldModel extends FlLabelModel {
   bool isEditable = true;
 
   /// If this editor should have a clear icon.
-  bool get hideClearIcon => styles.contains(FlComponentModel.NO_CLEAR_ICON_STYLE);
+  bool get hideClearIcon => styles.contains(FlComponentModel.STYLE_NO_CLEAR_ICON);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

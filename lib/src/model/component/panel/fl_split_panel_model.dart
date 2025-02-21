@@ -23,7 +23,7 @@ class FlSplitPanelModel extends FlPanelModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static const String SCROLL_PANEL_STYLE = "f_scroll";
+  static const String STYLE_SCROLL_PANEL = "f_scroll";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -36,7 +36,7 @@ class FlSplitPanelModel extends FlPanelModel {
   SplitOrientation orientation = SplitOrientation.VERTICAL;
 
   /// If this split panel behaves like a scroll panel
-  bool get isScrollStyle => styles.contains(SCROLL_PANEL_STYLE);
+  bool get isScrollStyle => styles.contains(STYLE_SCROLL_PANEL);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

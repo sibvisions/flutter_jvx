@@ -130,7 +130,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     }
 
     List<BoxShadow> shadows = [];
-    if (!model.hideBorder) {
+    if (!model.isBorderHidden) {
       shadows = [
         const BoxShadow(offset: Offset(0.0, 3.0), blurRadius: 3.0, spreadRadius: -1.0, color: Color(0x33000000)),
         const BoxShadow(offset: Offset(0.0, 3.0), blurRadius: 4.0, spreadRadius: 1.0, color: Color(0x24000000)),

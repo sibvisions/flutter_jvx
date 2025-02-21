@@ -309,7 +309,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       icons.add(clearIcon);
     }
 
-    icons.addAll(_createIconsFromStyle(context, FlComponentModel.SUFFIX_ICON_STYLE));
+    icons.addAll(_createIconsFromStyle(context, FlComponentModel.STYLE_SUFFIX_ICON));
 
     return icons;
   }
@@ -327,7 +327,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   /// Creates a list of widgets to show at the start of a Text field.
   List<Widget> createPrefixIconItems([BuildContext? context]) {
-    return _createIconsFromStyle(context, FlComponentModel.PREFIX_ICON_STYLE);
+    return _createIconsFromStyle(context, FlComponentModel.STYLE_PREFIX_ICON);
   }
 
   /// Constructs a single widget to show at the end of a Text field, unifying all suffixIconItems.
@@ -340,8 +340,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     Color? borderFocusedColor;
 
     if (model.isBorderVisible) {
-      borderEnabledColor = _extractBorderColor(FlComponentModel.BORDER_COLOR_STYLE) ?? JVxColors.COMPONENT_BORDER;
-      borderFocusedColor = _extractBorderColor(FlComponentModel.BORDER_COLOR_FOCUSED_STYLE);
+      borderEnabledColor = _extractBorderColor(FlComponentModel.STYLE_BORDER_COLOR) ?? JVxColors.COMPONENT_BORDER;
+      borderFocusedColor = _extractBorderColor(FlComponentModel.STYLE_BORDER_COLOR_FOCUSED);
     } else {
       borderEnabledColor = Colors.transparent;
       borderFocusedColor = Colors.transparent;

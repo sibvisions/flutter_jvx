@@ -77,6 +77,9 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The style name for no border
+  static const String STYLE_NO_BORDER = "f_table_noborder";
+
   /// The scroll controller of the table.
   final ItemScrollController? itemScrollController;
 
@@ -181,24 +184,31 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       children.add(createFloatingButton(context));
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4.0),
-        border: Border.all(
-          width: widget.tableSize.borderWidth,
-          color: JVxColors.COMPONENT_BORDER,
+    bool noBorder = widget.model.styles.contains(FlTableWidget.STYLE_NO_BORDER);
+
+    if (noBorder) {
+      return Stack(children: children);
+    }
+    else {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4.0),
+          border: Border.all(
+            width: widget.tableSize.borderWidth,
+            color: JVxColors.COMPONENT_BORDER,
+          ),
+          color: Theme.of(context).colorScheme.surface,
         ),
-        color: Theme.of(context).colorScheme.surface,
-      ),
-      child: ClipRRect(
-        // The clip rect is there to stop the rendering of the children.
-        // Otherwise the children would clip the border of the parent container.
-        borderRadius: BorderRadius.circular(4.0 - widget.tableSize.borderWidth),
-        child: Stack(
-          children: children,
+        child: ClipRRect(
+          // The clip rect is there to stop the rendering of the children.
+          // Otherwise the children would clip the border of the parent container.
+          borderRadius: BorderRadius.circular(4.0 - widget.tableSize.borderWidth),
+          child: Stack(
+            children: children,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   /// Creates the floating button that floats above the table on the bottom right

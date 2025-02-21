@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -25,8 +26,9 @@ import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_list_entry.dart';
 
 typedef ListTapCallback = void Function(int rowIndex);
+typedef ListLongPressCallback = void Function(int rowIndex, Offset pGlobalPosition);
 typedef ListSlideActionFactory = List<SlidableAction> Function(BuildContext context, int row);
-typedef ListScrollCallback = Function(ScrollNotification scrollNotification);
+typedef ListScrollCallback = void Function(ScrollNotification scrollNotification);
 typedef ListScrollEndCallback = bool Function();
 
 class FlListWidget extends FlStatefulWidget<FlTableModel> {
@@ -55,6 +57,9 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// The style for column separation character
   static const String STYLE_COLUMN_SEPARATOR = "f_list_columnseparator_";
 
+  /// With this style the list will have a standard border
+  static const String STYLE_STANDARD_BORDER = "f_standard_border";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Callbacks
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,7 +73,11 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// Gets called when the user scrolled the list.
   final ListScrollCallback? onScroll;
 
+  /// Gets called when the user taps
   final ListTapCallback? onTap;
+
+  /// Gets called when the user long press
+  final ListLongPressCallback? onLongPress;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -104,7 +113,8 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
     this.onRefresh,
     this.onScroll,
     this.onEndScroll,
-    this.onTap
+    this.onTap,
+    this.onLongPress
   });
 
   @override
@@ -149,6 +159,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
     bool asCard = false;
     bool withArrow = false;
+    bool withBorder = false;
     MainAxisAlignment? vAlign;
 
     Map<int, int>? mapColumnsPerRow;
@@ -206,198 +217,233 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
         else if (styleDef == FlListWidget.STYLE_VALIGN_BOTTOM) {
           vAlign = MainAxisAlignment.end;
         }
+        else if (styleDef == FlListWidget.STYLE_STANDARD_BORDER) {
+          withBorder = true;
+        }
       }
     }
 
     _closeSlidablesImmediate();
     _slideController.clear();
 
+
 //    mapColumnsPerRow?.clear();
-//    asCard = false;
-//    withArrow = false;
+    asCard = false;
+    withArrow = false;
+//    withBorder = true;
 //    vAlign = MainAxisAlignment.start;
-    vAlign = null;
 
-    return _wrapList(_wrapSlider(
-        NotificationListener<ScrollNotification>(
-            onNotification: (notification) => _onInternalEndScroll(notification),
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (notification) => _onInternalScroll(notification),
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _controller,
-                slivers: [
-                  SliverList.separated(
-                    separatorBuilder: (context, index) {
-                        if (asCard) {
-                            return const Divider(height: 4, color: Colors.transparent);
-                        }
-                        else {
-                            return Divider(height: 1.0, color: JVxColors.isLightTheme(context) ?  Colors.grey.shade300 : Colors.white70);
-                        }
-                    },
-                    itemCount: widget.chunkData.data.length,
-                    itemBuilder: (context, index) {
-                      SlidableController? slideCtrl;
+    //no border if cards are used -> makes no sense
+    if (asCard) {
+      withBorder = false;
+    }
 
-                      if (widget.slideActionFactory != null) {
-                        if (index > _slideController.length - 1) {
-                          slideCtrl = SlidableController(this);
-                          _slideController.add(slideCtrl);
-                        }
-                        else {
-                          slideCtrl = _slideController.elementAt(index);
-                        }
-                      }
-
-                      if (widget.chunkData.data[index] != null &&
-                          widget.chunkData.data[index]!.last == "DISMISSED") {
-                        return Container();
-                      }
-
-                      bool selected = index == widget.selectedRowIndex;
-
-                      Widget listEntry = FlListEntry(
-                          model: widget.model,
-                          index: index,
-                          columnDefinitions: widget.chunkData.columnDefinitions,
-                          cellEditors: widget.cellEditors,
-                          isSelected: selected,
-                          values: widget.chunkData.data[index]!,
-                          recordFormat: widget.chunkData.recordFormats?[widget.model.name],
-                          template: tpl,
-                          columnsPerRow: mapColumnsPerRow,
-                          columnSeparator: columnSeparator,
-                          mainAxisAlignment: vAlign
-                      );
-
-                      if (withArrow) {
-                        listEntry = Flex(direction: Axis.horizontal,
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              fit: FlexFit.tight,
-                              child: listEntry
-                            ),
-                            Flexible(
-                              flex: 0,
-                              fit: FlexFit.loose,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Icon(Icons.arrow_forward_ios,
-                                color: Colors.grey.shade300)
-                              )
-                            )
-                          ],
-                        );
-                      }
-
-                      if (selected && widget.model.showSelection) {
-                        ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
-
-                        Color? colSelection;
-
-                        if (JVxColors.isLightTheme(context)) {
-                          colSelection = applicationSettings.colors?.activeSelectionBackground;
-                        } else {
-                          colSelection = applicationSettings.darkColors?.activeSelectionBackground;
-                        }
-
-                        colSelection ??= Theme.of(context).colorScheme.primary;
-
-                        colSelection = colSelection.withAlpha(Color.getAlphaFromOpacity(0.10));
-
-                        listEntry = Container(color: colSelection, child: listEntry);
-                      }
-
-                      if (widget.slideActionFactory != null) {
-                        List<SlidableAction> slideActions = widget.slideActionFactory?.call(context, index) ?? [];
-
-                        listEntry = Theme(
-                          data: Theme.of(context).copyWith(
-                            outlinedButtonTheme: OutlinedButtonThemeData(
-                              style: OutlinedButton.styleFrom(
-                                iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white,
-                                textStyle: const TextStyle(fontWeight: FontWeight.normal),
-                                iconSize: 16))),
-                          child: Slidable(
-                            key: UniqueKey(),
-                            controller: slideCtrl,
-                            closeOnScroll: true,
-                            direction: Axis.horizontal,
-                            enabled: widget.slideActionFactory != null && slideActions.isNotEmpty == true && widget.model.isEnabled,
-                            groupTag: widget.slideActionFactory,
-                            endActionPane: ActionPane(
-                              extentRatio: 0.50,
-                              dismissible: DismissiblePane(
-                                closeOnCancel: true,
-                                onDismissed: () {
-                                  SlidableController ctrl = _slideController.elementAt(index);
-                                  ctrl.close(duration: const Duration(milliseconds: 0));
-                                  setState(() {
-                                    List<dynamic>? record = widget.chunkData.data[index];
-
-                                    if (record != null) {
-                                      record[record.length - 1] = "DISMISSED";
-                                    }
-
-                                    _slideController.removeAt(index);
-
-                                    HapticFeedback.mediumImpact();
-                                  });
-
-                                  slideActions.last.onPressed!(context);
-                                },
-                              ),
-                              motion: const StretchMotion(),
-                              children: slideActions,
-                            ),
-                            child: listEntry
-                          )
-                        );
-                      }
-
+    Widget list = _wrapList(_wrapSlider(
+      NotificationListener<ScrollNotification>(
+          onNotification: (notification) => _onInternalEndScroll(notification),
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (notification) => _onInternalScroll(notification),
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: _controller,
+              slivers: [
+                SliverList.separated(
+                  separatorBuilder: (context, index) {
                       if (asCard) {
-                        listEntry = Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
-                            ),
-                            color: Colors.white,
-                            margin: const EdgeInsets.all(2),
-                            child: ClipPath(
-                                clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS))),
-                                child: listEntry
+                          return const Divider(height: 4, color: Colors.transparent);
+                      }
+                      else {
+                          return Divider(height: 1.0, color: JVxColors.isLightTheme(context) ?  Colors.grey.shade300 : Colors.white70);
+                      }
+                  },
+                  itemCount: widget.chunkData.data.length,
+                  itemBuilder: (context, index) {
+                    SlidableController? slideCtrl;
+
+                    if (widget.slideActionFactory != null) {
+                      slideCtrl = SlidableController(this);
+
+                      if (index > _slideController.length - 1) {
+                        _slideController.add(slideCtrl);
+                      }
+                      else {
+                        _slideController[index].dispose();
+                        _slideController[index] = slideCtrl;
+                      }
+                    }
+
+                    if (widget.chunkData.data[index] != null &&
+                        widget.chunkData.data[index]!.last == "DISMISSED") {
+                      return Container();
+                    }
+
+                    bool selected = index == widget.selectedRowIndex && widget.model.showSelection;
+
+                    Widget listEntry = FlListEntry(
+                        model: widget.model,
+                        index: index,
+                        columnDefinitions: widget.chunkData.columnDefinitions,
+                        cellEditors: widget.cellEditors,
+                        isSelected: selected,
+                        values: widget.chunkData.data[index]!,
+                        recordFormat: widget.chunkData.recordFormats?[widget.model.name],
+                        template: tpl,
+                        columnsPerRow: mapColumnsPerRow,
+                        columnSeparator: columnSeparator,
+                        mainAxisAlignment: vAlign
+                    );
+
+                    if (withArrow) {
+                      listEntry = Flex(direction: Axis.horizontal,
+                        children: [
+                          Flexible(
+                            flex: 1,
+                            fit: FlexFit.tight,
+                            child: listEntry
+                          ),
+                          Flexible(
+                            flex: 0,
+                            fit: FlexFit.loose,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: selected ? 2 : 5),
+                              child: Icon(Icons.arrow_forward_ios,
+                              color: Colors.grey.shade300)
                             )
-                        );
-                      }
-
-                      Widget listTile = ListTile(
-                        minTileHeight: 10,
-                        contentPadding: const EdgeInsets.all(0),
-                        horizontalTitleGap: 0,
-                        minVerticalPadding: 0,
-                        title: listEntry
+                          )
+                        ],
                       );
+                    }
+                    else {
+                      //we need the padding to avoid jumps on selection
+                      listEntry = Padding(
+                        padding: EdgeInsets.only(right: selected ? 2 : 5),
+                        child: listEntry
+                      );
+                    }
 
-                      if (widget.onTap != null) {
-                        listTile = GestureDetector(
-                          onTap: widget.onTap != null && widget.model.isEnabled
-                            ? () => widget.onTap!(index)
-                            : null,
-                          child: listTile,
-                        );
+                    if (selected) {
+                      ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
+
+                      Color? colSelection;
+
+                      if (JVxColors.isLightTheme(context)) {
+                        colSelection = applicationSettings.colors?.activeSelectionBackground;
+                      } else {
+                        colSelection = applicationSettings.darkColors?.activeSelectionBackground;
                       }
 
-                      return listTile;
-                    },
-                  ),
-                ],
-              )
-          )
+                      colSelection ??= Theme.of(context).colorScheme.primary;
+
+                      colSelection = colSelection.withAlpha(Color.getAlphaFromOpacity(0.7));
+
+                      listEntry = Container(decoration: BoxDecoration(
+                        border: Border(right: BorderSide(color: colSelection,width: 3)),
+                      ), child: listEntry);
+                    }
+
+                    if (widget.slideActionFactory != null) {
+                      List<SlidableAction> slideActions = widget.slideActionFactory?.call(context, index) ?? [];
+
+                      listEntry = Theme(
+                        data: Theme.of(context).copyWith(
+                          outlinedButtonTheme: OutlinedButtonThemeData(
+                            style: OutlinedButton.styleFrom(
+                              iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white,
+                              textStyle: const TextStyle(fontWeight: FontWeight.normal),
+                              iconSize: 16))),
+                        child: Slidable(
+                          key: UniqueKey(),
+                          controller: slideCtrl,
+                          closeOnScroll: true,
+                          direction: Axis.horizontal,
+                          enabled: widget.slideActionFactory != null && slideActions.isNotEmpty == true && widget.model.isEnabled,
+                          groupTag: widget.slideActionFactory,
+                          endActionPane: ActionPane(
+                            extentRatio: 0.50,
+                            dismissible: DismissiblePane(
+                              closeOnCancel: true,
+                              onDismissed: () {
+                                SlidableController ctrl = _slideController.elementAt(index);
+                                ctrl.close(duration: const Duration(milliseconds: 0));
+                                setState(() {
+                                  List<dynamic>? record = widget.chunkData.data[index];
+
+                                  if (record != null) {
+                                    record[record.length - 1] = "DISMISSED";
+                                  }
+
+                                  _slideController.removeAt(index);
+
+                                  HapticFeedback.mediumImpact();
+                                });
+
+                                slideActions.last.onPressed!(context);
+                              },
+                            ),
+                            motion: const StretchMotion(),
+                            children: slideActions,
+                          ),
+                          child: listEntry
+                        )
+                      );
+                    }
+
+                    if (asCard) {
+                      listEntry = Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
+                          ),
+                          color: Colors.white,
+                          margin: const EdgeInsets.all(2),
+                          child: ClipPath(
+                              clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS))),
+                              child: listEntry
+                          )
+                      );
+                    }
+
+                    Widget listTile = ListTile(
+                      minTileHeight: 10,
+                      contentPadding: const EdgeInsets.all(0),
+                      horizontalTitleGap: 0,
+                      minVerticalPadding: 0,
+                      title: listEntry
+                    );
+
+                    if (widget.onTap != null || widget.onLongPress != null) {
+                      listTile = GestureDetector(
+                        onTap: widget.onTap != null && widget.model.isEnabled? () {
+                            widget.onTap!(index);
+
+                            _closeSlidables();
+                          }
+                          : null,
+                        onLongPressStart: widget.onLongPress != null && widget.model.isEnabled ? (details) {
+                            widget.onLongPress!(index, details.globalPosition);
+
+                            _closeSlidables();
+                          }
+                          :
+                          null,
+                        child: listTile,
+                      );
+                    }
+
+                    return listTile;
+                  },
+                ),
+              ],
+            )
         )
       )
-    );
+    ));
+
+    if (withBorder) {
+      list = _withBorder(list);
+    }
+
+    return list;
   }
 
   Widget _wrapList(Widget list) {
@@ -418,12 +464,12 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
         closeWhenOpened: true,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-//          onLongPressStart: widget.onLongPress != null && widget.model.isEnabled ? (details) {
-          //widget.onLongPress?.call(-1, "", FlDummyCellEditor(), details.globalPosition);
+          onLongPressStart: widget.onLongPress != null && widget.model.isEnabled ? (details) {
+            widget.onLongPress?.call(-1, details.globalPosition);
 
-//            _closeSlidables();
-//          }
-//            : null,
+              _closeSlidables();
+            }
+            : null,
           onTap: () => _closeSlidables(),
           child: list,
         ),
@@ -431,6 +477,25 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     }
 
     return list;
+  }
+
+  Widget _withBorder(Widget list) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
+        border: Border.all(
+          width: JVxColors.BORDER_WIDTH_DEFAULT,
+          color: JVxColors.COMPONENT_BORDER,
+        ),
+        color: Theme.of(context).colorScheme.surface,
+      ),
+      child: ClipRRect(
+        // The clip rect is there to stop the rendering of the children.
+        // Otherwise the children would clip the border of the parent container.
+        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS - JVxColors.BORDER_WIDTH_DEFAULT),
+        child: list,
+      ),
+    );
   }
 
   /// Closes all slidables immediately without delay
@@ -492,5 +557,25 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     // Let it bubble upwards to our end notification listener!
     return false;
   }
+
+  /// Creates the floating button that floats above the table on the bottom right
+/*
+  Positioned createFloatingButton(BuildContext context) {
+    return Positioned(
+      right: 10,
+      bottom: 10,
+      child: FloatingActionButton(
+        heroTag: null,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        onPressed: widget.onFloatingPress,
+        child: FaIcon(
+          FontAwesomeIcons.squarePlus,
+          color: widget.model.foreground ?? Theme.of(context).colorScheme.onPrimary,
+        ),
+      ),
+    );
+  }
+
+ */
 
 }

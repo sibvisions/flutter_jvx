@@ -22,25 +22,25 @@ class FlButtonModel extends FlComponentModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static const String SMALL_STYLE = "f_small";
+  static const String STYLE_SMALL = "f_small";
 
-  static const String SLIDE_STYLE = "f_slide";
+  static const String STYLE_SLIDE = "f_slide";
 
-  static const String TEXT_STYLE = "f_text";
+  static const String STYLE_TEXT = "f_text";
 
-  static const String SLIDE_RESETABLE_STYLE = "f_slide_reset";
+  static const String STYLE_SLIDE_RESETTABLE = "f_slide_reset";
 
-  static const String SLIDE_AUTO_RESET_STYLE = "f_slide_auto_reset";
+  static const String STYLE_SLIDE_AUTO_RESET = "f_slide_auto_reset";
 
-  static const String HAPTIC_LIGHT = "f_haptic_light";
-  static const String HAPTIC_MEDIUM = "f_haptic_medium";
-  static const String HAPTIC_HEAVY = "f_haptic_heavy";
-  static const String HAPTIC_CLICK = "f_haptic_click";
-  static const String HAPTIC = "f_haptic";
+  static const String STYLE_HAPTIC_LIGHT = "f_haptic_light";
+  static const String STYLE_HAPTIC_MEDIUM = "f_haptic_medium";
+  static const String STYLE_HAPTIC_HEAVY = "f_haptic_heavy";
+  static const String STYLE_HAPTIC_CLICK = "f_haptic_click";
+  static const String STYLE_HAPTIC = "f_haptic";
 
-  static const String HYPERLINK_STYLE = "hyperlink";
-  static const String CELL_HYPERLINK_STYLE = "ui-hyperlink";
-  static const String MOBILE_GEOLOCATION_STYLE = "mobile-geolocation";
+  static const String STYLE_HYPERLINK = "hyperlink";
+  static const String STYLE_CELL_HYPERLINK = "ui-hyperlink";
+  static const String STYLE_MOBILE_GEOLOCATION = "mobile-geolocation";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -108,40 +108,40 @@ class FlButtonModel extends FlComponentModel {
 
   /// If the button is a slider button
   bool get isSlideStyle =>
-      styles.contains(SLIDE_STYLE) || styles.contains(SLIDE_RESETABLE_STYLE) || styles.contains(SLIDE_AUTO_RESET_STYLE);
+      styles.contains(STYLE_SLIDE) || styles.contains(STYLE_SLIDE_RESETTABLE) || styles.contains(STYLE_SLIDE_AUTO_RESET);
 
   /// If the button is a slider button
-  bool get isSliderResetable => styles.contains(SLIDE_RESETABLE_STYLE) || styles.contains(SLIDE_AUTO_RESET_STYLE);
+  bool get isSliderResetable => styles.contains(STYLE_SLIDE_RESETTABLE) || styles.contains(STYLE_SLIDE_AUTO_RESET);
 
   /// If the button is a slider button
-  bool get isSliderAutoResetting => styles.contains(SLIDE_AUTO_RESET_STYLE);
+  bool get isSliderAutoResetting => styles.contains(STYLE_SLIDE_AUTO_RESET);
 
   /// If the button is a text button
-  bool get isTextButton => styles.contains(TEXT_STYLE);
+  bool get isTextButton => styles.contains(STYLE_TEXT);
 
   /// Whether the button invokes [HapticFeedback.lightImpact] on press.
-  bool get isHapticLight => styles.contains(HAPTIC_LIGHT);
+  bool get isHapticLight => styles.contains(STYLE_HAPTIC_LIGHT);
 
   /// Whether the button invokes [HapticFeedback.mediumImpact] on press.
-  bool get isHapticMedium => styles.contains(HAPTIC_MEDIUM);
+  bool get isHapticMedium => styles.contains(STYLE_HAPTIC_MEDIUM);
 
   /// Whether the button invokes [HapticFeedback.heavyImpact] on press.
-  bool get isHapticHeavy => styles.contains(HAPTIC_HEAVY);
+  bool get isHapticHeavy => styles.contains(STYLE_HAPTIC_HEAVY);
 
   /// Whether the button invokes [HapticFeedback.selectionClick] on press.
-  bool get isHapticClick => styles.contains(HAPTIC_CLICK);
+  bool get isHapticClick => styles.contains(STYLE_HAPTIC_CLICK);
 
   /// Whether the button invokes [HapticFeedback.vibrate] on press.
-  bool get isHaptic => styles.contains(HAPTIC);
+  bool get isHaptic => styles.contains(STYLE_HAPTIC);
 
   /// If the button has no default paddings and is small.
-  bool get isSmallStyle => styles.contains(SMALL_STYLE);
+  bool get isSmallStyle => styles.contains(STYLE_SMALL);
 
   /// If the button is a hyperlink button
-  bool get isHyperLink => styles.contains(HYPERLINK_STYLE) || styles.contains(CELL_HYPERLINK_STYLE);
+  bool get isHyperLink => styles.contains(STYLE_HYPERLINK) || styles.contains(STYLE_CELL_HYPERLINK);
 
   /// If the button is a geolocation button
-  bool get isGeolocationStyle => styles.contains(MOBILE_GEOLOCATION_STYLE);
+  bool get isGeolocationStyle => styles.contains(STYLE_MOBILE_GEOLOCATION);
 
   @override
   Size? get minimumSize {

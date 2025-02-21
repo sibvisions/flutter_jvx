@@ -610,26 +610,26 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
-    List<PopupMenuEntry<TableContextMenuItem>> popupMenuEntries = <PopupMenuEntry<TableContextMenuItem>>[];
+    List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
 
     if (metaData.insertEnabled && !metaData.readOnly) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squarePlus, "New", TableContextMenuItem.INSERT));
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squarePlus, "New", DataContextMenuItemType.INSERT));
     }
 
     if (isRowDeletable(pRowIndex)) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", TableContextMenuItem.DELETE));
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", DataContextMenuItemType.DELETE));
     }
 
     if (pRowIndex == -1 && pColumnName.isNotEmpty && model.sortOnHeaderEnabled) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", TableContextMenuItem.SORT));
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.sort, "Sort", DataContextMenuItemType.SORT));
     }
 
     if (pRowIndex == -1 && kDebugMode) {
-      popupMenuEntries.add(_createContextMenuItem(Icons.cloud_off, "Offline", TableContextMenuItem.OFFLINE));
+      popupMenuEntries.add(createContextMenuItem(Icons.cloud_off, "Offline", DataContextMenuItemType.OFFLINE));
     }
 
     if (_isAnyCellInRowEditable(pRowIndex)) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", DataContextMenuItemType.EDIT));
     }
 
     if (popupMenuEntries.isNotEmpty) {
@@ -646,10 +646,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
         ),
         context: context,
         items: popupMenuEntries,
-      ).then((val) {
-        if (val != null) {
+      ).then((type) {
+        if (type != null) {
           _menuItemPressed(
-            val,
+            type,
             pRowIndex,
             pColumnName,
             pCellEditor,
@@ -659,36 +659,35 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
   }
 
-  void _menuItemPressed(TableContextMenuItem val, int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    IUiService()
-        .saveAllEditors(
+  void _menuItemPressed(DataContextMenuItemType val, int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    IUiService().saveAllEditors(
       pId: model.id,
       pReason: "Table menu item pressed",
-    )
-        .then((success) {
+    ).then((success) {
       if (!success) {
         return;
       }
+
       List<BaseCommand> commands = [];
 
-      if (val == TableContextMenuItem.INSERT) {
+      if (val == DataContextMenuItemType.INSERT) {
         commands.add(_createInsertCommand());
-      } else if (val == TableContextMenuItem.DELETE) {
+      } else if (val == DataContextMenuItemType.DELETE) {
         int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
         BaseCommand? command = _createDeleteCommand(indexToDelete);
         if (command != null) {
           commands.add(command);
         }
-      } else if (val == TableContextMenuItem.OFFLINE) {
+      } else if (val == DataContextMenuItemType.OFFLINE) {
         _debugGoOffline();
-      } else if (val == TableContextMenuItem.FETCH) {
+      } else if (val == DataContextMenuItemType.FETCH) {
         unawaited(_refresh());
-      } else if (val == TableContextMenuItem.SORT) {
+      } else if (val == DataContextMenuItemType.SORT) {
         BaseCommand? command = _createSortColumnCommand(pColumnName);
         if (command != null) {
           commands.add(command);
         }
-      } else if (val == TableContextMenuItem.EDIT) {
+      } else if (val == DataContextMenuItemType.EDIT) {
         _editRow(pRowIndex);
       }
       if (commands.isNotEmpty) {
@@ -855,35 +854,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   InsertRecordCommand _createInsertCommand() {
     return InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted");
-  }
-
-  PopupMenuItem<TableContextMenuItem> _createContextMenuItem(IconData icon, String text, TableContextMenuItem value) {
-    return PopupMenuItem<TableContextMenuItem>(
-      enabled: true,
-      value: value,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: 24,
-            alignment: Alignment.center,
-            child: FaIcon(
-              icon,
-              size: 20,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 5),
-            child: Text(
-              FlutterUI.translate(
-                text,
-              ),
-              style: model.createTextStyle(),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   /// Debug feature -> Takes one data provider offline
@@ -1128,5 +1098,3 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     return columnsToShow!;
   }
 }
-
-enum TableContextMenuItem { INSERT, DELETE, OFFLINE, EDIT, SORT, FETCH }

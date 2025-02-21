@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -166,7 +167,8 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       onRefresh: _refresh,
       onEndScroll: _loadMore,
       onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
-      onTap: _onListTap
+      onTap: _onListTap,
+      onLongPress: _onLongPress,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -277,8 +279,6 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// Receives which row is selected.
   void _receiveSelectedRecord(DataRecord? pRecord) {
-
-    print("Received selected record: ${pRecord?.index}");
 
     currentState |= LOADED_SELECTED_RECORD;
 
@@ -515,6 +515,53 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
  */
   }
 
+  _onLongPress(int index, Offset pGlobalPosition) {
+
+    List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
+
+    if (metaData.insertEnabled && !metaData.readOnly) {
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squarePlus, "New", DataContextMenuItemType.INSERT));
+    }
+
+    if (isRowDeletable(index)) {
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", DataContextMenuItemType.DELETE));
+    }
+
+    if (index == -1 && model.sortOnHeaderEnabled) {
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.sort, "Sort", DataContextMenuItemType.SORT));
+    }
+
+    if (index == -1 && kDebugMode) {
+      popupMenuEntries.add(createContextMenuItem(Icons.cloud_off, "Offline", DataContextMenuItemType.OFFLINE));
+    }
+
+    if (_isAnyCellInRowEditable(index)) {
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", DataContextMenuItemType.EDIT));
+    }
+
+    if (popupMenuEntries.isNotEmpty) {
+      menuOpen = true;
+      showMenu(
+        position: RelativeRect.fromSize(
+          pGlobalPosition & const Size(40, 40),
+          MediaQuery.sizeOf(context),
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
+        context: context,
+        items: popupMenuEntries,
+      ).then((type) {
+        if (type != null) {
+          _menuItemPressed(type, index);
+        }
+      }).whenComplete(() => menuOpen = false);
+    }
+
+  }
+
   /// Selects the record.
   Future<bool> _sendSelectRecord(int index) async {
     if (index >= dataChunk.data.length) {
@@ -545,6 +592,49 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     );
 
     return ICommandService().sendCommands(commands, delayUILocking: true);
+  }
+
+  void _menuItemPressed(DataContextMenuItemType type, int index) {
+    IUiService().saveAllEditors(
+      pId: model.id,
+      pReason: "List menu item pressed",
+    ).then((success) {
+      if (!success) {
+        return;
+      }
+
+      print("Type $type executed");
+
+      List<BaseCommand> commands = [];
+/*
+      if (val == DataContextMenuItemType.INSERT) {
+        commands.add(_createInsertCommand());
+      } else if (val == DataContextMenuItemType.DELETE) {
+        int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
+        BaseCommand? command = _createDeleteCommand(indexToDelete);
+        if (command != null) {
+          commands.add(command);
+        }
+      } else if (val == DataContextMenuItemType.OFFLINE) {
+        _debugGoOffline();
+      } else if (val == DataContextMenuItemType.FETCH) {
+        unawaited(_refresh());
+      } else if (val == DataContextMenuItemType.SORT) {
+        BaseCommand? command = _createSortColumnCommand(pColumnName);
+        if (command != null) {
+          commands.add(command);
+        }
+      } else if (val == DataContextMenuItemType.EDIT) {
+        _editRow(pRowIndex);
+      }
+      if (commands.isNotEmpty) {
+        commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+      }
+
+      ICommandService().sendCommands(commands);
+
+ */
+    });
   }
 
 }

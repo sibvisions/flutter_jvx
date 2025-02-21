@@ -36,6 +36,9 @@ abstract class JVxColors {
   /// The default border radius
   static const double BORDER_RADIUS = 5;
 
+  /// The default border width
+  static const double BORDER_WIDTH_DEFAULT = 1;
+
   /// Specifically requested color mix.
   static Color dividerColor(ThemeData theme) {
     return theme.colorScheme.onPrimary.withAlpha(Color.getAlphaFromOpacity(0.15));

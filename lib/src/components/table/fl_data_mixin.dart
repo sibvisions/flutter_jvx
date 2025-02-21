@@ -14,7 +14,12 @@
  * the License.
  */
 
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../../../flutter_jvx.dart';
+
+enum DataContextMenuItemType { INSERT, DELETE, OFFLINE, EDIT, SORT, FETCH }
 
 mixin FlDataMixin {
 
@@ -132,6 +137,35 @@ mixin FlDataMixin {
         }
 
         return dataChunk.data[rowIndex]![colIndex];
+    }
+
+    PopupMenuItem<DataContextMenuItemType> createContextMenuItem(IconData icon, String text, DataContextMenuItemType value) {
+        return PopupMenuItem<DataContextMenuItemType>(
+            enabled: true,
+            value: value,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                    Container(
+                        width: 24,
+                        alignment: Alignment.center,
+                        child: FaIcon(
+                            icon,
+                            size: 20,
+                        ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Text(
+                            FlutterUI.translate(
+                                text,
+                            ),
+                            style: model.createTextStyle(),
+                        ),
+                    ),
+                ],
+            ),
+        );
     }
 
 }

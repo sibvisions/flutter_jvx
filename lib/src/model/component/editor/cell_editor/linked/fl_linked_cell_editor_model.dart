@@ -67,7 +67,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   Size? popupSize;
 
   /// If the table removes the alternating table row colors.
-  bool get disabledAlternatingRowColor => styles.contains(FlTableModel.NO_ALTERNATING_ROW_COLOR_STYLE);
+  bool get disabledAlternatingRowColor => styles.contains(FlTableModel.STYLE_NO_ALTERNATING_ROW_COLOR);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

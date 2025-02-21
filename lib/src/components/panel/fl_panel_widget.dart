@@ -53,8 +53,9 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
   static Widget wrapWithStandardBorder(Widget pPanelWidget) {
     return Container(
       foregroundDecoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS - 1),
+        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS - JVxColors.BORDER_WIDTH_DEFAULT),
         border: Border.all(
+          width: JVxColors.BORDER_WIDTH_DEFAULT,
           color: JVxColors.STANDARD_BORDER,
         ),
       ),
