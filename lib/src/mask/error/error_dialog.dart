@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../apps/app_overview_page.dart';
@@ -63,6 +64,7 @@ class ErrorDialog extends StatelessWidget with JVxDialog implements IError {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      actionsPadding: JVxColors.ALERTDIALOG_ACTION_PADDING,
       title: Text(title?.isNotEmpty == true ? title! : FlutterUI.translate("Error")),
       content: Text(message),
       actions: _getActions(context),

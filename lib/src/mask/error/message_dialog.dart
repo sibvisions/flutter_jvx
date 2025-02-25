@@ -104,8 +104,9 @@ class _MessageDialogState extends State<MessageDialog> {
     }
 
     return AlertDialog(
-      title: _command.title?.isNotEmpty == true ? Text(_command.title!) : null,
       contentPadding: actions == null ? const EdgeInsets.all(24) : null,
+      actionsPadding: actions != null ? JVxColors.ALERTDIALOG_ACTION_PADDING : null,
+      title: _command.title?.isNotEmpty == true ? Text(_command.title!) : null,
       scrollable: true,
       content: _buildContent(context),
       actions: actions,

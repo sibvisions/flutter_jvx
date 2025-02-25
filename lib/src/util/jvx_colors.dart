@@ -39,6 +39,9 @@ abstract class JVxColors {
   /// The default border width
   static const double BORDER_WIDTH_DEFAULT = 1;
 
+  /// The padding for alert dialog actions pane
+  static const EdgeInsetsGeometry ALERTDIALOG_ACTION_PADDING = EdgeInsets.only(top: 0, left: 24, right: 24, bottom : 18);
+
   /// Specifically requested color mix.
   static Color dividerColor(ThemeData theme) {
     return theme.colorScheme.onPrimary.withAlpha(Color.getAlphaFromOpacity(0.15));

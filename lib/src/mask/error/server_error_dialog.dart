@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/ui/view/message/open_server_error_dialog_command.dart';
@@ -56,6 +57,7 @@ class ServerErrorDialog extends StatelessWidget with JVxDialog implements IError
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      actionsPadding: JVxColors.ALERTDIALOG_ACTION_PADDING,
       title: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterUI.translate("Server Error")),
       content: command.message != null ? Text(command.message!) : null,
       actions: _getButtons(context),
