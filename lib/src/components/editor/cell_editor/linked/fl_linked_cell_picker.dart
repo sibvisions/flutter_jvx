@@ -201,6 +201,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       postFrameCallback(context);
     });
 
+    ThemeData theme = Theme.of(context);
+
     return Dialog(
       insetPadding: paddingInsets,
       elevation: 10.0,
@@ -214,9 +216,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           children: [
             Text(
               FlutterUI.translate("Select value"),
-              style: Theme.of(context).dialogTheme.titleTextStyle,
+              style: theme.dialogTheme.titleTextStyle ??
+                  (theme.useMaterial3 ? theme.textTheme.titleLarge : theme.textTheme.headlineSmall),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 20),
             FlTextFieldWidget(
               key: widget.key,
               model: FlTextFieldModel()..placeholder = FlutterUI.translate("Search"),
@@ -226,7 +229,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
               endEditing: _startTimerValueChanged,
               focusNode: focusNode,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Expanded(
               child: _chunkData != null && _metaData != null
                   ? LayoutBuilder(
@@ -259,7 +262,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                     )
                   : Container(),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Row(
               children: listBottomButtons,
             ),

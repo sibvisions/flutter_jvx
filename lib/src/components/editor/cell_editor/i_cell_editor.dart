@@ -132,6 +132,17 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
   // Static methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns whether the cell editor of given [columnDefinition] is the expected [className]
+  static bool isCellEditor(ColumnDefinition columnDefinition, String className) {
+    String? cellEditorClassName = columnDefinition.cellEditorJson[ApiObjectProperty.className];[ApiObjectProperty.className];
+
+    if (cellEditorClassName == null) {
+      return false;
+    }
+
+    return cellEditorClassName == className;
+  }
+
   /// Returns a [ICellEditor] based on the cell editor class name
   static ICellEditor getCellEditor({
     required String pName,

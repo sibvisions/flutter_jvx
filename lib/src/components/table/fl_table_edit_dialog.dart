@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/restore_data_command.dart';
 import '../../model/command/api/save_data_command.dart';
+import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
+import '../../util/i_types.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
 /// A dialog that allows editing columns in a table.
@@ -60,6 +62,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The column definitions to use
+  ColumnList columnDefinitions = ColumnList();
+
   /// The cell editors of the columns to edit.
   List<ICellEditor> cellEditors = [];
 
@@ -95,7 +100,21 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
     widget.newValueNotifier.addListener(receiveNewValues);
 
-    widget.columnDefinitions.forEach((colDef) {
+    ColumnDefinition colDef;
+
+    //don't use binary columns without image viewer
+    for (int i = 0; i < widget.columnDefinitions.length; i++) {
+      colDef = widget.columnDefinitions[i];
+
+      if (colDef.dataTypeIdentifier != Types.BINARY
+          || ICellEditor.isCellEditor(colDef, FlCellEditorClassname.IMAGE_VIEWER)) {
+        columnDefinitions.add(colDef);
+      }
+    }
+
+    for (int i = 0; i <columnDefinitions.length; i++) {
+      colDef = columnDefinitions[i];
+
       var cellEditor = ICellEditor.getCellEditor(
         pName: widget.model.name,
         columnName: colDef.name,
@@ -123,7 +142,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       }
 
       cellEditors.add(cellEditor);
-    });
+    }
 
     for (ICellEditor cellEditor in cellEditors) {
       if (cellEditor is IFocusableCellEditor) {
@@ -150,7 +169,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     List<Widget> editorWidgets = [];
 
     if (isSingleColumnEdit) {
-      dialogLabel = widget.columnDefinitions.first.label;
+      dialogLabel = columnDefinitions.first.label;
 
       ICellEditor cellEditor = cellEditors[0];
       Widget editorWidget = cellEditor.createWidget(widget.model.json);
@@ -171,9 +190,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
       double labelColumnWidth = 0.0;
 
-      for (int i = 0; i < widget.columnDefinitions.length; i++) {
+      for (int i = 0; i < columnDefinitions.length; i++) {
         double labelWidth = ParseUtil.getTextWidth(
-          text: widget.columnDefinitions[i].label,
+          text: columnDefinitions[i].label,
           style: widget.model.createTextStyle(),
         );
 
@@ -184,7 +203,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
       labelColumnWidth = max(labelColumnWidth, 150);
 
-      for (int i = 0; i < widget.columnDefinitions.length; i++) {
+      for (int i = 0; i < columnDefinitions.length; i++) {
         ICellEditor cellEditor = cellEditors[i];
         Widget editorWidget = cellEditor.createWidget(widget.model.json);
 
@@ -212,7 +231,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 5.0),
                   child: Text(
-                    widget.columnDefinitions[i].label,
+                    columnDefinitions[i].label,
                     style: widget.model.createTextStyle(),
                   ),
                 ),
@@ -225,6 +244,8 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         editorWidgets.add(editorWidget);
       }
     }
+
+    ThemeData theme = Theme.of(context);
 
     return Dialog(
       insetPadding: paddingInsets,
@@ -240,9 +261,10 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
           children: [
             Text(
               dialogLabel,
-              style: Theme.of(context).dialogTheme.titleTextStyle,
+              style: theme.dialogTheme.titleTextStyle ??
+                  (theme.useMaterial3 ? theme.textTheme.titleLarge : theme.textTheme.headlineSmall),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 20),
             Flexible(
               child: SingleChildScrollView(
                 child: Column(
@@ -251,7 +273,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
