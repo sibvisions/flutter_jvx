@@ -15,9 +15,7 @@
  */
 
 import 'dart:async';
-import 'dart:collection';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -35,7 +33,6 @@ import '../../model/layout/layout_data.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
 import '../../util/jvx_logger.dart';
-import '../../util/offline_util.dart';
 import '../../util/sort_list.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -84,9 +81,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// The currently selected column. null is none.
   String? selectedColumn;
 
-  /// The columns to show (based on [model.columnNames])
-  ColumnList? columnsToShow;
-
   /// The sizes of the table.
   late TableSize tableSize;
 
@@ -133,9 +127,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// The last single tap timer.
   Timer? lastSingleTapTimer;
 
-  /// If the menu is currently open
-  bool menuOpen = false;
-
   /// The last row tapped
   int? lastTappedRow;
 
@@ -169,6 +160,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     layoutData.isFixedSize = true;
 
     tableSize = TableSize();
+    tableSizeForColumns = tableSize;
 
     tableHorizontalController = linkedScrollGroup.addAndGet();
     headerHorizontalController = linkedScrollGroup.addAndGet();
@@ -199,9 +191,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       headerHorizontalController: headerHorizontalController,
       itemScrollController: itemScrollController,
       tableHorizontalController: tableHorizontalController,
-      onEndEditing: _setValueEnd,
+      onEndEditing: setValueOnEndEditing,
       onValueChanged: _setValueChanged,
-      onRefresh: _refresh,
+      onRefresh: refresh,
       onEndScroll: _loadMore,
       onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
       onLongPress: _onLongPress,
@@ -267,6 +259,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     if (namesChanged ||
         model.lastChangedProperties.contains(ApiObjectProperty.columnLabels) ||
         model.lastChangedProperties.contains(ApiObjectProperty.autoResize)) {
+
+print("Flag 1");
+
       _calcOnDataReceived = true;
       _recalculateTableSize();
     } else {
@@ -300,6 +295,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
     currentState |= CALCULATION_COMPLETE;
     sentLayoutData = false;
+
     setState(() {});
   }
 
@@ -378,9 +374,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       dialogValueNotifier.value = valueMap;
     }
 
-    if (recalculateWidth || _calcOnDataReceived || changedDataCount || dataChunk.from == 0) {
+    if (recalculateWidth || _calcOnDataReceived || changedDataCount || dataChunk.fromStart) {
       _closeDialog();
-      _recalculateTableSize(recalculateWidth || _calcOnDataReceived || dataChunk.from == 0);
+      _recalculateTableSize(recalculateWidth || _calcOnDataReceived || dataChunk.fromStart);
       _calcOnDataReceived = false;
     } else {
       setState(() {});
@@ -441,6 +437,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
                   return oldSort.columnName == newSort.columnName && oldSort.mode == newSort.mode;
                 })) ??
             false;
+
         hasToCalc |= lastSortDefinitions?.any((oldSort) => !metaData.sortDefinitions!.any((newSort) {
                   return oldSort.columnName == newSort.columnName && oldSort.mode == newSort.mode;
                 })) ??
@@ -462,49 +459,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   // Action methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _setValueEnd(dynamic pValue, int pRow, String pColumnName) {
-    _selectRecord(
-      pRow,
-      pColumnName,
-      pAfterSelect: () {
-        int colIndex = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
-
-        if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
-          if (pValue is HashMap<String, dynamic>) {
-            if (pValue.keys.none((columnName) => !isCellEditable(pRow, columnName))) {
-              return [_setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName)];
-            }
-          } else {
-            if (isCellEditable(pRow, pColumnName)) {
-              return [
-                _setValues(pRow, [pColumnName], [pValue], pColumnName)
-              ];
-            }
-          }
-        }
-
-        return [];
-      },
-    );
-  }
-
   void _setValueChanged(dynamic pValue, int pRow, String pColumnName) {
     // Do nothing
-  }
-
-  /// Refreshes this data provider
-  Future<void> _refresh() {
-    IUiService().notifySubscriptionsOfReload(model.dataProvider);
-
-    return ICommandService().sendCommand(
-      FetchCommand(
-        fromRow: 0,
-        reload: true,
-        rowCount: IUiService().getSubscriptionRowCount(model.dataProvider),
-        dataProvider: model.dataProvider,
-        reason: "Table refreshed",
-      ),
-    );
   }
 
   /// Increments the page count and loads more data.
@@ -558,7 +514,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       lastTappedColumn = pColumnName;
       lastTappedRow = pRowIndex;
       lastSingleTapTimer?.cancel();
-      lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
+      lastSelectionTapFuture = selectRecord(pRowIndex, columnName: pColumnName);
       lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
         lastSelectionTapFuture?.then((value) {
           if (FlutterUI.logUI.cl(Lvl.d)) {
@@ -585,7 +541,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
           columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
           values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
           dataRow: dataChunk.data[pRowIndex],
-          onEndEditing: _setValueEnd,
+          onEndEditing: setValueOnEndEditing,
           newValueNotifier: dialogValueNotifier,
         );
       }
@@ -602,7 +558,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
           columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
           values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
           dataRow: dataChunk.data[pRowIndex],
-          onEndEditing: _setValueEnd,
+          onEndEditing: setValueOnEndEditing,
           newValueNotifier: dialogValueNotifier,
         );
       }
@@ -612,6 +568,18 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
     List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
 
+    int separator = 0;
+
+    if (pRowIndex == -1 && kDebugMode) {
+      popupMenuEntries.add(createContextMenuItem(Icons.cloud_off, "Offline", DataContextMenuItemType.OFFLINE));
+      separator++;
+    }
+
+    if (pRowIndex == -1 && pColumnName.isNotEmpty && model.sortOnHeaderEnabled) {
+      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.sort, "Sort", DataContextMenuItemType.SORT));
+      separator++;
+    }
+
     if (metaData.insertEnabled && !metaData.readOnly) {
       popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squarePlus, "New", DataContextMenuItemType.INSERT));
     }
@@ -620,33 +588,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", DataContextMenuItemType.DELETE));
     }
 
-    if (pRowIndex == -1 && pColumnName.isNotEmpty && model.sortOnHeaderEnabled) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.sort, "Sort", DataContextMenuItemType.SORT));
-    }
-
-    if (pRowIndex == -1 && kDebugMode) {
-      popupMenuEntries.add(createContextMenuItem(Icons.cloud_off, "Offline", DataContextMenuItemType.OFFLINE));
-    }
-
-    if (_isAnyCellInRowEditable(pRowIndex)) {
+    if (isAnyCellInRowEditable(pRowIndex)) {
       popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", DataContextMenuItemType.EDIT));
     }
 
+    if (separator > 0 && popupMenuEntries.length > separator) {
+      popupMenuEntries.insert(separator, const PopupMenuDivider(height: 3));
+    }
+
     if (popupMenuEntries.isNotEmpty) {
-      menuOpen = true;
-      showMenu(
-        position: RelativeRect.fromSize(
-          pGlobalPosition & const Size(40, 40),
-          MediaQuery.sizeOf(context),
-        ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(8),
-          ),
-        ),
-        context: context,
-        items: popupMenuEntries,
-      ).then((type) {
+      showPopupMenu(context, pGlobalPosition, popupMenuEntries).then((type) {
         if (type != null) {
           _menuItemPressed(
             type,
@@ -655,7 +606,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
             pCellEditor,
           );
         }
-      }).whenComplete(() => menuOpen = false);
+      });
     }
   }
 
@@ -670,31 +621,39 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
       List<BaseCommand> commands = [];
 
-      if (val == DataContextMenuItemType.INSERT) {
-        commands.add(_createInsertCommand());
-      } else if (val == DataContextMenuItemType.DELETE) {
-        int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
-        BaseCommand? command = _createDeleteCommand(indexToDelete);
-        if (command != null) {
-          commands.add(command);
+      if (val == DataContextMenuItemType.OFFLINE) {
+        if (mounted) {
+          debugGoOffline(context);
         }
-      } else if (val == DataContextMenuItemType.OFFLINE) {
-        _debugGoOffline();
-      } else if (val == DataContextMenuItemType.FETCH) {
-        unawaited(_refresh());
-      } else if (val == DataContextMenuItemType.SORT) {
+      }
+      else if (val == DataContextMenuItemType.SORT) {
         BaseCommand? command = _createSortColumnCommand(pColumnName);
+
         if (command != null) {
           commands.add(command);
         }
-      } else if (val == DataContextMenuItemType.EDIT) {
+      }
+      else if (val == DataContextMenuItemType.INSERT) {
+        commands.add(createInsertCommand());
+      } else if (val == DataContextMenuItemType.DELETE) {
+        BaseCommand? command = createDeleteCommand(pRowIndex >= 0 ? pRowIndex : selectedRow);
+
+        if (command != null) {
+          commands.add(command);
+        }
+      }
+      else if (val == DataContextMenuItemType.EDIT) {
         _editRow(pRowIndex);
       }
-      if (commands.isNotEmpty) {
-        commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+      else if (val == DataContextMenuItemType.RELOAD) {
+        unawaited(refresh());
       }
 
-      ICommandService().sendCommands(commands);
+      if (commands.isNotEmpty) {
+        commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Popup command Focus"));
+
+        ICommandService().sendCommands(commands);
+      }
     });
   }
 
@@ -784,55 +743,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
   }
 
-  /// Selects the record.
-  Future<bool> _selectRecord(int pRowIndex, String? pColumnName, {CommandCallback? pAfterSelect}) async {
-    if (pRowIndex >= dataChunk.data.length) {
-      FlutterUI.logUI.i("Row index out of range: $pRowIndex");
-      return false;
-    }
-
-    Filter? filter = createFilter(pRowIndex);
-
-    if (filter == null) {
-      if (FlutterUI.logUI.cl(Lvl.w)) {
-        FlutterUI.logUI.w("Filter of table(${model.id}) null");
-      }
-      return false;
-    }
-
-    List<BaseCommand> commands = await IUiService().collectAllEditorSaveCommands(model.id, "Selecting row in table.");
-
-    commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
-
-    commands.add(
-      SelectRecordCommand(
-        dataProvider: model.dataProvider,
-        rowNumber: pRowIndex,
-        reason: "Tapped",
-        filter: filter,
-        selectedColumn: pColumnName,
-      ),
-    );
-
-    if (pAfterSelect != null) {
-      commands.add(FunctionCommand(pAfterSelect, reason: "After selected row"));
-    }
-
-    return ICommandService().sendCommands(commands, delayUILocking: true);
-  }
-
-  /// Sends a [SetValuesCommand] for this row.
-  BaseCommand _setValues(int pRowIndex, List<String> pColumnNames, List<dynamic> pValues, String pEditorColumnName) {
-    return SetValuesCommand(
-      dataProvider: model.dataProvider,
-      columnNames: pColumnNames,
-      values: pValues,
-      filter: createFilter(pRowIndex),
-      rowNumber: pRowIndex,
-      reason: "Values changed in table",
-    );
-  }
-
   /// Inserts a new record.
   void _insertRecord() {
     IUiService()
@@ -847,37 +757,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
       ICommandService().sendCommands([
         SetFocusCommand(componentId: model.id, focus: true, reason: "Insert on table"),
-        _createInsertCommand(),
+        createInsertCommand(),
       ]);
     });
-  }
-
-  InsertRecordCommand _createInsertCommand() {
-    return InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted");
-  }
-
-  /// Debug feature -> Takes one data provider offline
-  void _debugGoOffline() {
-    BeamState state = context.currentBeamLocation.state as BeamState;
-    OfflineUtil.initOffline(state.pathParameters[MainLocation.screenNameKey]!);
-  }
-
-  /// Creates a delete command for this row.
-  DeleteRecordCommand? _createDeleteCommand(int pIndex) {
-    Filter? filter = createFilter(pIndex);
-
-    if (filter == null) {
-      if (FlutterUI.logUI.cl(Lvl.w)) {
-        FlutterUI.logUI.w("Filter of table(${model.id}) null");
-      }
-      return null;
-    }
-    return DeleteRecordCommand(
-      dataProvider: model.dataProvider,
-      rowNumber: pIndex,
-      reason: "Swiped",
-      filter: filter,
-    );
   }
 
   BaseCommand? _createSortColumnCommand(String pColumnName, [bool pAdditive = false]) {
@@ -934,24 +816,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   void _editRow(int pRowIndex) {
-    _selectRecord(
+    selectRecord(
       pRowIndex,
-      null,
-      pAfterSelect: () {
-        if (IStorageService().isVisibleInUI(model.id) && _isAnyCellInRowEditable(pRowIndex)) {
-
-          List<ColumnDefinition> editableColumns = _getColumnsToShow().where((colDef) => isCellEditable(pRowIndex, colDef.name)).toList();
-
-          Map<String, dynamic> values = {};
-          for (ColumnDefinition colDef in editableColumns) {
-            values[colDef.name] = dataChunk.getValue(colDef.name, pRowIndex);
-          }
+      afterSelectCommand: () {
+        if (IStorageService().isVisibleInUI(model.id) && isAnyCellInRowEditable(pRowIndex)) {
+          var editColumns = getEditableColumns(pRowIndex);
 
           _showDialog(
             rowIndex: pRowIndex,
-            columnDefinitions: ColumnList(editableColumns),
-            values: values,
-            onEndEditing: _setValueEnd,
+            columnDefinitions: editColumns.columns,
+            values: editColumns.values,
+            onEndEditing: setValueOnEndEditing,
             newValueNotifier: dialogValueNotifier,
           );
         }
@@ -965,7 +840,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
     bool isLight = JVxColors.isLightTheme(context);
 
-    if (_isAnyCellInRowEditable(row)) {
+    if (isAnyCellInRowEditable(row)) {
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
@@ -989,7 +864,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
-            BaseCommand? deleteCommand = _createDeleteCommand(row);
+            BaseCommand? deleteCommand = createDeleteCommand(row);
+
             if (deleteCommand != null) {
               ICommandService().sendCommand(deleteCommand);
             }
@@ -1022,10 +898,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     if (currentEditDialog == null) {
       if (columnDefinitions.length == 1 &&
           (columnDefinitions.first.cellEditorJson[ApiObjectProperty.className] ==
-                  FlCellEditorClassname.LINKED_CELL_EDITOR ||
-              columnDefinitions.first.cellEditorJson[ApiObjectProperty.className] ==
-                  FlCellEditorClassname.DATE_CELL_EDITOR)) {
+             FlCellEditorClassname.LINKED_CELL_EDITOR ||
+           columnDefinitions.first.cellEditorJson[ApiObjectProperty.className] ==
+             FlCellEditorClassname.DATE_CELL_EDITOR)) {
+
         ColumnDefinition colDef = columnDefinitions.first;
+
         ICellEditor cellEditor = ICellEditor.getCellEditor(
           pName: model.name,
           pCellEditorJson: columnDefinitions.first.cellEditorJson,
@@ -1038,26 +916,26 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
         if (cellEditor is FlLinkedCellEditor) {
           cellEditor.setValue((values[colDef.name], dataRow));
-        } else {
+
+          currentEditDialog = cellEditor.openLinkedCellPicker();
+        } else if (cellEditor is FlDateCellEditor){
           cellEditor.setValue(values[colDef.name]);
+
+          currentEditDialog = cellEditor.openDatePicker();
         }
 
-        if (cellEditor is FlDateCellEditor) {
-          currentEditDialog = cellEditor.openDatePicker();
-        } else if (cellEditor is FlLinkedCellEditor) {
-          currentEditDialog = cellEditor.openLinkedCellPicker();
-        }
         cellEditor.dispose();
-      } else {
+      } else if (columnDefinitions.isNotEmpty) {
         currentEditDialog = IUiService().openDialog(
-          pBuilder: (context) => FlTableEditDialog(
-            rowIndex: rowIndex,
-            model: model,
-            columnDefinitions: columnDefinitions,
-            values: values,
-            onEndEditing: onEndEditing,
-            newValueNotifier: newValueNotifier,
-          ),
+          pBuilder: (context) =>
+              FlTableEditDialog(
+                rowIndex: rowIndex,
+                model: model,
+                columnDefinitions: columnDefinitions,
+                values: values,
+                onEndEditing: onEndEditing,
+                newValueNotifier: newValueNotifier,
+              ),
         );
       }
 
@@ -1074,27 +952,4 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
   }
 
-  bool _isAnyCellInRowEditable(int pRowIndex) {
-    return _getColumnsToShow().any((column) => isCellEditable(pRowIndex, column.name));
-  }
-
-  List<ColumnDefinition> _getColumnsToShow() {
-    if (columnsToShow == null || columnsToShow!.isEmpty) {
-      columnsToShow = ColumnList.empty();
-
-      model.columnNames.forEach((colName) {
-        ColumnDefinition? cd = dataChunk.columnDefinitions.byName(colName);
-
-        if (cd != null) {
-          double colWidth = tableSize.columnWidths[colName] ?? -1;
-
-          if (colWidth > 0) {
-            columnsToShow!.add(cd);
-          }
-        }
-      });
-    }
-
-    return columnsToShow!;
-  }
 }

@@ -15,7 +15,6 @@
  */
 
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';

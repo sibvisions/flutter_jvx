@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/restore_data_command.dart';
+import '../../model/command/api/save_data_command.dart';
 import '../../util/column_list.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
@@ -61,18 +63,21 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   /// The cell editors of the columns to edit.
   List<ICellEditor> cellEditors = [];
 
+  /// The values of changed values.
+  final Map<String, dynamic> changedValues = {};
+
   /// If the table edits a singular column, the dialog will switch to local editing, without immediately sending the value to the server.
   /// Moreover the cancel button will only cancel the local changes, instead of resetting the whole row.
   bool get isSingleColumnEdit => widget.columnDefinitions.length == 1;
-
-  /// The local value if the dialog only edits one column.
-  dynamic localValue;
 
   /// If the dialog was dismissed by either button.
   bool dismissedByButton = false;
 
   /// If cancel button was pressed
   bool cancel = false;
+
+  // If ok button was pressed
+  bool ok = false;
 
   /// whether data has changed
   bool hasChanges = false;
@@ -97,13 +102,12 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         dataProvider: widget.model.dataProvider,
         pCellEditorJson: colDef.cellEditorJson,
         columnDefinition: colDef,
-        onChange: (value) {
-          localValue = value;
-        },
         onEndEditing: (value) {
-          localValue = value;
           //in case of cancel -> don't end editing because it fires events like select record
-          if (!isSingleColumnEdit && !cancel) {
+          //in case of ok -> _handleOk will save values
+          if (!isSingleColumnEdit && !cancel && !ok) {
+            changedValues[colDef.name] = value;
+
             widget.onEndEditing(value, widget.rowIndex, colDef.name);
           }
         },
@@ -330,10 +334,40 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   }
 
   Future<void> _handleOk() async {
+    ok = true;
     dismissedByButton = true;
 
     if (isSingleColumnEdit) {
       widget.onEndEditing(await cellEditors[0].getValue(), widget.rowIndex, widget.columnDefinitions.first.name);
+    }
+    else {
+      List<String> columns = [];
+      List<dynamic> values = [];
+
+      dynamic value;
+
+      for (ICellEditor ced in cellEditors) {
+        if (!changedValues.containsKey(ced.columnName) || changedValues[ced.columnName] != value) {
+          value = await ced.getValue();
+
+          if (value != widget.values[ced.columnName]) {
+            columns.add(ced.columnName);
+            values.add(value);
+          }
+        }
+      }
+
+      List<BaseCommand> commands = [];
+      commands.add(SetValuesCommand(
+        dataProvider: widget.model.dataProvider,
+        columnNames: columns,
+        values: values,
+        rowNumber: widget.rowIndex,
+        reason: "Values changed with edit dialog of ${widget.model.dataProvider}",
+      ));
+      commands.add(SaveDataCommand(dataProvider: widget.model.dataProvider, onlySelected: true, reason: "Saving row of ${widget.model.dataProvider}."));
+
+      unawaited(ICommandService().sendCommands(commands, delayUILocking: true));
     }
 
     // ignore: use_build_context_synchronously
@@ -350,7 +384,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       //will be reset, so let us do a restore
       ICommandService().sendCommand(RestoreDataCommand(
         dataProvider: widget.model.dataProvider,
-        reason: "Pressed cancel in table edit dialog",
+        reason: "Pressed cancel in edit dialog",
       ));
     }
 

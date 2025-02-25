@@ -280,12 +280,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       return;
     }
 
-    await IUiService()
-        .saveAllEditors(
+    await IUiService().saveAllEditors(
       pId: model.id,
       pReason: "Value of ${model.id} set to $pValue",
-    )
-        .then((success) {
+    ).then((success) {
       if (!success) {
         return false;
       }
