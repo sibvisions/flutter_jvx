@@ -22,7 +22,7 @@ class ApiRestoreDataRequest extends SessionRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Data provider to change selected row of
+  /// Data provider name
   final String dataProvider;
 
   /// If only the selected row should be restored

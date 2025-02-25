@@ -73,6 +73,7 @@ import '../../../../model/request/api_reload_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/request/api_reset_password_request.dart';
 import '../../../../model/request/api_restore_data_request.dart';
+import '../../../../model/request/api_save_data_request.dart';
 import '../../../../model/request/api_rollback_request.dart';
 import '../../../../model/request/api_save_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
@@ -159,6 +160,7 @@ class OnlineApiRepository extends IRepository {
     ApiChangePasswordRequest: (_) => APIRoute.POST_CHANGE_PASSWORD,
     ApiResetPasswordRequest: (_) => APIRoute.POST_RESET_PASSWORD,
     ApiRestoreDataRequest: (_) => APIRoute.POST_RESTORE_DATA,
+    ApiSaveDataRequest: (_) => APIRoute.POST_SAVE_DATA,
     ApiNavigationRequest: (_) => APIRoute.POST_NAVIGATION,
     ApiReloadMenuRequest: (_) => APIRoute.POST_MENU,
     ApiFetchRequest: (_) => APIRoute.POST_FETCH,

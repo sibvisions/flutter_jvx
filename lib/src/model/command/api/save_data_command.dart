@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2025 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,7 +16,7 @@
 
 import 'session_command.dart';
 
-class RestoreDataCommand extends SessionCommand {
+class SaveDataCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,14 +24,14 @@ class RestoreDataCommand extends SessionCommand {
   /// Data provider name
   final String dataProvider;
 
-  /// If only the selected row should be restored
+  /// If only the selected row should be saved
   final bool onlySelected;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  RestoreDataCommand({
+  SaveDataCommand({
     required this.dataProvider,
     this.onlySelected = true,
     required super.reason,
@@ -43,6 +43,6 @@ class RestoreDataCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "RestoreDataCommand{dataProvider: $dataProvider, onlySelected: $onlySelected  ${super.toString()}}";
+    return "SaveDataCommand{dataProvider: $dataProvider, onlySelected: $onlySelected  ${super.toString()}}";
   }
 }

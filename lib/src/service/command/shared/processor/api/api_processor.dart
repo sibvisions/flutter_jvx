@@ -51,6 +51,7 @@ import '../../../../../model/command/api/reset_password_command.dart';
 import '../../../../../model/command/api/restore_data_command.dart';
 import '../../../../../model/command/api/rollback_command.dart';
 import '../../../../../model/command/api/save_command.dart';
+import '../../../../../model/command/api/save_data_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/api/select_tree_command.dart';
 import '../../../../../model/command/api/set_parameter_command.dart';
@@ -98,6 +99,7 @@ import 'reset_password_command_processor.dart';
 import 'restore_data_processor.dart';
 import 'rollback_command_processor.dart';
 import 'save_command_processor.dart';
+import 'save_data_processor.dart';
 import 'select_record_command_processor.dart';
 import 'select_tree_command_processor.dart';
 import 'set_parameter_command_processor.dart';
@@ -159,6 +161,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final InsertRecordCommandProcessor _insertRecordProcessor = InsertRecordCommandProcessor();
   final SortCommandProcessor _sortProcessor = SortCommandProcessor();
   final RestoreDataCommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
+  final SaveDataCommandProcessor _saveDataProcessor = SaveDataCommandProcessor();
   final SelectTreeCommandProcessor _selectTreeCommand = SelectTreeCommandProcessor();
 
   final MouseCommandProcessor _mouseProcessor = MouseCommandProcessor();
@@ -253,6 +256,8 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _setScreenParameterProcessor;
     } else if (command is RestoreDataCommand) {
       return _restoreDataProcessor;
+    } else if (command is SaveDataCommand) {
+      return _saveDataProcessor;
     } else if (command is SelectTreeCommand) {
       return _selectTreeCommand;
     } else if (command is CloseContentCommand) {

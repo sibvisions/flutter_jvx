@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2025 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,9 +14,10 @@
  * the License.
  */
 
-import 'session_command.dart';
+import '../../service/api/shared/api_object_property.dart';
+import 'session_request.dart';
 
-class RestoreDataCommand extends SessionCommand {
+class ApiSaveDataRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,25 +25,26 @@ class RestoreDataCommand extends SessionCommand {
   /// Data provider name
   final String dataProvider;
 
-  /// If only the selected row should be restored
+  /// If only the selected row should be saved
   final bool onlySelected;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  RestoreDataCommand({
+  ApiSaveDataRequest({
     required this.dataProvider,
     this.onlySelected = true,
-    required super.reason,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
+  // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "RestoreDataCommand{dataProvider: $dataProvider, onlySelected: $onlySelected  ${super.toString()}}";
-  }
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        ApiObjectProperty.dataProvider: dataProvider,
+        ApiObjectProperty.onlySelected: onlySelected,
+      };
 }
