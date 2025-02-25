@@ -39,7 +39,7 @@ mixin FlDataMixin {
   ColumnList? columnsToShow;
 
   /// The sizes of the table.
-  TableSize? tableSizeForColumns;
+  TableSize? tableSize;
 
   /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
@@ -375,8 +375,8 @@ mixin FlDataMixin {
         ColumnDefinition? cd = dataChunk.columnDefinitions.byName(colName);
 
         if (cd != null) {
-          if (tableSizeForColumns != null) {
-            double colWidth = tableSizeForColumns!.columnWidths[colName] ?? -1;
+          if (tableSize != null) {
+            double colWidth = tableSize!.columnWidths[colName] ?? -1;
 
             if (colWidth > 0) {
               columnsToShow!.add(cd);

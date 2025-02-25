@@ -81,9 +81,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// The currently selected column. null is none.
   String? selectedColumn;
 
-  /// The sizes of the table.
-  late TableSize tableSize;
-
   /// The scroll controller for the table.
   late final ScrollController tableHorizontalController;
 
@@ -160,7 +157,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     layoutData.isFixedSize = true;
 
     tableSize = TableSize();
-    tableSizeForColumns = tableSize;
 
     tableHorizontalController = linkedScrollGroup.addAndGet();
     headerHorizontalController = linkedScrollGroup.addAndGet();
@@ -176,14 +172,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
 
     if (layoutData.hasPosition) {
-      model.stickyHeaders = layoutData.layoutPosition!.height > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
+      model.stickyHeaders = layoutData.layoutPosition!.height > (2 * tableSize!.rowHeight + tableSize!.tableHeaderHeight);
     }
 
     widget ??= FlTableWidget(
       model: model,
       chunkData: dataChunk,
       metaData: metaData,
-      tableSize: tableSize,
+      tableSize: tableSize!,
       selectedRowIndex: selectedRow,
       selectedColumn: selectedColumn,
       slideActionFactory: createSlideActions,
@@ -272,8 +268,8 @@ print("Flag 1");
   @override
   Size calculateSize(BuildContext context) {
     return Size(
-      tableSize.sumCalculatedColumnWidth + (tableSize.borderWidth * 2),
-      tableSize.tableHeaderHeight + (tableSize.borderWidth * 2) + (tableSize.rowHeight * dataChunk.data.length),
+      tableSize!.sumCalculatedColumnWidth + (tableSize!.borderWidth * 2),
+      tableSize!.tableHeaderHeight + (tableSize!.borderWidth * 2) + (tableSize!.rowHeight * dataChunk.data.length),
     );
   }
 
@@ -284,7 +280,7 @@ print("Flag 1");
   /// Recalculates the size of the table.
   void _recalculateTableSize([bool pRecalculateWidth = true]) {
     if (pRecalculateWidth) {
-      tableSize.calculateTableSize(
+      tableSize!.calculateTableSize(
         metaData: metaData,
         tableModel: model,
         dataChunk: dataChunk,
@@ -364,7 +360,7 @@ print("Flag 1");
     bool changedDataCount = (dataChunk.data.length != pDataChunk.data.length);
     dataChunk = pDataChunk;
 
-    if (selectedRow >= 0 && selectedRow < dataChunk.data.length) {
+    if (isDataRow(selectedRow)) {
       Map<String, dynamic> valueMap = {};
 
       for (ColumnDefinition colDef in dataChunk.columnDefinitions) {
@@ -678,8 +674,8 @@ print("Flag 1");
         indexToScrollTo++;
       }
 
-      double itemTop = indexToScrollTo * tableSize.rowHeight;
-      double itemBottom = itemTop + tableSize.rowHeight;
+      double itemTop = indexToScrollTo * tableSize!.rowHeight;
+      double itemBottom = itemTop + tableSize!.rowHeight;
 
       double topViewCutOff;
       double bottomViewCutOff;
@@ -694,7 +690,7 @@ print("Flag 1");
         // Probably noz fully loaded, dismiss scrolling.
         return;
       } else {
-        heightOfView = layoutData.layoutPosition!.height - (tableSize.borderWidth * 2);
+        heightOfView = layoutData.layoutPosition!.height - (tableSize!.borderWidth * 2);
         if (scrolledIndexTopAligned == null) {
           // Never scrolled = table is at the top
           topViewCutOff = 0;
@@ -706,10 +702,10 @@ print("Flag 1");
           }
 
           if (scrolledIndexTopAligned!) {
-            topViewCutOff = indexToScrollFrom * tableSize.rowHeight;
+            topViewCutOff = indexToScrollFrom * tableSize!.rowHeight;
             bottomViewCutOff = topViewCutOff + heightOfView;
           } else {
-            bottomViewCutOff = indexToScrollFrom * tableSize.rowHeight + tableSize.rowHeight;
+            bottomViewCutOff = indexToScrollFrom * tableSize!.rowHeight + tableSize!.rowHeight;
             topViewCutOff = bottomViewCutOff - heightOfView;
           }
         }
@@ -728,7 +724,7 @@ print("Flag 1");
           // Alignment 1 means the top edge of the item is aligned with the bottom edge of the view
           // Calculates the percentage of the height the top edge of the item is from the top of the view,
           // where the bottom edge of the item touches the bottom edge of the view.
-          double alignment = (heightOfView - tableSize.rowHeight) / heightOfView;
+          double alignment = (heightOfView - tableSize!.rowHeight) / heightOfView;
 
           // Scroll to the bottom of the item.
           itemScrollController.scrollTo(
@@ -895,7 +891,10 @@ print("Flag 1");
     required ValueNotifier<Map<String, dynamic>?> newValueNotifier,
     List<dynamic>? dataRow,
   }) {
-    if (currentEditDialog == null) {
+    if (columnDefinitions.isEmpty) {
+      _closeDialog();
+    }
+    else if (currentEditDialog == null) {
       if (columnDefinitions.length == 1 &&
           (columnDefinitions.first.cellEditorJson[ApiObjectProperty.className] ==
              FlCellEditorClassname.LINKED_CELL_EDITOR ||

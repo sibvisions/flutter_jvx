@@ -266,6 +266,16 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
     dataChunk = pDataChunk;
 
+    if (isDataRow(selectedRow)) {
+      Map<String, dynamic> selectionValues = {};
+
+      for (ColumnDefinition colDef in dataChunk.columnDefinitions) {
+        selectionValues[colDef.name] = dataChunk.data[selectedRow]![dataChunk.columnDefinitions.indexByName(colDef.name)];
+      }
+
+      dialogValueNotifier.value = selectionValues;
+    }
+
     _loadingData = false;
 
     setState(() {});
@@ -627,7 +637,10 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     required ValueNotifier<Map<String, dynamic>?> newValueNotifier,
     List<dynamic>? dataRow,
   }) {
-    if (currentEditDialog == null) {
+    if (columnDefinitions.isEmpty) {
+      _closeDialog();
+    }
+    else if (currentEditDialog == null) {
       currentEditDialog = IUiService().openDialog(
         pBuilder: (context) => FlTableEditDialog(
           rowIndex: rowIndex,
