@@ -533,38 +533,6 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     }
   }
 
-  /// Selects the record.
-  Future<bool> _sendSelectRecord(int index) async {
-    if (index >= dataChunk.data.length) {
-      FlutterUI.logUI.i("Row index out of range: $index");
-      return false;
-    }
-
-    Filter? filter = createFilter(index);
-
-    if (filter == null) {
-      if (FlutterUI.logUI.cl(Lvl.w)) {
-        FlutterUI.logUI.w("Filter of table(${model.id}) null");
-      }
-      return false;
-    }
-
-    List<BaseCommand> commands = await IUiService().collectAllEditorSaveCommands(model.id, "Selecting row in table.");
-
-    commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
-
-    commands.add(
-      SelectRecordCommand(
-        dataProvider: model.dataProvider,
-        rowNumber: index,
-        reason: "Tapped",
-        filter: filter,
-      ),
-    );
-
-    return ICommandService().sendCommands(commands, delayUILocking: true);
-  }
-
   void _menuItemPressed(DataContextMenuItemType type, int index) {
     IUiService().saveAllEditors(
       pId: model.id,
@@ -634,8 +602,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     required ColumnList columnDefinitions,
     required Map<String, dynamic> values,
     required void Function(dynamic, int, String) onEndEditing,
-    required ValueNotifier<Map<String, dynamic>?> newValueNotifier,
-    List<dynamic>? dataRow,
+    required ValueNotifier<Map<String, dynamic>?> newValueNotifier
   }) {
     if (columnDefinitions.isEmpty) {
       _closeDialog();

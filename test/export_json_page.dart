@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
@@ -53,7 +54,9 @@ class _ExportExamplePageState extends State<ExportJsonPage> {
                                 mode: ReverseEncodingMode.json,
                             );
 
-                            print(data);
+                            if (kDebugMode) {
+                                print(data);
+                            }
 
                             Clipboard.setData(ClipboardData(text: data));
                             ScaffoldMessenger.of(context).showSnackBar(

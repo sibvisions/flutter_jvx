@@ -130,8 +130,8 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         }
       }
     } else {
-      Uri baseUrl = IConfigService().baseUrl.value!;
-      String appName = IConfigService().appName.value!;
+      //Uri baseUrl = IConfigService().baseUrl.value!;
+      //String appName = IConfigService().appName.value!;
 
       //imageProvider = NetworkImage("$baseUrl/resource/$appName/$imageDefinition_", headers: _getHeaders());
     }
