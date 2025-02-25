@@ -44,6 +44,9 @@ class DataChunk {
   /// Contains record formats
   final Map<String, RecordFormat>? recordFormats;
 
+  /// Whether the dataChunk is newly fetched from start
+  final bool fromStart;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,6 +58,7 @@ class DataChunk {
     required this.from,
     this.dataReadOnly,
     this.recordFormats,
+    this.fromStart = false,
   });
 
   DataChunk.empty()
@@ -63,7 +67,8 @@ class DataChunk {
         columnDefinitions = ColumnList.empty(),
         from = 0,
         dataReadOnly = null,
-        recordFormats = null;
+        recordFormats = null,
+        fromStart = false;
 
   dynamic getValue(String name, int rowIndex) {
     return data[rowIndex]?[columnDefinitions.indexByName(name)];

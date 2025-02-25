@@ -166,6 +166,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
       pFrom: command.from,
       pTo: command.to,
       pDataProvider: command.dataProvider,
+      pFromStart : command.fromStart
     );
 
     IUiService().sendSubsDataChunk(

@@ -19,31 +19,14 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
-import '../../components/editor/cell_editor/referenced_cell_editor.dart';
-import '../../service/api/shared/api_object_property.dart';
-import '../../service/command/i_command_service.dart';
-import '../../service/data/i_data_service.dart';
-import '../../service/ui/i_ui_service.dart';
+import '../../../flutter_jvx.dart';
 import '../../util/column_list.dart';
-import '../../util/parse_util.dart';
 import '../../util/sort_list.dart';
-import '../command/api/delete_record_command.dart';
-import '../command/api/filter_command.dart';
-import '../command/api/insert_record_command.dart';
-import '../command/api/select_record_command.dart';
-import '../command/api/set_values_command.dart';
-import '../command/data/save_fetch_data_command.dart';
+import '../component/editor/cell_editor/cell_editor_model.dart';
 import '../component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../component/editor/cell_editor/linked/reference_definition.dart';
-import '../request/filter.dart';
-import '../response/dal_data_provider_changed_response.dart';
-import '../response/dal_meta_data_response.dart';
 import '../response/record_format.dart';
-import 'column_definition.dart';
-import 'filter_condition.dart';
 import 'sort_definition.dart';
-import 'subscriptions/data_record.dart';
-import 'subscriptions/data_subscription.dart';
 
 /// Holds all data and column definitions of a data provider
 class DataBook {
@@ -133,6 +116,9 @@ class DataBook {
 
     Map<int, List> dataMap;
     String? pageKey;
+
+    bool newPageKey = false;
+
     if (metaData?.masterReference == null) {
       dataMap = records;
     } else {
@@ -149,6 +135,7 @@ class DataBook {
 
       if (!pageRecords.containsKey(pageKey)) {
         pageRecords[pageKey] = HashMap();
+        newPageKey = true;
       }
 
       if (pCommand.requestFilter.isNotEmpty) {
@@ -227,6 +214,7 @@ class DataBook {
       pDataProvider: dataProvider,
       pUpdatedCurrentPage: dataMap == records,
       pUpdatedPage: pageKey,
+      pFromStart: pFetchResponse.clear || newPageKey || pFetchResponse.from == 0
     );
   }
 
@@ -652,62 +640,216 @@ class DalMetaData {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void applyMetaDataResponse(DalMetaDataResponse pResponse) {
+  bool applyMetaDataResponse(DalMetaDataResponse pResponse) {
     changedProperties = pResponse.json.keys.toList();
-    if (pResponse.columnViewTable != null) {
+
+    bool isChanged = false;
+
+    DeepCollectionEquality comp = const DeepCollectionEquality.unordered();
+
+    if (pResponse.columnViewTable != null && !comp.equals(columnViewTable, pResponse.columnViewTable)) {
       columnViewTable = pResponse.columnViewTable!;
+
+      isChanged = true;
     }
-    if (pResponse.columnViewTree != null) {
+    if (pResponse.columnViewTree != null && !comp.equals(columnViewTree, pResponse.columnViewTree)) {
       columnViewTree = pResponse.columnViewTree!;
+
+      isChanged = true;
     }
     if (pResponse.columnDefinitions != null) {
-      columnDefinitions = pResponse.columnDefinitions!;
-
       createdReferencedCellEditors.forEach((element) => element.dispose());
+      createdReferencedCellEditors.clear();
+
+      columnDefinitions = pResponse.columnDefinitions!;
       columnDefinitions.forEach((colDef) {
         if (colDef.cellEditorModel is FlLinkedCellEditorModel) {
           createdReferencedCellEditors.add(IDataService().createReferencedCellEditors(
               colDef.cellEditorModel as FlLinkedCellEditorModel, dataProvider, colDef.name));
         }
       });
+
+      isChanged = true;
     }
-    if (pResponse.readOnly != null) {
+    if (pResponse.readOnly != null && readOnly != pResponse.readOnly) {
       readOnly = pResponse.readOnly!;
+
+      isChanged = true;
     }
-    if (pResponse.deleteEnabled != null) {
+    if (pResponse.deleteEnabled != null && deleteEnabled != pResponse.deleteEnabled) {
       deleteEnabled = pResponse.deleteEnabled!;
+
+      isChanged = true;
     }
-    if (pResponse.updateEnabled != null) {
+    if (pResponse.updateEnabled != null && updateEnabled != pResponse.updateEnabled) {
       updateEnabled = pResponse.updateEnabled!;
+
+      isChanged = true;
     }
-    if (pResponse.insertEnabled != null) {
+    if (pResponse.insertEnabled != null && insertEnabled != pResponse.insertEnabled) {
       insertEnabled = pResponse.insertEnabled!;
+
+      isChanged = true;
     }
-    if (pResponse.modelDeleteEnabled != null) {
+    if (pResponse.modelDeleteEnabled != null && modelDeleteEnabled != pResponse.modelDeleteEnabled) {
       modelDeleteEnabled = pResponse.modelDeleteEnabled!;
+
+      isChanged = true;
     }
-    if (pResponse.modelUpdateEnabled != null) {
+    if (pResponse.modelUpdateEnabled != null && modelUpdateEnabled != pResponse.modelUpdateEnabled) {
       modelUpdateEnabled = pResponse.modelUpdateEnabled!;
+
+      isChanged = true;
     }
-    if (pResponse.modelInsertEnabled != null) {
+    if (pResponse.modelInsertEnabled != null && modelInsertEnabled != pResponse.modelInsertEnabled) {
       modelInsertEnabled = pResponse.modelInsertEnabled!;
+
+      isChanged = true;
     }
-    if (pResponse.primaryKeyColumns != null) {
+    if (pResponse.primaryKeyColumns != null && !comp.equals(primaryKeyColumns, pResponse.primaryKeyColumns)) {
       primaryKeyColumns = pResponse.primaryKeyColumns!;
+
+      isChanged = true;
     }
     if (pResponse.masterReference != null) {
       masterReference = pResponse.masterReference!;
+
+      isChanged = true;
     }
     if (pResponse.detailReferences != null) {
       detailReferences = pResponse.detailReferences!;
+
+      isChanged = true;
     }
     if (pResponse.rootReference != null) {
       rootReference = pResponse.rootReference!;
+
+      isChanged = true;
     }
-    if (pResponse.additionalRowVisible != null) {
+    if (pResponse.additionalRowVisible != null && additionalRowVisible != pResponse.additionalRowVisible) {
       additionalRowVisible = pResponse.additionalRowVisible!;
+
+      isChanged = true;
     }
-    ParseUtil.applyJsonToJson(pResponse.json, json);
+
+    isChanged |= ParseUtil.applyJsonToJson(pResponse.json, json);
+
+    return isChanged;
+  }
+
+  bool applyMetaDataFromChangedResponse(DalDataProviderChangedResponse pResponse) {
+    changedProperties.clear();
+
+    if (pResponse.readOnly != null && readOnly != pResponse.readOnly) {
+      readOnly = pResponse.readOnly!;
+
+      changedProperties.add(ApiObjectProperty.readOnly);
+    }
+
+    if (pResponse.insertEnabled != null && insertEnabled != pResponse.insertEnabled) {
+      insertEnabled = pResponse.insertEnabled!;
+
+      changedProperties.add(ApiObjectProperty.insertEnabled);
+    }
+
+    if (pResponse.updateEnabled != null && updateEnabled != pResponse.updateEnabled) {
+      updateEnabled = pResponse.updateEnabled!;
+
+      changedProperties.add(ApiObjectProperty.updateEnabled);
+    }
+
+    if (pResponse.deleteEnabled != null && deleteEnabled != pResponse.deleteEnabled) {
+      deleteEnabled = pResponse.deleteEnabled!;
+
+      changedProperties.add(ApiObjectProperty.deleteEnabled);
+    }
+
+    if (pResponse.modelInsertEnabled != null && modelInsertEnabled != pResponse.modelInsertEnabled) {
+      modelInsertEnabled = pResponse.modelInsertEnabled!;
+
+      changedProperties.add(ApiObjectProperty.modelInsertEnabled);
+    }
+
+    if (pResponse.modelUpdateEnabled != null && modelUpdateEnabled != pResponse.modelUpdateEnabled) {
+      modelUpdateEnabled = pResponse.modelUpdateEnabled!;
+
+      changedProperties.add(ApiObjectProperty.modelUpdateEnabled);
+    }
+
+    if (pResponse.modelDeleteEnabled != null && modelDeleteEnabled != pResponse.modelDeleteEnabled) {
+      modelDeleteEnabled = pResponse.modelDeleteEnabled!;
+
+      changedProperties.add(ApiObjectProperty.modelDeleteEnabled);
+    }
+
+    if (pResponse.additionalRowVisible != null && additionalRowVisible != pResponse.additionalRowVisible!) {
+      additionalRowVisible = pResponse.additionalRowVisible!;
+
+      changedProperties.add(ApiObjectProperty.additionalRowVisible);
+    }
+
+    if (pResponse.changedColumns != null) {
+
+      bool isColumnChanged = false;
+
+      pResponse.changedColumns!.forEach((changedColumn) {
+
+        ColumnDefinition? foundColumn = columnDefinitions.byName(changedColumn.name);
+
+        if (foundColumn != null) {
+          if (changedColumn.label != null && changedColumn.label != foundColumn.label) {
+            foundColumn.label = changedColumn.label!;
+
+            isColumnChanged |= true;
+          }
+
+          if (changedColumn.readOnly != null && changedColumn.readOnly != foundColumn.readOnly) {
+            foundColumn.readOnly = changedColumn.readOnly!;
+
+            isColumnChanged |= true;
+          }
+
+          if (changedColumn.movable != null && changedColumn.movable != foundColumn.movable) {
+            foundColumn.movable = changedColumn.movable!;
+
+            isColumnChanged |= true;
+          }
+
+          if (changedColumn.sortable != null && changedColumn.sortable != foundColumn.sortable) {
+            foundColumn.sortable = changedColumn.sortable!;
+
+            isColumnChanged |= true;
+          }
+
+          if (changedColumn.cellEditorJson != null) {
+            for (int i = createdReferencedCellEditors.length - 1; i >= 0; i--) {
+              if (createdReferencedCellEditors[i].columnName == foundColumn.name) {
+                createdReferencedCellEditors[i].dispose();
+                createdReferencedCellEditors.removeAt(i);
+              }
+            }
+
+            foundColumn.cellEditorJson = changedColumn.cellEditorJson!;
+            foundColumn.cellEditorModel = ICellEditorModel.fromJson(foundColumn.cellEditorJson);
+
+            if (foundColumn.cellEditorModel is FlLinkedCellEditorModel) {
+              createdReferencedCellEditors.add(IDataService().createReferencedCellEditors(
+                  foundColumn.cellEditorModel as FlLinkedCellEditorModel,
+                  pResponse.dataProvider,
+                  foundColumn.name));
+            }
+
+            isColumnChanged |= true;
+          }
+        }
+      });
+
+      if (isColumnChanged) {
+        changedProperties.add(ApiObjectProperty.columns);
+      }
+    }
+
+    return changedProperties.isNotEmpty;
   }
 
   /// Returns true if the given data book is self-joined (references itself in masterReference), false if it isn't

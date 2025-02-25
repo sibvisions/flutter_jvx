@@ -264,6 +264,7 @@ abstract class IUiService implements Service {
     required String pDataProvider,
     bool pUpdatedCurrentPage = true,
     String? pUpdatedPage,
+    bool pFromStart = false
   });
 
   /// Notify all components belonging to [pDataProvider] that their underlying

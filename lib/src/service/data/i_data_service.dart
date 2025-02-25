@@ -73,6 +73,7 @@ abstract class IDataService implements Service {
     int? pTo,
     List<String>? pColumnNames,
     String? pPageKey,
+    bool pFromStart = false
   });
 
   /// Returns the full [DalMetaData] for this dataProvider.

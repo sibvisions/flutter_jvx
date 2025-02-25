@@ -25,7 +25,6 @@ import '../../../flutter_ui.dart';
 import '../../../model/command/api/fetch_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/save_fetch_data_command.dart';
-import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';
@@ -174,88 +173,7 @@ class DataService implements IDataService {
       return false;
     }
 
-    bool anyChanges = false;
-
-    if (pChangedResponse.readOnly != null && metaData.readOnly != pChangedResponse.readOnly) {
-      metaData.readOnly = pChangedResponse.readOnly!;
-      anyChanges = true;
-    }
-
-    if (pChangedResponse.insertEnabled != null && metaData.insertEnabled != pChangedResponse.insertEnabled) {
-      metaData.insertEnabled = pChangedResponse.insertEnabled!;
-      anyChanges = true;
-    }
-
-    if (pChangedResponse.updateEnabled != null && metaData.updateEnabled != pChangedResponse.updateEnabled) {
-      metaData.updateEnabled = pChangedResponse.updateEnabled!;
-      anyChanges = true;
-    }
-
-    if (pChangedResponse.deleteEnabled != null && metaData.deleteEnabled != pChangedResponse.deleteEnabled) {
-      metaData.deleteEnabled = pChangedResponse.deleteEnabled!;
-      anyChanges = true;
-    }
-
-    if (pChangedResponse.modelInsertEnabled != null && metaData.modelInsertEnabled != pChangedResponse.modelInsertEnabled) {
-      metaData.modelInsertEnabled = pChangedResponse.modelInsertEnabled!;
-      anyChanges = true;
-    }
-
-    if (pChangedResponse.modelUpdateEnabled != null && metaData.modelUpdateEnabled != pChangedResponse.modelUpdateEnabled) {
-      metaData.modelUpdateEnabled = pChangedResponse.modelUpdateEnabled!;
-      anyChanges = true;
-    }
-
-    if (pChangedResponse.modelDeleteEnabled != null && metaData.modelDeleteEnabled != pChangedResponse.modelDeleteEnabled) {
-      metaData.modelDeleteEnabled = pChangedResponse.modelDeleteEnabled!;
-      anyChanges = true;
-    }
-
-    if (pChangedResponse.additionalRowVisible != null && metaData.additionalRowVisible != pChangedResponse.additionalRowVisible!) {
-      metaData.additionalRowVisible = pChangedResponse.additionalRowVisible!;
-      anyChanges = true;
-    }
-
-    if (pChangedResponse.changedColumns != null) {
-      pChangedResponse.changedColumns!.forEach((changedColumn) {
-        ColumnDefinition? foundColumn = metaData.columnDefinitions.byName(changedColumn.name);
-
-        if (foundColumn != null) {
-          if (changedColumn.label != null && changedColumn.label != foundColumn.label) {
-            foundColumn.label = changedColumn.label!;
-            anyChanges = true;
-          }
-          if (changedColumn.readOnly != null && changedColumn.readOnly != foundColumn.readOnly) {
-            foundColumn.readOnly = changedColumn.readOnly!;
-            anyChanges = true;
-          }
-          if (changedColumn.movable != null && changedColumn.movable != foundColumn.movable) {
-            foundColumn.movable = changedColumn.movable!;
-            anyChanges = true;
-          }
-          if (changedColumn.sortable != null && changedColumn.sortable != foundColumn.sortable) {
-            foundColumn.sortable = changedColumn.sortable!;
-            anyChanges = true;
-          }
-          if (changedColumn.cellEditorJson != null) {
-            metaData.createdReferencedCellEditors
-                .firstWhereOrNull((element) => element.columnName == foundColumn.name)
-                ?.dispose();
-            foundColumn.cellEditorJson = changedColumn.cellEditorJson!;
-            foundColumn.cellEditorModel = ICellEditorModel.fromJson(foundColumn.cellEditorJson);
-            if (foundColumn.cellEditorModel is FlLinkedCellEditorModel) {
-              metaData.createdReferencedCellEditors.add(createReferencedCellEditors(
-                  foundColumn.cellEditorModel as FlLinkedCellEditorModel,
-                  pChangedResponse.dataProvider,
-                  foundColumn.name));
-            }
-            anyChanges = true;
-          }
-        }
-      });
-    }
-
-    return anyChanges;
+    return metaData.applyMetaDataFromChangedResponse(pChangedResponse);
   }
 
   @override
@@ -277,6 +195,7 @@ class DataService implements IDataService {
     int? pTo,
     List<String>? pColumnNames,
     String? pPageKey,
+    bool pFromStart = false
   }) {
     // Get data from all requested columns
     List<ColumnDefinition> columnDefinitions = [];
@@ -370,6 +289,7 @@ class DataService implements IDataService {
       from: pFrom,
       recordFormats: resultRecordFormats,
       dataReadOnly: resultReadOnly,
+      fromStart: pFromStart
     );
   }
 

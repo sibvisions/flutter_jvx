@@ -37,6 +37,9 @@ class GetDataChunkCommand extends DataCommand {
   /// To which index data is being requested
   final int? to;
 
+  /// Whether fresh data was fetched again from remote (=row 0)
+  final bool fromStart;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,6 +50,7 @@ class GetDataChunkCommand extends DataCommand {
     required this.subId,
     this.to,
     this.dataColumns,
+    this.fromStart = false,
     required super.reason,
   });
 
@@ -56,6 +60,6 @@ class GetDataChunkCommand extends DataCommand {
 
   @override
   String toString() {
-    return "GetDataChunkCommand{subId: $subId, dataProvider: $dataProvider, dataColumns: $dataColumns, from: $from, to: $to,${super.toString()}}";
+    return "GetDataChunkCommand{subId: $subId, dataProvider: $dataProvider, dataColumns: $dataColumns, from: $from, to: $to, fromStart: $fromStart, ${super.toString()}}";
   }
 }

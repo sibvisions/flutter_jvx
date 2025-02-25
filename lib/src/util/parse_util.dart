@@ -280,20 +280,31 @@ abstract class ParseUtil {
     }
   }
 
-  static applyJsonToJson(Map<String, dynamic> pSource, Map<String, dynamic> pDestination) {
+  static bool applyJsonToJson(Map<String, dynamic> pSource, Map<String, dynamic> pDestination) {
+
+    bool isChanged = false;
+
     for (String sourceKey in pSource.keys) {
       dynamic value = pSource[sourceKey];
 
       if (value is Map<String, dynamic>) {
         if (pDestination[sourceKey] == null) {
           pDestination[sourceKey] = Map.of(value);
+
+          isChanged = true;
         } else {
-          applyJsonToJson(value, pDestination[sourceKey]);
+          isChanged |= applyJsonToJson(value, pDestination[sourceKey]);
         }
       } else {
-        pDestination[sourceKey] = value;
+        if (pDestination[sourceKey] != value) {
+          pDestination[sourceKey] = value;
+
+          isChanged = true;
+        }
       }
     }
+
+    return isChanged;
   }
 
   static String? propertyAsString(String? property) {

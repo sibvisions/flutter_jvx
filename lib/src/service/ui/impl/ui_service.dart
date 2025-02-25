@@ -718,6 +718,7 @@ class UiService implements IUiService {
     required String pDataProvider,
     bool pUpdatedCurrentPage = true,
     String? pUpdatedPage,
+    bool pFromStart = false
   }) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
@@ -753,6 +754,7 @@ class UiService implements IUiService {
               from: copy[i].from,
               to: copy[i].to,
               dataColumns: copy[i].dataColumns,
+              fromStart: pFromStart
             ));
           }
         }
