@@ -26,6 +26,7 @@ import '../../util/offline_util.dart';
 enum DataContextMenuItemType { OFFLINE, SORT, INSERT, DELETE, EDIT, RELOAD }
 
 mixin FlDataMixin {
+
   /// The table model
   FlTableModel get model;
 
@@ -120,6 +121,21 @@ mixin FlDataMixin {
     return true;
   }
 
+  /// Gets whether the [columnName] at row [index] is sortable.
+  bool isSortable(String columnName) {
+    if (!model.isEnabled) {
+      return false;
+    }
+
+    ColumnDefinition? colDef = dataChunk.columnDefinitions.byName(columnName);
+
+    if (colDef == null) {
+      return false;
+    }
+
+    return colDef.sortable;
+  }
+
   /// Creates an identifying filter for the given row [index].
   Filter? createFilter(int index) {
     List<String> listColumnNames = [];
@@ -202,6 +218,23 @@ mixin FlDataMixin {
   /// Creates an [InsertRecordCommand].
   InsertRecordCommand createInsertCommand() {
     return InsertRecordCommand(dataProvider: model.dataProvider, reason: "Insert record in ${model.dataProvider}");
+  }
+
+  /// Inserts a new record.
+  void insertRecord() {
+    IUiService().saveAllEditors(
+      pReason: "Insert record in ${model.dataProvider}",
+      pId: model.id,
+    ).then((success) {
+      if (!success) {
+        return;
+      }
+
+      ICommandService().sendCommands([
+        SetFocusCommand(componentId: model.id, focus: true, reason: "Insert record in ${model.dataProvider}"),
+        createInsertCommand(),
+      ]);
+    });
   }
 
   /// Creates a delete command for the given row [index].
@@ -307,7 +340,7 @@ mixin FlDataMixin {
           Container(
             width: 28,
             alignment: Alignment.center,
-            child: FaIcon(
+            child: Icon(
               icon,
               size: 16,
             ),
@@ -411,6 +444,27 @@ mixin FlDataMixin {
       }
 
       return (columns: editableColumns, values: values);
+  }
+
+  /// Gets all sortable columns
+  ColumnList getSortableColumns() {
+    List<ColumnDefinition> colDefs = getColumnsToShow();
+
+    String colName;
+
+    ColumnList sortableColumns = ColumnList();
+    Map<String, dynamic> values = {};
+
+    //We need all editable columns and the values
+    for (int i = 0; i < colDefs.length; i++) {
+      colName = colDefs[i].name;
+
+      if (isSortable(colName)) {
+        sortableColumns.add(colDefs[i]);
+      }
+    }
+
+    return sortableColumns;
   }
 
 }

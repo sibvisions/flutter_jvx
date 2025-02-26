@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
@@ -78,6 +79,9 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// Gets called when the user long press
   final ListLongPressCallback? onLongPress;
 
+  /// The action the floating button calls.
+  final VoidCallback? onFloatingPress;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +117,8 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
     this.onScroll,
     this.onEndScroll,
     this.onTap,
-    this.onLongPress
+    this.onLongPress,
+    this.onFloatingPress
   });
 
   @override
@@ -237,7 +242,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       withBorder = false;
     }
 
-    Widget list = _wrapList(_wrapSlider(
+    Widget list = _wrapList(context, _wrapSlider(context,
       NotificationListener<ScrollNotification>(
           onNotification: (notification) => _onInternalEndScroll(notification),
           child: NotificationListener<ScrollNotification>(
@@ -382,6 +387,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
                                   setState(() {});
                                 }
+
+                                slideActions.last.onPressed!(context);
                               },
                             ),
                             motion: const StretchMotion(),
@@ -450,19 +457,25 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     return list;
   }
 
-  Widget _wrapList(Widget list) {
+  Widget _wrapList(BuildContext context, Widget list) {
+    Widget listWidget = list;
+
     if (widget.onRefresh != null && widget.model.isEnabled) {
-      return RefreshIndicator(
+      listWidget = RefreshIndicator(
         onRefresh: widget.onRefresh!,
-        child: list,
+        child: listWidget,
         notificationPredicate: (notification) => notification.depth == 0,
       );
     }
 
-    return list;
+    if (widget.onFloatingPress != null) {
+      listWidget = Stack(children: [listWidget, createFloatingButton(context)]);
+    }
+
+    return listWidget;
   }
 
-  Widget _wrapSlider(Widget list) {
+  Widget _wrapSlider(BuildContext context, Widget list) {
     if (widget.slideActionFactory != null) {
       return SlidableAutoCloseBehavior(
         closeWhenOpened: true,
@@ -565,7 +578,6 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   }
 
   /// Creates the floating button that floats above the table on the bottom right
-/*
   Positioned createFloatingButton(BuildContext context) {
     return Positioned(
       right: 10,
@@ -581,7 +593,5 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       ),
     );
   }
-
- */
 
 }

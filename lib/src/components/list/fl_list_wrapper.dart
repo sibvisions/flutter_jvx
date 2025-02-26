@@ -33,6 +33,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import '../table/fl_data_mixin.dart';
 import '../table/fl_table_wrapper.dart';
+import 'fl_list_sort_dialog.dart';
 
 class FlListWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = FlutterUI.readAheadLimit;
@@ -82,8 +83,8 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   /// The value notifier for a potential editing dialog.
   ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
 
-  /// The currently opened editing dialog
-  Future? currentEditDialog;
+  /// The currently opened dialog
+  Future? currentDialog;
 
   /// If the selection has to be cancelled.
   bool cancelSelect = false;
@@ -163,6 +164,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
       onTap: _onListTap,
       onLongPress: _onLongPress,
+      onFloatingPress: showFloatingButton ? insertRecord : null,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -515,8 +517,8 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       separator++;
     }
 
-    if (model.sortOnHeaderEnabled) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.sort, "Sort", DataContextMenuItemType.SORT));
+    if (model.sortOnHeaderEnabled && getSortableColumns().isNotEmpty) {
+      popupMenuEntries.add(createContextMenuItem(Icons.sort, "Sort", DataContextMenuItemType.SORT));
       separator++;
     }
 
@@ -562,7 +564,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
         }
       }
       else if (type == DataContextMenuItemType.SORT) {
-
+        _sort(index);
       }
       else if (type == DataContextMenuItemType.INSERT) {
         commands.add(createInsertCommand());
@@ -586,6 +588,27 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
         ICommandService().sendCommands(commands);
       }
     });
+  }
+
+  /// Show sort options
+  void _sort(int index) {
+      if (currentDialog == null) {
+
+        ColumnList sortableColumns = getSortableColumns();
+
+        currentDialog = IUiService().openDialog(
+            pBuilder: (context) => FlListSortDialog(
+              rowIndex: index,
+              model: model,
+              columnDefinitions: sortableColumns,
+              sortDefinitions: metaData.sortDefinitions
+            )
+        );
+
+        if (currentDialog != null) {
+          currentDialog!.whenComplete(() => currentDialog = null);
+        }
+      }
   }
 
   /// Edits row at [index]
@@ -619,8 +642,8 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     if (columnDefinitions.isEmpty) {
       _closeDialog();
     }
-    else if (currentEditDialog == null) {
-      currentEditDialog = IUiService().openDialog(
+    else if (currentDialog == null) {
+      currentDialog = IUiService().openDialog(
         pBuilder: (context) => FlTableEditDialog(
           rowIndex: rowIndex,
           model: model,
@@ -631,15 +654,15 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
         )
       );
 
-      if (currentEditDialog != null) {
-        currentEditDialog!.whenComplete(() => currentEditDialog = null);
+      if (currentDialog != null) {
+        currentDialog!.whenComplete(() => currentDialog = null);
       }
     }
   }
 
   void _closeDialog() {
-    if (currentEditDialog != null) {
-      currentEditDialog = null;
+    if (currentDialog != null) {
+      currentDialog = null;
       Navigator.pop(context);
     }
   }

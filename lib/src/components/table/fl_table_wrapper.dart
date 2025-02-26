@@ -132,7 +132,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   /// If the table should show a floating insert button
   bool get showFloatingButton =>
-      model.showFloatButton &&
+      !model.hideFloatButton &&
       model.isEnabled &&
       !metaData.readOnly &&
       metaData.insertEnabled &&
@@ -183,7 +183,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       selectedRowIndex: selectedRow,
       selectedColumn: selectedColumn,
       slideActionFactory: createSlideActions,
-      showFloatingButton: showFloatingButton,
       headerHorizontalController: headerHorizontalController,
       itemScrollController: itemScrollController,
       tableHorizontalController: tableHorizontalController,
@@ -196,7 +195,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       onTap: _onCellTap,
       onHeaderTap: _sortColumn,
       onHeaderDoubleTap: (pColumn) => _sortColumn(pColumn, true),
-      onFloatingPress: _insertRecord,
+      onFloatingPress: showFloatingButton ? insertRecord : null,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -731,25 +730,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
         lastScrollNotification = null;
       }
     }
-  }
-
-  /// Inserts a new record.
-  void _insertRecord() {
-    IUiService()
-        .saveAllEditors(
-      pReason: "Insert row in table",
-      pId: model.id,
-    )
-        .then((success) {
-      if (!success) {
-        return;
-      }
-
-      ICommandService().sendCommands([
-        SetFocusCommand(componentId: model.id, focus: true, reason: "Insert on table"),
-        createInsertCommand(),
-      ]);
-    });
   }
 
   BaseCommand? _createSortColumnCommand(String pColumnName, [bool pAdditive = false]) {

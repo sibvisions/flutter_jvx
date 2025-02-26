@@ -255,8 +255,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                           model: tableModel,
                           onTap: _onRowTapped,
                           onRefresh: _refresh,
-                          tableSize: tableSize!,
-                          showFloatingButton: false,
+                          tableSize: tableSize!
                         );
                       }),
                     )

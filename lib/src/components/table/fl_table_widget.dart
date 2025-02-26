@@ -107,9 +107,6 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The selected column;
   final String? selectedColumn;
 
-  /// If a button is shown at the bottom.
-  final bool showFloatingButton;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,7 +119,6 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     required this.metaData,
     this.selectedRowIndex = -1,
     this.selectedColumn,
-    this.showFloatingButton = false,
     this.tableHorizontalController,
     this.headerHorizontalController,
     this.slideActionFactory,
@@ -180,7 +176,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
 
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
-    if (widget.showFloatingButton && widget.onFloatingPress != null) {
+    if (widget.onFloatingPress != null) {
       children.add(createFloatingButton(context));
     }
 
