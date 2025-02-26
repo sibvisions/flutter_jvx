@@ -417,10 +417,22 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
-            BaseCommand? deleteCommand = createDeleteCommand(index);
+            String? status = dataChunk.getRecordStatusRaw(index);
 
-            if (deleteCommand != null) {
-              ICommandService().sendCommand(deleteCommand);
+            //sometimes this event is triggered more than once, so don't delete again
+            if (status != null && !status.contains("SLIDE_DELETE")) {
+              if (status.isNotEmpty) {
+                dataChunk.setStatusRaw(index, "$status,SLIDE_DELETE");
+              }
+              else {
+                dataChunk.setStatusRaw(index, "SLIDE_DELETE");
+              }
+
+              BaseCommand? deleteCommand = createDeleteCommand(index);
+
+              if (deleteCommand != null) {
+                ICommandService().sendCommand(deleteCommand);
+              }
             }
           },
           autoClose: true,

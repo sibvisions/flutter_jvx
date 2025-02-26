@@ -70,12 +70,42 @@ class DataChunk {
         recordFormats = null,
         fromStart = false;
 
-  dynamic getValue(String name, int rowIndex) {
-    return data[rowIndex]?[columnDefinitions.indexByName(name)];
+  dynamic getValue(String name, int index) {
+    return data[index]?[columnDefinitions.indexByName(name)];
   }
 
-  /// The record status of this row.
-  RecordStatus getRecordStatus(pRowIndex) {
-    return RecordStatus.parseRecordStatus(data[pRowIndex], columnDefinitions);
+  /// Gets the record status of this row.
+  RecordStatus getRecordStatus(index) {
+    return RecordStatus.parseRecordStatus(data[index], columnDefinitions);
+  }
+
+  /// Gets the raw record status of row [index] or null if no row at given [index] is available.
+  String? getRecordStatusRaw(index) {
+    List<dynamic>? values = data[index];
+
+    if (values == null || values.isEmpty || values.length <= columnDefinitions.length) {
+      //no status available
+      return null;
+    }
+
+    return values[values.length - 1] ?? "";
+  }
+
+  /// Sets the record status
+  bool setStatusRaw(int index, String status) {
+    List<dynamic>? values = data[index];
+
+    if (values == null) {
+      return false;
+    }
+
+    if (values.isEmpty || values.length <= columnDefinitions.length) {
+      values.add(status);
+    }
+    else {
+      values[values.length - 1] = status;
+    }
+
+    return true;
   }
 }

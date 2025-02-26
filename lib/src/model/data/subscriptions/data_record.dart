@@ -19,22 +19,31 @@ import '../../../util/column_list.dart';
 enum RecordStatus {
   INSERTED,
   UPDATED,
+  UNKNOWN,
   NONE;
 
   static parseRecordStatus(List<dynamic>? values, ColumnList columnDefinitions) {
-    if (values == null || values.isEmpty || values.last == null || values.length <= columnDefinitions.length) {
+    if (values == null || values.isEmpty || values.length <= columnDefinitions.length) {
       return NONE;
     }
 
-    String recordStatus = values.last.toString();
+    dynamic last = values[values.length - 1];
+
+    if (last == null) {
+      return NONE;
+    }
+
+    String recordStatus = last as String;
 
     switch (recordStatus) {
       case "I":
         return INSERTED;
       case "U":
         return UPDATED;
-      default:
+      case "":
         return NONE;
+      default:
+        return UNKNOWN;
     }
   }
 }

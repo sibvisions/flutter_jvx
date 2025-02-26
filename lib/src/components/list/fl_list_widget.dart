@@ -248,7 +248,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
               slivers: [
                 SliverList.separated(
                   separatorBuilder: (context, index) {
-                      if (asCard) {
+                    if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
+                      return Container();
+                    }
+
+                    if (asCard) {
                           return const Divider(height: 4, color: Colors.transparent);
                       }
                       else {
@@ -266,13 +270,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                         _slideController.add(slideCtrl);
                       }
                       else {
-                        _slideController[index].dispose();
                         _slideController[index] = slideCtrl;
                       }
                     }
 
-                    if (widget.chunkData.data[index] != null &&
-                        widget.chunkData.data[index]!.last == "DISMISSED") {
+                    if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
                       return Container();
                     }
 
@@ -362,21 +364,24 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                             dismissible: DismissiblePane(
                               closeOnCancel: true,
                               onDismissed: () {
-                                SlidableController ctrl = _slideController.elementAt(index);
-                                ctrl.close(duration: const Duration(milliseconds: 0));
-                                setState(() {
+                                String? status = widget.chunkData.getRecordStatusRaw(index);
+
+                                if (status != null && !status.contains("DISMISSED")) {
                                   List<dynamic>? record = widget.chunkData.data[index];
 
-                                  if (record != null) {
-                                    record[record.length - 1] = "DISMISSED";
+                                  if (_slideController.length > index) {
+                                    SlidableController ctrl = _slideController.elementAt(index);
+                                    ctrl.close(duration: const Duration(milliseconds: 0));
+
+                                    _slideController.removeAt(index);
                                   }
 
-                                  _slideController.removeAt(index);
+                                  widget.chunkData.setStatusRaw(index, "DISMISSED");
 
                                   HapticFeedback.mediumImpact();
-                                });
 
-                                slideActions.last.onPressed!(context);
+                                  setState(() {});
+                                }
                               },
                             ),
                             motion: const StretchMotion(),
@@ -506,7 +511,9 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   /// the position of the table widget shouldn't collide with event position.
   /// Only events outside the table widget will be recognized
   void _closeSlidables([PointerEvent? event, Duration? duration]) {
-    if (!mounted) return;
+    if (!mounted || _slideController.isEmpty) {
+      return;
+    }
 
     bool collide = false;
 

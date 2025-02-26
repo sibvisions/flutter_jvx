@@ -352,9 +352,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       }
     }
 
-    dynamic last = widget.chunkData.data[index]!.last;
-
-    if (last != null && (last as String).contains("DISMISSED")) {
+    if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
       return Container();
     }
 
@@ -368,9 +366,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       slideController: slideCtrl,
       slideActionFactory: !canScrollHorizontally ? widget.slideActionFactory : null,
       onDismissed: (index) {
-        List<dynamic>? record = widget.chunkData.data[index];
+        String? status = widget.chunkData.getRecordStatusRaw(index);
 
-        if (record != null && (record.last == null || !(record.last as String).contains("DISMISSED"))) {
+        if (status != null && !status.contains("DISMISSED")) {
+          List<dynamic>? record = widget.chunkData.data[index];
+
           if (_slideController.length > index) {
             SlidableController ctrl = _slideController.elementAt(index);
             ctrl.close(duration: const Duration(milliseconds: 0));
@@ -378,7 +378,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
             _slideController.removeAt(index);
           }
 
-          record[record.length - 1] = "DISMISSED";
+          widget.chunkData.setStatusRaw(index, "DISMISSED");
 
           HapticFeedback.mediumImpact();
 
@@ -444,7 +444,9 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   /// the position of the table widget shouldn't collide with event position.
   /// Only events outside the table widget will be recognized
   void _closeSlidables([PointerEvent? event, Duration? duration]) {
-    if (!mounted) return;
+    if (!mounted || _slideController.isEmpty) {
+      return;
+    }
 
     bool collide = false;
 
@@ -464,16 +466,14 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
 
     if (!collide) {
-      if (_slideController.isNotEmpty) {
-        _slideController.toList(growable: false).forEach((element) {
-          if (duration != null) {
-            element.close(duration: duration);
-          }
-          else {
-            element.close();
-          }
-        });
-      }
+      _slideController.toList(growable: false).forEach((element) {
+        if (duration != null) {
+          element.close(duration: duration);
+        }
+        else {
+          element.close();
+        }
+      });
     }
   }
 
