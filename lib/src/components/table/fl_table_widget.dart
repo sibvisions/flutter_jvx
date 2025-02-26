@@ -352,7 +352,9 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       }
     }
 
-    if (widget.chunkData.data[index]!.last == "DISMISSED") {
+    dynamic last = widget.chunkData.data[index]!.last;
+
+    if (last != null && (last as String).contains("DISMISSED")) {
       return Container();
     }
 
@@ -366,19 +368,22 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       slideController: slideCtrl,
       slideActionFactory: !canScrollHorizontally ? widget.slideActionFactory : null,
       onDismissed: (index) {
-        SlidableController ctrl = _slideController.elementAt(index);
-        ctrl.close(duration: const Duration(milliseconds: 0));
-        setState(() {
-          List<dynamic>? record = widget.chunkData.data[index];
+        List<dynamic>? record = widget.chunkData.data[index];
 
-          if (record != null) {
-            record[record.length - 1] = "DISMISSED";
+        if (record != null && (record.last == null || !(record.last as String).contains("DISMISSED"))) {
+          if (_slideController.length > index) {
+            SlidableController ctrl = _slideController.elementAt(index);
+            ctrl.close(duration: const Duration(milliseconds: 0));
+
+            _slideController.removeAt(index);
           }
 
-          _slideController.removeAt(index);
+          record[record.length - 1] = "DISMISSED";
 
           HapticFeedback.mediumImpact();
-        });
+
+          setState(() {});
+        }
       },
       tableSize: widget.tableSize,
       values: widget.chunkData.data[index]!,
@@ -459,14 +464,16 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
 
     if (!collide) {
-      _slideController.toList(growable: false).forEach((element) {
-        if (duration != null) {
-          element.close(duration: duration);
-        }
-        else {
-          element.close();
-        }
-      });
+      if (_slideController.isNotEmpty) {
+        _slideController.toList(growable: false).forEach((element) {
+          if (duration != null) {
+            element.close(duration: duration);
+          }
+          else {
+            element.close();
+          }
+        });
+      }
     }
   }
 

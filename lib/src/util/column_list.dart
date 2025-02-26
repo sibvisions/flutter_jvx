@@ -28,6 +28,9 @@ class ColumnList extends ListBase<ColumnDefinition> {
     /// the mapping between column name and index in the list
     final Map<String, int> index = {};
 
+    /// the list of column names
+    final List<String> listNames = [];
+
     ///Creates a new ColumnList with a list of existing elements
     ColumnList([List<ColumnDefinition>? items]) {
         list = items ?? List<ColumnDefinition>.empty(growable: true);
@@ -62,6 +65,7 @@ class ColumnList extends ListBase<ColumnDefinition> {
         bool update = list.length > length;
 
         list.length = length;
+        listNames.length = length;
 
         if (update) {
             _update();
@@ -71,6 +75,7 @@ class ColumnList extends ListBase<ColumnDefinition> {
     @override
     void operator []=(int pos, ColumnDefinition value) {
         list[pos] = value;
+        listNames[pos] = value.name;
 
         names[value.name] = value;
         index[value.name] = pos;
@@ -82,6 +87,7 @@ class ColumnList extends ListBase<ColumnDefinition> {
     @override
     void add(ColumnDefinition element) {
         list.add(element);
+        listNames.add(element.name);
 
         names[element.name] = element;
         index[element.name] = list.length - 1;
@@ -108,10 +114,17 @@ class ColumnList extends ListBase<ColumnDefinition> {
     _update() {
         names.clear();
         index.clear();
+        listNames.clear();
+
+        String name;
 
         for (int i = 0; i < list.length; i++) {
-            names[list[i].name] = list[i];
-            index[list[i].name] = i;
+            name = list[i].name;
+
+            listNames.add(name);
+
+            names[name] = list[i];
+            index[name] = i;
         }
     }
 }

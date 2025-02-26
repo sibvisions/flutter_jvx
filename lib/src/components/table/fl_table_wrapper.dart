@@ -348,10 +348,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     currentState |= LOADED_DATA;
 
     if (!recalculateWidth) {
-      List<String> newColumns = pDataChunk.columnDefinitions.map((e) => e.name).toList();
-      List<String> oldColumns = dataChunk.columnDefinitions.map((e) => e.name).toList();
-      recalculateWidth = newColumns.any((element) => (!oldColumns.contains(element))) ||
-          oldColumns.any((element) => (!newColumns.contains(element)));
+      recalculateWidth = !listEquals(pDataChunk.columnDefinitions.listNames, dataChunk.columnDefinitions.listNames);
     }
 
     bool changedDataCount = (dataChunk.data.length != pDataChunk.data.length);
@@ -857,10 +854,26 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
-            BaseCommand? deleteCommand = createDeleteCommand(row);
+            List<dynamic>? record = dataChunk.data[row];
 
-            if (deleteCommand != null) {
-              ICommandService().sendCommand(deleteCommand);
+            if (record != null) {
+              dynamic lastValue = record.last;
+
+              //sometimes this event is triggered more than once, so don't delete again
+              if (lastValue == null || !(lastValue as String).contains("SLIDE_DELETE")) {
+                if (lastValue == null) {
+                  record[record.length - 1] = "SLIDE_DELETE";
+                }
+                else {
+                  record[record.length - 1] = "$lastValue!,SLIDE_DELETE";
+                }
+
+                BaseCommand? deleteCommand = createDeleteCommand(row);
+
+                if (deleteCommand != null) {
+                  ICommandService().sendCommand(deleteCommand);
+                }
+              }
             }
           },
           autoClose: true,
