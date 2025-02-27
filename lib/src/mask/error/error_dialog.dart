@@ -17,8 +17,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../flutter_ui.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../apps/app_overview_page.dart';
 import '../jvx_dialog.dart';
 import 'ierror.dart';

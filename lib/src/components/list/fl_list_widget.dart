@@ -372,8 +372,6 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                                 String? status = widget.chunkData.getRecordStatusRaw(index);
 
                                 if (status != null && !status.contains("DISMISSED")) {
-                                  List<dynamic>? record = widget.chunkData.data[index];
-
                                   if (_slideController.length > index) {
                                     SlidableController ctrl = _slideController.elementAt(index);
                                     ctrl.close(duration: const Duration(milliseconds: 0));

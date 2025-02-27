@@ -214,7 +214,7 @@ class DataBook {
       pDataProvider: dataProvider,
       pUpdatedCurrentPage: dataMap == records,
       pUpdatedPage: pageKey,
-      pFromStart: pFetchResponse.clear || newPageKey || pFetchResponse.from == 0
+      pFromStart: pFetchResponse.clear || newPageKey || (pFetchResponse.from == 0 && (pFetchResponse.to > 0 || pFetchResponse.isAllFetched))
     );
   }
 

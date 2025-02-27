@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/ui/set_focus_command.dart';
@@ -453,7 +452,6 @@ mixin FlDataMixin {
     String colName;
 
     ColumnList sortableColumns = ColumnList();
-    Map<String, dynamic> values = {};
 
     //We need all editable columns and the values
     for (int i = 0; i < colDefs.length; i++) {

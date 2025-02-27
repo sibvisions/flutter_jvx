@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
@@ -45,6 +46,9 @@ class FlTableEditDialog extends StatefulWidget {
   /// The values of the row to edit.
   final Map<String, dynamic> values;
 
+  // All values not only edit [values]
+  final Map<String, dynamic> valuesRow;
+
   /// Called when the user is done editing a cell. Will only happen if more than one cell is edited.
   final TableValueChangedCallback onEndEditing;
 
@@ -60,6 +64,7 @@ class FlTableEditDialog extends StatefulWidget {
     required this.rowIndex,
     required this.columnDefinitions,
     required this.values,
+    required this.valuesRow,
     required this.onEndEditing,
     required this.newValueNotifier,
     required this.model,
@@ -84,15 +89,12 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   /// The cell editors of the columns to edit.
   List<ICellEditor> cellEditors = [];
 
-  /// The values of changed values.
-  final Map<String, dynamic> changedValues = {};
+  /// All original values before opening the dialog
+  final Map<String, dynamic> allOriginalValues = {};
 
   /// If the table edits a singular column, the dialog will switch to local editing, without immediately sending the value to the server.
   /// Moreover the cancel button will only cancel the local changes, instead of resetting the whole row.
   bool get isSingleColumnEdit => widget.columnDefinitions.length == 1;
-
-  /// If the dialog was dismissed by either button.
-  bool dismissedByButton = false;
 
   /// If cancel button was pressed
   bool cancel = false;
@@ -101,7 +103,21 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   bool ok = false;
 
   /// whether data has changed
-  bool hasChanges = false;
+  bool hasNewValueChanges = false;
+
+  bool get hasChangedCellEditors {
+    dynamic value;
+
+    for (ICellEditor ced in cellEditors) {
+      value = ced.getValue();
+
+      if (value != widget.valuesRow[ced.columnName]) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   /// whether we ignore focus handling of cell editor
   bool ignoreCellEditorFocus = true;
@@ -116,11 +132,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
     widget.newValueNotifier.addListener(receiveNewValues);
 
-    ColumnDefinition colDef;
-
     //don't use binary columns without image viewer
     for (int i = 0; i < widget.columnDefinitions.length; i++) {
-      colDef = widget.columnDefinitions[i];
+      ColumnDefinition colDef = widget.columnDefinitions[i];
 
       if (colDef.dataTypeIdentifier != Types.BINARY
           || ICellEditor.isCellEditor(colDef, FlCellEditorClassname.IMAGE_VIEWER)) {
@@ -129,7 +143,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     }
 
     for (int i = 0; i <columnDefinitions.length; i++) {
-      colDef = columnDefinitions[i];
+      ColumnDefinition colDef = columnDefinitions[i];
 
       var cellEditor = ICellEditor.getCellEditor(
         pName: widget.model.name,
@@ -141,8 +155,6 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
           //in case of cancel -> don't end editing because it fires events like select record
           //in case of ok -> _handleOk will save values
           if (!isSingleColumnEdit && !cancel && !ok) {
-            changedValues[colDef.name] = value;
-
             widget.onEndEditing(value, widget.rowIndex, colDef.name);
           }
         },
@@ -185,7 +197,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     List<Widget> editorWidgets = [];
 
     if (isSingleColumnEdit) {
-      dialogLabel = columnDefinitions.first.label;
+      dialogLabel = columnDefinitions[0].label;
 
       ICellEditor cellEditor = cellEditors[0];
       Widget editorWidget = cellEditor.createWidget(widget.model.json);
@@ -322,7 +334,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
   @override
   void dispose() {
-    if (!dismissedByButton) {
+    if (!ok && !cancel) {
       _handleCancel(true);
     }
 
@@ -342,10 +354,13 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   void receiveNewValues() {
     Map<String, dynamic>? newValues = widget.newValueNotifier.value;
 
+    hasNewValueChanges = false;
+
     setState(() {
       if (newValues != null) {
         for (String columnName in newValues.keys) {
-          int colIndex = widget.columnDefinitions.indexWhere((element) => element.name == columnName);
+          int colIndex = columnDefinitions.indexByName(columnName);
+
           if (colIndex >= 0) {
             var cellEditor = cellEditors[colIndex];
             if (cellEditor is FlLinkedCellEditor) {
@@ -355,16 +370,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
             }
           }
 
-          //check if value has changed
-          if (widget.values.containsKey(columnName)) {
-            if (widget.values[columnName] is Comparable) {
-              Comparable oldValue = widget.values[columnName] as Comparable;
-
-              hasChanges |= oldValue.compareTo(newValues[columnName]) != 0;
-            }
-          }
-          else {
-            hasChanges = true;
+          if (!hasNewValueChanges) {
+            //check if new value has changed
+            hasNewValueChanges = !widget.valuesRow.containsKey(columnName) || widget.valuesRow[columnName] != newValues[columnName];
           }
         }
       }
@@ -373,10 +381,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
   Future<void> _handleOk() async {
     ok = true;
-    dismissedByButton = true;
 
     if (isSingleColumnEdit) {
-      widget.onEndEditing(await cellEditors[0].getValue(), widget.rowIndex, widget.columnDefinitions.first.name);
+      widget.onEndEditing(await cellEditors[0].getValue(), widget.rowIndex, columnDefinitions[0].name);
     }
     else {
       List<String> columns = [];
@@ -385,24 +392,26 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       dynamic value;
 
       for (ICellEditor ced in cellEditors) {
-        if (!changedValues.containsKey(ced.columnName) || changedValues[ced.columnName] != value) {
-          value = await ced.getValue();
+        value = await ced.getValue();
 
-          if (value != widget.values[ced.columnName]) {
-            columns.add(ced.columnName);
-            values.add(value);
-          }
+        if (value != widget.valuesRow[ced.columnName]) {
+          columns.add(ced.columnName);
+          values.add(value);
         }
       }
 
       List<BaseCommand> commands = [];
-      commands.add(SetValuesCommand(
-        dataProvider: widget.model.dataProvider,
-        columnNames: columns,
-        values: values,
-        rowNumber: widget.rowIndex,
-        reason: "Values changed with edit dialog of ${widget.model.dataProvider}",
-      ));
+
+      if (columns.isNotEmpty) {
+        commands.add(SetValuesCommand(
+          dataProvider: widget.model.dataProvider,
+          columnNames: columns,
+          values: values,
+          rowNumber: widget.rowIndex,
+          reason: "Values changed with edit dialog of ${widget.model.dataProvider}",
+        ));
+      }
+
       commands.add(SaveDataCommand(dataProvider: widget.model.dataProvider, onlySelected: true, reason: "Saving row of ${widget.model.dataProvider}."));
 
       unawaited(ICommandService().sendCommands(commands, delayUILocking: true));
@@ -415,9 +424,8 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
   void _handleCancel([bool fromDispose = false]) {
     cancel = true;
-    dismissedByButton = true;
 
-    if (!isSingleColumnEdit && hasChanges) {
+    if (!isSingleColumnEdit && (hasNewValueChanges || hasChangedCellEditors)) {
       //this will restore all changes, made before opening the dialog, but it's a good option
       //Another solution would be a reset to widget.values, but it's possible that not all changed values
       //will be reset, so let us do a restore
@@ -440,4 +448,5 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
     return true;
   }
+
 }

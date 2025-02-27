@@ -16,10 +16,12 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/command/api/sort_command.dart';
+import '../../model/command/ui/set_focus_command.dart';
 import '../../model/data/sort_definition.dart';
 import '../../util/column_list.dart';
 import '../../util/sort_list.dart';
@@ -77,7 +79,10 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
   bool ok = false;
 
   /// The current sort definition
-  List<bool?> currentSort = [];
+  List<bool?> sortCurrent = [];
+
+  /// The initial sort definition
+  List<bool?> sortInitial = [];
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -88,10 +93,16 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
     super.initState();
 
     SortDefinition? sort;
+
+    bool? sortMode;
+
     for (int i = 0; i < widget.columnDefinitions.length; i++) {
       sort = widget.sortDefinitions?.byName(widget.columnDefinitions[i].name);
 
-      currentSort.add(sort != null ? sort.mode == SortMode.ascending : null);
+      sortMode = sort != null ? sort.mode == SortMode.ascending : null;
+
+      sortCurrent.add(sortMode);
+      sortInitial.add(sortMode);
     }
   }
 
@@ -185,7 +196,7 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
     bool? sort;
 
     for (int i = 0; i < widget.columnDefinitions.length; i++) {
-      sort = currentSort[i];
+      sort = sortCurrent[i];
 
       rows.add(TableRow(
         children: [
@@ -205,10 +216,10 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
                 onPressed: (int index) {
                   setState(() {
                     if (index == 2) {
-                      currentSort[i] = null;
+                      sortCurrent[i] = null;
                     }
                     else {
-                      currentSort[i] = index == 1;
+                      sortCurrent[i] = index == 1;
                     }
                   });
                 },
@@ -237,6 +248,27 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
   Future<void> _handleOk() async {
     ok = true;
     dismissedByButton = true;
+
+    if (!listEquals(sortInitial, sortCurrent)) {
+
+      SortList sort = SortList();
+
+      for (int i = 0; i < sortCurrent.length; i++) {
+        if (sortCurrent[i] != null) {
+          sort.add(SortDefinition(columnName: widget.columnDefinitions[i].name, mode: sortCurrent[i] == true ? SortMode.ascending : SortMode.descending));
+        }
+      }
+
+      SortCommand sortCommand = SortCommand(
+        dataProvider: widget.model.dataProvider,
+        sortDefinitions: sort,
+        reason: "Sort of ${widget.model.dataProvider}");
+
+      unawaited(ICommandService().sendCommands([
+        SetFocusCommand(componentId: widget.model.id, focus: true, reason: "Sort of ${widget.model.dataProvider}"),
+        sortCommand,
+      ]));
+    }
 
     if (mounted) {
       Navigator.of(context).pop();

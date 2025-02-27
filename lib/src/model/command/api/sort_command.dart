@@ -31,7 +31,7 @@ class SortCommand extends SessionCommand {
   final SortList sortDefinitions;
 
   /// The column which got sorted
-  final String columnName;
+  final String? columnName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -40,7 +40,7 @@ class SortCommand extends SessionCommand {
   SortCommand({
     required this.dataProvider,
     required this.sortDefinitions,
-    required this.columnName,
+    this.columnName,
     required super.reason,
   });
 

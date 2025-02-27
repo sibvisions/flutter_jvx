@@ -1,4 +1,4 @@
-// Use in darpad.dev
+// Use in dartpad.dev
 import 'dart:ui';
 
 void main() {

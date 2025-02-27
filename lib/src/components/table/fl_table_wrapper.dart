@@ -768,18 +768,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       return;
     }
 
-    IUiService()
-        .saveAllEditors(
-      pReason: "Select row in table",
+    IUiService().saveAllEditors(
+      pReason: "Sort of ${model.dataProvider}",
       pId: model.id,
-    )
-        .then((success) {
+    ).then((success) {
       if (!success) {
         return;
       }
 
       ICommandService().sendCommands([
-        SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"),
+        SetFocusCommand(componentId: model.id, focus: true, reason: "Sort of ${model.dataProvider}"),
         sortCommand,
       ]);
     });
@@ -918,6 +916,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
                 model: model,
                 columnDefinitions: columnDefinitions,
                 values: values,
+                valuesRow: dataChunk.getValuesAsMap(rowIndex),
                 onEndEditing: onEndEditing,
                 newValueNotifier: newValueNotifier,
               ),

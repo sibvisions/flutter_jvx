@@ -365,8 +365,6 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         String? status = widget.chunkData.getRecordStatusRaw(index);
 
         if (status != null && !status.contains("DISMISSED")) {
-          List<dynamic>? record = widget.chunkData.data[index];
-
           if (_slideController.length > index) {
             SlidableController ctrl = _slideController.elementAt(index);
             ctrl.close(duration: const Duration(milliseconds: 0));

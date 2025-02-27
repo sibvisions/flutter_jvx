@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:collection';
+
 import '../../../service/data/i_data_service.dart';
 import '../../../util/column_list.dart';
 import '../../response/record_format.dart';
@@ -107,5 +109,20 @@ class DataChunk {
     }
 
     return true;
+  }
+
+  /// Gets a map with all available values for a specific row [index]
+  Map<String, dynamic> getValuesAsMap(int index) {
+    List<dynamic>? values = data[index];
+
+    LinkedHashMap<String, dynamic> map = LinkedHashMap<String, dynamic>();
+
+    if (values != null) {
+      for (int i = 0; i < columnDefinitions.length; i++) {
+        map[columnDefinitions[i].name] = values[i];
+      }
+    }
+
+    return map;
   }
 }

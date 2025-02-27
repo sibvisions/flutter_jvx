@@ -649,6 +649,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
           model: model,
           columnDefinitions: columnDefinitions,
           values: values,
+          valuesRow: dataChunk.getValuesAsMap(rowIndex),
           onEndEditing: onEndEditing,
           newValueNotifier: newValueNotifier,
         )
