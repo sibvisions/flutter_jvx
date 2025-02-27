@@ -16,17 +16,19 @@ void main() {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(500);
     DateTime date2 = DateTime.fromMillisecondsSinceEpoch(500);
 
-    print("== checks");
-    print("${one == one2} ${one == two}");
-    print("${first == first2} ${second == first2}");
-    print("${list == list2} ${listEquals(list, list2)} ${listEquals(list, list3)}");
-    print("${date == date2}");
-    print("${null == null} ${null != null}");
+    if (kDebugMode) {
+        print("== checks");
+        print("${one == one2} ${one == two}");
+        print("${first == first2} ${second == first2}");
+        print("${list == list2} ${listEquals(list, list2)} ${listEquals(list, list3)}");
+        print("${date == date2}");
+        print("${null == null} ${null != null}");
 
-    print("");
-    print("Identical checks");
-    print("${identical(one, one2)}");
-    print("${identical(null, null)}");
-    print("${identical(first, first2)}");
-    print("${identical(date, date2)}");
+        print("");
+        print("Identical checks");
+        print("${identical(one, one2)}");
+        print("${identical(null, null)}");
+        print("${identical(first, first2)}");
+        print("${identical(date, date2)}");
+    }
 }

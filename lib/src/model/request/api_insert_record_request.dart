@@ -25,12 +25,20 @@ class ApiInsertRecordRequest extends SessionRequest {
   /// Data provider where row should be inserted
   final String dataProvider;
 
+  /// After which row number the new record will be inserted
+  final int? rowNumber;
+
+  /// Insert before or after selected record
+  final bool? before;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiInsertRecordRequest({
     required this.dataProvider,
+    this.rowNumber,
+    this.before
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,5 +49,7 @@ class ApiInsertRecordRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
+        if (rowNumber != null) ApiObjectProperty.rowNumber: rowNumber,
+        if (before != null) ApiObjectProperty.before: before
       };
 }

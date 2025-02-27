@@ -26,12 +26,20 @@ class InsertRecordCommand extends SessionCommand {
   /// Data provider to insert to
   final String dataProvider;
 
+  /// After which row number the new record will be inserted
+  final int? rowNumber;
+
+  /// Insert before or after selected record
+  final bool? before;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   InsertRecordCommand({
     required this.dataProvider,
+    this.rowNumber,
+    this.before,
     required super.reason,
   });
 
@@ -41,6 +49,6 @@ class InsertRecordCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "InsertRecordCommand{dataProvider: $dataProvider, ${super.toString()}}";
+    return "InsertRecordCommand{dataProvider: $dataProvider, rowNumber: $rowNumber, before: $before, ${super.toString()}}";
   }
 }

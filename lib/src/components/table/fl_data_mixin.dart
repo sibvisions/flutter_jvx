@@ -215,8 +215,13 @@ mixin FlDataMixin {
   }
 
   /// Creates an [InsertRecordCommand].
-  InsertRecordCommand createInsertCommand() {
-    return InsertRecordCommand(dataProvider: model.dataProvider, reason: "Insert record in ${model.dataProvider}");
+  InsertRecordCommand createInsertCommand({int? rowNumber, bool? before}) {
+    return InsertRecordCommand(
+      dataProvider: model.dataProvider,
+      rowNumber: rowNumber,
+      before: before,
+      reason: "Insert record in ${model.dataProvider}"
+    );
   }
 
   /// Inserts a new record.

@@ -567,7 +567,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
         _sort(index);
       }
       else if (type == DataContextMenuItemType.INSERT) {
-        commands.add(createInsertCommand());
+        commands.add(createInsertCommand(rowNumber: index, before: true));
       } else if (type == DataContextMenuItemType.DELETE) {
         BaseCommand? command = createDeleteCommand(index);
 

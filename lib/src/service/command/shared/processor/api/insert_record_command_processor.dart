@@ -26,6 +26,8 @@ class InsertRecordCommandProcessor extends ICommandProcessor<InsertRecordCommand
     return IApiService().sendRequest(
       ApiInsertRecordRequest(
         dataProvider: command.dataProvider,
+        rowNumber: command.rowNumber,
+        before: command.before
       ),
     );
   }
