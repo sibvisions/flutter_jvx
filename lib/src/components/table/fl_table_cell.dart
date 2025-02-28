@@ -23,7 +23,6 @@ import '../../model/layout/alignments.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
-import '../editor/cell_editor/button_cell_editor_styles.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
@@ -185,9 +184,9 @@ class _FlTableCellState extends State<FlTableCell> {
     cellChild ??= _createTextWidget();
 
     bool isTableButton = cellEditor.model.styles.any((style) =>
-        style == ButtonCellEditorStyles.BUTTON ||
-        style == ButtonCellEditorStyles.HYPERLINK ||
-        style == ButtonCellEditorStyles.TOGGLEBUTTON);
+        style == FlCheckBoxModel.STYLE_UI_BUTTON ||
+        style == FlCheckBoxModel.STYLE_UI_HYPERLINK ||
+        style == FlCheckBoxModel.STYLE_UI_TOGGLEBUTTON);
 
     Border? border;
     if (widget.model.showHorizontalLines) {
@@ -288,11 +287,11 @@ class _FlTableCellState extends State<FlTableCell> {
     cellEditor.dispose();
 
     cellEditor = ICellEditor.getCellEditor(
-      pName: widget.model.name,
-      columnDefinition: widget.columnDefinition,
+      name: widget.model.name,
       columnName: widget.columnDefinition.name,
       dataProvider: widget.model.dataProvider,
-      pCellEditorJson: widget.columnDefinition.cellEditorJson,
+      columnDefinition: widget.columnDefinition,
+      cellEditorJson: widget.columnDefinition.cellEditorJson,
       onChange: widget.onValueChanged != null && widget.model.isEnabled && widget.model.editable
           ? (value) => widget.onValueChanged!.call(value, widget.rowIndex, widget.columnDefinition.name)
           : null,

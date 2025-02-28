@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../model/component/editor/cell_editor/fl_choice_cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../util/jvx_colors.dart';
 import '../fl_button_widget.dart';
@@ -32,14 +33,21 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
         data: Theme.of(context).copyWith(
           disabledColor: JVxColors.COMPONENT_DISABLED,
         ),
-        child: Radio<bool>(
-          visualDensity: VisualDensity.compact,
+        child: wrapShrink(Radio<bool>(
+          materialTapTargetSize: shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : null,
+          visualDensity: shrinkSize == true ?
+          const VisualDensity(
+            horizontal: VisualDensity.minimumDensity,
+            vertical: VisualDensity.minimumDensity
+          )
+          :
+          VisualDensity.compact,
           value: true,
           focusNode: radioFocusNode,
           groupValue: model.selected,
           onChanged: model.isEnabled ? (_) => onPress?.call() : null,
           toggleable: true,
-        ),
+        )),
       );
     });
   }
@@ -63,29 +71,37 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlRadioButtonWidget({
-    super.key,
-    required super.model,
-    required super.focusNode,
-    required this.radioFocusNode,
-    super.onPress,
-    super.onPressDown,
-    super.onPressUp,
-  });
-
   @override
   ButtonStyle createButtonStyle(context) {
     radioFocusNode.canRequestFocus = model.isFocusable;
 
     return ButtonStyle(
+      minimumSize: WidgetStateProperty.all(Size.zero),
       elevation: WidgetStateProperty.all(model.borderPainted ? 2 : 0),
       backgroundColor: WidgetStateProperty.all(model.background ?? Colors.transparent),
       foregroundColor: WidgetStateProperty.all(Theme.of(context).textTheme.bodyLarge?.color),
-      padding: WidgetStateProperty.all(model.paddings),
+      //always EdgeInsets.zero paddings just looks wrong with border painted
+      padding: WidgetStateProperty.all(shrinkSize == true ?
+        (model.borderPainted ? const EdgeInsets.all(2) : EdgeInsets.zero)
+        :
+        model.paddings
+      ),
+      tapTargetSize: shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : tapTargetSize,
       splashFactory: splashFactory,
       overlayColor: WidgetStateProperty.all(Colors.transparent),
     );
   }
+
+  const FlRadioButtonWidget({
+    super.key,
+    required super.model,
+    required super.focusNode,
+    required this.radioFocusNode,
+    super.shrinkSize,
+    super.onPress,
+    super.onPressDown,
+    super.onPressUp,
+  });
 
   @override
   Widget? createButtonChild(BuildContext context) {
@@ -107,5 +123,17 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   @override
   Function()? getOnPressed(BuildContext context) {
     return model.isEnabled && model.isFocusable ? FlButtonWidget.EMPTY_CALLBACK : null;
+  }
+
+  Widget wrapShrink(Widget widget) {
+    if (shrinkSize != true) {
+      return widget;
+    }
+
+    return SizedBox(
+      width: FlChoiceCellEditorModel.IMAGE_SIZE_MIN,
+      height: FlChoiceCellEditorModel.IMAGE_SIZE_MIN,
+      child: widget
+    );
   }
 }

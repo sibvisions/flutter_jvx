@@ -24,6 +24,14 @@ import 'cell_editor_model.dart';
 
 class FlChoiceCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const double IMAGE_SIZE = 32;
+
+  static const double IMAGE_SIZE_MIN = 20;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -34,7 +42,9 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
 
   Widget defaultImage = ImageLoader.DEFAULT_IMAGE;
 
-  double imageSize = 32;
+  double imageSize = IMAGE_SIZE;
+
+  double imageSizeSmall = -1;
 
   VoidCallback? imageLoadingCallback;
 

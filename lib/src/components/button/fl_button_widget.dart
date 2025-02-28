@@ -63,6 +63,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   /// The focus node of the button.
   final FocusNode focusNode;
 
+  /// The tap target size
+  final MaterialTapTargetSize? tapTargetSize;
+
+  /// Whether to use minimal size for widget and remove paddings and reduce tap target size
+  final bool? shrinkSize;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,6 +110,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     super.key,
     required super.model,
     required this.focusNode,
+    this.shrinkSize,
+    this.tapTargetSize,
     this.onPress,
     this.onFocusGained,
     this.onFocusLost,
@@ -259,7 +267,13 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       minimumSize: WidgetStateProperty.all(Size.zero),
       elevation: WidgetStateProperty.all(hasElevation ? 2 : 0),
       backgroundColor: backgroundColor != null ? WidgetStateProperty.all(backgroundColor) : null,
-      padding: WidgetStateProperty.all(model.paddings),
+      //always EdgeInsets.zero paddings just looks wrong with border painted
+      padding: WidgetStateProperty.all(shrinkSize == true ?
+        (model.borderPainted ? const EdgeInsets.all(2) : EdgeInsets.zero)
+        :
+        model.paddings
+      ),
+      tapTargetSize:  shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : tapTargetSize,
       splashFactory: !model.borderPainted ? NoSplash.splashFactory : null,
       overlayColor: !model.borderPainted
           ? WidgetStateProperty.all(Colors.transparent)

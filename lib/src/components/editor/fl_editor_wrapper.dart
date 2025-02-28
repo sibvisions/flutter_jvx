@@ -351,14 +351,14 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     Map<String, dynamic> jsonCellEditor = Map.of(model.json[ApiObjectProperty.cellEditor]);
     cellEditor = ICellEditor.getCellEditor(
-      pName: model.name,
-      pCellEditorJson: jsonCellEditor,
+      name: model.name,
+      cellEditorJson: jsonCellEditor,
       columnName: model.columnName,
       dataProvider: model.dataProvider,
       onChange: onChange,
       onEndEditing: onEndEditing,
       onFocusChanged: _onFocusChange,
-      pRecalculateCallback: recalculateSize,
+      recalculateCallback: recalculateSize,
       isInTable: false,
     );
 

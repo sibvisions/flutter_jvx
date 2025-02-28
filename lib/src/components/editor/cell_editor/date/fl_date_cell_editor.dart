@@ -56,15 +56,15 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlDateCellEditor({
-    required super.columnDefinition,
     required super.cellEditorJson,
+    required super.dataProvider,
+    required super.columnName,
+    required super.columnDefinition,
+    super.isInTable,
+    super.focusChecker,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.columnName,
-    required super.dataProvider,
     super.onFocusChanged,
-    super.isInTable,
-    super.focusChecker
   }) : super(
           model: FlDateCellEditorModel(),
         ) {

@@ -44,13 +44,20 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
       );
     }
 
-    return Checkbox(
+    return wrapShrink(Checkbox(
+      materialTapTargetSize: shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : null,
       side: borderSide,
       focusNode: radioFocusNode,
-      visualDensity: VisualDensity.compact,
+      visualDensity: shrinkSize == true ?
+        const VisualDensity(
+          horizontal: VisualDensity.minimumDensity,
+          vertical: VisualDensity.minimumDensity
+        )
+        :
+        VisualDensity.compact,
       value: model.selected,
       onChanged: model.isEnabled ? (_) => onPress?.call() : null,
-    );
+    ));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,5 +72,6 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
     super.onPress,
     super.onPressDown,
     super.onPressUp,
+    super.shrinkSize
   });
 }

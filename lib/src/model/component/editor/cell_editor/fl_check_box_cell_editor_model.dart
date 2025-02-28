@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../../../components/editor/cell_editor/button_cell_editor_styles.dart';
 import '../../../../service/api/shared/api_object_property.dart';
 import 'cell_editor_model.dart';
 
@@ -34,9 +33,6 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
 
   /// The image of a checkbox
   String imageName = "";
-
-  /// True, if the component is a button
-  bool isButton = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -90,8 +86,5 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
       pConversion: _parseStyle,
       pCurrent: {},
     );
-
-    isButton =
-        styles.any((style) => style == ButtonCellEditorStyles.BUTTON || style == ButtonCellEditorStyles.HYPERLINK);
   }
 }

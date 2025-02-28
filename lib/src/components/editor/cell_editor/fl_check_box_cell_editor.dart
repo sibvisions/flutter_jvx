@@ -15,10 +15,10 @@
  */
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../flutter_jvx.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
-import 'button_cell_editor_styles.dart';
 import 'i_cell_editor.dart';
 
 class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheckBoxCellEditorModel, dynamic> {
@@ -37,6 +37,9 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
   @override
   bool get allowedInTable => model.directCellEditor;
 
+  /// Whether to use minimal size for widget and remove paddings and reduce tap target size
+  bool? shrinkSize;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,6 +53,7 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
     required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
+    this.shrinkSize
   }) : super(
           model: FlCheckBoxCellEditorModel(),
         );
@@ -69,11 +73,14 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
 
     applyEditorJson(widgetModel, pJson);
 
-    bool showButtons = model.isButton || model.styles.any((style) => style == ButtonCellEditorStyles.TOGGLEBUTTON);
+    bool isButton = model.styles.contains(FlCheckBoxModel.STYLE_UI_BUTTON);
+    bool isToggle = model.styles.contains(FlCheckBoxModel.STYLE_UI_TOGGLEBUTTON);
+    bool isRadio = model.styles.contains(FlCheckBoxModel.STYLE_UI_RADIOBUTTON);
+    bool isHyperLink = model.styles.contains(FlCheckBoxModel.STYLE_UI_HYPERLINK);
 
-    if (showButtons) {
-      if (model.isButton && model.selectedValue == null && model.deselectedValue == null) {
-        widgetModel.labelModel.text = _value ?? "";
+    if (isButton || isHyperLink  || isToggle) {
+      if ((isButton || isHyperLink) && model.selectedValue == null && model.deselectedValue == null) {
+        widgetModel.labelModel.text = _value != null ? _value.toString() : "";
       } else if (cellEditorJson["text"] == null && columnDefinition != null) {
         widgetModel.labelModel.text = columnDefinition!.label;
       } else {
@@ -88,25 +95,49 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
       isEditable = pJson![ApiObjectProperty.cellEditorEditable];
     }
 
-    if (model.isButton) {
-      return FlButtonWidget(
+    if (isButton || isHyperLink) {
+      Widget w = FlButtonWidget(
         model: widgetModel,
         focusNode: _buttonFocusNode,
         onPress: isEditable ? _onPress : null,
+        shrinkSize: shrinkSize,
+        tapTargetSize: isInTable ? MaterialTapTargetSize.shrinkWrap : null,
       );
-    } else if (model.styles.any((style) => style == ButtonCellEditorStyles.RADIOBUTTON)) {
+
+      //otherwise the button will be to high
+      if (isInTable) {
+        w = Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [w]
+        );
+      }
+
+      return w;
+    } else if (isRadio) {
       return FlRadioButtonWidget(
         model: widgetModel,
         focusNode: _buttonFocusNode,
         radioFocusNode: focusNode,
         onPress: isEditable ? _onPress : null,
+        shrinkSize: shrinkSize,
       );
-    } else if (model.styles.any((style) => style == ButtonCellEditorStyles.TOGGLEBUTTON)) {
-      return FlToggleButtonWidget(
+    } else if (isToggle) {
+      Widget w = FlToggleButtonWidget(
         model: widgetModel,
         focusNode: _buttonFocusNode,
         onPress: isEditable ? _onPress : null,
+        shrinkSize: shrinkSize,
       );
+
+      //otherwise the button will be to high
+      if (isInTable) {
+        w = Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [w]
+        );
+      }
+
+      return w;
     }
 
     return FlCheckBoxWidget(
@@ -114,12 +145,15 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
       focusNode: _buttonFocusNode,
       model: widgetModel,
       onPress: isEditable ? _onPress : null,
+      shrinkSize: shrinkSize
     );
   }
 
   @override
   createWidgetModel() {
     FlCheckBoxModel widgetModel = FlCheckBoxModel();
+
+    print("${model.selectedValue} $_value");
 
     widgetModel.labelModel.text = model.text;
     widgetModel.selected = model.selectedValue == _value;
@@ -168,11 +202,11 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _onPress() {
-    if (model.styles.any((style) => style == ButtonCellEditorStyles.HYPERLINK)) {
+    if (model.styles.contains(FlCheckBoxModel.STYLE_UI_HYPERLINK)) {
       onEndEditing(_value);
     } else {
       if (_value == model.selectedValue) {
-        if (model.styles.any((style) => style == ButtonCellEditorStyles.BUTTON)) {
+        if (model.styles.contains(FlCheckBoxModel.STYLE_UI_BUTTON)) {
           onEndEditing(model.selectedValue);
         } else {
           onEndEditing(model.deselectedValue);

@@ -26,10 +26,10 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dyna
       : super(
           model: ICellEditorModel(),
           cellEditorJson: {},
+          dataProvider: "",
+          columnName: "",
           onValueChange: _doNothing,
           onEndEditing: _doNothing,
-          columnName: "",
-          dataProvider: "",
         );
 
   @override

@@ -145,100 +145,103 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
 
   /// Returns a [ICellEditor] based on the cell editor class name
   static ICellEditor getCellEditor({
-    required String pName,
-    ColumnDefinition? columnDefinition,
-    required Map<String, dynamic> pCellEditorJson,
-    Function(dynamic)? onChange,
-    Function(dynamic)? onEndEditing,
-    Function(bool)? onFocusChanged,
-    required bool isInTable,
-    RecalculateCallback? pRecalculateCallback,
+    required Map<String, dynamic> cellEditorJson,
+    required String name,
     required String dataProvider,
     required String columnName,
-    CellEditorFocusChecker? focusChecker
+    ColumnDefinition? columnDefinition,
+    required bool isInTable,
+    bool? shrinkSize,
+    RecalculateCallback? recalculateCallback,
+    CellEditorFocusChecker? focusChecker,
+    Function(dynamic)? onChange,
+    Function(dynamic)? onEndEditing,
+    Function(bool)? onFocusChanged
   }) {
-    String? cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
+    String? cellEditorClassName = cellEditorJson[ApiObjectProperty.className];
 
     switch (cellEditorClassName) {
       case FlCellEditorClassname.TEXT_CELL_EDITOR:
         return FlTextCellEditor(
+          cellEditorJson: cellEditorJson,
+          dataProvider: dataProvider,
+          columnName: columnName,
           columnDefinition: columnDefinition,
-          cellEditorJson: pCellEditorJson,
+          isInTable: isInTable,
           onValueChange: onChange ?? _noop,
           onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
-          isInTable: isInTable,
-          columnName: columnName,
-          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(
+          cellEditorJson: cellEditorJson,
+          dataProvider: dataProvider,
+          columnName: columnName,
           columnDefinition: columnDefinition,
-          cellEditorJson: pCellEditorJson,
+          isInTable: isInTable,
+          shrinkSize: shrinkSize,
           onValueChange: onChange ?? _noop,
           onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
-          isInTable: isInTable,
-          columnName: columnName,
-          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         return FlNumberCellEditor(
+          cellEditorJson: cellEditorJson,
+          dataProvider: dataProvider,
+          columnName: columnName,
           columnDefinition: columnDefinition,
-          cellEditorJson: pCellEditorJson,
+          isInTable: isInTable,
           onValueChange: onChange ?? _noop,
           onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
-          isInTable: isInTable,
-          columnName: columnName,
-          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
+          cellEditorJson: cellEditorJson,
+          dataProvider: dataProvider,
+          columnName: columnName,
           columnDefinition: columnDefinition,
-          cellEditorJson: pCellEditorJson,
+          isInTable: isInTable,
+          recalculateSizeCallback: recalculateCallback,
           onValueChange: onChange ?? _noop,
           onEndEditing: onEndEditing ?? _noop,
-          isInTable: isInTable,
-          recalculateSizeCallback: pRecalculateCallback,
-          columnName: columnName,
-          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         return FlChoiceCellEditor(
+          cellEditorJson: cellEditorJson,
+          dataProvider: dataProvider,
+          columnName: columnName,
+          isInTable: isInTable,
+          shrinkSize: shrinkSize,
           columnDefinition: columnDefinition,
-          cellEditorJson: pCellEditorJson,
+          recalculateSizeCallback: recalculateCallback,
           onValueChange: onChange ?? _noop,
           onEndEditing: onEndEditing ?? _noop,
-          isInTable: isInTable,
-          recalculateSizeCallback: pRecalculateCallback,
-          columnName: columnName,
-          dataProvider: dataProvider
         );
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         return FlDateCellEditor(
+          cellEditorJson: cellEditorJson,
+          dataProvider: dataProvider,
+          columnName: columnName,
           columnDefinition: columnDefinition,
-          cellEditorJson: pCellEditorJson,
+          isInTable: isInTable,
+          focusChecker: focusChecker,
           onValueChange: onChange ?? _noop,
           onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
-          isInTable: isInTable,
-          columnName: columnName,
-          dataProvider: dataProvider,
-          focusChecker: focusChecker
         );
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
-          name: pName,
+          cellEditorJson: cellEditorJson,
+          name: name,
+          dataProvider: dataProvider,
+          columnName: columnName,
           columnDefinition: columnDefinition,
-          cellEditorJson: pCellEditorJson,
+          isInTable: isInTable,
+          focusChecker: focusChecker,
           onValueChange: onChange ?? _noop,
           onEndEditing: onEndEditing ?? _noop,
           onFocusChanged: onFocusChanged,
-          isInTable: isInTable,
-          columnName: columnName,
-          dataProvider: dataProvider,
-          focusChecker: focusChecker
         );
 
       default:
@@ -281,15 +284,15 @@ abstract class IFocusableCellEditor<
   IFocusableCellEditor({
     required super.model,
     required super.cellEditorJson,
+    super.name,
+    required super.dataProvider,
+    required super.columnName,
+    super.columnDefinition,
+    super.isInTable = false,
+    this.focusChecker,
+    this.onFocusChanged,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.columnName,
-    required super.dataProvider,
-    super.isInTable = false,
-    super.name,
-    super.columnDefinition,
-    this.onFocusChanged,
-    this.focusChecker
   }) {
     focusNode.addListener(() {
       focusChanged(focusNode.hasFocus);

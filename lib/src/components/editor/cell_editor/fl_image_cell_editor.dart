@@ -48,14 +48,14 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlImageCellEditor({
-    required super.columnDefinition,
     required super.cellEditorJson,
+    required super.dataProvider,
+    required super.columnName,
+    required super.columnDefinition,
+    super.isInTable,
+    this.recalculateSizeCallback,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.columnName,
-    required super.dataProvider,
-    this.recalculateSizeCallback,
-    super.isInTable,
   }) : super(model: FlImageCellEditorModel());
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

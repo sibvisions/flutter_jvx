@@ -31,6 +31,7 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
     super.key,
     required super.model,
     required super.focusNode,
+    super.shrinkSize,
     super.onPress,
     super.onFocusGained,
     super.onFocusLost,

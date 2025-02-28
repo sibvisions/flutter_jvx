@@ -82,7 +82,7 @@ class FlButtonModel extends FlComponentModel {
     if (isSmallStyle) {
       return EdgeInsets.zero;
     } else {
-      return const EdgeInsets.all(10);
+      return const EdgeInsets.all(8);
     }
   }
 

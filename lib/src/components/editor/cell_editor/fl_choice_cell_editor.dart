@@ -30,7 +30,11 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
   /// The value of the editor.
   dynamic _value;
 
+  /// The index of the currently selected image
   int currentIndex = 0;
+
+  /// Whether to use minimal size for widget and remove paddings and reduce tap target size
+  bool? shrinkSize;
 
   /// The image loading callback to the editor.
   RecalculateCallback? recalculateSizeCallback;
@@ -43,14 +47,15 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlChoiceCellEditor({
-    required super.columnDefinition,
     required super.cellEditorJson,
+    required super.dataProvider,
+    required super.columnName,
+    required super.columnDefinition,
+    super.isInTable,
+    this.shrinkSize,
+    this.recalculateSizeCallback,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.columnName,
-    required super.dataProvider,
-    super.isInTable,
-    this.recalculateSizeCallback,
   }) : super(
           model: FlChoiceCellEditorModel(),
         ) {
@@ -81,9 +86,11 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
       isEditable = pJson![ApiObjectProperty.cellEditorEditable];
     }
 
+print(model.imageSize);
+
     return SizedBox(
-      height: model.imageSize,
-      width: model.imageSize,
+      height: shrinkSize == true ? FlChoiceCellEditorModel.IMAGE_SIZE_MIN : model.imageSize,
+      width: shrinkSize == true ? FlChoiceCellEditorModel.IMAGE_SIZE_MIN : model.imageSize,
       child: FlIconWidget(
         model: widgetModel,
         image: currentIndex >= 0 ? model.listImages[currentIndex] : model.defaultImage,

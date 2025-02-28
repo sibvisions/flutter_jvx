@@ -677,10 +677,10 @@ class TableSize {
 
   ICellEditor _createCellEditor(ColumnDefinition colDef, DalMetaData metaData) {
     return ICellEditor.getCellEditor(
-      pName: "",
-      pCellEditorJson: colDef.cellEditorJson,
-      columnName: colDef.name,
+      cellEditorJson: colDef.cellEditorJson,
+      name: "",
       dataProvider: metaData.dataProvider,
+      columnName: colDef.name,
       isInTable: true,
     );
   }

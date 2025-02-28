@@ -43,14 +43,14 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlNumberCellEditor({
-    required super.columnDefinition,
     required super.cellEditorJson,
+    required super.dataProvider,
+    required super.columnName,
+    required super.columnDefinition,
+    super.isInTable,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.columnName,
-    required super.dataProvider,
     super.onFocusChanged,
-    super.isInTable,
   }) : super(
           model: FlNumberCellEditorModel(),
         ) {

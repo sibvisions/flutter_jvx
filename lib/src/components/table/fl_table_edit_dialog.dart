@@ -145,11 +145,13 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       ColumnDefinition colDef = columnDefinitions[i];
 
       var cellEditor = ICellEditor.getCellEditor(
-        pName: widget.model.name,
+        cellEditorJson: colDef.cellEditorJson,
+        name: widget.model.name,
         columnName: colDef.name,
         dataProvider: widget.model.dataProvider,
-        pCellEditorJson: colDef.cellEditorJson,
         columnDefinition: colDef,
+        isInTable: false,
+        focusChecker: _focusHandlingEnabled,
         onEndEditing: (value) {
           //in case of cancel -> don't end editing because it fires events like select record
           //in case of ok -> _handleOk will save values
@@ -157,9 +159,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
             widget.onEndEditing(value, widget.rowIndex, colDef.name);
           }
         },
-        onFocusChanged: (_) {},
-        isInTable: false,
-        focusChecker: _focusHandlingEnabled
+        onFocusChanged: (_) {}
       );
 
       if (cellEditor is FlLinkedCellEditor) {

@@ -888,13 +888,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
         ColumnDefinition colDef = columnDefinitions.first;
 
         ICellEditor cellEditor = ICellEditor.getCellEditor(
-          pName: model.name,
-          pCellEditorJson: columnDefinitions.first.cellEditorJson,
-          columnDefinition: colDef,
-          onEndEditing: (value) => onEndEditing(value, rowIndex, colDef.name),
-          columnName: colDef.name,
+          cellEditorJson: columnDefinitions.first.cellEditorJson,
+          name: model.name,
           dataProvider: model.dataProvider,
+          columnName: colDef.name,
+          columnDefinition: colDef,
           isInTable: true,
+          onEndEditing: (value) => onEndEditing(value, rowIndex, colDef.name)
         );
 
         if (cellEditor is FlLinkedCellEditor) {

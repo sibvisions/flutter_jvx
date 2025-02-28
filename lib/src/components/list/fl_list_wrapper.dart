@@ -349,12 +349,16 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
     for (int i = 0; i < colDef.length; i++) {
       ICellEditor ced = ICellEditor.getCellEditor(
-        pName: widget.model.name,
+        name: widget.model.name,
         columnDefinition: colDef[i],
         columnName: colDef[i].name,
         dataProvider: widget.model.dataProvider,
-        pCellEditorJson: colDef[i].cellEditorJson,
+        cellEditorJson: colDef[i].cellEditorJson,
+        onChange: (p0) {
+          print("Change");
+        },
         isInTable: true,
+        shrinkSize: true
       );
 
       cellEditors[colDef[i].name] = ced;

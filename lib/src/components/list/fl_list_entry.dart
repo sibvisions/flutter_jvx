@@ -162,6 +162,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   Widget _defaultEntry(BuildContext context) {
     String? imageColumn;
     List<String> valueColumns = [];
+    List<String> checkBoxColumns = [];
 
     //search image column and collect all "text" columns
     for (int i = 0; i < model.columnNames.length; i++) {
@@ -175,8 +176,12 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
           imageColumn ??= model.columnNames[i];
         }
         else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != colDef.cellEditorClassName &&
-              FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != colDef.cellEditorClassName) {
+                 FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != colDef.cellEditorClassName) {
           valueColumns.add(model.columnNames[i]);
+        }
+        else if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName ||
+                 FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
+          checkBoxColumns.add(model.columnNames[i]);
         }
       }
     }
@@ -281,6 +286,44 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
           liRows[liRows.length - 1] = Padding(padding: const EdgeInsets.only(top: 5), child: liRows[liRows.length - 1]);
         }
       }
+    }
+
+    List<Widget> checks = [];
+
+    dynamic value;
+
+    String? separator;
+
+    for (int i = 0; i < checkBoxColumns.length; i++) {
+      cellEditors[checkBoxColumns[i]]!.setValue(values[columnDefinitions.indexByName(checkBoxColumns[i])]);
+
+      Widget w = cellEditors[checkBoxColumns[i]]!.createWidget(model.json);
+
+      if (i > 0) {
+        if (columnSeparator != null && sepIndex < columnSeparator!.length) {
+          separator = columnSeparator![sepIndex++];
+        }
+        else {
+          separator = " ";
+        }
+      }
+
+      if (checks.isNotEmpty) {
+        checks.add(Text(separator ?? " "));
+      }
+      
+      //no changes possible
+      checks.add(AbsorbPointer(
+        absorbing: true,
+        child: w),
+      );
+    }
+
+    if (checks.isNotEmpty) {
+      liRows.add(Padding(
+        padding: const EdgeInsets.only(top: 5),
+        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: checks)
+      ));
     }
 
     //No rows, show an info text

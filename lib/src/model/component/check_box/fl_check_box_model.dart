@@ -21,10 +21,8 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The styles to make the checkbox to a switch.
+  /// The styles to make the checkbox to a switch (backwards compatibility).
   static const String STYLE_SWITCH = "f_switch";
-
-  static const String STYLE_CELL_SWITCH = "ui-switch";
 
   /// The style to make the checkbox to a checkbox.
   ///
@@ -33,6 +31,12 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   /// and the cell editor to be overridden by an editor style.
   static const String STYLE_CHECKBOX = "f_checkbox";
 
+  static const String STYLE_UI_BUTTON = "ui-button";
+  static const String STYLE_UI_RADIOBUTTON = "ui-radiobutton";
+  static const String STYLE_UI_TOGGLEBUTTON = "ui-togglebutton";
+  static const String STYLE_UI_SWITCH = "ui-switch";
+  static const String STYLE_UI_HYPERLINK = "ui-hyperlink";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,13 +44,13 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   // Checkbox never draws a border.
   @override
   bool get borderPainted =>
-      styles.contains(ButtonCellEditorStyles.BUTTON) || styles.contains(ButtonCellEditorStyles.TOGGLEBUTTON);
+      styles.contains(STYLE_UI_BUTTON) || styles.contains(STYLE_UI_TOGGLEBUTTON);
 
   @override
   FlCheckBoxModel get defaultModel => FlCheckBoxModel();
 
   bool get isSwitch =>
-      (styles.contains(STYLE_SWITCH) || styles.contains(STYLE_CELL_SWITCH)) && !styles.contains(STYLE_CHECKBOX);
+      (styles.contains(STYLE_SWITCH) || styles.contains(STYLE_UI_SWITCH)) && !styles.contains(STYLE_CHECKBOX);
 
   /// The image of a checkbox
   String? imageName;
