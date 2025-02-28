@@ -18,6 +18,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
@@ -288,16 +289,19 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       }
     }
 
-    List<Widget> checks = [];
+    List<Widget> liCheckBoxes = [];
 
     dynamic value;
 
     String? separator;
+    ColumnDefinition? colDef;
 
     for (int i = 0; i < checkBoxColumns.length; i++) {
-      cellEditors[checkBoxColumns[i]]!.setValue(values[columnDefinitions.indexByName(checkBoxColumns[i])]);
+      ICellEditor ced = cellEditors[checkBoxColumns[i]]!;
 
-      Widget w = cellEditors[checkBoxColumns[i]]!.createWidget(model.json);
+      ced.setValue(values[columnDefinitions.indexByName(checkBoxColumns[i])]);
+
+      Widget w = ced.createWidget(model.json);
 
       if (i > 0) {
         if (columnSeparator != null && sepIndex < columnSeparator!.length) {
@@ -308,21 +312,37 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         }
       }
 
-      if (checks.isNotEmpty) {
-        checks.add(Text(separator ?? " "));
+      if (liCheckBoxes.isNotEmpty) {
+        liCheckBoxes.add(Text(separator ?? " "));
       }
-      
+
       //no changes possible
-      checks.add(AbsorbPointer(
+      liCheckBoxes.add(AbsorbPointer(
         absorbing: true,
         child: w),
       );
+
+      //check if label is necessary
+      colDef = columnDefinitions.byName(checkBoxColumns[i]);
+      if (colDef?.label.isNotEmpty == true) {
+
+        if (ced is FlCheckBoxCellEditor) {
+          if (ced.model.styles.none((style) =>
+            style == FlCheckBoxModel.STYLE_SWITCH ||
+            style == FlCheckBoxModel.STYLE_UI_SWITCH ||
+            style == FlCheckBoxModel.STYLE_UI_BUTTON ||
+            style == FlCheckBoxModel.STYLE_UI_TOGGLEBUTTON ||
+            style == FlCheckBoxModel.STYLE_UI_HYPERLINK)) {
+            liCheckBoxes.add(Text(" ${colDef!.label}"));
+          }
+        }
+      }
     }
 
-    if (checks.isNotEmpty) {
+    if (liCheckBoxes.isNotEmpty) {
       liRows.add(Padding(
-        padding: const EdgeInsets.only(top: 5),
-        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: checks)
+        padding: const EdgeInsets.only(top: 15),
+        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: liCheckBoxes)
       ));
     }
 
