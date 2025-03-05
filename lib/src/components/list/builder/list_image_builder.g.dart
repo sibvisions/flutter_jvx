@@ -78,6 +78,8 @@ class ListImageBuilder extends _ListImageBuilder {
 
     return ListImage(
       bytes: model.bytes,
+      columnName: model.columnName,
+      data: data,
       icon: model.icon,
       iconBackgroundColor: model.iconBackgroundColor,
       iconColor: model.iconColor,
@@ -93,6 +95,7 @@ class JsonListImage extends JsonWidgetData {
     Map<String, dynamic> args = const {},
     JsonWidgetRegistry? registry,
     this.bytes,
+    this.columnName,
     this.icon,
     this.iconBackgroundColor,
     this.iconColor,
@@ -102,6 +105,7 @@ class JsonListImage extends JsonWidgetData {
           jsonWidgetArgs: ListImageBuilderModel.fromDynamic(
             {
               'bytes': bytes,
+              'columnName': columnName,
               'icon': icon,
               'iconBackgroundColor': iconBackgroundColor,
               'iconColor': iconColor,
@@ -116,6 +120,7 @@ class JsonListImage extends JsonWidgetData {
             args: ListImageBuilderModel.fromDynamic(
               {
                 'bytes': bytes,
+                'columnName': columnName,
                 'icon': icon,
                 'iconBackgroundColor': iconBackgroundColor,
                 'iconColor': iconColor,
@@ -132,6 +137,8 @@ class JsonListImage extends JsonWidgetData {
 
   final Uint8List? bytes;
 
+  final String? columnName;
+
   final IconData? icon;
 
   final Color? iconBackgroundColor;
@@ -147,6 +154,7 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
   const ListImageBuilderModel(
     super.args, {
     this.bytes,
+    this.columnName,
     this.icon,
     this.iconBackgroundColor,
     this.iconColor,
@@ -155,6 +163,8 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
   });
 
   final Uint8List? bytes;
+
+  final String? columnName;
 
   final IconData? icon;
 
@@ -209,6 +219,7 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
         result = ListImageBuilderModel(
           args,
           bytes: map['bytes'],
+          columnName: map['columnName'],
           icon: () {
             dynamic parsed = ThemeDecoder.decodeIconData(
               map['icon'],
@@ -250,6 +261,7 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
   Map<String, dynamic> toJson() {
     return JsonClass.removeNull({
       'bytes': bytes,
+      'columnName': columnName,
       'icon': ThemeEncoder.encodeIconData(
         icon,
       ),
@@ -278,6 +290,7 @@ class ListImageSchema {
     'additionalProperties': false,
     'properties': {
       'bytes': SchemaHelper.anySchema,
+      'columnName': SchemaHelper.stringSchema,
       'icon': SchemaHelper.objectSchema(IconDataSchema.id),
       'iconBackgroundColor': SchemaHelper.objectSchema(ColorSchema.id),
       'iconColor': SchemaHelper.objectSchema(ColorSchema.id),

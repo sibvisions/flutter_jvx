@@ -72,6 +72,7 @@ import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
+import 'util/json_template_manager.dart';
 import 'util/jvx_logger.dart';
 import 'util/extensions/list_extensions.dart';
 import 'util/http_overrides.dart';
@@ -363,7 +364,8 @@ class FlutterUI extends StatefulWidget {
     SimplePrinter.levelPrefixes[Level.error] = '';
     SimplePrinter.levelPrefixes[Level.fatal] = '';
 
-    ImageLoader.clearImageCache();
+    ImageLoader.clearCache();
+    JsonTemplateManager.clearCache();
 
     WidgetsFlutterBinding.ensureInitialized();
 

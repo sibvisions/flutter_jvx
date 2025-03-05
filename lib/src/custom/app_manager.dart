@@ -21,6 +21,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:universal_io/io.dart';
 
 import '../../flutter_jvx.dart';
+import '../components/list/fl_list_entry.dart';
 
 abstract class AppManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +40,9 @@ abstract class AppManager {
   /// * Use the original menu item (if this screen replaces an existing screen).
   /// * Create a menu item on best-effort basis using properties of the screen.
   final Map<String, CustomMenuItem> customMenuItems = {};
+
+  /// Map of all custom list entry builder.
+  final Map<String, ListEntryBuilder> customListEntryBuilder = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -87,6 +91,11 @@ abstract class AppManager {
   /// Defines a custom component which is a replacement for an existing component
   void replaceComponent(CustomComponent customComponent) {
     replaceComponents[customComponent.componentName] = customComponent;
+  }
+
+  /// Registers a custom list entry builder for the given [componentName]
+  void registerListEntryBuilder(String componentName, ListEntryBuilder builder) {
+    customListEntryBuilder[componentName] = builder;
   }
 
   /// Gets called on menu mode selection. Default implementation returns original [pCurrentMode]

@@ -14,12 +14,9 @@
  * the License.
  */
 
-import 'dart:convert';
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
@@ -27,17 +24,27 @@ import '../../model/layout/alignments.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
+import '../../util/extensions/color_extensions.dart';
 import '../../util/i_types.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import '../table/fl_table_cell.dart';
-import 'list_image_builder.dart';
+import 'builder/list_cell_builder.dart';
+import 'builder/list_image_builder.dart';
 
 typedef DismissedCallback = void Function(int index);
+
+typedef ListEntryBuilder = Widget? Function(
+  BuildContext context,
+  FlListEntry widget
+);
 
 class FlListEntry extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// the widget registry
+  final JsonWidgetRegistry registry;
 
   /// The colum definitions to build
   final ColumnList columnDefinitions;
@@ -58,7 +65,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   final RecordFormat? recordFormat;
 
   /// custom card template as json
-  final String? template;
+  final dynamic jsonTemplate;
 
   /// the column separators
   final List<String>? columnSeparator;
@@ -69,22 +76,27 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   /// the cell editors
   final Map<String, ICellEditor> cellEditors;
 
+  /// the entry builder
+  final ListEntryBuilder? _entryBuilder;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const FlListEntry({super.key,
     required super.model,
+    required this.registry,
     required this.columnDefinitions,
     required this.cellEditors,
     required this.values,
     required this.index,
     required this.isSelected,
     this.recordFormat,
-    this.template,
+    this.jsonTemplate,
     this.columnsPerRow,
     this.columnSeparator,
-    mainAxisAlignment}) : mainAxisAlignment = mainAxisAlignment ?? MainAxisAlignment.center;
+    mainAxisAlignment,
+    ListEntryBuilder? entryBuilder}) : mainAxisAlignment = mainAxisAlignment ?? MainAxisAlignment.center, _entryBuilder = entryBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -92,74 +104,188 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
   @override
   Widget build(BuildContext context) {
-    Widget? card;
+    if (_entryBuilder != null) {
+      Widget? w = _entryBuilder!(context, this);
 
-    if (template != null) {
-      card = _fromTemplate(
-        context,
-        template!,
-      );
+      if (w != null) {
+        return w;
+      }
+    }
+    else {
+      if (jsonTemplate != null) {
+        return _fromTemplate(context, jsonTemplate!);
+      }
     }
 
-    return card ?? _defaultEntry(context);
+    return _defaultEntry(context);
   }
 
-  Widget? _fromTemplate(BuildContext context, String template) {
-    String? jsonTemplate;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    String tplUrl = template;
-    if (tplUrl.startsWith("/")) {
-      tplUrl = tplUrl.substring(1);
-    }
-
-    if (!kIsWeb) {
-      String? appVersion = IConfigService().version.value;
-
-      if (appVersion != null) {
-        IFileManager fileManager = IConfigService().getFileManager();
-
-        String path = fileManager.getAppSpecificPath(
-          "${IFileManager.TEMPLATES_PATH}/$tplUrl",
-          appId: IConfigService().currentApp.value!,
-          version: appVersion,
-        );
-
-        File? file = fileManager.getFileSync(path);
-
-        if (file?.existsSync() == true) {
-          jsonTemplate = file!.readAsStringSync();
-        }
-      }
-    } else {
-      //Uri baseUrl = IConfigService().baseUrl.value!;
-      //String appName = IConfigService().appName.value!;
-
-      //imageProvider = NetworkImage("$baseUrl/resource/$appName/$imageDefinition_", headers: _getHeaders());
-    }
-
-    if (jsonTemplate != null) {
-      final registry = JsonWidgetRegistry.instance;
-
-      registry.registerCustomBuilder("list_image", const JsonWidgetBuilderContainer(builder: ListImageBuilder.fromDynamic));
-      registry.clearValues();
-
-      for (int i = 0; i < model.columnNames.length; i++) {
-        int columnIndex = columnDefinitions.indexByName(model.columnNames[i]);
-
-        if (columnIndex >= 0) {
-          registry.setValue(model.columnNames[i], values[columnIndex]);
-        }
+  /// Creates a list entry from given json template
+  Widget _fromTemplate(BuildContext context, dynamic jsonTemplate)  {
+    //gets the raw value for a specific column
+    registry.registerFunction("getValue", ({args, required registry}) {
+      if (args != null) {
+        return values[columnDefinitions.indexByName(args[0])];
       }
 
-      return JsonWidgetData.fromDynamic(
-        jsonDecode(jsonTemplate),
-        registry: registry,
-      ).build(context: context);
+      return null;
+    });
+
+    /// gets the cell format for a specific column
+    registry.registerFunction("getCellFormat", ({args, required registry}) {
+      if (args != null) {
+        return recordFormat?.getCellFormat(index, columnDefinitions.indexByName(args[0]));
+      }
+
+      return null;
+    });
+
+    /// gets the background of cell format for a specific column
+    registry.registerFunction("background", ({args, required registry}) {
+
+      if (args != null) {
+        CellFormat? cf = recordFormat?.getCellFormat(index, columnDefinitions.indexByName(args[0]));
+
+        return cf?.background?.toHex() ?? (args.length > 1 ? args[1] : null);
+      }
+
+      return null;
+    });
+
+    /// gets the foreground of cell format for a specific column
+    registry.registerFunction("foreground", ({args, required registry}) {
+
+      if (args != null) {
+        CellFormat? cf = recordFormat?.getCellFormat(index, columnDefinitions.indexByName(args[0]));
+
+        return cf?.foreground?.toHex() ?? (args.length > 1 ? args[1] : null);
+      }
+
+      return null;
+    });
+
+    //format a list_cell value (similar to _defaultEntry)
+    registry.registerFunction("formatListCell", ({args, required registry}) {
+      if (args != null) {
+        ListCell cell = args.elementAt(0);
+
+        if (cell.columnName != null) {
+          int columnIndex = columnDefinitions.indexByName(cell.columnName!);
+
+          Widget? w;
+
+          if (columnIndex > 0) {
+            ColumnDefinition colDef = columnDefinitions.byName(cell.columnName!)!;
+
+            if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName ||
+                FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
+
+               w = IntrinsicWidth(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: _getCheckBoxWidget(cell.columnName!, cell.prefix, cell.postfix))
+              );
+            }
+          }
+
+          if (w == null) {
+            w = _createTextWidget(
+                cellEditors[cell.columnName],
+                values[columnIndex],
+                recordFormat?.getCellFormat(index, columnIndex));
+
+            if (cell.useFormat) {
+              w = _applyCellProfileImageOrIndent(w, recordFormat?.getCellFormat(index, columnIndex), cell.prefix, cell.postfix);
+            }
+            else if (w != null) {
+              if (cell.postfix != null || cell.prefix != null) {
+                List<Widget> widgets = [];
+
+                if (cell.prefix != null) {
+                  widgets.add(Text(cell.prefix!));
+                }
+
+                widgets.add(w);
+
+                if (cell.postfix != null) {
+                  widgets.add(Text(cell.postfix!));
+                }
+
+                return IntrinsicWidth(child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: widgets,
+                ));
+              }
+            }
+          }
+
+          return w;
+        }
+      }
+
+      return const Text("");
+    });
+
+    //check if ALL given column names have a value != null and not empty
+    registry.registerFunction("hasValue", ({args, required registry}) {
+      if (args != null) {
+        dynamic columnNames = args;
+
+        List<dynamic>? columns;
+
+        if (columnNames is List<dynamic>) {
+          columns = columnNames;
+        }
+        else if (columnNames is String) {
+          columns = [columnNames];
+        }
+
+        bool hasValues;
+
+        if (columns != null) {
+          hasValues = true;
+
+          for (int i = 0; i < columns.length; i++) {
+            int columnIndex = columnDefinitions.indexByName(columns[i]);
+
+            hasValues &= values[columnIndex] != null && values[columnIndex].toString().isNotEmpty;
+          }
+        }
+        else {
+          hasValues = false;
+        }
+
+        return hasValues;
+      }
+
+      return const Text("");
+    });
+
+    registry.clearValues();
+
+    int colIndex;
+
+    for (int i = 0; i < model.columnNames.length; i++) {
+      colIndex = columnDefinitions.indexByName(model.columnNames[i]);
+
+      if (colIndex >= 0) {
+        registry.setValue(model.columnNames[i], values[colIndex]);
+      }
     }
 
-    return null;
+    Widget w = JsonWidgetData.fromDynamic(
+      jsonTemplate,
+      registry: registry,
+    ).build(context: context);
+
+    return w;
   }
 
+  /// Creates a default entry if no template is available
   Widget _defaultEntry(BuildContext context) {
     String? imageColumn;
     List<String> valueColumns = [];
@@ -225,7 +351,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
             cellFormat = recordFormat?.getCellFormat(index, colIndex);
 
             valueAsText = _createTextWidget(cellEditors[colName], values[colIndex], cellFormat);
-            valueAsText = _applyCellProfileImageOrIndent(valueAsText, cellFormat);
+            valueAsText = _applyCellProfileImageOrIndent(valueAsText, cellFormat, null, null);
 
             String? separator;
 
@@ -265,7 +391,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         cellFormat = recordFormat?.getCellFormat(index, colIndex);
 
         valueAsText = _createTextWidget(cellEditors[colName], values[colIndex], cellFormat);
-        valueAsText = _applyCellProfileImageOrIndent(valueAsText, cellFormat);
+        valueAsText = _applyCellProfileImageOrIndent(valueAsText, cellFormat, null, null);
 
         if (valueAsText != null) {
           //avoid overflow
@@ -291,18 +417,9 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
     List<Widget> liCheckBoxes = [];
 
-    dynamic value;
-
     String? separator;
-    ColumnDefinition? colDef;
 
     for (int i = 0; i < checkBoxColumns.length; i++) {
-      ICellEditor ced = cellEditors[checkBoxColumns[i]]!;
-
-      ced.setValue(values[columnDefinitions.indexByName(checkBoxColumns[i])]);
-
-      Widget w = ced.createWidget(model.json);
-
       if (i > 0) {
         if (columnSeparator != null && sepIndex < columnSeparator!.length) {
           separator = columnSeparator![sepIndex++];
@@ -316,27 +433,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         liCheckBoxes.add(Text(separator ?? " "));
       }
 
-      //no changes possible
-      liCheckBoxes.add(AbsorbPointer(
-        absorbing: true,
-        child: w),
-      );
-
-      //check if label is necessary
-      colDef = columnDefinitions.byName(checkBoxColumns[i]);
-      if (colDef?.label.isNotEmpty == true) {
-
-        if (ced is FlCheckBoxCellEditor) {
-          if (ced.model.styles.none((style) =>
-            style == FlCheckBoxModel.STYLE_SWITCH ||
-            style == FlCheckBoxModel.STYLE_UI_SWITCH ||
-            style == FlCheckBoxModel.STYLE_UI_BUTTON ||
-            style == FlCheckBoxModel.STYLE_UI_TOGGLEBUTTON ||
-            style == FlCheckBoxModel.STYLE_UI_HYPERLINK)) {
-            liCheckBoxes.add(Text(" ${colDef!.label}"));
-          }
-        }
-      }
+      liCheckBoxes.addAll(_getCheckBoxWidget(checkBoxColumns[i]));
     }
 
     if (liCheckBoxes.isNotEmpty) {
@@ -348,7 +445,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
     //No rows, show an info text
     if (liRows.isEmpty) {
-      return Container(height: 30, color: Colors.red.shade300, child: const Text("No columns"));
+      return Container(height: 30, color: Colors.red.shade300, child: Text(FlutterUI.translate("No columns")));
     }
 
     Widget? widget;
@@ -364,7 +461,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
               color: format?.background ?? Colors.grey.shade200,
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: ListImage(
+                child: ListImage.predefined(
                   imageDefinition: values[columnDefinitions.indexByName(imageColumn)],
                   iconColor: format?.foreground,
                 )
@@ -446,7 +543,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   }
 
   /// Applies cell format image or indent to given text widget
-  Widget? _applyCellProfileImageOrIndent(Widget? text, CellFormat? cellFormat) {
+  Widget? _applyCellProfileImageOrIndent(Widget? text, CellFormat? cellFormat, String? prefix, String? postfix) {
     //similar code available in [FlTableCell]
     List<Widget> widgets;
 
@@ -477,12 +574,20 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     }
 
     //No indent or image -> use text as it is
-    if (widgets.isEmpty) {
+    if (widgets.isEmpty && postfix == null && prefix == null) {
       return text;
+    }
+
+    if (text != null && prefix != null) {
+      widgets.insert(0, Text(prefix));
     }
 
     //for the height!
     widgets.add(text ?? const Text(""));
+
+    if (text != null && postfix != null) {
+      widgets.add(Text(postfix));
+    }
 
     //row would use the fill width without IntrinsicWidth
     return IntrinsicWidth(child: Row(
@@ -490,4 +595,51 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       children: widgets,
     ));
   }
+
+  /// Gets a checkbox widget (choice or checkbox - with different styles). The widget may contain
+  /// a label
+  List<Widget> _getCheckBoxWidget(String columnName, [String? prefix, String? postfix]) {
+    ICellEditor ced = cellEditors[columnName]!;
+
+    ced.setValue(values[columnDefinitions.indexByName(columnName)]);
+
+    List<Widget> widgets = [];
+
+    Widget w = ced.createWidget(model.json);
+
+    //no changes possible
+    w = AbsorbPointer(
+        absorbing: true,
+        child: w);
+
+    if (prefix != null) {
+      widgets.add(Text(prefix));
+    }
+
+    widgets.add(w);
+
+    //check if label is necessary
+    ColumnDefinition? colDef = columnDefinitions.byName(columnName);
+
+    if (colDef?.label.isNotEmpty == true) {
+
+      if (ced is FlCheckBoxCellEditor) {
+        if (ced.model.styles.none((style) =>
+        style == FlCheckBoxModel.STYLE_SWITCH ||
+            style == FlCheckBoxModel.STYLE_UI_SWITCH ||
+            style == FlCheckBoxModel.STYLE_UI_BUTTON ||
+            style == FlCheckBoxModel.STYLE_UI_TOGGLEBUTTON ||
+            style == FlCheckBoxModel.STYLE_UI_HYPERLINK)) {
+          widgets.add(Text(" ${colDef!.label}"));
+        }
+      }
+    }
+
+    if (postfix != null) {
+      widgets.add(Text(postfix));
+    }
+
+    return widgets;
+  }
+
 }

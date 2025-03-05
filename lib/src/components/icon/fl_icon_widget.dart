@@ -54,8 +54,6 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       child = Tooltip(message: model.toolTipText!, child: child);
     }
 
-print(child);
-
     if (onPress != null) {
       return GestureDetector(
         onTap: model.isEnabled ? onPress : null,

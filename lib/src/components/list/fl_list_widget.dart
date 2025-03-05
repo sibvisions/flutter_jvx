@@ -21,9 +21,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../util/json_template_manager.dart';
+import '../../util/jvx_logger.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_list_entry.dart';
+import 'builder/list_cell_builder.dart';
+import 'builder/list_image_builder.dart';
+import 'builder/list_space_builder.dart';
 
 typedef ListTapCallback = void Function(int rowIndex);
 typedef ListLongPressCallback = void Function(int rowIndex, Offset pGlobalPosition);
@@ -95,8 +100,11 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   /// Which slide actions are to be allowed to the row.
   final ListSlideActionFactory? slideActionFactory;
 
-  /// the cell editors
+  /// The cell editors
   final Map<String, ICellEditor> cellEditors;
+
+  /// The entry builder
+  final ListEntryBuilder? entryBuilder;
 
   /// The selected current row.
   final int selectedRowIndex;
@@ -113,6 +121,7 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
     required this.cellEditors,
     this.slideActionFactory,
     this.selectedRowIndex = -1,
+    this.entryBuilder,
     this.onRefresh,
     this.onScroll,
     this.onEndScroll,
@@ -130,11 +139,20 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
   final List<SlidableController> _slideController = [];
 
+  final Map<String, Future<dynamic>> futures = {};
+
+  final JsonWidgetRegistry registry = JsonWidgetRegistry();
+
   @override
   void initState() {
     super.initState();
 
     FlutterUI.registerGlobalSubscription(GlobalSubscription(subbedObj: this, onTap: _closeSlidables));
+
+    registry.registerCustomBuilder("list_image", const JsonWidgetBuilderContainer(builder: ListImageBuilder.fromDynamic));
+    registry.registerCustomBuilder("list_cell", const JsonWidgetBuilderContainer(builder: ListCellBuilder.fromDynamic));
+    registry.registerCustomBuilder("list_space", const JsonWidgetBuilderContainer(builder: ListSpaceBuilder.fromDynamic));
+
     /*
     _controller.addListener(() {
       if (_controller.position.userScrollDirection ==
@@ -153,6 +171,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     super.dispose();
 
     FlutterUI.disposeGlobalSubscription(this);
+
+    registry.dispose();
   }
 
   @override
@@ -170,11 +190,9 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     List<String>? columnSeparator;
 
     if (styles.isNotEmpty) {
-
       String? styleDef;
 
-      for (int i = 0; i < styles.length; i++)
-      {
+      for (int i = 0; i < styles.length; i++) {
         styleDef = styles.elementAt(i);
 
         if (styleDef.startsWith(FlListWidget.STYLE_TEMPLATE_MARKER)) {
@@ -205,11 +223,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
           for (int i = 0; i < separators.length; i++) {
             columnSeparator.add(separators[i].
-              replaceAll("%20", " ").
-              replaceAll("%5f", "_").
-              replaceAll("%5F", "_").
-              replaceAll("%2c", ",").
-              replaceAll("%2C", ","));
+            replaceAll("%20", " ").
+            replaceAll("%5f", "_").
+            replaceAll("%5F", "_").
+            replaceAll("%2c", ",").
+            replaceAll("%2C", ","));
           }
         }
         else if (!withArrow && styleDef == FlListWidget.STYLE_WITH_ARROW) {
@@ -227,21 +245,81 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       }
     }
 
+    //sort of caching for the future because it should be possible to change the template
+    //and we avoid multiple loading of template by using same future
+    //(otherwise initState would be a better place)
+    Future<dynamic>? loadFuture;
+
+    if (tpl != null) {
+      if (!futures.containsKey(tpl)) {
+        loadFuture = JsonTemplateManager.loadTemplate(tpl);
+
+        futures[tpl] = loadFuture;
+      }
+      else {
+        loadFuture = futures[tpl];
+      }
+    }
+
     _closeSlidablesImmediate();
     _slideController.clear();
-
-
-//    mapColumnsPerRow?.clear();
-//    asCard = false;
-//    withArrow = false;
-//    withBorder = true;
-//    vAlign = MainAxisAlignment.start;
 
     //no border if cards are used -> makes no sense
     if (asCard) {
       withBorder = false;
     }
 
+    if (tpl != null && !JsonTemplateManager.hasTemplate(tpl)) {
+      return FutureBuilder(
+          future: loadFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              if (FlutterUI.logUI.cl(Lvl.e)) {
+                FlutterUI.logUI.e(snapshot.error);
+              }
+              return Center(child: Text(FlutterUI.translate("An error has occurred!")));
+            } else if (snapshot.hasData) {
+              return _buildList(
+                context,
+                snapshot.data!,
+                mapColumnsPerRow,
+                columnSeparator,
+                vAlign,
+                asCard,
+                withBorder,
+                withArrow);
+            } else {
+              return const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator()
+                ]
+              );
+            }
+          }
+      );
+    }
+
+    return _buildList(
+      context,
+      JsonTemplateManager.getTemplateFromCache(tpl),
+      mapColumnsPerRow,
+      columnSeparator,
+      vAlign,
+      asCard,
+      withBorder,
+      withArrow);
+  }
+
+  Widget _buildList(
+    BuildContext context,
+    dynamic jsonTemplate,
+    Map<int, int>? mapColumnsPerRow,
+    List<String>? columnSeparator,
+    MainAxisAlignment? verticalAlign,
+    bool asCard,
+    bool withBorder,
+    bool withArrow) {
     Widget list = _wrapList(context, _wrapSlider(context,
       NotificationListener<ScrollNotification>(
           onNotification: (notification) => _onInternalEndScroll(notification),
@@ -286,17 +364,19 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                     bool selected = index == widget.selectedRowIndex && widget.model.showSelection;
 
                     Widget listEntry = FlListEntry(
-                        model: widget.model,
-                        index: index,
-                        columnDefinitions: widget.chunkData.columnDefinitions,
-                        cellEditors: widget.cellEditors,
-                        isSelected: selected,
-                        values: widget.chunkData.data[index]!,
-                        recordFormat: widget.chunkData.recordFormats?[widget.model.name],
-                        template: tpl,
-                        columnsPerRow: mapColumnsPerRow,
-                        columnSeparator: columnSeparator,
-                        mainAxisAlignment: vAlign
+                      model: widget.model,
+                      index: index,
+                      columnDefinitions: widget.chunkData.columnDefinitions,
+                      cellEditors: widget.cellEditors,
+                      isSelected: selected,
+                      values: widget.chunkData.data[index]!,
+                      recordFormat: widget.chunkData.recordFormats?[widget.model.name],
+                      jsonTemplate: jsonTemplate,
+                      columnsPerRow: mapColumnsPerRow,
+                      columnSeparator: columnSeparator,
+                      mainAxisAlignment: verticalAlign,
+                      registry: registry,
+                      entryBuilder: widget.entryBuilder,
                     );
 
                     if (withArrow) {
@@ -467,7 +547,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     }
 
     if (widget.onFloatingPress != null) {
-      listWidget = Stack(children: [listWidget, createFloatingButton(context)]);
+      listWidget = Stack(children: [listWidget, _createFloatingButton(context)]);
     }
 
     return listWidget;
@@ -576,7 +656,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   }
 
   /// Creates the floating button that floats above the table on the bottom right
-  Positioned createFloatingButton(BuildContext context) {
+  Positioned _createFloatingButton(BuildContext context) {
     return Positioned(
       right: 10,
       bottom: 10,

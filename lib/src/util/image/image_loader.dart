@@ -16,14 +16,13 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
 import '../../service/api/i_api_service.dart';
-import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/app.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/file/file_manager.dart';
@@ -37,7 +36,8 @@ abstract class ImageLoader {
 
   static const Widget DEFAULT_IMAGE = FaIcon(FontAwesomeIcons.circleQuestion, size: IconUtil.DEFAULT_ICON_SIZE);
 
-  static Map<String, (MemoryImage image, Size? size)> _imageCache = {};
+  /// The image cache
+  static final Map<String, (MemoryImage image, Size? size)> _imageCache = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -173,8 +173,6 @@ abstract class ImageLoader {
     if (base64Decoded != null) {
       MemoryImage? memImage;
 
-//      clearImageCache();
-
       (MemoryImage image, Size? size)? cacheInfo = _imageCache[imageDefinition];
 
       if (cacheInfo != null) {
@@ -276,12 +274,20 @@ abstract class ImageLoader {
   }
 
   static Map<String, String> _getHeaders() {
-    Map<String, String> headers = {};
-    var repository = IApiService().getRepository();
+    Map<String, String> headers = IApiService().getRepository().getHeaders();
 
-    if (repository is OnlineApiRepository) {
-      if (repository.getCookies().isNotEmpty) {
-        headers[HttpHeaders.cookieHeader] = repository.getCookies().map((e) => "${e.name}=${e.value}").join("; ");
+    if (!kIsWeb) {
+      Set<Cookie> cookies = IApiService().getRepository().getCookies();
+      if (cookies.isNotEmpty) {
+        String cookieNew = cookies.map((e) => "${e.name}=${e.value}").join("; ");
+
+        String? cookieOld = headers[HttpHeaders.cookieHeader];
+        if (cookieOld != null) {
+          headers[HttpHeaders.cookieHeader] = "$cookieOld; $cookieNew}";
+        }
+        else {
+          headers[HttpHeaders.cookieHeader] = cookieNew;
+        }
       }
     }
 
@@ -335,7 +341,7 @@ abstract class ImageLoader {
   }
 
   ///Clears the image cache
-  static void clearImageCache() {
+  static void clearCache() {
     _imageCache.clear();
   }
 

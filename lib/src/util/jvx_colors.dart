@@ -145,6 +145,8 @@ abstract class JVxColors {
             hourMinuteColor: themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.surface,
             dayPeriodColor: isSelectedLight ? JVxColors.lighten(seedColor, 0.3) : JVxColors.darken(seedColor, 0.3),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BORDER_RADIUS))),
+        checkboxTheme: const CheckboxThemeData(side: BorderSide(color: Colors.black54, width: 2)),
+        radioTheme: const RadioThemeData(fillColor: WidgetStatePropertyAll(Colors.black54)),
         typography: Typography.material2014()
     );
 

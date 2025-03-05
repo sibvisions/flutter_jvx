@@ -84,6 +84,15 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
   /// The initial sort definition
   List<bool?> sortInitial = [];
 
+  /// The sort order
+  List<int?> sortOrder = [];
+
+  /// The initial sort order
+  List<String> sortedColumnsInitial = [];
+
+  /// The sorted column names in right order (only sorted columns)
+  List<String> sortedColumns = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,7 +112,17 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
 
       sortCurrent.add(sortMode);
       sortInitial.add(sortMode);
+
+      sortOrder.add(widget.sortDefinitions?.indexOf(sort));
     }
+
+    if (widget.sortDefinitions != null) {
+      for (int i = 0; i < widget.sortDefinitions!.length; i++) {
+        sortedColumns.add(widget.sortDefinitions![i].columnName);
+      }
+    }
+
+    sortedColumnsInitial.addAll(sortedColumns);
   }
 
   @override
@@ -202,9 +221,9 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
         children: [
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Padding(
+            child:Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 5, right: 10),
-              child: Text(widget.columnDefinitions[i].label, style: style)
+              child: _wrapBadge(Text(widget.columnDefinitions[i].label, style: style), sortOrder[i], widget.columnDefinitions[i].name)
             )
           ),
           TableCell(
@@ -215,12 +234,22 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
                 onPressed: (int index) {
                   setState(() {
+                    String colName = widget.columnDefinitions[i].name;
+
                     if (index == 2) {
                       sortCurrent[i] = null;
+
+                      sortedColumns.remove(colName);
                     }
                     else {
                       sortCurrent[i] = index == 1;
+
+                      if (!sortedColumns.contains(colName)) {
+                        sortedColumns.add(colName);
+                      }
                     }
+
+                    _updateSortOrder();
                   });
                 },
                 isSelected: [sort == false, sort == true, sort == null],
@@ -249,14 +278,13 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
     ok = true;
     dismissedByButton = true;
 
-    if (!listEquals(sortInitial, sortCurrent)) {
-
+    if (!listEquals(sortInitial, sortCurrent) || !listEquals(sortedColumnsInitial, sortedColumns)) {
       SortList sort = SortList();
 
-      for (int i = 0; i < sortCurrent.length; i++) {
-        if (sortCurrent[i] != null) {
-          sort.add(SortDefinition(columnName: widget.columnDefinitions[i].name, mode: sortCurrent[i] == true ? SortMode.ascending : SortMode.descending));
-        }
+      for (int i = 0; i < sortedColumns.length; i++) {
+        sort.add(SortDefinition(
+          columnName: sortedColumns[i],
+          mode: sortCurrent[widget.columnDefinitions.indexByName(sortedColumns[i])] == true ? SortMode.ascending : SortMode.descending));
       }
 
       SortCommand sortCommand = SortCommand(
@@ -281,6 +309,45 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
 
     if (mounted && !fromDispose) {
       Navigator.of(context).pop();
+    }
+  }
+
+  Widget _wrapBadge(Widget widget, int? count, String columnName) {
+    if (count != null && count >= 0 && sortedColumns.length > 1) {
+      return GestureDetector(
+        onTap: () {
+          int index = sortedColumns.indexOf(columnName);
+
+          if (index < sortedColumns.length - 1) {
+            sortedColumns.insert(index + 2, columnName);
+            sortedColumns.removeAt(index);
+          }
+          else {
+            sortedColumns.insert(0, columnName);
+            sortedColumns.removeAt(index + 1);
+          }
+
+          _updateSortOrder();
+
+          setState(() {});
+        },
+        child: Badge.count(
+          backgroundColor: Colors.green,
+          alignment: Alignment.topRight,
+          count: count + 1,
+          offset: const Offset(0, 0),
+          child: widget
+        )
+      );
+    }
+
+    return widget;
+  }
+
+  void _updateSortOrder() {
+    sortOrder.clear();
+    for (int i = 0; i < widget.columnDefinitions.length; i++) {
+      sortOrder.add(sortedColumns.indexOf(widget.columnDefinitions[i].name));
     }
   }
 }

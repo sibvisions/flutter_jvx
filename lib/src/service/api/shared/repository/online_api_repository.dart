@@ -237,7 +237,7 @@ class OnlineApiRepository extends IRepository {
   Timer? _statusTimer;
 
   /// Fixed header fields
-  final Map<String, dynamic> _headers = {"Access-Control_Allow_Origin": "*"};
+  final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
 
   /// Cookies used for sessionId
   final Set<Cookie> _cookies = {};
@@ -592,7 +592,7 @@ class OnlineApiRepository extends IRepository {
   }
 
   @override
-  Map<String, dynamic> getHeaders() {
+  Map<String, String> getHeaders() {
     var headers = Map.of(_headers);
     IUiService().getAppManager()?.modifyHeaders(headers);
     return headers;

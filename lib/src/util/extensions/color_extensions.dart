@@ -36,4 +36,6 @@ extension ColorExtensions on Color {
     _toInt(g) << 8 |
     _toInt(b) << 0;
   }
+
+  String toHex() => '#${(toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
 }

@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_jvx.dart';
@@ -152,8 +151,6 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
   @override
   createWidgetModel() {
     FlCheckBoxModel widgetModel = FlCheckBoxModel();
-
-    print("${model.selectedValue} $_value");
 
     widgetModel.labelModel.text = model.text;
     widgetModel.selected = model.selectedValue == _value;

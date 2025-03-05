@@ -86,8 +86,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
       isEditable = pJson![ApiObjectProperty.cellEditorEditable];
     }
 
-print(model.imageSize);
-
     return SizedBox(
       height: shrinkSize == true ? FlChoiceCellEditorModel.IMAGE_SIZE_MIN : model.imageSize,
       width: shrinkSize == true ? FlChoiceCellEditorModel.IMAGE_SIZE_MIN : model.imageSize,

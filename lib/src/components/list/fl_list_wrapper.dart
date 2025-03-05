@@ -159,6 +159,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       cellEditors: cellEditors,
       slideActionFactory: _createSlideActions,
       selectedRowIndex: selectedRow,
+      entryBuilder: IUiService().getAppManager()?.customListEntryBuilder[model.name],
       onRefresh: refresh,
       onEndScroll: _loadMore,
       onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
@@ -354,9 +355,6 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
         columnName: colDef[i].name,
         dataProvider: widget.model.dataProvider,
         cellEditorJson: colDef[i].cellEditorJson,
-        onChange: (p0) {
-          print("Change");
-        },
         isInTable: true,
         shrinkSize: true
       );
