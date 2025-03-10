@@ -334,7 +334,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                     if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
                       return Container();
                     }
-
+ 
                     if (asCard) {
                           return const Divider(height: 4, color: Colors.transparent);
                       }

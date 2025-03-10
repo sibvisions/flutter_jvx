@@ -22,7 +22,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/sort_command.dart';
@@ -86,9 +85,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   /// The scroll controller for the headers if they are set to sticky.
   late final ScrollController headerHorizontalController;
-
-  /// The item scroll controller.
-  final ItemScrollController itemScrollController = ItemScrollController();
 
   /// The scroll group to synchronize sticky header scrolling.
   final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
@@ -184,7 +180,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       selectedColumn: selectedColumn,
       slideActionFactory: createSlideActions,
       headerHorizontalController: headerHorizontalController,
-      itemScrollController: itemScrollController,
       tableHorizontalController: tableHorizontalController,
       onEndEditing: setValueOnEndEditing,
       onValueChanged: _setValueChanged,
@@ -203,17 +198,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     });
 
     return wrapWidget(child: widget);
-  }
-
-  @override
-  void postFrameCallback(BuildContext context) {
-    if (!mounted) {
-      return;
-    }
-
-    _scrollToSelected();
-
-    super.postFrameCallback(context);
   }
 
   @override
@@ -503,7 +487,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       lastTappedColumn = pColumnName;
       lastTappedRow = pRowIndex;
       lastSingleTapTimer?.cancel();
-      lastSelectionTapFuture = selectRecord(pRowIndex, columnName: pColumnName);
+      lastSelectionTapFuture = selectRecord(pRowIndex, columnName: pColumnName, force: true);
       lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
         lastSelectionTapFuture?.then((value) {
           if (FlutterUI.logUI.cl(Lvl.d)) {
@@ -649,88 +633,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Scrolls the table to the selected row if it is not visible.
-  /// Can only be called in the post frame callback as the scroll controller
-  /// otherwise has not yet been updated with the most recent items.
-  void _scrollToSelected() {
-    if (lastScrolledToIndex == selectedRow) {
-      return;
-    }
-    bool headersInTable = !model.stickyHeaders && model.tableHeaderVisible;
-
-    // Only scroll if current selected is not visible
-    if (selectedRow >= 0 && selectedRow < dataChunk.data.length && itemScrollController.isAttached) {
-      lastScrolledToIndex = selectedRow;
-      int indexToScrollTo = selectedRow;
-      if (headersInTable) {
-        indexToScrollTo++;
-      }
-
-      double itemTop = indexToScrollTo * tableSize!.rowHeight;
-      double itemBottom = itemTop + tableSize!.rowHeight;
-
-      double topViewCutOff;
-      double bottomViewCutOff;
-      double heightOfView;
-
-      if (lastScrollNotification != null) {
-        topViewCutOff = lastScrollNotification!.metrics.extentBefore;
-        heightOfView = lastScrollNotification!.metrics.viewportDimension;
-        bottomViewCutOff = topViewCutOff + heightOfView;
-      } else if (layoutData.layoutPosition == null) {
-        // Needs a position to calculate.
-        // Probably noz fully loaded, dismiss scrolling.
-        return;
-      } else {
-        heightOfView = layoutData.layoutPosition!.height - (tableSize!.borderWidth * 2);
-        if (scrolledIndexTopAligned == null) {
-          // Never scrolled = table is at the top
-          topViewCutOff = 0;
-          bottomViewCutOff = topViewCutOff + heightOfView;
-        } else {
-          int indexToScrollFrom = lastScrolledToIndex;
-          if (headersInTable) {
-            indexToScrollFrom++;
-          }
-
-          if (scrolledIndexTopAligned!) {
-            topViewCutOff = indexToScrollFrom * tableSize!.rowHeight;
-            bottomViewCutOff = topViewCutOff + heightOfView;
-          } else {
-            bottomViewCutOff = indexToScrollFrom * tableSize!.rowHeight + tableSize!.rowHeight;
-            topViewCutOff = bottomViewCutOff - heightOfView;
-          }
-        }
-      }
-
-      // Check if the item is visible.
-      if (itemTop < topViewCutOff || itemBottom > bottomViewCutOff) {
-        // Check if the item is above or below the current view.
-        if (itemTop < topViewCutOff) {
-          scrolledIndexTopAligned = true;
-
-          // Scroll to the top of the item.
-          itemScrollController.scrollTo(index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: 0);
-        } else {
-          scrolledIndexTopAligned = false;
-          // Alignment 1 means the top edge of the item is aligned with the bottom edge of the view
-          // Calculates the percentage of the height the top edge of the item is from the top of the view,
-          // where the bottom edge of the item touches the bottom edge of the view.
-          double alignment = (heightOfView - tableSize!.rowHeight) / heightOfView;
-
-          // Scroll to the bottom of the item.
-          itemScrollController.scrollTo(
-              index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: alignment);
-        }
-
-        // Scrolling via the controller does not fire scroll notifications.
-        // The last scroll-notification is therefore not updated and would be wrong for
-        // the next scroll. Therefore, the last scroll-notification is set to null.
-        lastScrollNotification = null;
-      }
-    }
-  }
 
   BaseCommand? _createSortColumnCommand(String pColumnName, [bool pAdditive = false]) {
     if (!model.sortOnHeaderEnabled) {

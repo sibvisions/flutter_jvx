@@ -21,8 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/ui/set_focus_command.dart';
@@ -73,12 +71,6 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// The cell editors
   Map<String, ICellEditor> cellEditors = {};
-
-  /// The item scroll controller.
-  final ItemScrollController itemScrollController = ItemScrollController();
-
-  /// The scroll group to synchronize sticky header scrolling.
-  final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
 
   /// The value notifier for a potential editing dialog.
   ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
@@ -462,7 +454,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 //        FlutterUI.logUI.d("Active last single tap timer: ${lastSingleTapTimer?.isActive}");
       }
 
-      selectRecord(index);
+      selectRecord(index, force: true);
 /*
       if (lastTappedColumn == pColumnName && lastTappedRow == pRowIndex && lastSingleTapTimer?.isActive == true) {
         if (FlutterUI.logUI.cl(Lvl.d)) {

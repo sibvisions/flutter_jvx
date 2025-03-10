@@ -18,8 +18,6 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/fetch_command.dart';
@@ -92,9 +90,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   bool _currentlyFiltering = false;
 
   TableSize? tableSize;
-
-  /// The item scroll controller.
-  final ItemScrollController itemScrollController = ItemScrollController();
 
   /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
@@ -197,10 +192,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       ),
     );
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      postFrameCallback(context);
-    });
-
     ThemeData theme = Theme.of(context);
 
     return Dialog(
@@ -248,7 +239,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
                         return FlTableWidget(
                           selectedRowIndex: selectedRow,
-                          itemScrollController: itemScrollController,
                           metaData: _metaData,
                           chunkData: isConcatMask ? _chunkDataConcatMask! : _chunkData!,
                           onEndScroll: _increasePageLoad,
@@ -542,94 +532,4 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
   }
 
-  void postFrameCallback(BuildContext context) {
-    if (!mounted) {
-      return;
-    }
-
-    _scrollToSelected();
-  }
-
-  /// Scrolls the table to the selected row if it is not visible.
-  /// Can only be called in the post frame callback as the scroll controller
-  /// otherwise has not yet been updated with the most recent items.
-  void _scrollToSelected() {
-    if (lastScrolledToIndex == selectedRow || _chunkData == null || tableSize == null) {
-      return;
-    }
-
-    bool headersInTable = !tableModel.stickyHeaders && tableModel.tableHeaderVisible;
-
-    // Only scroll if current selected is not visible
-    if (selectedRow >= 0 && selectedRow < _chunkData!.data.length && itemScrollController.isAttached) {
-      lastScrolledToIndex = selectedRow;
-      int indexToScrollTo = selectedRow;
-      if (headersInTable) {
-        indexToScrollTo++;
-      }
-
-      double itemTop = indexToScrollTo * tableSize!.rowHeight;
-      double itemBottom = itemTop + tableSize!.rowHeight;
-
-      double topViewCutOff;
-      double bottomViewCutOff;
-      double heightOfView;
-
-      if (lastScrollNotification != null) {
-        topViewCutOff = lastScrollNotification!.metrics.extentBefore;
-        heightOfView = lastScrollNotification!.metrics.viewportDimension;
-        bottomViewCutOff = topViewCutOff + heightOfView;
-      } else if (lastTableConstraints == null) {
-        // Needs a position to calculate.
-        // Probably noz fully loaded, dismiss scrolling.
-        return;
-      } else {
-        heightOfView = lastTableConstraints!.maxHeight - (tableSize!.borderWidth * 2);
-        if (scrolledIndexTopAligned == null) {
-          // Never scrolled = table is at the top
-          topViewCutOff = 0;
-          bottomViewCutOff = topViewCutOff + heightOfView;
-        } else {
-          int indexToScrollFrom = lastScrolledToIndex;
-          if (headersInTable) {
-            indexToScrollFrom++;
-          }
-
-          if (scrolledIndexTopAligned!) {
-            topViewCutOff = indexToScrollFrom * tableSize!.rowHeight;
-            bottomViewCutOff = topViewCutOff + heightOfView;
-          } else {
-            bottomViewCutOff = indexToScrollFrom * tableSize!.rowHeight + tableSize!.rowHeight;
-            topViewCutOff = bottomViewCutOff - heightOfView;
-          }
-        }
-      }
-
-      // Check if the item is visible.
-      if (itemTop < topViewCutOff || itemBottom > bottomViewCutOff) {
-        // Check if the item is above or below the current view.
-        if (itemTop < topViewCutOff) {
-          scrolledIndexTopAligned = true;
-
-          // Scroll to the top of the item.
-          itemScrollController.scrollTo(index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: 0);
-        } else {
-          scrolledIndexTopAligned = false;
-          // Alignment 1 means the top edge of the item is aligned with the bottom edge of the view
-          // Calculates the percentage of the height the top edge of the item is from the top of the view,
-          // where the bottom edge of the item touches the bottom edge of the view.
-          double alignment = (heightOfView - tableSize!.rowHeight) / heightOfView;
-
-          // Scroll to the bottom of the item.
-          itemScrollController.scrollTo(
-              index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: alignment);
-        }
-
-        // Scrolling via the controller does not fire scroll notifications.
-        // The last scroll notification is therefore not updated and would be wrong for
-        // the next scroll. Therefore, the last scroll notification is set to null.
-        lastScrollNotification = null;
-      }
-    }
-  }
 }

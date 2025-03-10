@@ -169,7 +169,7 @@ mixin FlDataMixin {
   }
 
   /// Selects a record by [index].
-  Future<bool> selectRecord(int index, {String? columnName, CommandCallback? afterSelectCommand}) async {
+  Future<bool> selectRecord(int index, {String? columnName, CommandCallback? afterSelectCommand, bool? force}) async {
     if (index >= dataChunk.data.length) {
       FlutterUI.logUI.i("Row index $index out of range (${dataChunk.data.length})");
       return false;
@@ -179,7 +179,7 @@ mixin FlDataMixin {
 
     Filter? filter;
 
-    if (selectedRow != index) {
+    if (selectedRow != index || force == true) {
       filter = createFilter(index);
 
       if (filter == null) {
@@ -195,7 +195,7 @@ mixin FlDataMixin {
 
     commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus because of selecting row of ${model.dataProvider}"));
 
-    if (selectedRow != index) {
+    if (selectedRow != index || force == true) {
       commands.add(
         SelectRecordCommand(
           dataProvider: model.dataProvider,

@@ -486,6 +486,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
         child: Column(
           mainAxisAlignment: mainAxisAlignment,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: liRows
         )
       );

@@ -14,14 +14,18 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
+import 'package:scrollview_observer/src/sliver/models/sliver_observer_observe_result_model.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../util/extensions/double_extensions.dart';
@@ -80,9 +84,6 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The style name for no border
   static const String STYLE_NO_BORDER = "f_table_noborder";
 
-  /// The scroll controller of the table.
-  final ItemScrollController? itemScrollController;
-
   /// The scroll controller for the table.
   final ScrollController? tableHorizontalController;
 
@@ -122,7 +123,6 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.tableHorizontalController,
     this.headerHorizontalController,
     this.slideActionFactory,
-    this.itemScrollController,
     this.onTap,
     this.onHeaderTap,
     this.onHeaderDoubleTap,
@@ -140,9 +140,23 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
 }
 
 class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateMixin {
+  /// The current sliver context
+  BuildContext? _sliverContext;
 
-  /// cached slidable controller
+  /// The item scroll controller.
+  late ScrollController? _scrollController;
+
+  /// The controller for the view observer
+  late final SliverObserverController _observerController;
+
+  /// All cached slidable controller
   final List<SlidableController> _slideController = [];
+
+  /// The currently selected row index
+  int? selectedRowIndex;
+
+  /// Whether it's the first selection
+  bool firstSelection = false;
 
   /// How many items the scrollable list should build.
   int get _itemCount {
@@ -160,6 +174,19 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     super.initState();
 
     FlutterUI.registerGlobalSubscription(GlobalSubscription(subbedObj: this, onTap: _closeSlidables));
+
+    _scrollController = ScrollController(
+      initialScrollOffset: widget.model.json["scroll_offset"] ?? 0,
+      onAttach: (position) {
+        position.isScrollingNotifier.addListener(_scrollUpdate);
+      },
+      onDetach: (position) {
+        position.isScrollingNotifier.removeListener(_scrollUpdate);
+      }
+    );
+    _observerController = SliverObserverController(controller: _scrollController);
+
+    selectedRowIndex = -1;
   }
 
   @override
@@ -167,12 +194,20 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     super.dispose();
 
     FlutterUI.disposeGlobalSubscription(this);
+
+    _scrollController?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     _closeSlidablesImmediate();
     _slideController.clear();
+
+    if (_sliverContext != null) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _scrollToSelected(_sliverContext!);
+      });
+    }
 
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
@@ -308,13 +343,36 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: Stack(
           children: [
-            ScrollablePositionedList.builder(
-              scrollDirection: Axis.vertical,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemScrollController: widget.itemScrollController,
-              itemBuilder: (context, index) => tableListItemBuilder(context, index, canScrollHorizontally),
-              itemCount: _itemCount,
-            )
+            FixedSliverViewObserver(
+              controller: _observerController,
+              child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  controller: _scrollController,
+                  slivers: [
+                    SliverList.builder(
+                      itemBuilder: (context, index) {
+
+                        if (_sliverContext != context) {
+                          _sliverContext = context;
+
+                          if (widget.model.json["scoll_force"] == true) {
+                            //force scrolling
+                            selectedRowIndex = -1;
+                          }
+
+                          SchedulerBinding.instance.addPostFrameCallback((_) {
+                            _scrollToSelected(_sliverContext!);
+                          });
+                        }
+
+                        return tableListItemBuilder(context, index, canScrollHorizontally);
+                      },
+                      itemCount: _itemCount,
+                    )
+                  ]
+                )
+              )
           ],
         ),
       ),
@@ -471,4 +529,131 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
   }
 
+  void _scrollUpdate() {
+    widget.model.json["scroll_offset"] = _scrollController!.offset;
+  }
+
+  /// Scrolls the table to the selected row if it is not visible.
+  /// Can only be called in the post frame callback as the scroll controller
+  /// otherwise has not yet been updated with the most recent items.
+  Future<void> _scrollToSelected(BuildContext sliverContext) async {
+    if (widget.chunkData.data.isEmpty || widget.selectedRowIndex < 0) {
+      if (widget.selectedRowIndex < 0) {
+        selectedRowIndex = -1;
+      }
+
+      return;
+    }
+
+    widget.model.json.remove("scoll_force");
+
+    if (selectedRowIndex == widget.selectedRowIndex) {
+      return;
+    }
+
+    final result = await _observerController.dispatchOnceObserve(
+      sliverContext: sliverContext,
+      isDependObserveCallback: false,
+      isForce: true,
+    );
+
+    final observeResult = result.observeAllResult[sliverContext];
+
+    //wrong results
+    if (observeResult is! ListViewObserveModel) {
+      return;
+    }
+
+    final resultMap = observeResult.displayingChildModelMap;
+    final targetResult = resultMap[widget.selectedRowIndex];
+    final displayPercentage = targetResult?.displayPercentage ?? 0;
+
+    //already fully visible -> don't scroll
+    if (displayPercentage == 1) return;
+
+    selectedRowIndex = widget.selectedRowIndex;
+
+    bool isAtTopItem = false;
+
+    if (targetResult != null) {
+      isAtTopItem = targetResult.leadingMarginToViewport <= 0;
+    }
+    else {
+      final displayingChildModelList = observeResult.displayingChildModelList;
+
+      if (displayingChildModelList.isNotEmpty) {
+        final firstItem = displayingChildModelList.first;
+        isAtTopItem = firstItem.index > widget.selectedRowIndex;
+      }
+    }
+
+    widget.model.json["scoll_force"] = true;
+
+    await _observerController.animateTo(
+      sliverContext: _sliverContext,
+      duration: kThemeAnimationDuration,
+      isFixedHeight: true,
+      alignment: 0.5,
+      curve: Curves.easeInOut,
+      index: widget.selectedRowIndex,
+      offset: (targetOffset) {
+        var _obj = ObserverUtils.findRenderObject(_sliverContext);
+
+        if (_obj == null || _obj is! RenderSliver) {
+          return 0;
+        }
+
+        return (_obj.geometry?.paintExtent ?? 0) * 0.5;
+      },
+    );
+  }
 }
+
+class FixedSliverViewObserver extends SliverViewObserver {
+  const FixedSliverViewObserver({
+    super.key,
+    required super.child,
+    super.tag,
+    super.controller,
+    super.sliverListContexts,
+    super.sliverContexts,
+    super.onObserveAll,
+    super.onObserve,
+    super.onObserveViewport,
+    super.leadingOffset,
+    super.dynamicLeadingOffset,
+    super.customOverlap,
+    super.toNextOverPercent,
+    super.scrollNotificationPredicate,
+    super.autoTriggerObserveTypes,
+    super.triggerOnObserveType,
+    super.customHandleObserve,
+    super.extendedHandleObserve
+  });
+
+  @override
+  State<SliverViewObserver> createState() => FixMixViewObserverState();
+}
+
+class FixMixViewObserverState extends MixViewObserverState {
+
+    @override
+    SliverObserverHandleContextsResultModel<ObserveModel>? handleContexts({
+      bool isForceObserve = false,
+      bool isFromObserveNotification = false,
+      bool isDependObserveCallback = true,
+      bool isIgnoreInnerCanHandleObserve = true,
+    }) {
+      //means: disposed
+      if (innerSliverListeners == null) {
+        return null;
+      }
+
+      return super.handleContexts(
+        isForceObserve: isForceObserve,
+        isFromObserveNotification: isFromObserveNotification,
+        isDependObserveCallback: isDependObserveCallback,
+        isIgnoreInnerCanHandleObserve: isIgnoreInnerCanHandleObserve);
+    }
+
+  }
