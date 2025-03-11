@@ -151,6 +151,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       cellEditors: cellEditors,
       slideActionFactory: _createSlideActions,
       selectedRowIndex: selectedRow,
+      initialScrollToSelected: lastSelectedRow != selectedRow,
       entryBuilder: IUiService().getAppManager()?.customListEntryBuilder[model.name],
       onRefresh: refresh,
       onEndScroll: _loadMore,
@@ -159,6 +160,8 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       onLongPress: _onLongPress,
       onFloatingPress: showFloatingButton ? insertRecord : null,
     );
+
+    lastSelectedRow = selectedRow;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);

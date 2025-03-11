@@ -157,8 +157,9 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   final List<SlidableController> _slideController = [];
 
   /// The currently selected row index
-  int? selectedRowIndex;
+  int selectedRowIndex = -1;
 
+  /// Whether the table should scroll to the selected row
   bool _scrollToSelected = true;
 
   /// Whether it's the first selection
@@ -174,6 +175,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
 
     return itemCount;
   }
+
 
   @override
   void initState() {
@@ -557,6 +559,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
   }
 
+  /// Updates the cached scroll position (in the model) to re-use it if necessary on re-creation
   void _scrollUpdate([ScrollPosition? position]) {
     widget.model.json["scroll_offset"] = position?.pixels ?? _scrollController!.offset;
   }
@@ -582,8 +585,6 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
 
     _scrollToSelected = false;
-
-    widget.model.json.remove("scoll_force");
 
     if (selectedRowIndex == rowIndex) {
       return;
@@ -613,8 +614,6 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     if (displayPercentage == 1) return;
 
     selectedRowIndex = rowIndex;
-
-    widget.model.json["scoll_force"] = true;
 
     unawaited(_observerController.animateTo(
       sliverContext: _sliverContext,
