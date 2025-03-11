@@ -44,6 +44,9 @@ mixin FlDataMixin {
   /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
 
+  /// The last selected row of build run
+  int lastSelectedRow = -2;
+
   /// Gets whether the row [index] is a available in data chunk.
   bool isDataRow(int index) {
     return index >= 0 && index < dataChunk.data.length;

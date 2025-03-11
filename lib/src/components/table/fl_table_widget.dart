@@ -108,6 +108,9 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The selected column;
   final String? selectedColumn;
 
+  /// Whether an initial scroll to selected record should happen
+  final bool initialScrollToSelected;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -120,6 +123,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     required this.metaData,
     this.selectedRowIndex = -1,
     this.selectedColumn,
+    this.initialScrollToSelected = true,
     this.tableHorizontalController,
     this.headerHorizontalController,
     this.slideActionFactory,
@@ -155,6 +159,8 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   /// The currently selected row index
   int? selectedRowIndex;
 
+  bool _scrollToSelected = true;
+
   /// Whether it's the first selection
   bool firstSelection = false;
 
@@ -178,15 +184,37 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     _scrollController = ScrollController(
       initialScrollOffset: widget.model.json["scroll_offset"] ?? 0,
       onAttach: (position) {
+        _scrollUpdate(position);
+
         position.isScrollingNotifier.addListener(_scrollUpdate);
       },
       onDetach: (position) {
         position.isScrollingNotifier.removeListener(_scrollUpdate);
+
+        _scrollUpdate(position);
       }
     );
     _observerController = SliverObserverController(controller: _scrollController);
 
-    selectedRowIndex = -1;
+    _scrollToSelected = widget.initialScrollToSelected;
+
+    if (_scrollToSelected) {
+      selectedRowIndex = -1;
+    }
+    else {
+      selectedRowIndex = widget.selectedRowIndex;
+    }
+  }
+
+  @override
+  void didUpdateWidget(FlTableWidget oldWidget ) {
+    super.didUpdateWidget(oldWidget);
+
+    _scrollToSelected |= widget.initialScrollToSelected;
+
+    if (_scrollToSelected) {
+      selectedRowIndex = -1;
+    }
   }
 
   @override
@@ -203,19 +231,19 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     _closeSlidablesImmediate();
     _slideController.clear();
 
-    if (_sliverContext != null) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _scrollToSelected(_sliverContext!);
-      });
-    }
-
-    List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
+    List<Widget> children = [LayoutBuilder(builder: _createTable)];
 
     if (widget.onFloatingPress != null) {
       children.add(createFloatingButton(context));
     }
 
     bool noBorder = widget.model.styles.contains(FlTableWidget.STYLE_NO_BORDER);
+
+    if (_sliverContext != null) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _scrollTo(widget.selectedRowIndex);
+      });
+    }
 
     if (noBorder) {
       return Stack(children: children);
@@ -260,14 +288,14 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   }
 
   /// The builder for the table.
-  Widget createTableBuilder(BuildContext context, BoxConstraints constraints) {
+  Widget _createTable(BuildContext context, BoxConstraints constraints) {
     // Width cant be below 0 and must always fill the area.
     double maxWidth = max(max(widget.tableSize.sumColumnWidth, constraints.maxWidth), 0);
 
     // Is the table wider than it can be seen? -> Disables row swipes
     bool canScrollHorizontally = widget.tableSize.sumColumnWidth.toPrecision(1) > constraints.maxWidth.toPrecision(1);
 
-    Widget table = createTableList(canScrollHorizontally, maxWidth);
+    Widget table = _createRecordList(canScrollHorizontally, maxWidth);
 
     if (widget.onRefresh != null && widget.model.isEnabled) {
       table = RefreshIndicator(
@@ -310,7 +338,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
         controller: widget.headerHorizontalController,
-        child: createHeaderRow(),
+        child: _createHeaderRow(),
       );
 
       if (kIsWeb) {
@@ -333,8 +361,8 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
   }
 
-  /// Creates the list of the table.
-  Widget createTableList(bool canScrollHorizontally, double maxWidth) {
+  /// Creates the list of records.
+  Widget _createRecordList(bool canScrollHorizontally, double maxWidth) {
     return SingleChildScrollView(
       physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
       controller: widget.tableHorizontalController,
@@ -352,21 +380,15 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
                   slivers: [
                     SliverList.builder(
                       itemBuilder: (context, index) {
-
                         if (_sliverContext != context) {
                           _sliverContext = context;
 
-                          if (widget.model.json["scoll_force"] == true) {
-                            //force scrolling
-                            selectedRowIndex = -1;
-                          }
-
                           SchedulerBinding.instance.addPostFrameCallback((_) {
-                            _scrollToSelected(_sliverContext!);
+                            _scrollTo(widget.selectedRowIndex);
                           });
                         }
 
-                        return tableListItemBuilder(context, index, canScrollHorizontally);
+                        return _tableItem(context, index, canScrollHorizontally);
                       },
                       itemCount: _itemCount,
                     )
@@ -380,7 +402,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   }
 
   /// The item builder of the scrollable positioned list.
-  Widget tableListItemBuilder(BuildContext context, int pIndex, bool canScrollHorizontally) {
+  Widget _tableItem(BuildContext context, int pIndex, bool canScrollHorizontally) {
     int index = pIndex;
 
     if (_itemCount > widget.chunkData.data.length) {
@@ -388,7 +410,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
 
     if (index < 0) {
-      return createHeaderRow();
+      return _createHeaderRow();
     } else if (index > widget.chunkData.data.length - 1) {
       // When rebuilding the table, the item count can still be an old one while the data is already updated.
       return const SizedBox(height: 0);
@@ -416,7 +438,13 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       onValueChanged: widget.onValueChanged,
       columnDefinitions: widget.chunkData.columnDefinitions,
       onLongPress: widget.onLongPress,
-      onTap: widget.onTap,
+      onTap: (rowIndex, column, cellEditor) {
+        if (widget.onTap != null) {
+          widget.onTap!(rowIndex, column, cellEditor);
+        }
+
+        _scrollToSelected = true;
+      },
       slideController: slideCtrl,
       slideActionFactory: !canScrollHorizontally ? widget.slideActionFactory : null,
       onDismissed: (index) {
@@ -448,7 +476,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   }
 
   /// Creates the header row.
-  Widget createHeaderRow() {
+  Widget _createHeaderRow() {
     return FlTableHeaderRow(
       model: widget.model,
       columnDefinitions: widget.chunkData.columnDefinitions,
@@ -529,83 +557,82 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     }
   }
 
-  void _scrollUpdate() {
-    widget.model.json["scroll_offset"] = _scrollController!.offset;
+  void _scrollUpdate([ScrollPosition? position]) {
+    widget.model.json["scroll_offset"] = position?.pixels ?? _scrollController!.offset;
   }
 
   /// Scrolls the table to the selected row if it is not visible.
   /// Can only be called in the post frame callback as the scroll controller
   /// otherwise has not yet been updated with the most recent items.
-  Future<void> _scrollToSelected(BuildContext sliverContext) async {
-    if (widget.chunkData.data.isEmpty || widget.selectedRowIndex < 0) {
-      if (widget.selectedRowIndex < 0) {
+  Future<void> _scrollTo(int rowIndex) async {
+    if (_sliverContext == null) {
+      return;
+    }
+
+    if (widget.chunkData.data.isEmpty || rowIndex < 0) {
+      if (rowIndex < 0) {
         selectedRowIndex = -1;
       }
 
       return;
     }
 
+    if (!_scrollToSelected) {
+      return;
+    }
+
+    _scrollToSelected = false;
+
     widget.model.json.remove("scoll_force");
 
-    if (selectedRowIndex == widget.selectedRowIndex) {
+    if (selectedRowIndex == rowIndex) {
       return;
     }
 
     final result = await _observerController.dispatchOnceObserve(
-      sliverContext: sliverContext,
+      sliverContext: _sliverContext!,
       isDependObserveCallback: false,
       isForce: true,
     );
 
-    final observeResult = result.observeAllResult[sliverContext];
+    final observeResult = result.observeAllResult[_sliverContext];
 
     //wrong results
     if (observeResult is! ListViewObserveModel) {
+      //try again
+      _scrollToSelected = true;
+
       return;
     }
 
     final resultMap = observeResult.displayingChildModelMap;
-    final targetResult = resultMap[widget.selectedRowIndex];
+    final targetResult = resultMap[rowIndex];
     final displayPercentage = targetResult?.displayPercentage ?? 0;
 
     //already fully visible -> don't scroll
     if (displayPercentage == 1) return;
 
-    selectedRowIndex = widget.selectedRowIndex;
-
-    bool isAtTopItem = false;
-
-    if (targetResult != null) {
-      isAtTopItem = targetResult.leadingMarginToViewport <= 0;
-    }
-    else {
-      final displayingChildModelList = observeResult.displayingChildModelList;
-
-      if (displayingChildModelList.isNotEmpty) {
-        final firstItem = displayingChildModelList.first;
-        isAtTopItem = firstItem.index > widget.selectedRowIndex;
-      }
-    }
+    selectedRowIndex = rowIndex;
 
     widget.model.json["scoll_force"] = true;
 
-    await _observerController.animateTo(
+    unawaited(_observerController.animateTo(
       sliverContext: _sliverContext,
       duration: kThemeAnimationDuration,
       isFixedHeight: true,
       alignment: 0.5,
       curve: Curves.easeInOut,
-      index: widget.selectedRowIndex,
+      index: rowIndex,
       offset: (targetOffset) {
-        var _obj = ObserverUtils.findRenderObject(_sliverContext);
+        var obj = ObserverUtils.findRenderObject(_sliverContext);
 
-        if (_obj == null || _obj is! RenderSliver) {
+        if (obj == null || obj is! RenderSliver) {
           return 0;
         }
 
-        return (_obj.geometry?.paintExtent ?? 0) * 0.5;
+        return (obj.geometry?.paintExtent ?? 0) * 0.5;
       },
-    );
+    ));
   }
 }
 

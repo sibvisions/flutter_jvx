@@ -181,6 +181,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       slideActionFactory: createSlideActions,
       headerHorizontalController: headerHorizontalController,
       tableHorizontalController: tableHorizontalController,
+      initialScrollToSelected: lastSelectedRow != selectedRow,
       onEndEditing: setValueOnEndEditing,
       onValueChanged: _setValueChanged,
       onRefresh: refresh,
@@ -192,6 +193,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       onHeaderDoubleTap: (pColumn) => _sortColumn(pColumn, true),
       onFloatingPress: showFloatingButton ? insertRecord : null,
     );
+
+    lastSelectedRow = selectedRow;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
@@ -348,6 +351,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
 
     if (recalculateWidth || _calcOnDataReceived || changedDataCount || dataChunk.fromStart) {
+
       _closeDialog();
       _recalculateTableSize(recalculateWidth || _calcOnDataReceived || dataChunk.fromStart);
       _calcOnDataReceived = false;
