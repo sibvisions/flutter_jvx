@@ -30,7 +30,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   static const double SLIDEABLE_WIDTH = 90;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
+  // Callbacks
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The callback if a value has ended being changed in the table.
@@ -39,9 +39,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// The callback if a value has been changed in the table.
   final TableValueChangedCallback? onValueChanged;
 
-  /// Gets called with the index of the row and name of column that was touched when the user taps a cell.
-  /// Provides the celleditor of this cell, allowing to click the cell editor.
-  /// Allows validation of the click before allowing the cell editor to be clicked.
+  /// The callback for cell taps.
   final TableTapCallback? onTap;
 
   /// The callback for dismissed row
@@ -49,6 +47,10 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The colum definitions to build.
   final ColumnList columnDefinitions;

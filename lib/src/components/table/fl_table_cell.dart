@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -53,13 +54,15 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   /// The callback if a value has been changed in the table.
   final TableValueChangedCallback? onValueChanged;
 
-  /// Gets called with the index of the row and name of column when the user taps a cell.
-  /// Provides the cell editor of this cell, allowing to click the cell editor.
-  /// Allows validation of the click before allowing the cell editor to be clicked.
+  /// The callback for cell taps
   final TableTapCallback? onTap;
 
-  /// Gets called with the index of the row and name of column when the user long presses a cell.
+  /// The callback for long press on cell
   final TableLongPressCallback? onLongPress;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The [ColumnDefinition] of this table cell.
   final ColumnDefinition columnDefinition;
@@ -153,6 +156,8 @@ class _FlTableCellState extends State<FlTableCell> {
   /// The cell editor of the cell.
   ICellEditor cellEditor = FlDummyCellEditor();
 
+  Timer? _lastTapUpEvent;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -235,9 +240,8 @@ class _FlTableCellState extends State<FlTableCell> {
     colReadOnly = colReadOnly.withAlpha(Color.getAlphaFromOpacity(0.2));
 
     return GestureDetector(
-      onLongPressStart: (widget.onLongPress != null) && widget.model.isEnabled
-          ? (details) => widget.onLongPress
-              ?.call(widget.rowIndex, widget.columnDefinition.name, cellEditor, details.globalPosition)
+      onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
+          ? (details) => widget.onLongPress!(widget.rowIndex, widget.columnDefinition.name, cellEditor, details.globalPosition)
           : null,
       onTap: widget.onTap != null && widget.model.isEnabled
           ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)

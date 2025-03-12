@@ -84,8 +84,6 @@ class TableSize {
   /// The format size of the columns
   Map<String, double> columnFormatWidths = {};
 
-  ColumnList columns = ColumnList.empty();
-
   /// the sum of calculatedColumnWidths
   double sumCalculatedColumnWidth = -1;
 

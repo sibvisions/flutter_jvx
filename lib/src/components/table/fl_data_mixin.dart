@@ -44,6 +44,9 @@ mixin FlDataMixin {
   /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
 
+  /// The selected row, only temporary
+  int? selectedRowTemporary;
+
   /// The last selected row of build run
   int lastSelectedRow = -2;
 
@@ -205,7 +208,7 @@ mixin FlDataMixin {
           rowNumber: index,
           reason: "Select record",
           filter: filter!,
-          selectedColumn: columnName,
+          selectedColumn: columnName?.isNotEmpty == true ? columnName : null,
         ),
       );
     }

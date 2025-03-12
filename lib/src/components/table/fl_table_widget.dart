@@ -53,28 +53,28 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The callback if a value has been changed in the table.
   final TableValueChangedCallback? onValueChanged;
 
-  /// Gets called with the index of the row that was touched when the user tapped a row.
+  /// The callback for cell taps.
   final TableTapCallback? onTap;
 
-  /// Gets called the name of the column pressed.
+  /// The callback for header taps.
   final TableHeaderTapCallback? onHeaderTap;
 
-  /// Gets called the name of the column pressed.
+  /// The callback for table column double taps.
   final TableHeaderTapCallback? onHeaderDoubleTap;
 
-  /// Gets called when the user long presses the table or a row/column.
+  /// The callback for long-press on cells.
   final TableLongPressCallback? onLongPress;
 
-  /// Gets called when the user scrolled to the edge of the table.
+  /// The callback in case of user scrolled to the edge of the table.
   final VoidCallback? onEndScroll;
 
-  /// Gets called when the user scrolled the table.
+  /// The callback in case of user scrolled the table.
   final TableScrollCallback? onScroll;
 
-  /// Gets called when the list should refresh
+  /// The callback for data refresh
   final Future<void> Function()? onRefresh;
 
-  /// The action the floating button calls.
+  /// The callback for floating button (no callback means no floating button)
   final VoidCallback? onFloatingPress;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -313,9 +313,9 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         behavior: HitTestBehavior.opaque,
         onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
             ? (details) {
-                widget.onLongPress?.call(-1, "", FlDummyCellEditor(), details.globalPosition);
-
                 _closeSlidables();
+
+                _forwardLongPress(details.globalPosition);
               }
             : null,
         onTap: () => _closeSlidables(),
@@ -632,6 +632,68 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         return (obj.geometry?.paintExtent ?? 0) * 0.5;
       },
     ));
+  }
+
+  Future<void> _forwardLongPress(Offset globalPosition) async {
+    final result = await _observerController.dispatchOnceObserve(
+      sliverContext: _sliverContext!,
+      isDependObserveCallback: false,
+      isForce: true,
+    );
+
+    final observeResult = result.observeAllResult[_sliverContext];
+
+    //wrong results
+    if (observeResult is! ListViewObserveModel) {
+      widget.onLongPress?.call(-1, "", FlDummyCellEditor(), globalPosition);
+
+      return;
+    }
+
+    final resultMap = observeResult.displayingChildModelList;
+
+    for (ListViewObserveDisplayingChildModel element in resultMap) {
+      Offset tile = element.renderObject.localToGlobal(Offset.zero);
+
+      Rect rectTile = Rect.fromLTWH(tile.dx, tile.dy, element.renderObject.size.width, element.renderObject.size.height);
+
+      if (rectTile.contains(globalPosition)) {
+        double xPos = tile.dx;
+
+        String? sFoundColumn;
+
+        for (int i = 0; i < widget.model.columnNames.length && sFoundColumn == null; i++) {
+          xPos += widget.tableSize.columnWidths[widget.model.columnNames[i]] ?? 0;
+
+          if (globalPosition.dx < xPos) {
+            sFoundColumn = widget.model.columnNames[i];
+          }
+        }
+
+        widget.onLongPress?.call(element.index, sFoundColumn ?? "", FlDummyCellEditor(), globalPosition);
+
+        return;
+      }
+    }
+
+    //We try to find the column name
+    String? sFoundColumn;
+
+    if (resultMap.isNotEmpty) {
+      double xPos = resultMap[0].renderObject.localToGlobal(Offset.zero).dx;
+
+      String? sFoundColumn;
+
+      for (int i = 0; i < widget.model.columnNames.length && sFoundColumn == null; i++) {
+        xPos += widget.tableSize.columnWidths[widget.model.columnNames[i]] ?? 0;
+
+        if (globalPosition.dx < xPos) {
+          sFoundColumn = widget.model.columnNames[i];
+        }
+      }
+    }
+
+    widget.onLongPress?.call(-1, sFoundColumn ?? "", FlDummyCellEditor(), globalPosition);
   }
 }
 

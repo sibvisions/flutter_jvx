@@ -114,18 +114,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// The known scroll notification.
   ScrollNotification? lastScrollNotification;
 
-  /// The last used selection tap future
-  Future<bool>? lastSelectionTapFuture;
-
-  /// The last single tap timer.
-  Timer? lastSingleTapTimer;
-
-  /// The last row tapped
-  int? lastTappedRow;
-
-  /// The last column tapped
-  String? lastTappedColumn;
-
   /// If the table should show a floating insert button
   bool get showFloatingButton =>
       !model.hideFloatButton &&
@@ -176,7 +164,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       chunkData: dataChunk,
       metaData: metaData,
       tableSize: tableSize!,
-      selectedRowIndex: selectedRow,
+      selectedRowIndex: selectedRowTemporary ?? selectedRow,
       selectedColumn: selectedColumn,
       slideActionFactory: createSlideActions,
       headerHorizontalController: headerHorizontalController,
@@ -188,7 +176,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       onEndScroll: _loadMore,
       onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
       onLongPress: _onLongPress,
-      onTap: _onCellTap,
+      onTap: _onTimedCellTap,
       onHeaderTap: _sortColumn,
       onHeaderDoubleTap: (pColumn) => _sortColumn(pColumn, true),
       onFloatingPress: showFloatingButton ? insertRecord : null,
@@ -380,6 +368,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       }
     }
 
+    //possible that we tap faster than the selection happens. To avoid selection toggling
+    //use this check
+    if (selectedRow == selectedRowTemporary) {
+      selectedRowTemporary = null;
+    }
+
     // Close dialog to edit a row if current row was changed.
     if (currentSelectedRow != selectedRow) {
       _closeDialog();
@@ -448,101 +442,151 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
   }
 
-  void _onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    if (pColumnName.isEmpty) {
-      return;
+  Future<void> _onPreSelectRecord(int pRowIndex, String pColumnName) async {
+    print("preSelectREcord");
+    if (pRowIndex >= 0) {
+      if (FlutterUI.logUI.cl(Lvl.d)) {
+        FlutterUI.logUI.d("Table cell tapped (pre): $pRowIndex, $pColumnName");
+      }
+
+      unawaited(selectRecord(
+          pRowIndex,
+          columnName: pColumnName,
+          force: true
+      ));
     }
+  }
+
+  void _onTimedCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+
+    print("Timed tap: $pRowIndex");
 
     if (pRowIndex == -1) {
-      // Header was pressed
-      _sortColumn(pColumnName);
+      if (pColumnName.isNotEmpty) {
+        // Header was pressed
+        _sortColumn(pColumnName);
+      }
+
       return;
     }
 
     if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("Select row temporary: $pRowIndex");
+    }
+
+    bool doubleTap = false;
+
+    if (lastTapRowIndex != pRowIndex || lastTapColumnName != pColumnName) {
+      _timerTap?.cancel();
+      _timerTap = null;
+    }
+    else {
+      if (_timerTap?.isActive == true) {
+        _timerTap?.cancel();
+        _timerTap = null;
+
+        _onDoubleCellTap(pRowIndex, pColumnName, pCellEditor);
+
+        //no single tap after touble tap
+        doubleTap = true;
+      }
+      else {
+        _timerTap = null;
+      }
+    }
+
+    if (!doubleTap) {
+      _timerTap = Timer(
+          const Duration(milliseconds: 300),
+              () {
+            _onCellTap(pRowIndex, pColumnName, pCellEditor);
+          }
+      );
+    }
+
+    selectedRowTemporary = pRowIndex;
+
+    lastTapRowIndex = pRowIndex;
+    lastTapColumnName = pColumnName;
+
+    setState(() {});
+  }
+
+  Timer? _timerTap;
+
+  int? lastTapRowIndex;
+  String? lastTapColumnName;
+
+  void _onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    if (FlutterUI.logUI.cl(Lvl.d)) {
       FlutterUI.logUI.d("Table cell tapped: $pRowIndex, $pColumnName");
-      FlutterUI.logUI.d("Active last single tap timer: ${lastSingleTapTimer?.isActive}");
     }
 
-    if (lastTappedColumn == pColumnName && lastTappedRow == pRowIndex && lastSingleTapTimer?.isActive == true) {
-      if (FlutterUI.logUI.cl(Lvl.d)) {
-        FlutterUI.logUI.d("Tap type: double");
-      }
-      lastTappedColumn = null;
-      lastTappedRow = null;
-      lastSingleTapTimer?.cancel();
-      lastSelectionTapFuture?.then((value) {
+    selectRecord(
+      pRowIndex,
+      columnName: pColumnName,
+      force: true,
+      afterSelectCommand: () {
+
         if (FlutterUI.logUI.cl(Lvl.d)) {
-          FlutterUI.logUI.d("Selecting was: $value");
+          FlutterUI.logUI.d("Selected row: $pRowIndex");
         }
 
-        if (value) {
-          if (FlutterUI.logUI.cl(Lvl.d)) {
-            FlutterUI.logUI.d("Double tap action");
-          }
-
-          _onDoubleTap(pRowIndex, pColumnName, pCellEditor);
+        if (IStorageService().isVisibleInUI(model.id) &&
+            !pCellEditor.allowedInTable &&
+            isCellEditable(pRowIndex, pColumnName) &&
+            pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
+          _showDialog(
+            rowIndex: pRowIndex,
+            columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
+            values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
+            dataRow: dataChunk.data[pRowIndex],
+            onEndEditing: setValueOnEndEditing,
+            newValueNotifier: dialogValueNotifier,
+          );
         }
-      });
-    } else {
-      if (FlutterUI.logUI.cl(Lvl.d)) {
-        FlutterUI.logUI.d("Tap type: single");
+
+        return [];
       }
-      lastTappedColumn = pColumnName;
-      lastTappedRow = pRowIndex;
-      lastSingleTapTimer?.cancel();
-      lastSelectionTapFuture = selectRecord(pRowIndex, columnName: pColumnName, force: true);
-      lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
-        lastSelectionTapFuture?.then((value) {
-          if (FlutterUI.logUI.cl(Lvl.d)) {
-            FlutterUI.logUI.d("Selecting was: $value");
-          }
-
-          if (value) {
-            FlutterUI.logUI.d("Single tap action");
-
-            _onSingleTap(pRowIndex, pColumnName, pCellEditor);
-          }
-        });
-      });
-    }
+    );
   }
 
-  Future<void> _onSingleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) async {
-    if (IStorageService().isVisibleInUI(model.id)) {
-      if (!pCellEditor.allowedInTable &&
-          isCellEditable(pRowIndex, pColumnName) &&
-          pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
-        _showDialog(
-          rowIndex: pRowIndex,
-          columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
-          values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
-          dataRow: dataChunk.data[pRowIndex],
-          onEndEditing: setValueOnEndEditing,
-          newValueNotifier: dialogValueNotifier,
-        );
-      }
+  void _onDoubleCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    print("double tap");
+    if (FlutterUI.logUI.cl(Lvl.d)) {
+      FlutterUI.logUI.d("Table cell double tapped: $pRowIndex, $pColumnName");
     }
-  }
 
-  Future<void> _onDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) async {
-    if (IStorageService().isVisibleInUI(model.id)) {
-      if (!pCellEditor.allowedInTable &&
-          isCellEditable(pRowIndex, pColumnName) &&
-          pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
-        _showDialog(
-          rowIndex: pRowIndex,
-          columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
-          values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
-          dataRow: dataChunk.data[pRowIndex],
-          onEndEditing: setValueOnEndEditing,
-          newValueNotifier: dialogValueNotifier,
-        );
+    selectRecord(
+      pRowIndex,
+      columnName: pColumnName,
+      force: true,
+      afterSelectCommand: () {
+        if (FlutterUI.logUI.cl(Lvl.d)) {
+          FlutterUI.logUI.d("Selected row: $pRowIndex");
+        }
+
+        if (IStorageService().isVisibleInUI(model.id) &&
+            !pCellEditor.allowedInTable &&
+            isCellEditable(pRowIndex, pColumnName) &&
+            pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
+          _showDialog(
+            rowIndex: pRowIndex,
+            columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
+            values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
+            dataRow: dataChunk.data[pRowIndex],
+            onEndEditing: setValueOnEndEditing,
+            newValueNotifier: dialogValueNotifier,
+          );
+        }
+
+        return [];
       }
-    }
+    );
   }
 
   _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
+    print("Long: $pRowIndex");
     List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
 
     int separator = 0;
@@ -693,6 +737,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     selectRecord(
       pRowIndex,
       afterSelectCommand: () {
+        selectedRowTemporary = null;
+
         if (IStorageService().isVisibleInUI(model.id) && isAnyCellInRowEditable(pRowIndex)) {
           var editColumns = getEditableColumns(pRowIndex);
 
