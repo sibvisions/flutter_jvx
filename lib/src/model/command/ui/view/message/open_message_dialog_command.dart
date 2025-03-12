@@ -33,6 +33,9 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   /// Types of button to be displayed
   final int buttonType;
 
+  /// Types of icon to be displayed
+  final int iconType;
+
   /// Name of the ok button
   final String? okComponentId;
 
@@ -72,6 +75,7 @@ class OpenMessageDialogCommand extends MessageViewCommand {
     required this.componentId,
     required this.closable,
     required this.buttonType,
+    required this.iconType,
     required this.okComponentId,
     required this.notOkComponentId,
     required this.cancelComponentId,

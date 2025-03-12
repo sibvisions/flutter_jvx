@@ -28,6 +28,7 @@ class MessageDialogProcessor implements IResponseProcessor<MessageDialogResponse
         componentId: pResponse.componentId,
         closable: pResponse.closable,
         buttonType: pResponse.buttonType,
+        iconType: pResponse.iconType,
         okComponentId: pResponse.okComponentId,
         notOkComponentId: pResponse.notOkComponentId,
         cancelComponentId: pResponse.cancelComponentId,

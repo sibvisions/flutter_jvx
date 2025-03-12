@@ -31,6 +31,9 @@ class MessageDialogResponse extends MessageView {
   /// Types of button to be displayed
   final int buttonType;
 
+  /// Types of icon to be displayed
+  final int iconType;
+
   /// Name of the ok button
   final String? okComponentId;
 
@@ -68,6 +71,7 @@ class MessageDialogResponse extends MessageView {
     required this.componentId,
     this.closable = true,
     required this.buttonType,
+    required this.iconType,
     required this.okComponentId,
     required this.notOkComponentId,
     required this.cancelComponentId,
@@ -84,6 +88,7 @@ class MessageDialogResponse extends MessageView {
       : componentId = json[ApiObjectProperty.componentId],
         closable = json[ApiObjectProperty.closable] ?? true,
         buttonType = json[ApiObjectProperty.buttonType],
+        iconType = json[ApiObjectProperty.iconType],
         okComponentId = json[ApiObjectProperty.okComponentId],
         notOkComponentId = json[ApiObjectProperty.notOkComponentId],
         cancelComponentId = json[ApiObjectProperty.cancelComponentId],
@@ -98,10 +103,9 @@ class MessageDialogResponse extends MessageView {
   @override
   String toString() {
     return 'MessageDialogResponse{componentId: $componentId, closable: $closable, '
-        'buttonType: $buttonType, okComponentId: $okComponentId, notOkComponentId: '
-        '$notOkComponentId, cancelComponentId: $cancelComponentId, okText: $okText, '
-        'notOkText: $notOkText, cancelText: $cancelText,'
-        'dataProvider: $dataProvider, columnName: $columnName,'
-        'inputLabel: $inputLabel}';
+        'buttonType: $buttonType, iconType: $iconType, okComponentId: $okComponentId, '
+        'notOkComponentId: $notOkComponentId, cancelComponentId: $cancelComponentId, '
+        'okText: $okText, notOkText: $notOkText, cancelText: $cancelText,'
+        'dataProvider: $dataProvider, columnName: $columnName, inputLabel: $inputLabel}';
   }
 }

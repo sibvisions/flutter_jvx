@@ -22,25 +22,41 @@ import '../jvx_dialog.dart';
 
 /// This is a standard template for a server side message.
 class MessageDialog extends StatefulWidget with JVxDialog {
-  /// the type for ok, cancel buttons.
+  /// The type for ok, cancel buttons.
   static const int MESSAGE_BUTTON_OK_CANCEL = 4;
 
-  /// the type for yes, no buttons.
+  /// The type for yes, no buttons.
   static const int MESSAGE_BUTTON_YES_NO = 5;
 
-  /// the type for ok button.
+  /// The type for ok button.
   static const int MESSAGE_BUTTON_OK = 6;
 
-  /// the type for yes, no, cancel buttons.
+  /// The type for yes, no, cancel buttons.
   static const int MESSAGE_BUTTON_YES_NO_CANCEL = 7;
 
-  /// the type for no buttons.
+  /// The type for no buttons.
   static const int MESSAGE_BUTTON_NONE = 8;
+
+  /// The type for information icon.
+  static const int MESSAGE_ICON_INFO = 0;
+
+  /// The type for warning icon.
+  static const int MESSAGE_ICON_WARNING = 1;
+
+  /// The type for error icon.
+  static const int MESSAGE_ICON_ERROR = 2;
+
+  /// The type for question icon.
+  static const int MESSAGE_ICON_QUESTION = 3;
+
+  /// The type for question icon.
+  static const int MESSAGE_ICON_NONE = 9;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// the command
   final OpenMessageDialogCommand command;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,14 +115,19 @@ class _MessageDialogState extends State<MessageDialog> {
     List<Widget>? actions = _getButtons(context, _command.buttonType);
 
     if (actions.isEmpty) {
-      //avoid padding
+      //avoid padding, doesn't work with an empty list!
       actions = null;
     }
 
     return AlertDialog(
       contentPadding: actions == null ? const EdgeInsets.all(24) : null,
       actionsPadding: actions != null ? JVxColors.ALERTDIALOG_ACTION_PADDING : null,
-      title: _command.title?.isNotEmpty == true ? Text(_command.title!) : null,
+      title: _command.title?.isNotEmpty == true
+        ? Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(_command.title!)
+          )
+        : null,
       scrollable: true,
       content: _buildContent(context),
       actions: actions,
@@ -134,14 +155,42 @@ class _MessageDialogState extends State<MessageDialog> {
   Widget _buildContent(BuildContext context) {
     List<Widget> widgets = [];
 
+    Widget text;
+
     if (ParseUtil.isHTML(_command.message)) {
       var measure = MeasureUtil.measureHtml(context, _command.message!);
 
       //will be shown in full width, because of Padding
-      widgets.add(Padding(padding: const EdgeInsets.all(0), child: SizedBox(width: measure.size.width, height: measure.size.height, child: measure.html)));
+      text = Padding(padding: const EdgeInsets.all(0), child: SizedBox(width: measure.size.width, height: measure.size.height, child: measure.html));
     }
     else{
-      widgets.add(_command.message != null ? Text(_command.message!) : const Text(""));
+      text = _command.message != null ? Text(_command.message!) : const Text("");
+    }
+
+    Widget? icon = _getIcon(context, _command.iconType);
+
+    if (icon == null) {
+      widgets.add(text);
+    }
+    else {
+      widgets.add(IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: icon
+            ),
+            Flexible(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [text]
+              )
+            )
+          ]
+        )
+      ));
     }
 
     if (_command.dataProvider != null)
@@ -162,6 +211,31 @@ class _MessageDialogState extends State<MessageDialog> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: widgets,
     );
+  }
+
+  Widget? _getIcon(BuildContext context, int iconType) {
+    switch (iconType) {
+      case MessageDialog.MESSAGE_ICON_INFO:
+        return const Icon(
+          Icons.info_outline_rounded,
+          size: 36);
+      case MessageDialog.MESSAGE_ICON_WARNING:
+        return const Icon(
+            Icons.warning_amber_rounded,
+            size: 36);
+      case MessageDialog.MESSAGE_ICON_ERROR:
+        return const Icon(
+            Icons.report_gmailerrorred_rounded,
+            size: 36);
+      case MessageDialog.MESSAGE_ICON_QUESTION:
+        return const Icon(
+            Icons.help_outline_rounded,
+            size: 36);
+      case MessageDialog.MESSAGE_ICON_NONE:
+      default:
+        return null;
+        break;
+    }
   }
 
   List<Widget> _getButtons(BuildContext context, int buttonType) {

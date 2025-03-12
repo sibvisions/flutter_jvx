@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../service/api/i_api_service.dart';
@@ -50,12 +51,40 @@ class ServerSessionExpiredDialog extends StatelessWidget with JVxDialog implemen
 
   @override
   Widget build(BuildContext context) {
+
+    Widget content = IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.report_gmailerrorred_rounded,
+              size: 36
+            )
+          ),
+          Flexible(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text(FlutterUI.translate(command.message?.isNotEmpty == true ? command.message! : "Session has expired"))]
+            )
+          )
+        ]
+      )
+    );
+
     // We have to translate the server response because it will always be in english
     // as the server has no session and therefore no translation.
     return AlertDialog(
-      title: Text(FlutterUI.translate(command.title?.isNotEmpty == true ? command.title! : "Session Expired")),
-      content:
-          Text(FlutterUI.translate(command.message?.isNotEmpty == true ? command.message! : "Session has expired")),
+      contentPadding: const EdgeInsets.all(24),
+      actionsPadding: JVxColors.ALERTDIALOG_ACTION_PADDING,
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Text(FlutterUI.translate(command.title?.isNotEmpty == true ? command.title! : "Session Expired"))
+      ),
+      scrollable: true,
+      content: content,
       actions: [
         TextButton(
           onPressed: _close,

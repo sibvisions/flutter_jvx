@@ -51,11 +51,50 @@ class ServerErrorDialog extends StatelessWidget with JVxDialog implements IError
 
   @override
   Widget build(BuildContext context) {
+
+    List<Widget>? actions = _getButtons(context);
+
+    if (actions.isEmpty) {
+      //avoid padding, doesn't work with an empty list!
+      actions = null;
+    }
+
+    Widget? content;
+
+    if (command.message != null && command.message!.isNotEmpty) {
+      content = IntrinsicHeight(
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Padding(
+                    padding: EdgeInsets.only(right: 15),
+                    child: Icon(
+                        Icons.report_gmailerrorred_rounded,
+                        size: 36
+                    )
+                ),
+                Flexible(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Text(command.message!)]
+                    )
+                )
+              ]
+          )
+      );
+    }
+
     return AlertDialog(
+      contentPadding: actions == null ? const EdgeInsets.all(24) : null,
       actionsPadding: JVxColors.ALERTDIALOG_ACTION_PADDING,
-      title: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterUI.translate("Server Error")),
-      content: command.message != null ? Text(command.message!) : null,
-      actions: _getButtons(context),
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterUI.translate("Server Error"))
+      ),
+      scrollable: true,
+      content: content,
+      actions: actions,
     );
   }
 
