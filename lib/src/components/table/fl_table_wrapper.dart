@@ -442,25 +442,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
   }
 
-  Future<void> _onPreSelectRecord(int pRowIndex, String pColumnName) async {
-    print("preSelectREcord");
-    if (pRowIndex >= 0) {
-      if (FlutterUI.logUI.cl(Lvl.d)) {
-        FlutterUI.logUI.d("Table cell tapped (pre): $pRowIndex, $pColumnName");
-      }
-
-      unawaited(selectRecord(
-          pRowIndex,
-          columnName: pColumnName,
-          force: true
-      ));
-    }
-  }
-
   void _onTimedCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-
-    print("Timed tap: $pRowIndex");
-
     if (pRowIndex == -1) {
       if (pColumnName.isNotEmpty) {
         // Header was pressed
@@ -487,7 +469,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
         _onDoubleCellTap(pRowIndex, pColumnName, pCellEditor);
 
-        //no single tap after touble tap
+        //no single tap after double tap
         doubleTap = true;
       }
       else {
@@ -552,7 +534,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   void _onDoubleCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    print("double tap");
     if (FlutterUI.logUI.cl(Lvl.d)) {
       FlutterUI.logUI.d("Table cell double tapped: $pRowIndex, $pColumnName");
     }
@@ -586,7 +567,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
-    print("Long: $pRowIndex");
     List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
 
     int separator = 0;

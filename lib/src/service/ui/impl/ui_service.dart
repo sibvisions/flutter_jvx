@@ -944,7 +944,6 @@ class UiService implements IUiService {
 
   @override
   void showJVxDialog(JVxDialog pDialog) {
-
     List<JVxDialog> copy = _activeDialogs.toList(growable: false);
 
     MessageDialog? msg;

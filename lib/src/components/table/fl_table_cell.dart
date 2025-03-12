@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -155,8 +154,6 @@ class _FlTableCellState extends State<FlTableCell> {
 
   /// The cell editor of the cell.
   ICellEditor cellEditor = FlDummyCellEditor();
-
-  Timer? _lastTapUpEvent;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
