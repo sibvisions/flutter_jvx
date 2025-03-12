@@ -1073,7 +1073,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       error = error.error;
     }
 
-    var actions = [
+    List<Widget>? actions = [
       if (returnToApps != null)
         TextButton(
           onPressed: returnToApps,
@@ -1091,6 +1091,40 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ),
         ),
     ];
+
+    if (actions.isEmpty) {
+      //avoid padding, doesn't work with an empty list!
+      actions = null;
+    }
+
+    Widget? content;
+
+    String message = serverError?.message ?? FlutterUI.translateLocal(IUiService.getErrorMessage(error));
+
+    if (message.isNotEmpty) {
+      content = IntrinsicHeight(
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Padding(
+                    padding: EdgeInsets.only(right: 15),
+                    child: Icon(
+                        Icons.report_gmailerrorred_rounded,
+                        size: 36
+                    )
+                ),
+                Flexible(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Text(message)]
+                    )
+                )
+              ]
+          )
+      );
+    }
+
     return Stack(
       children: [
         const Opacity(
@@ -1105,13 +1139,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           shape: Theme.of(context).dialogTheme.shape,
           surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
 
-          title: Text(
-            serverError?.title?.isNotEmpty ?? false ? serverError!.title! : FlutterUI.translateLocal("Error"),
+          contentPadding: actions == null ? const EdgeInsets.all(24) : null,
+          actionsPadding: actions != null ? JVxColors.ALERTDIALOG_ACTION_PADDING : null,
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(serverError?.title?.isNotEmpty ?? false ? serverError!.title! : FlutterUI.translateLocal("Error")),
           ),
-          content: Text(
-            serverError?.message ?? FlutterUI.translateLocal(IUiService.getErrorMessage(error)),
-          ),
-          actionsAlignment: actions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+          scrollable: true,
+          content: content,
+          actionsAlignment: actions != null && actions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
           actions: actions,
         ),
       ],
