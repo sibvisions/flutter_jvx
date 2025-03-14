@@ -71,15 +71,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The current status of the table wrapper.
-  int currentState = 0;
-
-  /// How many "pages" of the table data have been loaded multiplied by: [FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE]
-  int pageCount = 1;
-
-  /// The currently selected column. null is none.
-  String? selectedColumn;
-
   /// The scroll controller for the table.
   late final ScrollController tableHorizontalController;
 
@@ -98,15 +89,33 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// The last sort definition.
   SortList? lastSortDefinitions;
 
+  /// The timer for double-tap check
+  Timer? _timerTap;
+
+  /// The column name of the last tap.
+  String? lastTapColumnName;
+
+  /// The currently selected column. null is none.
+  String? selectedColumn;
+
+  /// The current status of the table wrapper.
+  int currentState = 0;
+
+  /// How many "pages" of the table data have been loaded multiplied by: [FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE]
+  int pageCount = 1;
+
+  /// The last selected row. Used to calculate the current scroll position
+  /// if the table has not yet been scrolled.
+  int lastScrolledToIndex = -1;
+
+  /// The row index of last tap.
+  int? lastTapRowIndex;
+
   /// The size has to be calculated on the next data receiving
   bool _calcOnDataReceived = false;
 
   /// If the selection has to be cancelled.
   bool cancelSelect = false;
-
-  /// The last selected row. Used to calculate the current scroll position
-  /// if the table has not yet been scrolled.
-  int lastScrolledToIndex = -1;
 
   /// If the last scrolled item got scrolled to the top edge or bottom edge.
   bool? scrolledIndexTopAligned;
@@ -493,11 +502,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
     setState(() {});
   }
-
-  Timer? _timerTap;
-
-  int? lastTapRowIndex;
-  String? lastTapColumnName;
 
   void _onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
     if (FlutterUI.logUI.cl(Lvl.d)) {
