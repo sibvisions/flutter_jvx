@@ -21,7 +21,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
-  flutter_launcher_icons: ^0.14.1
+  flutter_launcher_icons: ^0.14.0
   flutter_native_splash: ^2.4.0
 
   # iOS Dep
@@ -54,29 +54,29 @@ dependencies:
   async: ^2.12.0
 
   # IO handling
-  universal_io: ^2.0.4
+  universal_io: ^2.0.0
 
-  web_socket_channel: ^3.0.1
+  web_socket_channel: ^3.0.0
   connectivity_plus: ^6.1.0
 
-  cross_file: ^0.3.3+2
+  cross_file: ^0.3.0
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
   file_picker: ^9.0.0
   file_saver: 0.2.14
 
 # SVG Support
-  flutter_svg: ^2.0.0+1
+  flutter_svg: ^2.0.0
   # Icons
-  font_awesome_flutter: ^10.2.1
+  font_awesome_flutter: ^10.0.0
   # Managing different persistent classes
   get_it: ^8.0.0
   # QR Scanner
   mobile_scanner: ^5.0.0
   # Signature Pad
-  signature: ^5.3.2
+  signature: ^6.0.0
   # Saving files on system
   path: ^1.9.0
-  path_provider: ^2.0.11
+  path_provider: ^2.1.0
   # Zip files handling
   archive: ^4.0.2
   # Special Slivers for lists and grids (menu)
@@ -149,7 +149,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
   build_runner: ^2.4.14
-  json_dynamic_widget_codegen: 2.1.0+1
+  json_dynamic_widget_codegen: 2.1.0+3
 
 dependency_overrides:
   # flutter_map
