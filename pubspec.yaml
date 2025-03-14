@@ -140,7 +140,7 @@ dependencies:
   open_filex:
     git: https://github.com/mufassalhussain/open_filex
 
-  json_dynamic_widget: ^9.0.0+2
+  json_dynamic_widget: ^9.0.0
   screenshot: ^3.0.0
 
 dev_dependencies:
