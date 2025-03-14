@@ -52,6 +52,9 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
 
     Size? phoneSize = MediaQuery.maybeSizeOf(FlutterUI.getEffectiveContext()!);
 
+    assert(IConfigService().baseUrl.value != null, "baseUrl can not be empty!");
+    assert(IConfigService().baseUrl.value != null, "baseUrl can not be empty!");
+
     ApiStartupRequest startupRequest = ApiStartupRequest(
       baseUrl: IConfigService().baseUrl.value!.toString(),
       requestUri: kIsWeb ? Uri.base.toString() : null,

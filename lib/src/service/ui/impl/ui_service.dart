@@ -1198,9 +1198,9 @@ class UiService implements IUiService {
     if (sendFeedback && IUiService().clientId.value != null) {
       ICommandService().sendCommand(FeedbackCommand(
         type: FeedbackType.error,
+        message: IUiService.getErrorMessage(error),
         properties: {
-          "message": IUiService.getErrorMessage(error),
-          "error": error,
+          "error": error.toString(),
         },
         reason: "UIService async error",
       ));

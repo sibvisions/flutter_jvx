@@ -303,9 +303,9 @@ class CommandService implements ICommandService {
           commands.add(
             FeedbackCommand(
               type: FeedbackType.error,
+              message: IUiService.getErrorMessage(error),
               properties: {
-                "message": IUiService.getErrorMessage(error),
-                "error": error,
+                "error": error.toString(),
               },
               reason: "UIService async error",
             ),

@@ -22,10 +22,10 @@ dependencies:
     sdk: flutter
 
   flutter_launcher_icons: ^0.14.1
-  flutter_native_splash: ^2.2.16
+  flutter_native_splash: ^2.4.0
 
   # iOS Dep
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.0
 
   # Translations capability
   intl: any # An exact version pin will be provided by the Flutter SDK
@@ -33,10 +33,10 @@ dependencies:
   flutter_timezone: ^4.0.0
 
   # Config
-  shared_preferences: ^2.0.15
+  shared_preferences: ^2.5.0
 
   # Device Identification
-  package_info_plus: ^8.0.2
+  package_info_plus: ^8.3.0
   device_info_plus: ^11.0.0
   android_id: ^0.4.0
 

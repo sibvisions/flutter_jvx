@@ -623,8 +623,8 @@ class FlutterUI extends StatefulWidget {
 
         if (overlay != null) {
           overlay.capture((imageData) => _sendFeedback(
+            details.summary.toString(),
             {
-              "message": details.summary.toString(),
               "error": details.stack.toString(),
               "exception": details.exception.toString(),
               "silent": details.silent,
@@ -640,8 +640,8 @@ class FlutterUI extends StatefulWidget {
         }
         else {
           _sendFeedback(
+            details.summary.toString(),
             {
-              "message": details.summary.toString(),
               "error": details.stack.toString(),
               "exception": details.exception.toString(),
               "silent": details.silent,
@@ -664,6 +664,7 @@ class FlutterUI extends StatefulWidget {
 
         if (overlay != null) {
           overlay.capture((imageData) => _sendFeedback(
+            IUiService.getErrorMessage(error),
             {
               "exception": error.toString(),
               "error": stack.toString(),
@@ -674,6 +675,7 @@ class FlutterUI extends StatefulWidget {
         }
         else {
           _sendFeedback(
+            IUiService.getErrorMessage(error),
             {
               "exception": error.toString(),
               "error": stack.toString()
@@ -699,9 +701,10 @@ class FlutterUI extends StatefulWidget {
     };
   }
 
-  static _sendFeedback(Map<String, dynamic> properties, String reason, [Uint8List? image]) {
+  static _sendFeedback(String? message, Map<String, dynamic> properties, String reason, [Uint8List? image]) {
     ICommandService().sendCommand(FeedbackCommand(
       type: FeedbackType.error,
+      message: message,
       image: image,
       properties: properties,
       reason: reason
