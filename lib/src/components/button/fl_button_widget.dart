@@ -139,6 +139,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         } else if (model.isHaptic) {
           HapticFeedback.vibrate();
         }
+
         getOnPressed(context)!.call();
       };
     }
