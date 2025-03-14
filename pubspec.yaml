@@ -120,7 +120,7 @@ dependencies:
       url: https://github.com/kee-org/flutter_treeview
       ref: v1.1.1
 
-  modal_bottom_sheet: ^3.0.0-pre
+  modal_bottom_sheet: ^3.0.0
   qr_flutter: ^4.1.0
   screen_brightness: ^2.0.0
 
