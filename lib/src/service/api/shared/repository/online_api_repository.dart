@@ -715,9 +715,9 @@ class OnlineApiRepository extends IRepository {
       }
 
       return apiInteraction;
-    } catch (_) {
+    } catch (error, stack) {
       if (FlutterUI.logAPI.cl(Lvl.e)) {
-        FlutterUI.logAPI.e("Error while sending ${pRequest.runtimeType}");
+        FlutterUI.logAPI.e("Error while sending ${pRequest.runtimeType}\n\n$error\n\n$stack");
       }
 
       rethrow;

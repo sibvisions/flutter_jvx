@@ -30,7 +30,7 @@ class ApiFeedbackRequest extends SessionRequest {
   final FeedbackType type;
 
   /// Text Feedback (in case of a user feedback).
-  final String? text;
+  final String? message;
 
   /// UI Screenshot (in case of a user feedback).
   final Uint8List? image;
@@ -44,7 +44,7 @@ class ApiFeedbackRequest extends SessionRequest {
 
   ApiFeedbackRequest({
     required this.type,
-    this.text,
+    this.message,
     this.image,
     this.properties,
   });
@@ -57,8 +57,10 @@ class ApiFeedbackRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         "name": "feedback.${type.name}",
-        if (text != null) "text": text,
+        if (message != null) "message": message,
         if (image != null) "image": base64Encode(image!),
-        ...?properties?.map((key, value) => MapEntry(key.toString(), value.toString())),
+        ...?properties
+        //maybe we should check value types because not all objects can be converted to json
+        //...?properties?.map((key, value) => MapEntry(key.toString(), value.toString())),
       };
 }

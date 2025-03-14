@@ -27,10 +27,10 @@ class FeedbackCommand extends SessionCommand {
   /// What type of feedback this is.
   final FeedbackType type;
 
-  /// Text Feedback (in case of a user feedback).
-  final String? text;
+  /// Feedback message (in case of a user feedback).
+  final String? message;
 
-  /// UI Screenshot (in case of a user feedback).
+  /// Screenshot (in case of a user feedback).
   final Uint8List? image;
 
   /// Custom properties.
@@ -42,11 +42,11 @@ class FeedbackCommand extends SessionCommand {
 
   FeedbackCommand({
     required this.type,
-    this.text,
+    this.message,
     this.image,
     this.properties,
     required super.reason,
-  })  : assert(type != FeedbackType.user || (text != null || image != null)),
+  })  : assert(message != null || image != null),
         super(showLoading: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,6 +55,6 @@ class FeedbackCommand extends SessionCommand {
 
   @override
   String toString() {
-    return 'FeedbackCommand{type: $type, text: $text, image: $image, properties: $properties, ${super.toString()}}';
+    return "FeedbackCommand{type: $type, message: $message, image: ${image != null ? '[bytes: ${image?.length}]' : 'null'}, properties: $properties, ${super.toString()}}";
   }
 }

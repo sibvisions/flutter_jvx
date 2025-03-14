@@ -183,7 +183,8 @@ class _MessageDialogState extends State<MessageDialog> {
               child: icon
             ),
             Flexible(
-              child: Column(
+              child:
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [text]
               )
@@ -218,23 +219,22 @@ class _MessageDialogState extends State<MessageDialog> {
       case MessageDialog.MESSAGE_ICON_INFO:
         return const Icon(
           Icons.info_outline_rounded,
-          size: 36);
+          size: JVxColors.MESSAGE_ICON_SIZE);
       case MessageDialog.MESSAGE_ICON_WARNING:
         return const Icon(
             Icons.warning_amber_rounded,
-            size: 36);
+            size: JVxColors.MESSAGE_ICON_SIZE);
       case MessageDialog.MESSAGE_ICON_ERROR:
         return const Icon(
             Icons.report_gmailerrorred_rounded,
-            size: 36);
+            size: JVxColors.MESSAGE_ICON_SIZE);
       case MessageDialog.MESSAGE_ICON_QUESTION:
         return const Icon(
             Icons.help_outline_rounded,
-            size: 36);
+            size: JVxColors.MESSAGE_ICON_SIZE);
       case MessageDialog.MESSAGE_ICON_NONE:
       default:
         return null;
-        break;
     }
   }
 

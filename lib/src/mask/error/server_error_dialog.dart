@@ -71,7 +71,7 @@ class ServerErrorDialog extends StatelessWidget with JVxDialog implements IError
                     padding: EdgeInsets.only(right: 15),
                     child: Icon(
                         Icons.report_gmailerrorred_rounded,
-                        size: 36
+                        size: JVxColors.MESSAGE_ICON_SIZE
                     )
                 ),
                 Flexible(

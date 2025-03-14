@@ -27,7 +27,7 @@ class FeedbackCommandProcessor extends ICommandProcessor<FeedbackCommand> {
   Future<List<BaseCommand>> processCommand(FeedbackCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiFeedbackRequest(
       type: command.type,
-      text: command.text,
+      message: command.message,
       image: command.image,
       properties: command.properties,
     ));

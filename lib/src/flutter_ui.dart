@@ -22,6 +22,7 @@ import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -490,6 +491,8 @@ class FlutterUI extends StatefulWidget {
 
     tz.initializeTimeZones();
 
+    _initErrorHandling();
+
     if (!kIsWeb) {
       HttpOverrides.global = JVxHttpOverrides();
     }
@@ -607,6 +610,102 @@ class FlutterUI extends StatefulWidget {
   static List<GlobalSubscription> globalSubscriptions() {
     //Return a copy to avoid concurrent modification problems
     return _globalSubscriptions.toList(growable: false);
+  }
+
+  /// Initializes error handling
+  static _initErrorHandling() {
+    FlutterError.onError = (details) {
+      FlutterError.presentError(details);
+
+      //no client, no connection
+      if (IUiService().clientId.value != null) {
+        JVxOverlayState? overlay = JVxOverlay.maybeOf(FlutterUI.getCurrentContext());
+
+        if (overlay != null) {
+          overlay.capture((imageData) => _sendFeedback(
+            {
+              "message": details.summary.toString(),
+              "error": details.stack.toString(),
+              "exception": details.exception.toString(),
+              "silent": details.silent,
+              "library": details.library,
+              "details": TextTreeRenderer(
+                wrapWidthProperties: FlutterError.wrapWidth,
+                maxDescendentsTruncatableNode: 5,
+              ).render(details.toDiagnosticsNode(style: DiagnosticsTreeStyle.error)).trimRight(),
+            },
+            "FlutterError.onError",
+            imageData
+          ));
+        }
+        else {
+          _sendFeedback(
+            {
+              "message": details.summary.toString(),
+              "error": details.stack.toString(),
+              "exception": details.exception.toString(),
+              "silent": details.silent,
+              "library": details.library,
+              "details": TextTreeRenderer(
+                wrapWidthProperties: FlutterError.wrapWidth,
+                maxDescendentsTruncatableNode: 5,
+              ).render(details.toDiagnosticsNode(style: DiagnosticsTreeStyle.error)).trimRight(),
+            },
+            "FlutterError.onError",
+          );
+        }
+      }
+    };
+
+    PlatformDispatcher.instance.onError = (error, stack) {
+      //no client, no connection
+      if (IUiService().clientId.value != null) {
+        JVxOverlayState? overlay = JVxOverlay.maybeOf(FlutterUI.getCurrentContext());
+
+        if (overlay != null) {
+          overlay.capture((imageData) => _sendFeedback(
+            {
+              "exception": error.toString(),
+              "error": stack.toString(),
+            },
+            "PlatformDispatcher.instance.onError",
+            imageData
+          ));
+        }
+        else {
+          _sendFeedback(
+            {
+              "exception": error.toString(),
+              "error": stack.toString()
+            },
+            "PlatformDispatcher.instance.onError"
+          );
+        }
+      }
+
+      return true;
+    };
+
+    RenderErrorBox.backgroundColor = RenderErrorBox.backgroundColor.withAlpha(180);
+
+    ErrorWidget.builder = (errorDetails) {
+      // If we're in debug mode, use the normal error widget which shows the error
+      // message:
+      if (kDebugMode) {
+        return ErrorWidget(errorDetails.exception);
+      }
+
+      return AppErrorWidget(details: errorDetails);
+    };
+  }
+
+  static _sendFeedback(Map<String, dynamic> properties, String reason, [Uint8List? image]) {
+    ICommandService().sendCommand(FeedbackCommand(
+      type: FeedbackType.error,
+      image: image,
+      properties: properties,
+      reason: reason
+    ));
   }
 
 }
@@ -1111,7 +1210,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                     padding: EdgeInsets.only(right: 15),
                     child: Icon(
                         Icons.report_gmailerrorred_rounded,
-                        size: 36
+                        size: JVxColors.MESSAGE_ICON_SIZE
                     )
                 ),
                 Flexible(
@@ -1186,6 +1285,32 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     tappedNotificationPayloads.dispose();
     messagesReceived.dispose();
     backgroundMessagesReceived.dispose();
+  }
+}
+
+/// Test class for a custom error widget
+class AppErrorWidget extends StatelessWidget {
+  final FlutterErrorDetails details;
+
+  const AppErrorWidget({
+    super.key,
+    required this.details
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(color: Colors.black.withAlpha(80), child: const Center(
+      child: Padding(
+        padding: EdgeInsets.all(5),
+        child: Text(
+          'Unexpected problem',
+          //${details.exception}
+          style: TextStyle(color: Color(0xFFDD0000), fontSize: 11, letterSpacing: 0.6, fontWeight: FontWeight.w700, decoration: TextDecoration.none),
+          textAlign: TextAlign.left,
+          textDirection: TextDirection.ltr,
+        ),
+      )
+    ));
   }
 }
 
