@@ -133,7 +133,7 @@ dependencies:
   speech_to_text: ^7.0.0
 
   push: ^3.0.0
-  flutter_local_notifications: ^18.0.0
+  flutter_local_notifications: ^19.0.0
   #open_filex: ^4.5.0
 
   #temp required for: https://github.com/javaherisaber/open_filex/pull/19 (flutter 3.29)
