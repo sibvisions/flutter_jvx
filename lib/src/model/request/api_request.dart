@@ -22,4 +22,9 @@ abstract class ApiRequest {
 
   /// Converts request to json
   Map<String, dynamic> toJson();
+
+  /// Whether this request is not very important and errors can be ignored
+  bool ignoreError() {
+    return false;
+  }
 }

@@ -663,8 +663,16 @@ class OnlineApiRepository extends IRepository {
       if (response.statusCode != null && response.statusCode! >= 400 && response.statusCode! <= 599) {
         String body = _decodeUTF8(response.data);
 
+        if (pRequest.ignoreError()) {
+          if (FlutterUI.logAPI.cl(Lvl.d)) {
+            FlutterUI.logAPI.d("Server sent HTTP ${response.statusCode} but ${pRequest.runtimeType} ignores the error");
+          }
+
+          return ApiInteraction(responses: [], request: pRequest);
+        }
+
         if (FlutterUI.logAPI.cl(Lvl.e)) {
-          FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
+          FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode} with body: $body");
         }
 
         if (response.statusCode == 400 && pRequest is ApiStartupRequest) {

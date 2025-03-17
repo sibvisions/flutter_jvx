@@ -41,4 +41,10 @@ class ApiDownloadTemplatesRequest extends DownloadRequest {
         ...super.toJson(),
         ApiObjectProperty.name: name,
       };
+
+  @override
+  bool ignoreError() {
+      return true;
+  }
+
 }

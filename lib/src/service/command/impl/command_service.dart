@@ -270,6 +270,10 @@ class CommandService implements ICommandService {
         }
       }
     } catch (error, stackTrace) {
+      if (FlutterUI.logAPI.cl(Lvl.e)) {
+        FlutterUI.logAPI.e("Error while processing ${pCommand.runtimeType} with ${processor.runtimeType} $error");
+      }
+
       bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException;
 
       if (pCommand is! ErrorCommand && pCommand is! FeedbackCommand) {
