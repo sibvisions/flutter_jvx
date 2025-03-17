@@ -105,7 +105,7 @@ class FlutterUI extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Determines the supported server version which will be sent in the [ApiStartupRequest]
-  static const String supportedServerVersion = "4.1.0";
+  static const String supportedServerVersion = "4.0.0";
 
   /// The global read ahead limit for lazy loading
   static const int readAheadLimit = 100;
