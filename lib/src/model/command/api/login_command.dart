@@ -40,9 +40,10 @@ enum LoginMode {
   MFWait,
 
   /// multi-factor URL.
-  MFURL,
+  MFUrl,
 }
 
+/// The command for login.
 class LoginCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -78,6 +79,7 @@ class LoginCommand extends SessionCommand {
     this.createAuthKey = false,
     this.confirmationCode,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +88,8 @@ class LoginCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "LoginCommand{loginMode: $loginMode, username: $username, createAuthKey: $createAuthKey, "
-        "confirmationCode: $confirmationCode, ${super.toString()}}";
+    return "LoginCommand{loginMode: $loginMode, username: $username, password: ${password != null ? '<set>' : 'null'}, "
+           "newPassword: ${newPassword != null ? '<set>' : 'null'}, createAuthKey: $createAuthKey, "
+           "confirmationCode: $confirmationCode, ${super.toString()}}";
   }
 }

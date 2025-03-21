@@ -30,7 +30,7 @@ class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> 
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command, BaseCommand? origin) async {
     FlPanelModel modelOfScreen =
-        IStorageService().getComponentByName(pComponentName: command.screenName) as FlPanelModel;
+        IStorageService().getComponentByName(pComponentName: command.componentName) as FlPanelModel;
 
     if (!modelOfScreen.isCloseAble) {
       return [];
@@ -38,7 +38,7 @@ class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> 
 
     List<BaseCommand> commands = await IApiService().sendRequest(
       ApiCloseScreenRequest(
-        screenName: command.screenName,
+        componentId: command.componentName,
         parameter: command.parameter,
       ),
     );
@@ -50,7 +50,7 @@ class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> 
 
     commands = [
       DeleteScreenCommand(
-        screenName: command.screenName,
+        componentName: command.componentName,
         reason: "Navigation response was empty",
       ),
       ...commands

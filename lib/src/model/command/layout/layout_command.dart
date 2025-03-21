@@ -16,10 +16,15 @@
 
 import '../base_command.dart';
 
-/// BaseType of any command interacting with the [ILayoutService]
+/// The base command for interactions with [ILayoutService].
 abstract class LayoutCommand extends BaseCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   LayoutCommand({
     required super.reason,
     super.showLoading = false,
   });
+
 }

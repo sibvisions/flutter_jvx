@@ -16,7 +16,7 @@
 
 import 'ui_command.dart';
 
-/// Command to set the focus
+/// The command to set the focus
 class SetFocusCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -47,6 +47,7 @@ class SetFocusCommand extends UiCommand {
 
   @override
   String toString() {
-    return "SetFocusCommand{componentId: $componentId, ${super.toString()}}";
+    return "SetFocusCommand{componentId: $componentId, loadingDelay: $loadingDelay, ${super.toString()}}";
   }
+
 }

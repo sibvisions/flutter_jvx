@@ -16,20 +16,30 @@
 
 import 'ui_command.dart';
 
+/// This command will delete a frame from cache.
 class DeleteFrameCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Component to close
-  final String componentId;
+  final String componentName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DeleteFrameCommand({
-    required this.componentId,
+    required this.componentName,
     required super.reason,
   });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "SetFocusCommand{componentName: $componentName, loadingDelay: $loadingDelay, ${super.toString()}}";
+  }
 }

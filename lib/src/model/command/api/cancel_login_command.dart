@@ -16,10 +16,20 @@
 
 import 'session_command.dart';
 
+/// The command to cancel the login (window).
 class CancelLoginCommand extends SessionCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   CancelLoginCommand({
     required super.reason,
+    super.showLoading,
   });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   String toString() {

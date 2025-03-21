@@ -25,13 +25,13 @@ class MessageDialogProcessor implements IResponseProcessor<MessageDialogResponse
   List<BaseCommand> processResponse(MessageDialogResponse pResponse, ApiRequest? pRequest) {
     return [
       OpenMessageDialogCommand(
-        componentId: pResponse.componentId,
+        componentName: pResponse.componentId,
         closable: pResponse.closable,
         buttonType: pResponse.buttonType,
         iconType: pResponse.iconType,
-        okComponentId: pResponse.okComponentId,
-        notOkComponentId: pResponse.notOkComponentId,
-        cancelComponentId: pResponse.cancelComponentId,
+        okComponentName: pResponse.okComponentId,
+        notOkComponentName: pResponse.notOkComponentId,
+        cancelComponentName: pResponse.cancelComponentId,
         okText: pResponse.okText,
         notOkText: pResponse.notOkText,
         cancelText: pResponse.cancelText,

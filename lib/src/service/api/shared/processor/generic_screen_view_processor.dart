@@ -43,7 +43,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
     if (pResponse.changedComponents != null) {
       SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
         components: pResponse.changedComponents!,
-        screenName: pResponse.screenName,
+        componentName: pResponse.componentName,
         isUpdate: pResponse.update,
         reason: "Api received screen.generic response",
       );
@@ -51,7 +51,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
 
       panel = saveComponentsCommand.newComponents
           ?.whereType<FlPanelModel>()
-          .firstWhereOrNull((element) => element.name == pResponse.screenName);
+          .firstWhereOrNull((element) => element.name == pResponse.componentName);
     }
 
     // Handle Screen Opening

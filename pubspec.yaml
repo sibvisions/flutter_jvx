@@ -143,6 +143,8 @@ dependencies:
   json_dynamic_widget: ^9.0.0
   screenshot: ^3.0.0
 
+  app_links: ^6.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -152,8 +154,6 @@ dev_dependencies:
   json_dynamic_widget_codegen: 2.1.0+3
 
 dependency_overrides:
-  # flutter_map
-#  http: ^1.0.0
 
 flutter:
   uses-material-design: true

@@ -18,11 +18,13 @@ import 'package:archive/archive.dart';
 
 import 'config_command.dart';
 
+/// The command for saving application templates locally.
 class SaveApplicationTemplatesCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The templates
   final List<ArchiveFile> templates;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

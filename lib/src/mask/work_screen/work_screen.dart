@@ -158,11 +158,11 @@ class WorkScreen extends StatelessWidget {
 
   /// Sends a [SetScreenParameterCommand].
   static Future<void> setScreenParameter({
-    String? screenLongName,
+    required String componentName,
     required Map<String, dynamic> parameter,
   }) {
     return ICommandService().sendCommand(SetScreenParameterCommand(
-      screenLongName: screenLongName,
+      componentName: componentName,
       parameter: parameter,
       reason: "SetScreenParameter API",
     ));

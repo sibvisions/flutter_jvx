@@ -25,14 +25,14 @@ class ApiNavigationRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Name of the screen(top most panel)
-  final String screenName;
+  final String componentId;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiNavigationRequest({
-    required this.screenName,
+    required this.componentId,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,6 +42,6 @@ class ApiNavigationRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.componentId: screenName,
+        ApiObjectProperty.componentId: componentId,
       };
 }

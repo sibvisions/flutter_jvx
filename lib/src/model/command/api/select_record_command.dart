@@ -15,50 +15,51 @@
  */
 
 import '../../request/filter.dart';
-import 'session_command.dart';
+import 'dal_command.dart';
 
-class SelectRecordCommand extends SessionCommand {
+/// The command for selecting/highlighting a record.
+class SelectRecordCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Data provider to change selected row of
-  final String dataProvider;
-
   /// The filter to identify the record.
   final Filter? filter;
+
+  /// The column to select. Null -> no column selection.
+  final String? selectedColumn;
 
   /// The selected row to shortcut the filter.
   /// This row index will be checked if the filter applies, otherwise checks every row until the filter applies.
   final int? rowNumber;
-
-  /// The column to select. Null -> no column selection.
-  final String? selectedColumn;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SelectRecordCommand({
-    required super.reason,
-    required this.dataProvider,
+    required super.dataProvider,
     this.rowNumber,
     this.filter,
     this.selectedColumn,
+    required super.reason,
+    super.showLoading,
   }) : assert(filter != null || rowNumber == -1,
             "A filter must be provided except to deselect. Selected row must be -1 to deselect or use .deselect()");
 
   SelectRecordCommand.select({
-    required super.reason,
-    required this.dataProvider,
+    required super.dataProvider,
     required this.filter,
     this.rowNumber,
     this.selectedColumn,
+    required super.reason,
+    super.showLoading,
   });
 
   SelectRecordCommand.deselect({
+    required super.dataProvider,
     required super.reason,
-    required this.dataProvider,
+    super.showLoading,
   })  : rowNumber = -1,
         filter = null,
         selectedColumn = null;
@@ -69,6 +70,6 @@ class SelectRecordCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SelectRecordCommand{rowNumber: $rowNumber, dataProvider: $dataProvider, filter: $filter, ${super.toString()}}";
+    return "SelectRecordCommand{rowNumber: $rowNumber, selectedColumn: $selectedColumn, filter: $filter, ${super.toString()}}";
   }
 }

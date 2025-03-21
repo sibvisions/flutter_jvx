@@ -16,19 +16,27 @@
 
 import 'session_command.dart';
 
+/// The command for reloading menu.
 class ReloadMenuCommand extends SessionCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The long name of the screen
+  final String? screenLongName;
+
+  /// The class name of the screen
+  final String? screenClassName;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final String? screenLongName;
-
-  final String? screenClassName;
-
   ReloadMenuCommand({
-    required super.reason,
     this.screenLongName,
     this.screenClassName,
+    required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,6 +45,6 @@ class ReloadMenuCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "ReloadMenuCommand{${super.toString()}}";
+    return "ReloadMenuCommand{screenLongName: $screenLongName, screenClassName: $screenClassName, ${super.toString()}}";
   }
 }

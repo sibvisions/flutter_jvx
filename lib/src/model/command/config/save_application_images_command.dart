@@ -18,11 +18,13 @@ import 'package:archive/archive.dart';
 
 import 'config_command.dart';
 
+/// The command for saving application images locally.
 class SaveApplicationImagesCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The images
   final List<ArchiveFile> images;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

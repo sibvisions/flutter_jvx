@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:app_links/app_links.dart';
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -44,6 +45,7 @@ import 'mask/menu/menu.dart';
 import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/jvx_splash.dart';
 import 'mask/splash/splash.dart';
+import 'mask/work_screen/work_screen.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
@@ -90,6 +92,16 @@ T? cast<T>(x) => x is T ? x : null;
 
 /// Builder function for dynamic color creation
 typedef ColorBuilder = Color? Function(BuildContext context);
+
+late BeamerDelegate routerDelegate;
+
+TransitionDelegate get transitionDelegate =>
+    (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate());
+
+GlobalKey<NavigatorState>? splashNavigatorKey;
+
+final RouteObserver<ModalRoute> routeObserver = RouteObserver();
+
 
 ///Simple static application variables
 class AppVariables {
@@ -193,6 +205,18 @@ class FlutterUI extends StatefulWidget {
       printTime: true,
     )),
   );
+
+  /// The deep link support
+  static final AppLinks appLinks = AppLinks();
+
+  /// The initial URI
+  static Uri? uriInitial;
+
+  /// The current URI
+  static Uri? uriCurrent;
+
+  /// Whether the UI has started
+  static bool started = false;
 
   /// The initial application configuration
   final AppConfig? appConfig;
@@ -358,6 +382,35 @@ class FlutterUI extends StatefulWidget {
   }
 
   static start([FlutterUI pAppToRun = const FlutterUI()]) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    uriInitial = await appLinks.getInitialLink();
+
+    // ignore: unused_local_variable
+    StreamSubscription<Uri> appLinksListener = appLinks.uriLinkStream.listen((uri) async {
+      uriCurrent = uri;
+
+      if (FlutterUI.started) {
+        Map<String, String>? params = uriCurrent?.queryParameters;
+
+        if (params != null) {
+          App? app = await _loadOrCreateAppFromParameters(params);
+
+          if (app != null) {
+            if (IAppService().isCurrentApp(app)) {
+              //unawaited(WorkScreen.setScreenParameter(parameter: params));
+            }
+            else {
+              bool startedManually = bool.tryParse(params.remove("startedManually") ?? "") ?? false;
+              IConfigService().setCustomStartupProperties(params);
+
+              unawaited(IAppService().startCustomApp(app: app, appTitle: IConfigService().title.value, autostart: !startedManually));
+            }
+          }
+        }
+      }
+    });
+
     SimplePrinter.levelPrefixes[Level.debug] = '';
     SimplePrinter.levelPrefixes[Level.warning] = '';
     SimplePrinter.levelPrefixes[Level.trace] = '';
@@ -367,8 +420,6 @@ class FlutterUI extends StatefulWidget {
 
     ImageLoader.clearCache();
     JsonTemplateManager.clearCache();
-
-    WidgetsFlutterBinding.ensureInitialized();
 
     Logger.addOutputListener((event) {
       LogLevel? level = LogLevel.values.firstWhereOrNull((element) => element.name == event.origin.level.name);
@@ -438,9 +489,15 @@ class FlutterUI extends StatefulWidget {
 
     appConfig = const AppConfig.defaults().merge(pAppToRun.appConfig).merge(appConfig).merge(devConfig);
 
+    //In case of web browser
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
-    Map<String, String> queryParameters = {...Uri.base.queryParameters};
+    Map<String, String> queryParameters = {...Uri.base.queryParameters, ...?uriInitial?.queryParameters};
     appConfig = appConfig.merge(_extractURIConfigParameters(queryParameters));
+
+    //the unchanged list for later use
+    Map<String, String> queryParametersOriginal = {...queryParameters};
+
+print("Params in start = $queryParametersOriginal");
 
     await configService.loadConfig(appConfig, devConfig != null);
 
@@ -477,7 +534,7 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
-    App? urlApp = await _handleURIParameters(queryParameters);
+    App? urlApp = await _configureAppWithParameters(queryParameters);
 
     // API
     //always online repository because app service will set the right repository
@@ -538,7 +595,13 @@ class FlutterUI extends StatefulWidget {
       }
     }
 
-    FlutterUIState.startupApp ??= IAppService().getStartupApp();
+    //If we didn't find a startup app, but the query parameters contain an appName -> don't start an app
+    //because the link expects another app which is not available
+    if (FlutterUIState.startupApp == null) {
+      if (!queryParametersOriginal.containsKey("appName")) {
+        FlutterUIState.startupApp = IAppService().getStartupApp();
+      }
+    }
 
     runApp(pAppToRun);
   }
@@ -561,22 +624,27 @@ class FlutterUI extends StatefulWidget {
     );
   }
 
-  static Future<App?> _handleURIParameters(Map<String, String> queryParameters) async {
+  static Future<App?> _configureAppWithParameters(Map<String, String> queryParameters) async {
     String? mobileOnly = queryParameters.remove("mobileOnly");
-    if (mobileOnly != null) {
-      IUiService().updateMobileOnly(mobileOnly == "true");
-    }
     String? webOnly = queryParameters.remove("webOnly");
-    if (webOnly != null) {
-      IUiService().updateWebOnly(webOnly == "true");
+
+    if (kIsWeb) {
+      if (mobileOnly != null) {
+        IUiService().updateMobileOnly(mobileOnly == "true");
+      }
+      if (webOnly != null) {
+        IUiService().updateWebOnly(webOnly == "true");
+      }
     }
 
-    ServerConfig? urlConfig = ParseUtil.extractAppParameters(queryParameters);
-    if (urlConfig != null) {
-      App urlApp = await App.createAppFromConfig(urlConfig);
-      await urlApp.updateDefault(true);
+    App? appFromParameters = await _loadOrCreateAppFromParameters(queryParameters);
 
-      await IConfigService().updateCurrentApp(urlApp.id);
+    //not sure why we do this in web mode -> requires testing
+    if (kIsWeb && appFromParameters != null) {
+      await appFromParameters.updateDefault(true);
+
+      await IConfigService().updateCurrentApp(appFromParameters.id);
+
       if (IConfigService().currentApp.value != null) {
         String? language = queryParameters.remove("language");
         if (language != null) {
@@ -584,12 +652,43 @@ class FlutterUI extends StatefulWidget {
             language == IConfigService().getPlatformLocale() ? null : language,
           );
         }
+
         String? timeZone = queryParameters.remove("timeZone");
         if (timeZone != null) {
           await IConfigService().updateApplicationTimeZone(timeZone);
         }
       }
-      return urlApp;
+    }
+
+    return appFromParameters;
+  }
+
+  static Future<App?> _loadOrCreateAppFromParameters(Map<String, String> queryParameters) async {
+    String? sAppName = queryParameters["appName"];
+
+    ServerConfig? urlConfig = ParseUtil.extractAppParameters(queryParameters);
+
+    if (urlConfig != null) {
+      return await App.createAppFromConfig(urlConfig);
+    }
+    else if (sAppName != null) {
+      //search app in the list of known apps, if it's unique
+      List<App> apps = IAppService().getApps();
+
+      App? appFound;
+
+      int iFoundCount = 0;
+
+      for (int i = 0; i < apps.length; i++){
+        if (apps[i].name == sAppName) {
+          appFound = apps[i];
+          iFoundCount++;
+        }
+      }
+
+      if (iFoundCount == 1) {
+        return appFound;
+      }
     }
 
     return null;
@@ -703,7 +802,7 @@ class FlutterUI extends StatefulWidget {
 
   static _sendFeedback(String? message, Map<String, dynamic> properties, String reason, [Uint8List? image]) {
     ICommandService().sendCommand(FeedbackCommand(
-      type: FeedbackType.error,
+      type: FeedbackType.Error,
       message: message,
       image: image,
       properties: properties,
@@ -712,15 +811,6 @@ class FlutterUI extends StatefulWidget {
   }
 
 }
-
-late BeamerDelegate routerDelegate;
-
-TransitionDelegate get transitionDelegate =>
-    (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate());
-
-GlobalKey<NavigatorState>? splashNavigatorKey;
-
-final RouteObserver<ModalRoute> routeObserver = RouteObserver();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   static App? startupApp;
@@ -770,13 +860,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         BeamGuard(
           pathPatterns: ["/"],
           check: (context, location) {
-            // This check must not enforce a more restrictive test than AppService#startCustomApp!
-            var deepLinkId = App.computeIdFromConfig(
-                ParseUtil.extractAppParameters(Map.of((location.state as BeamState).queryParameters)));
-
-            return (deepLinkId != null && IConfigService().currentApp.value != deepLinkId) ||
-                IConfigService().currentApp.value == null ||
-                IAppService().exitFuture.value != null;
+            return IConfigService().currentApp.value == null || IAppService().exitFuture.value != null;
           },
           beamToNamed: (origin, target) => "/home",
         ),
@@ -825,6 +909,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       // Init
       if (startupApp != null) {
+
+        print("START app: ${startupApp!.id}");
+
         IAppService().startApp(appId: startupApp!.id, autostart: true);
       }
     });
@@ -885,6 +972,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             builder: (contextD, exitSnapshot) {
               if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
                   (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
+
+                FlutterUI.started = true;
+
                 retrySplash() => IAppService().startApp();
 
                 VoidCallback? returnToApps =

@@ -18,7 +18,7 @@ import '../../../service/ui/i_ui_service.dart';
 import '../../menu/menu_model.dart';
 import 'ui_command.dart';
 
-/// Command to save the given menu in the [IUiService]
+/// The Command to save the menu in the cache.
 class SaveMenuCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

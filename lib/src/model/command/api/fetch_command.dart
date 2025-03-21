@@ -17,15 +17,13 @@
 import '../../../service/data/i_data_service.dart';
 import '../../request/filter.dart';
 import 'filter_command.dart';
-import 'session_command.dart';
+import 'dal_command.dart';
 
-class FetchCommand extends SessionCommand {
+/// The command for record fetching.
+class FetchCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Data provider to fetch the data from.
-  final String dataProvider;
 
   /// Filter of this fetch. This is only used for tree/page fetches.
   /// For normal fetches, the filter is should be set with [FilterCommand]
@@ -54,15 +52,16 @@ class FetchCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FetchCommand({
+    required super.dataProvider,
     required this.fromRow,
     required this.rowCount,
-    required this.dataProvider,
     this.includeMetaData = false,
     this.filter,
     this.reload = false,
     this.setRootKey = false,
     this.offline = false,
     required super.reason,
+    super.showLoading,
   }) {
     IDataService().setDataBookFetching(
       dataProvider,
@@ -76,6 +75,7 @@ class FetchCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "FetchCommand{includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, reload:$reload ${super.toString()}}";
+    return "FetchCommand{fromRow: $fromRow, rowCount: $rowCount, includeMetaData: $includeMetaData, "
+           "filter: $filter, reload:$reload, setRootKey: $setRootKey, offline: $offline, ${super.toString()}}";
   }
 }

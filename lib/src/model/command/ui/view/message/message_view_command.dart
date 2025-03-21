@@ -16,6 +16,7 @@
 
 import '../../ui_command.dart';
 
+/// This command will show a message view
 class MessageViewCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

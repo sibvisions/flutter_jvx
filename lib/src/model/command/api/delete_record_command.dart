@@ -15,16 +15,14 @@
  */
 
 import '../../request/filter.dart';
+import 'dal_command.dart';
 import 'session_command.dart';
 
-/// This is the jvx command to delete a record.
-class DeleteRecordCommand extends SessionCommand {
+/// This is the command to delete a record.
+class DeleteRecordCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Data provider to delete the row of.
-  final String dataProvider;
 
   /// Filter of this setValues, used in table to edit non selected rows.
   final Filter? filter;
@@ -38,10 +36,11 @@ class DeleteRecordCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DeleteRecordCommand({
-    required this.dataProvider,
+    required super.dataProvider,
     this.filter,
     this.rowNumber,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,6 +49,6 @@ class DeleteRecordCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "DeleteRecordCommand{dataProvider: $dataProvider, filter: $filter, rowNumber: $rowNumber, ${super.toString()}}";
+    return "DeleteRecordCommand{filter: $filter, rowNumber: $rowNumber, ${super.toString()}}";
   }
 }

@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for logout
 class LogoutCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -23,6 +24,7 @@ class LogoutCommand extends SessionCommand {
 
   LogoutCommand({
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

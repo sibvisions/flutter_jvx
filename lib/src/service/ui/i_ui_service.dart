@@ -332,7 +332,7 @@ abstract class IUiService implements Service {
     bool sendFeedback = false,
   });
 
-  void closeMessageDialog(String componentId);
+  void closeMessageDialog(String componentName);
 
   List<JVxDialog> getJVxDialogs();
 

@@ -26,7 +26,7 @@ class SortCommandProcessor extends ICommandProcessor<SortCommand> {
     return IApiService().sendRequest(
       ApiSortRequest(
         dataProvider: command.dataProvider,
-        sortDefinitions: command.sortDefinitions,
+        sortDefinitions: command.sortDefinition,
         columnName: command.columnName,
       ),
     );

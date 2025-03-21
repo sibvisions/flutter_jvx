@@ -14,15 +14,13 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'dal_command.dart';
 
-class SaveDataCommand extends SessionCommand {
+/// The command for save data provider.
+class SaveDataCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Data provider name
-  final String dataProvider;
 
   /// If only the selected row should be saved
   final bool onlySelected;
@@ -32,9 +30,10 @@ class SaveDataCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SaveDataCommand({
-    required this.dataProvider,
+    required super.dataProvider,
     this.onlySelected = true,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +42,6 @@ class SaveDataCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SaveDataCommand{dataProvider: $dataProvider, onlySelected: $onlySelected  ${super.toString()}}";
+    return "SaveDataCommand{onlySelected: $onlySelected  ${super.toString()}}";
   }
 }

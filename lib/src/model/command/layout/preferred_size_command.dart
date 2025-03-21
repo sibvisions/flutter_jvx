@@ -17,6 +17,7 @@
 import '../../layout/layout_data.dart';
 import 'layout_command.dart';
 
+/// The command to set the preferred size of a component.
 class PreferredSizeCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -42,4 +43,5 @@ class PreferredSizeCommand extends LayoutCommand {
   String toString() {
     return "PreferredSizeCommand{layoutData: $layoutData, ${super.toString()}}";
   }
+
 }

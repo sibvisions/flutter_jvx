@@ -17,11 +17,13 @@
 import '../../response/device_status_response.dart';
 import 'layout_command.dart';
 
+/// The command to set the layout mode.
 class LayoutModeCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The layout mode
   final LayoutMode? layoutMode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,4 +43,5 @@ class LayoutModeCommand extends LayoutCommand {
   String toString() {
     return "LayoutModeCommand{layoutMode: $layoutMode, ${super.toString()}}";
   }
+
 }

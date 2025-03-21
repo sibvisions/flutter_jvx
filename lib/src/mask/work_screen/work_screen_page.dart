@@ -196,13 +196,13 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     if (model == null &&
         (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
       future = ICommandService().sendCommand(OpenScreenCommand(
-        screenLongName: item!.screenLongName,
+        longName: item!.screenLongName,
         reason: "Screen was opened inside $runtimeType",
       ));
     } else if (model != null && kIsWeb) {
       future = ICommandService().sendCommand(
         ActivateScreenCommand(
-          componentId: model.name,
+          componentName: model.name,
           reason: "Screen was activated inside $runtimeType",
         ),
       );
@@ -507,14 +507,14 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   BaseCommand _closeScreen() {
     if (isForced) {
       return CloseScreenCommand(
-        reason: "Work screen back",
-        screenName: model!.name,
+        componentName: model!.name,
+        reason: "Work screen back"
       );
     }
 
     return NavigationCommand(
-      reason: "Back button pressed",
-      openScreen: model!.name,
+      componentName: model!.name,
+      reason: "Back button pressed"
     );
   }
 }

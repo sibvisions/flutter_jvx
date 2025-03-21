@@ -14,23 +14,18 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'component_command.dart';
 
-class ActivateScreenCommand extends SessionCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Component id (name actually).
-  final String? componentId;
-
+/// The command to activate a screen.
+class ActivateScreenCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ActivateScreenCommand({
-    this.componentId,
+    required super.componentName,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +34,6 @@ class ActivateScreenCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "ActivateScreenCommand{componentName: $componentId, ${super.toString()}}";
+    return "ActivateScreenCommand{${super.toString()}}";
   }
 }

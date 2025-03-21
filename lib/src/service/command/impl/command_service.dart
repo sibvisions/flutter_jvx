@@ -104,7 +104,7 @@ class CommandService implements ICommandService {
       return _layoutCommandsQueue.add(() => _initCommandProcessing(command, false));
     }
     // Only queue queue commands
-    else if (command is QueueCommand) {
+    else if (command is IQueueCommand) {
       return _commandsQueue.add(() =>
           _initCommandProcessing(command, showDialogOnError, throwFirstErrorCommand, delayUILocking, showLoading));
     }
@@ -306,7 +306,7 @@ class CommandService implements ICommandService {
         if (!isConnectionError && IUiService().clientId.value != null) {
           commands.add(
             FeedbackCommand(
-              type: FeedbackType.error,
+              type: FeedbackType.Error,
               message: IUiService.getErrorMessage(error),
               properties: {
                 "error": error.toString(),
@@ -343,9 +343,9 @@ class CommandService implements ICommandService {
 
   void modifyCommands(List<BaseCommand> commands, BaseCommand origin) {
     commands.whereType<DeleteScreenCommand>().where((deleteScreen) {
-      Set<String> setNamesOfScreen = {deleteScreen.screenName};
+      Set<String> setNamesOfScreen = {deleteScreen.componentName};
 
-      FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: deleteScreen.screenName);
+      FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: deleteScreen.componentName);
       if (screenModel is FlPanelModel) {
         if (screenModel.screenNavigationName != null) {
           setNamesOfScreen.add(screenModel.screenNavigationName!);

@@ -30,12 +30,12 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
   Future<List<BaseCommand>> processCommand(OpenServerErrorDialogCommand command, BaseCommand? origin) async {
     // Will be displayed in Splash if context is null
     if (FlutterUI.getCurrentContext() != null && !command.silentAbort) {
-      // Check if there isn't already another dialog with the same id
-      if (command.componentId == null ||
+      // Check if there isn't already another dialog with the same name
+      if (command.componentName == null ||
           IUiService()
               .getJVxDialogs()
               .whereType<ServerErrorDialog>()
-              .none((dialog) => dialog.command.componentId == command.componentId)) {
+              .none((dialog) => dialog.command.componentName == command.componentName)) {
         IUiService().showJVxDialog(
           ServerErrorDialog(
             command: command,

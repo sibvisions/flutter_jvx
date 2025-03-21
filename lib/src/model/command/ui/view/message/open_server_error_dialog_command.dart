@@ -15,7 +15,7 @@
  */
 
 import '../../../../response/view/message/error_view_response.dart';
-import 'error_command.dart';
+import 'ierror_command.dart';
 import 'message_view_command.dart';
 
 /// This command will open a popup containing the provided message
@@ -25,7 +25,7 @@ class OpenServerErrorDialogCommand extends MessageViewCommand implements ErrorCo
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Name of the message screen used for closing the dialog
-  final String? componentId;
+  final String? componentName;
 
   /// If we should show this error
   final bool silentAbort;
@@ -46,7 +46,7 @@ class OpenServerErrorDialogCommand extends MessageViewCommand implements ErrorCo
   OpenServerErrorDialogCommand({
     super.title,
     super.message,
-    this.componentId,
+    this.componentName,
     this.silentAbort = false,
     this.details,
     this.exceptions,
@@ -60,7 +60,8 @@ class OpenServerErrorDialogCommand extends MessageViewCommand implements ErrorCo
 
   @override
   String toString() {
-    return "OpenErrorDialogCommand{componentId: $componentId, silentAbort: $silentAbort, details: $details, exceptions: $exceptions, invalidApp: $invalidApp, ${super.toString()}}";
+    return "OpenErrorDialogCommand{componentName: $componentName, silentAbort: $silentAbort, details: $details, "
+           "exceptions: $exceptions, invalidApp: $invalidApp, ${super.toString()}}";
   }
 
   @override

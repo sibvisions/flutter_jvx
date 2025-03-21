@@ -25,7 +25,7 @@ class CloseFrameCommandProcessor extends ICommandProcessor<CloseFrameCommand> {
   Future<List<BaseCommand>> processCommand(CloseFrameCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiCloseFrameRequest(
-        frameName: command.frameName,
+        componentId: command.componentName,
       ),
     );
   }

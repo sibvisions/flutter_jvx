@@ -78,7 +78,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
       if (!listViableNavigationNames.contains(openScreenModel.screenNavigationName)) {
         commands.add(
           CloseScreenCommand(
-            screenName: openScreenModel.name,
+            componentName: openScreenModel.name,
             reason: "Screen no longer found in menu item list.",
           ),
         );

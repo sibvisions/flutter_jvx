@@ -17,6 +17,7 @@
 import '../../response/application_settings_response.dart';
 import 'config_command.dart';
 
+/// The command for saving application settings in cache.
 class SaveApplicationSettingsCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

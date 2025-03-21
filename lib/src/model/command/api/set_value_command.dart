@@ -14,17 +14,13 @@
  * the License.
  */
 
-import '../../request/api_set_value_request.dart';
-import 'session_command.dart';
+import 'component_command.dart';
 
-/// Command to set off remote request [ApiSetValueRequest] from components
-class SetValueCommand extends SessionCommand {
+/// The command for setting a value of a text component.
+class SetValueCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Name of the component from which the value is set
-  final String componentName;
 
   /// Value to be set
   final dynamic value;
@@ -34,9 +30,10 @@ class SetValueCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SetValueCommand({
-    required this.componentName,
+    required super.componentName,
     required this.value,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,6 +42,7 @@ class SetValueCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SetValueCommand{componentName: $componentName, value: $value, ${super.toString()}}";
+    return "SetValueCommand{value: $value, ${super.toString()}}";
   }
+
 }

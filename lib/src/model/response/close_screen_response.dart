@@ -26,18 +26,18 @@ class CloseScreenResponse extends ApiResponse {
   ///
   /// Example:
   /// "Sec-BL"
-  final String screenName;
+  final String componentName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CloseScreenResponse({
-    required this.screenName,
+    required this.componentName,
     required super.name,
   });
 
   CloseScreenResponse.fromJson(super.json)
-      : screenName = json[ApiObjectProperty.componentId],
+      : componentName = json[ApiObjectProperty.componentId],
         super.fromJson();
 }

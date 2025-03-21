@@ -38,8 +38,8 @@ class StartupCommand extends ApiCommand {
   StartupCommand({
     this.username,
     this.password,
-    super.showLoading,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,6 +48,6 @@ class StartupCommand extends ApiCommand {
 
   @override
   String toString() {
-    return "StartupCommand{username: $username, ${super.toString()}}";
+    return "StartupCommand{username: $username, password: ${password != null ? '<set>' : 'null'}, ${super.toString()}}";
   }
 }

@@ -15,7 +15,7 @@
  */
 
 import 'ui_command.dart';
-import 'view/message/error_command.dart';
+import 'view/message/ierror_command.dart';
 
 /// This command will open a popup containing the provided message
 class OpenErrorDialogCommand extends UiCommand implements ErrorCommand {
@@ -45,6 +45,7 @@ class OpenErrorDialogCommand extends UiCommand implements ErrorCommand {
 
   /// True if this dialog should be silently ignored.
   final bool silentAbort;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,6 +67,7 @@ class OpenErrorDialogCommand extends UiCommand implements ErrorCommand {
 
   @override
   String toString() {
-    return 'OpenErrorDialogCommand{title: $title, message: $message, error: $error, isTimeout: $isTimeout, dismissible: $dismissible, silentAbort: $silentAbort, reason: $reason}';
+    return "OpenErrorDialogCommand{title: $title, message: $message, error: $error, isTimeout: $isTimeout, "
+           "stackTrace: $stackTrace, dismissible: $dismissible, silentAbort: $silentAbort, ${super.toString()}";
   }
 }

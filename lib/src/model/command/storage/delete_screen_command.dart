@@ -16,17 +16,32 @@
 
 import 'storage_command.dart';
 
+/// The command to delete a screen from cache.
 class DeleteScreenCommand extends StorageCommand {
-  final String screenName;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Whether page should be popped
   bool popPage = true;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   DeleteScreenCommand({
-    required this.screenName,
+    required super.componentName,
     required super.reason,
+    super.showLoading,
   });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   String toString() {
-    return "DeleteScreenCommand{screenName: $screenName, popPage: $popPage, ${super.toString()}}";
+    return "DeleteScreenCommand{popPage: $popPage, ${super.toString()}}";
   }
+
 }

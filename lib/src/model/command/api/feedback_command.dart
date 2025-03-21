@@ -18,12 +18,20 @@ import 'dart:typed_data';
 
 import 'session_command.dart';
 
+/// The feedback types
 enum FeedbackType {
-  user,
-  error,
+  /// User feedback
+  User,
+  /// Error feedback (no user interaction)
+  Error,
 }
 
+/// The command for feedback.
 class FeedbackCommand extends SessionCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// What type of feedback this is.
   final FeedbackType type;
 

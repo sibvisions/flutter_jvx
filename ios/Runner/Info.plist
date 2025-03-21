@@ -80,6 +80,6 @@
 		<key>NSMicrophoneUsageDescription</key>
 		<string>We would like to access your microphone in order to use speech recognition.</string>
 		<key>FlutterDeepLinkingEnabled</key>
-		<true/>
+		<false/>
 	</dict>
 </plist>

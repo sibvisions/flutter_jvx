@@ -14,23 +14,18 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'component_command.dart';
 
-class CloseFrameCommand extends SessionCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Name of the frame(messages) to close
-  final String frameName;
-
+/// The command to close a frame.
+class CloseFrameCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CloseFrameCommand({
-    required this.frameName,
+    required super.componentName,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +34,6 @@ class CloseFrameCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "CloseFrameCommand{frameName: $frameName, ${super.toString()}}";
+    return "CloseFrameCommand{${super.toString()}}";
   }
 }

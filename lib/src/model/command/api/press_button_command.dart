@@ -14,27 +14,19 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'component_command.dart';
 
-///
-/// Issue this command to signify an action has been done.
-///
-class PressButtonCommand extends SessionCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class Members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// The component id that has taken an action.
-  final String componentName;
-
+/// The command for pressing a button.
+class PressButtonCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [PressButtonCommand].
   PressButtonCommand({
-    required this.componentName,
+    required super.componentName,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +35,7 @@ class PressButtonCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "PressButtonCommand{componentName: $componentName, ${super.toString()}}";
+    return "PressButtonCommand{${super.toString()}}";
   }
+
 }

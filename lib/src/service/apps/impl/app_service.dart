@@ -204,14 +204,26 @@ class AppService implements IAppService {
   }
 
   @override
-  Future<void> startCustomApp(ServerConfig customConfig, {String? appTitle, bool force = false, bool autostart = true}) async {
-    App customApp = await App.createAppFromConfig(customConfig);
+  Future<void> startCustomApp({ServerConfig? config, App? app, String? appTitle, bool force = false, bool autostart = true}) async {
+    App? startApp;
+
+    if (app != null) {
+      startApp = app;
+    }
+    else if (config != null) {
+      startApp = await App.createAppFromConfig(config);
+    }
+
+    if (startApp == null) {
+      return;
+    }
+
     BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     bool loggedOut = (state.uri.path.startsWith("/login") || !IUiService().loggedIn());
 
     // Only start app if it isn't already running or the user isn't logged in.
-    if (force || IConfigService().currentApp.value != customApp.id || loggedOut) {
-      await IAppService().startApp(appId: customApp.id, appTitle: appTitle, autostart: autostart);
+    if (force || IConfigService().currentApp.value != startApp.id || loggedOut) {
+      await IAppService().startApp(appId: startApp.id, appTitle: appTitle, autostart: autostart);
     }
   }
 
@@ -297,4 +309,18 @@ class AppService implements IAppService {
       IApiService().setRepository(repository);
     }
   }
+
+  @override
+  bool isLoggedIn(App app)  {
+    BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+    bool loggedIn = !state.uri.path.startsWith("/login") && IUiService().loggedIn();
+
+    return loggedIn && IConfigService().currentApp.value == app.id;
+  }
+
+  @override
+  bool isCurrentApp(App app) {
+    return IConfigService().currentApp.value == app.id;
+  }
+
 }

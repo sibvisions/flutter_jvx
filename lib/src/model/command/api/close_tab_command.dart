@@ -14,31 +14,23 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'tab_command.dart';
 
-class CloseTabCommand extends SessionCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Name of the tab-set panel
-  final String componentName;
-
-  /// Index of the closed tab
-  final int index;
-
+/// The command to close a tab.
+class CloseTabCommand extends TabCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CloseTabCommand({
-    required this.componentName,
-    required this.index,
+    required super.componentName,
+    required super.index,
     required super.reason,
+    super.showLoading,
   });
 
   @override
   String toString() {
-    return "CloseTabCommand{componentName: $componentName, index: $index, ${super.toString()}}";
+    return "CloseTabCommand{${super.toString()}}";
   }
 }

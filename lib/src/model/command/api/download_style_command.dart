@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for style download.
 class DownloadStyleCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

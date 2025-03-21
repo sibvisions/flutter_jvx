@@ -31,7 +31,7 @@ class NavigationCommandProcessor extends ICommandProcessor<NavigationCommand> {
   Future<List<BaseCommand>> processCommand(NavigationCommand command, BaseCommand? origin) async {
     List<BaseCommand> commands = await IApiService().sendRequest(
       ApiNavigationRequest(
-        screenName: command.openScreen,
+        componentId: command.componentName,
       ),
     );
 
@@ -54,7 +54,7 @@ class NavigationCommandProcessor extends ICommandProcessor<NavigationCommand> {
     }
 
     if (closeScreen) {
-      commands.add(CloseScreenCommand(screenName: command.openScreen, reason: "Navigation response was empty"));
+      commands.add(CloseScreenCommand(componentName: command.componentName, reason: "Navigation response was empty"));
     }
 
     return commands;

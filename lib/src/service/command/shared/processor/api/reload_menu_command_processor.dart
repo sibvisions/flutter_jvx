@@ -36,14 +36,14 @@ class ReloadMenuCommandProcessor extends ICommandProcessor<ReloadMenuCommand> {
     if (command.screenLongName != null) {
       if (IUiService().getMenuModel().containsScreen(command.screenLongName!)) {
         unawaited(ICommandService().sendCommand(OpenScreenCommand(
-          screenLongName: command.screenLongName!,
+          longName: command.screenLongName!,
           reason: command.reason,
         )));
       }
     } else if (command.screenClassName != null) {
       if (IUiService().getMenuModel().getMenuItemByClassName(command.screenClassName!) != null) {
         unawaited(ICommandService().sendCommand(OpenScreenCommand(
-          screenClassName: command.screenClassName!,
+          className: command.screenClassName!,
           reason: command.reason,
         )));
       }

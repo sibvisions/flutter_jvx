@@ -77,7 +77,7 @@ import '../../../../model/request/api_save_data_request.dart';
 import '../../../../model/request/api_rollback_request.dart';
 import '../../../../model/request/api_save_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
-import '../../../../model/request/api_select_tree_request.dart';
+import '../../../../model/request/api_select_record_tree_request.dart';
 import '../../../../model/request/api_set_parameter.dart';
 import '../../../../model/request/api_set_screen_parameter.dart';
 import '../../../../model/request/api_set_value_request.dart';
@@ -166,7 +166,7 @@ class OnlineApiRepository extends IRepository {
     ApiFetchRequest: (_) => APIRoute.POST_FETCH,
     ApiLogoutRequest: (_) => APIRoute.POST_LOGOUT,
     ApiFilterRequest: (_) => APIRoute.POST_FILTER,
-    ApiSelectTreeRequest: (_) => APIRoute.POST_SELECT_TREE,
+    ApiSelectRecordTreeRequest: (_) => APIRoute.POST_SELECT_TREE,
     ApiInsertRecordRequest: (_) => APIRoute.POST_INSERT_RECORD,
     ApiSelectRecordRequest: (_) => APIRoute.POST_SELECT_RECORD,
     ApiCloseScreenRequest: (_) => APIRoute.POST_CLOSE_SCREEN,
@@ -484,14 +484,13 @@ class OnlineApiRepository extends IRepository {
               if (screenLongName != null) {
                 ICommandService().sendCommand(
                   OpenScreenCommand(
-                    screenClassName: className,
+                    className: className,
                     reason: "Open screen because server sent dyn:previewScreen",
                   ),
                 );
               } else {
                 ICommandService().sendCommand(
                   ReloadMenuCommand(
-                    screenClassName: className,
                     reason: "Reload menu because server sent dyn:previewScreen and screen was unknown",
                   ),
                 );
@@ -507,7 +506,7 @@ class OnlineApiRepository extends IRepository {
                 ICommandService().sendCommand(
                   OpenScreenCommand(
                     reopen: true,
-                    screenClassName: className,
+                    className: className,
                     reason: "Reload/Reopen screen because server sent api/reopenScreen",
                   ),
                 );

@@ -14,15 +14,13 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'dal_command.dart';
 
-class RestoreDataCommand extends SessionCommand {
+/// The command for restore data provider.
+class RestoreDataCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Data provider name
-  final String dataProvider;
 
   /// If only the selected row should be restored
   final bool onlySelected;
@@ -32,9 +30,10 @@ class RestoreDataCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   RestoreDataCommand({
-    required this.dataProvider,
+    required super.dataProvider,
     this.onlySelected = true,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +42,6 @@ class RestoreDataCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "RestoreDataCommand{dataProvider: $dataProvider, onlySelected: $onlySelected  ${super.toString()}}";
+    return "RestoreDataCommand{onlySelected: $onlySelected  ${super.toString()}}";
   }
 }

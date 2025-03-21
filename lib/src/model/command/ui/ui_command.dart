@@ -17,11 +17,16 @@
 import '../../../service/ui/i_ui_service.dart';
 import '../base_command.dart';
 
-/// BaseType of any command interacting with the [IUiService]
+/// The base command for interactions with [IUiService].
 abstract class UiCommand extends BaseCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   UiCommand({
     required super.reason,
     super.showLoading = false,
     super.delayUILocking = false,
   });
+
 }

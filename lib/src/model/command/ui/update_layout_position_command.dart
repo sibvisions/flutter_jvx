@@ -17,9 +17,18 @@
 import '../../layout/layout_data.dart';
 import 'ui_command.dart';
 
+/// This command will update the layout position in cache.
 class UpdateLayoutPositionCommand extends UiCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// List of position data
   final List<LayoutData> layoutDataList;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   UpdateLayoutPositionCommand({
     required this.layoutDataList,
@@ -30,6 +39,10 @@ class UpdateLayoutPositionCommand extends UiCommand {
         layoutDataList[i].preparedForSubmission = true;
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   String toString() {

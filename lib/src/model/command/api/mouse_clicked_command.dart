@@ -16,18 +16,20 @@
 
 import 'mouse_command.dart';
 
+/// The command for mouse clicked
 class MouseClickedCommand extends MouseCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   MouseClickedCommand({
-    required super.reason,
     required super.componentName,
     super.button,
     super.clickCount,
     super.x,
     super.y,
+    required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,6 +38,6 @@ class MouseClickedCommand extends MouseCommand {
 
   @override
   String toString() {
-    return "MouseClickedCommand{componentName: $componentName, button: $button, x: $x, y: $y, clickCount: $clickCount, ${super.toString()}}";
+    return "MouseClickedCommand{${super.toString()}}";
   }
 }

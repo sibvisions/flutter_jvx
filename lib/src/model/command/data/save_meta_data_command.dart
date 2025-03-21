@@ -17,7 +17,7 @@
 import '../../response/dal_meta_data_response.dart';
 import 'data_command.dart';
 
-/// Command to save a [DalMetaDataResponse]
+/// The command to save metatada in cache.
 class SaveMetaDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -33,6 +33,7 @@ class SaveMetaDataCommand extends DataCommand {
   SaveMetaDataCommand({
     required this.response,
     required super.reason,
+    super.showLoading,
   });
 
   @override

@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for save all.
 class SaveCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

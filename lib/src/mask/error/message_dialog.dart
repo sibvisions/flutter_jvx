@@ -135,19 +135,19 @@ class _MessageDialogState extends State<MessageDialog> {
   }
 
   void close() {
-    ICommandService().sendCommand(CloseFrameCommand(frameName: _command.componentId, reason: "Message Dialog was dismissed"));
+    ICommandService().sendCommand(CloseFrameCommand(componentName: _command.componentName, reason: "Message Dialog was dismissed"));
   }
 
-  void _pressButton(BuildContext context, String componentId) {
+  void _pressButton(BuildContext context, String componentName) {
     List<BaseCommand> commands = [];
 
     if (_command.dataProvider != null
-        && (componentId == _command.okComponentId || componentId == _command.notOkComponentId)) {
+        && (componentName == _command.okComponentName || componentName == _command.notOkComponentName)) {
       commands.add(SetValuesCommand(dataProvider: _command.dataProvider!, columnNames: [_command.columnName!], values: [inputController.text],
           reason: "Value of ${_command.id} set to ${inputController.text}"));
     }
 
-    commands.add(PressButtonCommand(componentName: componentId, reason: "Button has been pressed"));
+    commands.add(PressButtonCommand(componentName: componentName, reason: "Button has been pressed"));
 
     ICommandService().sendCommands(commands, abortOnFirstError: true);
   }
@@ -245,7 +245,7 @@ class _MessageDialogState extends State<MessageDialog> {
         buttonList.addAll([
           _getYesButton(context),
           TextButton(
-            onPressed: () => _pressButton(context, _command.notOkComponentId!),
+            onPressed: () => _pressButton(context, _command.notOkComponentName!),
             child: Text(_command.notOkText ?? FlutterUI.translate("No")),
           ),
           _getCancelButton(context),
@@ -255,7 +255,7 @@ class _MessageDialogState extends State<MessageDialog> {
         buttonList.addAll([
           _getYesButton(context),
           TextButton(
-            onPressed: () => _pressButton(context, _command.cancelComponentId!),
+            onPressed: () => _pressButton(context, _command.cancelComponentName!),
             child: Text(_command.cancelText ?? FlutterUI.translate("No")),
           ),
         ]);
@@ -267,7 +267,7 @@ class _MessageDialogState extends State<MessageDialog> {
       case MessageDialog.MESSAGE_BUTTON_OK:
         buttonList.add(
           TextButton(
-            onPressed: () => _pressButton(context, _command.okComponentId!),
+            onPressed: () => _pressButton(context, _command.okComponentName!),
             child: Text(_command.okText ?? FlutterUI.translate("OK")),
           ),
         );
@@ -281,14 +281,14 @@ class _MessageDialogState extends State<MessageDialog> {
 
   Widget _getYesButton(BuildContext context) {
     return TextButton(
-      onPressed: () => _pressButton(context, _command.okComponentId!),
+      onPressed: () => _pressButton(context, _command.okComponentName!),
       child: Text(_command.okText ?? FlutterUI.translate("Yes")),
     );
   }
 
   Widget _getCancelButton(BuildContext context) {
     return TextButton(
-      onPressed: () => _pressButton(context, _command.cancelComponentId!),
+      onPressed: () => _pressButton(context, _command.cancelComponentName!),
       child: Text(_command.cancelText ?? FlutterUI.translate("Cancel")),
     );
   }

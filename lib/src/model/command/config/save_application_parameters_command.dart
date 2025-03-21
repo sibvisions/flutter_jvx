@@ -17,6 +17,7 @@
 import '../../response/application_parameters_response.dart';
 import 'config_command.dart';
 
+/// The command for saving application parameters in cache.
 class SaveApplicationParametersCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -42,4 +43,5 @@ class SaveApplicationParametersCommand extends ConfigCommand {
   String toString() {
     return "SaveApplicationParametersCommand{parameters: $parameters, ${super.toString()}}";
   }
+
 }

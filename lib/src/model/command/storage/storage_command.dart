@@ -16,10 +16,28 @@
 
 import '../base_command.dart';
 
-/// BaseType of any command interacting with the [IStorageService]
+/// The base command for interactions with [IStorageService]
 abstract class StorageCommand extends BaseCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The name
+  final String componentName;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   StorageCommand({
+    String? componentName,
     required super.reason,
     super.showLoading,
-  });
+  }) : componentName = componentName ?? "";
+
+  @override
+  String toString() {
+    return "componentName: $componentName, ${super.toString()}}";
+  }
+
 }

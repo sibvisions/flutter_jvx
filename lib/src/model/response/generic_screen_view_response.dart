@@ -26,7 +26,7 @@ class GenericScreenViewResponse extends ApiResponse {
   ///
   /// Example:
   /// "Sec-BL"
-  final String screenName;
+  final String componentName;
 
   /// List of all changed and new components
   final List<dynamic>? changedComponents;
@@ -40,7 +40,7 @@ class GenericScreenViewResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   GenericScreenViewResponse({
-    required this.screenName,
+    required this.componentName,
     required this.changedComponents,
     required this.home,
     required this.update,
@@ -48,7 +48,7 @@ class GenericScreenViewResponse extends ApiResponse {
   });
 
   GenericScreenViewResponse.fromJson(super.json)
-      : screenName = json[ApiObjectProperty.componentId],
+      : componentName = json[ApiObjectProperty.componentId],
         changedComponents = json[ApiObjectProperty.changedComponents],
         update = json[ApiObjectProperty.update],
         home = json[ApiObjectProperty.home],

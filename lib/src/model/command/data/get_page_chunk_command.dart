@@ -15,40 +15,30 @@
  */
 
 import '../../data/subscriptions/data_subscription.dart';
-import 'data_command.dart';
+import 'dataprovider_data_command.dart';
 
-class GetPageChunkCommand extends DataCommand {
+/// The command to get page chunk (from cache).
+class GetPageChunkCommand extends DataProviderDataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the [DataSubscription] requesting data
-  final String subId;
-
   /// Key of the page that is being requested
   final String pageKey;
-
-  /// Link to the dataBook containing the data
-  final String dataProvider;
-
-  /// From which index data is being requested
-  final int from;
-
-  /// To which index data is being requested
-  final int? to;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   GetPageChunkCommand({
+    required super.dataProvider,
     required this.pageKey,
-    required this.dataProvider,
-    required this.from,
-    required this.subId,
-    this.to,
+    required super.from,
+    required super.subId,
+    super.to,
     required super.reason,
-  });
+    super.showLoading,
+  }) : assert(subId != null), assert(from != null);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -56,6 +46,7 @@ class GetPageChunkCommand extends DataCommand {
 
   @override
   String toString() {
-    return "GetPageChunkCommand{subId: $subId, dataProvider: $dataProvider, from: $from, to: $to, ${super.toString()}}";
+    return "GetPageChunkCommand{pageKey: $pageKey, ${super.toString()}}";
   }
+
 }

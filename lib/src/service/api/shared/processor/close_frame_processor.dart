@@ -25,7 +25,7 @@ class CloseFrameProcessor implements IResponseProcessor<CloseFrameResponse> {
   List<BaseCommand> processResponse(CloseFrameResponse pResponse, ApiRequest? pRequest) {
     return [
       DeleteFrameCommand(
-        componentId: pResponse.componentId,
+        componentName: pResponse.componentId,
         reason: "Server sent CloseFrame",
       ),
     ];

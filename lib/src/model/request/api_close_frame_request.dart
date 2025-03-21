@@ -23,14 +23,14 @@ class ApiCloseFrameRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Name of the frame(messages) to close
-  final String frameName;
+  final String componentId;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiCloseFrameRequest({
-    required this.frameName,
+    required this.componentId,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,6 +40,6 @@ class ApiCloseFrameRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.componentId: frameName,
+        ApiObjectProperty.componentId: componentId,
       };
 }

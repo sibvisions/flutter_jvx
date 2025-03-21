@@ -74,7 +74,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
     DalMetaData metaData = IDataService().getMetaData(command.dataProvider)!;
 
     IUiService().sendSubsMetaData(
-      pSubId: command.subId,
+      pSubId: command.subId!,
       pDataProvider: command.dataProvider,
       pMetaData: metaData,
     );
@@ -85,8 +85,8 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   Future<List<BaseCommand>> _deleteDataProviderData(DeleteProviderDataCommand command) async {
     IDataService().deleteDataFromDataBook(
       pDataProvider: command.dataProvider,
-      pFrom: command.fromIndex,
-      pTo: command.toIndex,
+      pFrom: command.from,
+      pTo: command.to,
       pDeleteAll: command.deleteAll,
     );
 
@@ -129,7 +129,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
     );
 
     IUiService().sendSubsSelectedData(
-      pSubId: pCommand.subId,
+      pSubId: pCommand.subId!,
       pDataProvider: pCommand.dataProvider,
       pDataRow: record,
     );
@@ -139,7 +139,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
 
   Future<List<BaseCommand>> _getDataChunk(GetDataChunkCommand command) async {
     bool needFetch = IDataService().dataBookNeedsFetch(
-      pFrom: command.from,
+      pFrom: command.from!,
       pTo: command.to,
       pDataProvider: command.dataProvider,
     );
@@ -148,7 +148,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
       bool includeMetaData = IDataService().getDataBook(command.dataProvider) == null;
 
       DataBook? dataBook = IDataService().getDataBook(command.dataProvider);
-      int fromRow = dataBook?.records.keys.maxOrNull ?? command.from;
+      int fromRow = dataBook?.records.keys.maxOrNull ?? command.from!;
 
       return [
         FetchCommand(
@@ -163,7 +163,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
 
     DataChunk dataChunk = IDataService().getDataChunk(
       pColumnNames: command.dataColumns,
-      pFrom: command.from,
+      pFrom: command.from!,
       pTo: command.to,
       pDataProvider: command.dataProvider,
       pFromStart : command.fromStart
@@ -172,14 +172,14 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
     IUiService().sendSubsDataChunk(
       pDataChunk: dataChunk,
       pDataProvider: command.dataProvider,
-      pSubId: command.subId,
+      pSubId: command.subId!,
     );
     return [];
   }
 
   Future<List<BaseCommand>> _getPageChunk(GetPageChunkCommand command) async {
     DataChunk dataChunk = IDataService().getDataChunk(
-      pFrom: command.from,
+      pFrom: command.from!,
       pTo: command.to,
       pDataProvider: command.dataProvider,
       pPageKey: command.pageKey,
@@ -188,7 +188,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
     IUiService().sendSubsPageChunk(
       pDataChunk: dataChunk,
       pDataProvider: command.dataProvider,
-      pSubId: command.subId,
+      pSubId: command.subId!,
       pPageKey: command.pageKey,
     );
     return [];

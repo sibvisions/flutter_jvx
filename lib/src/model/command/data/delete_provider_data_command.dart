@@ -14,24 +14,16 @@
  * the License.
  */
 
-import 'data_command.dart';
+import 'dataprovider_data_command.dart';
 
-class DeleteProviderDataCommand extends DataCommand {
+/// The command to delete records from cache.
+class DeleteProviderDataCommand extends DataProviderDataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Data provider from which data will be deleted
-  final String dataProvider;
-
-  /// Records will be deleted starting from this index
-  final int? fromIndex;
-
-  /// Records will be deleted to this index
-  final int? toIndex;
-
   /// If true all other properties will be ignored and
-  /// all data in [dataProvider] will be deleted
+  /// all data in [dataProvider] will be deleted.
   final bool? deleteAll;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,11 +31,12 @@ class DeleteProviderDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DeleteProviderDataCommand({
-    required this.dataProvider,
+    required super.dataProvider,
+    super.from,
+    super.to,
     this.deleteAll,
-    this.fromIndex,
-    this.toIndex,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,6 +45,6 @@ class DeleteProviderDataCommand extends DataCommand {
 
   @override
   String toString() {
-    return "DeleteProviderDataCommand{dataProvider: $dataProvider, fromIndex: $fromIndex, toIndex: $toIndex, deleteAll: $deleteAll, ${super.toString()}}";
+    return "DeleteProviderDataCommand{deleteAll: $deleteAll, ${super.toString()}}";
   }
 }

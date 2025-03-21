@@ -25,7 +25,7 @@ class SetScreenParameterCommandProcessor extends ICommandProcessor<SetScreenPara
   Future<List<BaseCommand>> processCommand(SetScreenParameterCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiSetScreenParameter(
-        screenLongName: command.screenLongName,
+        componentId: command.componentName,
         parameter: command.parameter,
       ),
     );

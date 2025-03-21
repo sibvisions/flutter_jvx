@@ -85,7 +85,7 @@ abstract class PushUtil {
 
       var notificationConfig = PushUtil.handleNotificationData(data);
       if (notificationConfig != null) {
-        unawaited(IAppService().startCustomApp(notificationConfig, force: true));
+        unawaited(IAppService().startCustomApp(config: notificationConfig, force: true));
       } else {
         // Potentially check for current app == notification app and send it.
         // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});
@@ -104,7 +104,7 @@ abstract class PushUtil {
 
     var notificationConfig = PushUtil.handleNotificationData(data);
     if (notificationConfig != null) {
-      unawaited(IAppService().startCustomApp(notificationConfig, force: true));
+      unawaited(IAppService().startCustomApp(config: notificationConfig, force: true));
     } else {
       // Potentially check for current app == notification app and send it.
       // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});

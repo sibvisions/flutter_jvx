@@ -14,23 +14,18 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'component_command.dart';
 
-class FocusGainedCommand extends SessionCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Name of the component from which the value is set
-  final String componentName;
-
+/// The command for focus gained.
+class FocusGainedCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FocusGainedCommand({
-    required this.componentName,
+    required super.componentName,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +34,6 @@ class FocusGainedCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "FocusGainedCommand{componentName: $componentName, ${super.toString()}}";
+    return "FocusGainedCommand{${super.toString()}}";
   }
 }

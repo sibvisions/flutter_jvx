@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for template download.
 class DownloadTemplatesCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

@@ -34,8 +34,8 @@ class OpenScreenCommandProcessor extends ICommandProcessor<OpenScreenCommand> {
   Future<List<BaseCommand>> processCommand(OpenScreenCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiOpenScreenRequest(
-        screenLongName: command.screenLongName,
-        screenClassName: command.screenClassName,
+        screenLongName: command.longName,
+        screenClassName: command.className,
         parameter: command.parameter,
         reopen: command.reopen,
       ),

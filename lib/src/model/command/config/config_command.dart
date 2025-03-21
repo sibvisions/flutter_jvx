@@ -17,8 +17,12 @@
 import '../../../service/config/i_config_service.dart';
 import '../base_command.dart';
 
-/// BaseType of any command interacting with the [IConfigService]
+/// The base command for interactions with [IConfigService].
 abstract class ConfigCommand extends BaseCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   ConfigCommand({
     required super.reason,
     super.showLoading = false,

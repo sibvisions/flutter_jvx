@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// This is the command for updating the device status.
 class DeviceStatusCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

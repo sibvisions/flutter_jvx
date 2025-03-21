@@ -24,26 +24,20 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The value notifier for changes
+  late ValueNotifier<OpenMessageDialogCommand> current;
+
   /// Name of the message screen used for closing the message
-  final String componentId;
-
-  /// If the dialog should be closeable
-  final bool closable;
-
-  /// Types of button to be displayed
-  final int buttonType;
-
-  /// Types of icon to be displayed
-  final int iconType;
+  final String componentName;
 
   /// Name of the ok button
-  final String? okComponentId;
+  final String? okComponentName;
 
   /// Name of the not ok button
-  final String? notOkComponentId;
+  final String? notOkComponentName;
 
   /// Name of the cancel button
-  final String? cancelComponentId;
+  final String? cancelComponentName;
 
   /// Text of the ok button
   final String? okText;
@@ -63,7 +57,14 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   /// The column name of dataProvider
   final String? columnName;
 
-  late ValueNotifier<OpenMessageDialogCommand> current;
+  /// If the dialog should be closeable
+  final bool closable;
+
+  /// Types of button to be displayed
+  final int buttonType;
+
+  /// Types of icon to be displayed
+  final int iconType;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -72,13 +73,13 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   OpenMessageDialogCommand({
     super.title,
     super.message,
-    required this.componentId,
+    required this.componentName,
     required this.closable,
     required this.buttonType,
     required this.iconType,
-    required this.okComponentId,
-    required this.notOkComponentId,
-    required this.cancelComponentId,
+    required this.okComponentName,
+    required this.notOkComponentName,
+    required this.cancelComponentName,
     this.okText,
     this.notOkText,
     this.cancelText,
@@ -96,11 +97,11 @@ class OpenMessageDialogCommand extends MessageViewCommand {
 
   @override
   String toString() {
-    return "OpenMessageDialogCommand{componentId: $componentId, "
+    return "OpenMessageDialogCommand{componentName: $componentName, "
            "closable: $closable, buttonType: $buttonType, "
-           "okComponentId: $okComponentId, notOkComponentId: $notOkComponentId, "
-           "cancelComponentId: $cancelComponentId, okText: $okText, "
-           "notOkText: $notOkText, cancelText: $cancelText, "
+           "iconType: $iconType, okComponentName: $okComponentName, "
+           "notOkComponentName: $notOkComponentName, cancelComponentName: $cancelComponentName, "
+           "okText: $okText, notOkText: $notOkText, cancelText: $cancelText, "
            "dataProvider: $dataProvider, columnName: $columnName,"
            "inputLabel: $inputLabel, ${super.toString()}";
   }

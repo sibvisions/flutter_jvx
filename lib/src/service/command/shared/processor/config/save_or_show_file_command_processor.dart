@@ -42,7 +42,7 @@ class SaveOrShowFileCommandProcessor extends ICommandProcessor<SaveOrShowFileCom
         FileSaver.instance
             .saveFile(
           name: path.basenameWithoutExtension(command.fileName),
-          bytes: command.bodyBytes,
+          bytes: command.content,
           ext: extension,
           mimeType: MimeType.other,
         )
@@ -56,7 +56,7 @@ class SaveOrShowFileCommandProcessor extends ICommandProcessor<SaveOrShowFileCom
       unawaited(
         FileSaver.instance.saveAs(
           name: path.basenameWithoutExtension(command.fileName),
-          bytes: command.bodyBytes,
+          bytes: command.content,
           ext: extension,
           mimeType: MimeType.other,
         ),

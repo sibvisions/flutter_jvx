@@ -14,15 +14,13 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'component_command.dart';
 
-class SetScreenParameterCommand extends SessionCommand {
+/// The command for setting screen parameter.
+class SetScreenParameterCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Component id.
-  final String? screenLongName;
 
   /// Parameters to add to the request.
   final Map<String, dynamic> parameter;
@@ -32,9 +30,10 @@ class SetScreenParameterCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SetScreenParameterCommand({
-    this.screenLongName,
+    required super.componentName,
     required this.parameter,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +42,7 @@ class SetScreenParameterCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SetScreenParameterCommand{screenLongName: $screenLongName, parameter: $parameter, ${super.toString()}}";
+    return "SetScreenParameterCommand{parameter: $parameter, ${super.toString()}}";
   }
+
 }

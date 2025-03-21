@@ -16,21 +16,18 @@
 
 import '../../../util/sort_list.dart';
 import '../../request/api_set_values_request.dart';
-import 'session_command.dart';
+import 'dal_command.dart';
 
-/// Command to set off remote request [ApiSetValuesRequest]
-class SortCommand extends SessionCommand {
+/// The command for setting sort of data provider.
+class SortCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// DataRow or DataProvider of the component
-  final String dataProvider;
-
   /// List of columns to sort
-  final SortList sortDefinitions;
+  final SortList sortDefinition;
 
-  /// The column which got sorted
+  /// The column which got sorted (and should be selected)
   final String? columnName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,10 +35,11 @@ class SortCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SortCommand({
-    required this.dataProvider,
-    required this.sortDefinitions,
+    required super.dataProvider,
+    required this.sortDefinition,
     this.columnName,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,6 +48,6 @@ class SortCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SortCommand{dataProvider: $dataProvider, sortDefinitions: $sortDefinitions, columnName: $columnName, ${super.toString()}}";
+    return "SortCommand{sortDefinition: $sortDefinition, columnName: $columnName, ${super.toString()}}";
   }
 }

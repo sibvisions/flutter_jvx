@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for reloading all.
 class ReloadCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

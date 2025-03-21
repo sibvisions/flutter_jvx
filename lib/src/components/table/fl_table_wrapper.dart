@@ -693,7 +693,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
 
     return SortCommand(
-        dataProvider: model.dataProvider, sortDefinitions: sort, reason: "sorted", columnName: pColumnName);
+        dataProvider: model.dataProvider, sortDefinition: sort, reason: "sorted", columnName: pColumnName);
   }
 
   void _sortColumn(String pColumnName, [bool pAdditive = false]) {

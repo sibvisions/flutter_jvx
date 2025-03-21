@@ -16,14 +16,11 @@
 
 import 'ui_command.dart';
 
-/// Command to update components.
+/// This command will update components cache.
 class UpdateComponentsCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// The screen name that caused this update.
-  final bool notifyDesktopPanel;
 
   /// List of components whose model changed
   final List<String> changedComponents;
@@ -33,6 +30,9 @@ class UpdateComponentsCommand extends UiCommand {
 
   /// The affected component models.
   final Set<String> affectedComponents;
+
+  /// Whether to notify the desktop panel.
+  final bool notifyDesktopPanel;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -52,6 +52,7 @@ class UpdateComponentsCommand extends UiCommand {
 
   @override
   String toString() {
-    return "UpdateComponentsCommand{changedComponents: $changedComponents, deletedComponents: $deletedComponents, affectedComponents: $affectedComponents, ${super.toString()}}";
+    return "UpdateComponentsCommand{changedComponents: $changedComponents, deletedComponents: $deletedComponents, "
+           "affectedComponents: $affectedComponents, notifyDesktopPanel: $notifyDesktopPanel, ${super.toString()}}";
   }
 }

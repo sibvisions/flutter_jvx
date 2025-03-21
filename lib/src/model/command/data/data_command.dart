@@ -16,8 +16,12 @@
 
 import '../base_command.dart';
 
-/// BaseType of any command interacting with the [IDataService]
+/// The base command for interactions with [IDataService].
 abstract class DataCommand extends BaseCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   DataCommand({
     required super.reason,
     super.showLoading,

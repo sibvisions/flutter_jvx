@@ -14,14 +14,11 @@
  * the License.
  */
 
-import 'dart:async';
-
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../mask/apps/app_overview_page.dart';
 import '../../mask/login/login_page.dart';
@@ -30,9 +27,7 @@ import '../../mask/setting/settings_page.dart';
 import '../../mask/work_screen/work_screen_page.dart';
 import '../../model/command/api/login_command.dart';
 import '../../service/apps/i_app_service.dart';
-import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
-import '../../util/parse_util.dart';
 
 /// Displays all possible screens of the menu
 class MainLocation extends BeamLocation<BeamState> {
@@ -56,8 +51,6 @@ class MainLocation extends BeamLocation<BeamState> {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     FlutterUI.logUI.d("Building main location");
-
-    _handleRoutes(context, Map.of(state.queryParameters));
 
     List<BeamPage> pages = [];
 
@@ -127,17 +120,6 @@ class MainLocation extends BeamLocation<BeamState> {
     lastPage = pages.lastOrNull;
 
     return pages;
-  }
-
-  void _handleRoutes(BuildContext context, Map<String, String> queryParameters) {
-    ServerConfig? deepLinkConfig = ParseUtil.extractAppParameters(queryParameters);
-
-    if (deepLinkConfig != null) {
-      bool startedManually = bool.tryParse(queryParameters.remove("startedManually") ?? "") ?? false;
-      IConfigService().setCustomStartupProperties(queryParameters);
-
-      unawaited(IAppService().startCustomApp(deepLinkConfig, appTitle: IConfigService().title.value, autostart: !startedManually));
-    }
   }
 
   void _updateLoginMode(BeamState state) {

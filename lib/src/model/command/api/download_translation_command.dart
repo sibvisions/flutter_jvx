@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for translation download.
 class DownloadTranslationCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

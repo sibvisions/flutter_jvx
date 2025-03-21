@@ -17,6 +17,7 @@
 import '../../layout/layout_data.dart';
 import 'layout_command.dart';
 
+/// The command to register a container.
 class RegisterParentCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

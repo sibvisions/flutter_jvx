@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for image download.
 class DownloadImagesCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

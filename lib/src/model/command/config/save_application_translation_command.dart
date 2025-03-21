@@ -18,11 +18,13 @@ import 'package:archive/archive.dart';
 
 import 'config_command.dart';
 
+/// The command for saving application translation locally.
 class SaveApplicationTranslationCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The translations
   final List<ArchiveFile> translations;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

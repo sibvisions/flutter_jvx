@@ -18,6 +18,7 @@ import 'package:cross_file/cross_file.dart';
 
 import 'session_command.dart';
 
+/// The command for uploading data.
 class UploadCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -47,4 +48,5 @@ class UploadCommand extends SessionCommand {
   String toString() {
     return "UploadCommand{fileId: $fileId, file: $file, reason: $reason}";
   }
+
 }

@@ -16,15 +16,13 @@
 
 import '../../data/filter_condition.dart';
 import '../../request/filter.dart';
-import 'session_command.dart';
+import 'dal_command.dart';
 
-class FilterCommand extends SessionCommand {
+/// The command for record filtering.
+class FilterCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Data provider to filter
-  final String dataProvider;
 
   /// A simple filter to apply
   final Filter? filter;
@@ -46,9 +44,10 @@ class FilterCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FilterCommand({
-    required this.dataProvider,
+    required super.dataProvider,
     this.filter,
     this.filterCondition,
+    super.showLoading,
     required super.reason,
   })  : editorComponentId = null,
         value = null,
@@ -59,8 +58,9 @@ class FilterCommand extends SessionCommand {
         );
 
   FilterCommand.none({
-    required this.dataProvider,
+    required super.dataProvider,
     this.editorComponentId,
+    super.showLoading,
     required super.reason,
   })  : filter = null,
         filterCondition = null,
@@ -68,10 +68,11 @@ class FilterCommand extends SessionCommand {
         columnNames = null;
 
   FilterCommand.byValue({
-    required this.dataProvider,
+    required super.dataProvider,
     required this.editorComponentId,
     required this.value,
     required this.columnNames,
+    super.showLoading,
     required super.reason,
   })  : filter = null,
         filterCondition = null;
@@ -82,6 +83,6 @@ class FilterCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "FilterCommand{editorComponentId: $editorComponentId, value: $value, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, dataProvider: $dataProvider, ${super.toString()}}";
+    return "FilterCommand{editorComponentId: $editorComponentId, value: $value, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, ${super.toString()}}";
   }
 }

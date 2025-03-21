@@ -17,6 +17,7 @@
 import '../../response/application_meta_data_response.dart';
 import 'config_command.dart';
 
+/// The command for saving application metadata in cache.
 class SaveApplicationMetaDataCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -42,4 +43,5 @@ class SaveApplicationMetaDataCommand extends ConfigCommand {
   String toString() {
     return "SaveApplicationMetaDataCommand{metaData: $metaData, ${super.toString()}}";
   }
+
 }

@@ -16,16 +16,17 @@
 
 import 'session_command.dart';
 
+/// The command for opening a screen.
 class OpenScreenCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Component id.
-  final String? screenLongName;
+  final String? longName;
 
   /// Class name of the screen
-  final String? screenClassName;
+  final String? className;
 
   /// Parameters to add to the request.
   final Map<String, dynamic>? parameter;
@@ -38,8 +39,8 @@ class OpenScreenCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenScreenCommand({
-    this.screenLongName,
-    this.screenClassName,
+    this.longName,
+    this.className,
     this.parameter,
     this.reopen = false,
     required super.reason,
@@ -51,6 +52,6 @@ class OpenScreenCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "OpenScreenCommand{screenLongName: $screenLongName, ${super.toString()}}";
+    return "OpenScreenCommand{longName: $longName, className: $className, parameter: $parameter, reopen: $reopen, ${super.toString()}}";
   }
 }

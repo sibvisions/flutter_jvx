@@ -53,7 +53,7 @@ import '../../../../../model/command/api/rollback_command.dart';
 import '../../../../../model/command/api/save_command.dart';
 import '../../../../../model/command/api/save_data_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
-import '../../../../../model/command/api/select_tree_command.dart';
+import '../../../../../model/command/api/select_record_tree_command.dart';
 import '../../../../../model/command/api/set_parameter_command.dart';
 import '../../../../../model/command/api/set_screen_parameter_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
@@ -101,7 +101,7 @@ import 'rollback_command_processor.dart';
 import 'save_command_processor.dart';
 import 'save_data_processor.dart';
 import 'select_record_command_processor.dart';
-import 'select_tree_command_processor.dart';
+import 'select_record_tree_command_processor.dart';
 import 'set_parameter_command_processor.dart';
 import 'set_screen_parameter_command_processor.dart';
 import 'set_value_command_processor.dart';
@@ -162,7 +162,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final SortCommandProcessor _sortProcessor = SortCommandProcessor();
   final RestoreDataCommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
   final SaveDataCommandProcessor _saveDataProcessor = SaveDataCommandProcessor();
-  final SelectTreeCommandProcessor _selectTreeCommand = SelectTreeCommandProcessor();
+  final SelectRecordTreeCommandProcessor _selectRecordTreeCommand = SelectRecordTreeCommandProcessor();
 
   final MouseCommandProcessor _mouseProcessor = MouseCommandProcessor();
   final FocusGainedCommandProcessor _focusGainedProcessor = FocusGainedCommandProcessor();
@@ -258,8 +258,8 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _restoreDataProcessor;
     } else if (command is SaveDataCommand) {
       return _saveDataProcessor;
-    } else if (command is SelectTreeCommand) {
-      return _selectTreeCommand;
+    } else if (command is SelectRecordTreeCommand) {
+      return _selectRecordTreeCommand;
     } else if (command is CloseContentCommand) {
       return _closeContentProcessor;
     }

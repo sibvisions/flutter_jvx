@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for rollback all.
 class RollbackCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

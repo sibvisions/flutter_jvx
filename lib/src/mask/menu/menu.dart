@@ -152,7 +152,7 @@ abstract class Menu extends StatelessWidget {
     if (model != null) {
       ICommandService()
           .sendCommand(
-        ActivateScreenCommand(reason: "menu item clicked", componentId: model.name),
+        ActivateScreenCommand(reason: "menu item clicked", componentName: model.name),
       )
           .then((success) {
         if (success) {
@@ -161,7 +161,7 @@ abstract class Menu extends StatelessWidget {
       });
     } else {
       ICommandService().sendCommand(
-        OpenScreenCommand(reason: "menu item clicked", screenLongName: item.screenLongName),
+        OpenScreenCommand(reason: "menu item clicked", longName: item.screenLongName),
       );
     }
   }
@@ -179,7 +179,7 @@ abstract class Menu extends StatelessWidget {
           await ICommandService()
               .sendCommand(
                 CloseScreenCommand(
-                  screenName: workscreenModel.name,
+                  componentName: workscreenModel.name,
                   reason: "User requested screen closing",
                 ),
               )

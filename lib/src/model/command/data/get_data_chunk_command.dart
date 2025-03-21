@@ -14,28 +14,19 @@
  * the License.
  */
 
-import '../../data/subscriptions/data_subscription.dart';
-import 'data_command.dart';
+import 'package:rxdart/rxdart.dart';
 
-class GetDataChunkCommand extends DataCommand {
+import '../../data/subscriptions/data_subscription.dart';
+import 'dataprovider_data_command.dart';
+
+/// The command to get a data chunk (from cache).
+class GetDataChunkCommand extends DataProviderDataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the [DataSubscription] requesting data
-  final String subId;
-
-  /// Link to the dataBook containing the data
-  final String dataProvider;
-
   /// List of names of the dataColumns that are being requested
   final List<String>? dataColumns;
-
-  /// From which index data is being requested
-  final int from;
-
-  /// To which index data is being requested
-  final int? to;
 
   /// Whether fresh data was fetched again from remote (=row 0)
   final bool fromStart;
@@ -45,14 +36,15 @@ class GetDataChunkCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   GetDataChunkCommand({
-    required this.dataProvider,
-    required this.from,
-    required this.subId,
-    this.to,
+    required super.dataProvider,
+    required super.subId,
     this.dataColumns,
+    required super.from,
+    super.to,
     this.fromStart = false,
     required super.reason,
-  });
+    super.showLoading,
+  }) : assert(subId != null), assert(from != null);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -60,6 +52,6 @@ class GetDataChunkCommand extends DataCommand {
 
   @override
   String toString() {
-    return "GetDataChunkCommand{subId: $subId, dataProvider: $dataProvider, dataColumns: $dataColumns, from: $from, to: $to, fromStart: $fromStart, ${super.toString()}}";
+    return "GetDataChunkCommand{dataColumns: $dataColumns, fromStart: $fromStart, ${super.toString()}}";
   }
 }

@@ -14,31 +14,22 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'tab_command.dart';
 
-class OpenTabCommand extends SessionCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Name of the tab-set panel
-  final String componentName;
-
-  /// Index of the closed tab
-  final int index;
-
+class OpenTabCommand extends TabCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenTabCommand({
-    required this.componentName,
-    required this.index,
+    required super.componentName,
+    required super.index,
     required super.reason,
+    super.showLoading,
   });
 
   @override
   String toString() {
-    return "OpenTabCommand{componentName: $componentName, index: $index, ${super.toString()}}";
+    return "OpenTabCommand{${super.toString()}}";
   }
 }

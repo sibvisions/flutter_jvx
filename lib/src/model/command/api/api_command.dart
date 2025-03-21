@@ -15,10 +15,15 @@
  */
 
 import '../base_command.dart';
-import '../queue_command.dart';
+import '../iqueue_command.dart';
 
-/// BaseType of any command interacting with the [IApiService]
-abstract class ApiCommand extends BaseCommand implements QueueCommand {
+/// The base command for interactions with [IApiService].
+abstract class ApiCommand extends BaseCommand
+                          implements IQueueCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   ApiCommand({
     required super.reason,
     super.showLoading,

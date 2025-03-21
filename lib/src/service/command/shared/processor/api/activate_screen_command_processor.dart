@@ -25,7 +25,7 @@ class ActivateScreenCommandProcessor extends ICommandProcessor<ActivateScreenCom
   Future<List<BaseCommand>> processCommand(ActivateScreenCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiActivateScreenRequest(
-        componentId: command.componentId,
+        componentId: command.componentName,
       ),
     );
   }

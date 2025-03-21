@@ -18,6 +18,7 @@ import 'package:flutter/foundation.dart';
 
 import 'config_command.dart';
 
+/// The command for saving or showing a file.
 class SaveOrShowFileCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -29,8 +30,8 @@ class SaveOrShowFileCommand extends ConfigCommand {
   /// The file name
   final String fileName;
 
-  /// Body of the response
-  final Uint8List bodyBytes;
+  /// the content
+  final Uint8List content;
 
   /// Whether to show the file after saving.
   final bool showFile;
@@ -42,7 +43,7 @@ class SaveOrShowFileCommand extends ConfigCommand {
   SaveOrShowFileCommand({
     required this.fileId,
     required this.fileName,
-    required this.bodyBytes,
+    required this.content,
     required this.showFile,
     required super.reason,
   });
@@ -53,6 +54,7 @@ class SaveOrShowFileCommand extends ConfigCommand {
 
   @override
   String toString() {
-    return "SaveDownloadCommand{fileId: $fileId, fileName: $fileName ${super.toString()}}";
+    return "SaveDownloadCommand{fileId: $fileId, fileName: $fileName, showFile: $showFile, "
+           "content: [bytes: ${content.length}]', ${super.toString()}}";
   }
 }

@@ -16,6 +16,7 @@
 
 import 'config_command.dart';
 
+/// The command for saving authentication key locally.
 class SaveAuthKeyCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

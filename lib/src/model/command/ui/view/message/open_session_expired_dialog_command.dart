@@ -15,7 +15,7 @@
  */
 
 import '../../../../../exceptions/session_expired_exception.dart';
-import 'error_command.dart';
+import 'ierror_command.dart';
 import 'message_view_command.dart';
 
 /// Opens a dialog, telling the user that the session has expired

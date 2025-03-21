@@ -17,7 +17,7 @@
 import '../../response/user_data_response.dart';
 import 'config_command.dart';
 
-/// Command to save userData
+/// The command for saving user data in cache.
 class SaveUserDataCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

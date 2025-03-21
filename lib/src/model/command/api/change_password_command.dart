@@ -16,7 +16,7 @@
 
 import 'session_command.dart';
 
-/// Command to Change the password of the current user
+/// Command to Change the password of the current user.
 class ChangePasswordCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -40,6 +40,7 @@ class ChangePasswordCommand extends SessionCommand {
     required this.password,
     this.username,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,4 +51,5 @@ class ChangePasswordCommand extends SessionCommand {
   String toString() {
     return "ChangePasswordCommand{username: $username, ${super.toString()}}";
   }
+
 }

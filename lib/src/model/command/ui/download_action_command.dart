@@ -16,7 +16,7 @@
 
 import 'ui_command.dart';
 
-/// Command to route to login
+/// This command will show actions for download.
 class DownloadActionCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -52,6 +52,7 @@ class DownloadActionCommand extends UiCommand {
 
   @override
   String toString() {
-    return "DownloadActionCommand{fileId: $fileId, fileName: $fileName, url: $url, isSaveAs: $showFile, ${super.toString()}}";
+    return "DownloadActionCommand{fileId: $fileId, fileName: $fileName, url: $url, showFile: $showFile, ${super.toString()}}";
   }
+
 }

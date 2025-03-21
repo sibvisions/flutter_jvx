@@ -16,12 +16,13 @@
 
 import 'session_command.dart';
 
+/// The command for setting global parameter.
 class SetParameterCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Parameters to add to the request.
+  /// Parameters to set.
   final Map<String, dynamic> parameter;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,6 +32,7 @@ class SetParameterCommand extends SessionCommand {
   SetParameterCommand({
     required this.parameter,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,4 +43,5 @@ class SetParameterCommand extends SessionCommand {
   String toString() {
     return "SetParameterCommand{parameter: $parameter, ${super.toString()}}";
   }
+
 }

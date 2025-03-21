@@ -16,7 +16,7 @@
 
 import 'ui_command.dart';
 
-/// Command to route to login
+/// This command will show actions for upload.
 class UploadActionCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

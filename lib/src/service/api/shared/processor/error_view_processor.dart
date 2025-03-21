@@ -26,7 +26,7 @@ class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
     return [
       OpenServerErrorDialogCommand(
         reason: "Server sent error in response",
-        componentId: pResponse.componentId,
+        componentName: pResponse.componentId,
         title: pResponse.title,
         message: pResponse.message,
         silentAbort: pResponse.silentAbort,

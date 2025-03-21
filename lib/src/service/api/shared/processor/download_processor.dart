@@ -27,7 +27,7 @@ class DownloadProcessor implements IResponseProcessor<DownloadResponse> {
     if (pRequest is ApiDownloadRequest) {
       return [
         SaveOrShowFileCommand(
-          bodyBytes: pResponse.bodyBytes,
+          content: pResponse.bodyBytes,
           fileId: pRequest.fileId,
           fileName: pRequest.fileName,
           showFile: pRequest.showFile,

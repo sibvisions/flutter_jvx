@@ -950,7 +950,7 @@ class UiService implements IUiService {
 
     if (pDialog is MessageDialog) {
       for (int i = 0; i < copy.length && msg == null; i++) {
-        if (copy[i] is MessageDialog && (copy[i] as MessageDialog).command.componentId == pDialog.command.componentId) {
+        if (copy[i] is MessageDialog && (copy[i] as MessageDialog).command.componentName == pDialog.command.componentName) {
           msg = copy[i] as MessageDialog;
         }
       }
@@ -984,8 +984,8 @@ class UiService implements IUiService {
   }
 
   @override
-  void closeMessageDialog(String componentId) {
-    _activeDialogs.removeWhere((element) => element is MessageDialog && element.command.componentId == componentId);
+  void closeMessageDialog(String componentName) {
+    _activeDialogs.removeWhere((element) => element is MessageDialog && element.command.componentName == componentName);
 
     JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
@@ -1197,7 +1197,7 @@ class UiService implements IUiService {
 
     if (sendFeedback && IUiService().clientId.value != null) {
       ICommandService().sendCommand(FeedbackCommand(
-        type: FeedbackType.error,
+        type: FeedbackType.Error,
         message: IUiService.getErrorMessage(error),
         properties: {
           "error": error.toString(),

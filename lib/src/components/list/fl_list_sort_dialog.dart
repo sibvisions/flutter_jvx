@@ -289,7 +289,7 @@ class _FlListSortDialogState extends State<FlListSortDialog> {
 
       SortCommand sortCommand = SortCommand(
         dataProvider: widget.model.dataProvider,
-        sortDefinitions: sort,
+        sortDefinition: sort,
         reason: "Sort of ${widget.model.dataProvider}");
 
       unawaited(ICommandService().sendCommands([

@@ -14,18 +14,14 @@
  * the License.
  */
 
-import '../../request/api_set_values_request.dart';
 import '../../request/filter.dart';
-import 'session_command.dart';
+import 'dal_command.dart';
 
-/// Command to set off remote request [ApiSetValuesRequest]
-class SetValuesCommand extends SessionCommand {
+/// The command for setting values of data provider.
+class SetValuesCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// DataRow or DataProvider of the component
-  final String dataProvider;
 
   /// List of columns, order of which corresponds to order of values list
   final List<String> columnNames;
@@ -48,13 +44,14 @@ class SetValuesCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SetValuesCommand({
-    required this.dataProvider,
+    required super.dataProvider,
     required this.columnNames,
     required this.values,
     this.filter,
     this.rowNumber,
     this.editorColumnName,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,6 +60,7 @@ class SetValuesCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SetValuesCommand{dataProvider: $dataProvider, columnNames: $columnNames, values: $values, filter: $filter, editorColumnName: $editorColumnName ${super.toString()}}";
+    return "SetValuesCommand{columnNames: $columnNames, values: $values, filter: $filter, "
+           "editorColumnName: $editorColumnName, rowNumber: $rowNumber, ${super.toString()}}";
   }
 }

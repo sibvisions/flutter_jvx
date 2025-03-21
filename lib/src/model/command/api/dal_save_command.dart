@@ -14,15 +14,15 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'dal_command.dart';
 
-class DalSaveCommand extends SessionCommand {
+/// This is the command to save record(s).
+class DalSaveCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final String dataProvider;
-
+  /// Whether to save only selected record
   final bool? onlySelected;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,9 +30,10 @@ class DalSaveCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DalSaveCommand({
-    required this.dataProvider,
+    required super.dataProvider,
     this.onlySelected,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,6 +42,6 @@ class DalSaveCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "DalSaveCommand{dataProvider: $dataProvider, onlySelected: $onlySelected, ${super.toString()}}";
+    return "DalSaveCommand{onlySelected: $onlySelected, ${super.toString()}}";
   }
 }

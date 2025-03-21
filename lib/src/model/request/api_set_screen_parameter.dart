@@ -24,7 +24,7 @@ class ApiSetScreenParameter extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The name of the screen.
-  final String? screenLongName;
+  final String? componentId;
 
   /// Parameters to add to the request.
   final Map<String, dynamic>? parameter;
@@ -34,7 +34,7 @@ class ApiSetScreenParameter extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiSetScreenParameter({
-    this.screenLongName,
+    this.componentId,
     this.parameter,
   });
 
@@ -45,7 +45,7 @@ class ApiSetScreenParameter extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        if (screenLongName != null) ApiObjectProperty.componentId: screenLongName,
+        if (componentId != null) ApiObjectProperty.componentId: componentId,
         if (parameter != null) ApiObjectProperty.parameter: parameter,
       };
 }

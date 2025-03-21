@@ -14,31 +14,26 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'component_command.dart';
 
-class CloseContentCommand extends SessionCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Name of the content panel to close
-  final String componentName;
-
+/// The command to close a content.
+class CloseContentCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CloseContentCommand({
-    required this.componentName,
+    required super.componentName,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Interface implementation
+  // Overwritten methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   String toString() {
-    return "CloseContentCommand{componentName: $componentName, ${super.toString()}}";
+    return "CloseContentCommand{${super.toString()}}";
   }
 }

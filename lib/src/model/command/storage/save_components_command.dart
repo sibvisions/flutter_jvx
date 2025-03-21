@@ -19,6 +19,7 @@ import '../../component/fl_component_model.dart';
 import '../../model_factory.dart';
 import 'storage_command.dart';
 
+/// The command to save changed components in cache.
 class SaveComponentsCommand extends StorageCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -39,20 +40,18 @@ class SaveComponentsCommand extends StorageCommand {
   /// If this save is an update. If not, will route to the work screen or open a new content.
   bool isUpdate = false;
 
-  /// Id of Screen to Update
-  String screenName;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SaveComponentsCommand({
     required List<dynamic>? components,
-    this.screenName = "",
+    super.componentName,
     this.isDesktopPanel = false,
     this.isContent = false,
     required this.isUpdate,
     required super.reason,
+    super.showLoading,
   })  : newComponents = ModelFactory.retrieveNewComponents(components),
         changedComponents = ModelFactory.retrieveChangedComponents(components);
 
@@ -62,7 +61,10 @@ class SaveComponentsCommand extends StorageCommand {
 
   @override
   String toString() {
-    String? updateCompIds = changedComponents?.whereType<Map>().map((e) => e[ApiObjectProperty.id]).join(";");
-    return "SaveComponentsCommand{newComponents: $newComponents, changedComponents: $updateCompIds, screenName: $screenName, ${super.toString()}}";
+    String? changedComponentNames = changedComponents?.whereType<Map>().map((e) => e[ApiObjectProperty.name]).join(";");
+
+    return "SaveComponentsCommand{newComponents: $newComponents, changedComponents: $changedComponentNames, "
+           "isDesktopPanel: $isDesktopPanel, isContent: $isContent, isUpdate: $isUpdate, ${super.toString()}}";
   }
+
 }

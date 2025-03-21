@@ -22,6 +22,7 @@ class ResetPasswordCommand extends SessionCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The user identifier
   final String identifier;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,6 +32,7 @@ class ResetPasswordCommand extends SessionCommand {
   ResetPasswordCommand({
     required this.identifier,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

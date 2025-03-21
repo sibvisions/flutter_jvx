@@ -141,9 +141,9 @@ class ServerErrorDialog extends StatelessWidget with JVxDialog implements IError
 
   @override
   void onClose() {
-    if (command.componentId != null) {
+    if (command.componentName != null) {
       ICommandService().sendCommand(
-        CloseFrameCommand(frameName: command.componentId!, reason: "Server Error Dialog was dismissed"),
+        CloseFrameCommand(componentName: command.componentName!, reason: "Server Error Dialog was dismissed"),
       );
     }
   }

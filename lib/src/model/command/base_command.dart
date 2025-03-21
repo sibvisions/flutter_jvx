@@ -20,7 +20,7 @@
 ///
 abstract class BaseCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class Members
+  // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Generated ID -> DateTime.now().millisecondsSinceEpoch
@@ -51,7 +51,7 @@ abstract class BaseCommand {
 
   @override
   String toString() {
-    return "ShowLoading: $showLoading | LoadingDelay: $loadingDelay | Reason: $reason";
+    return "id: $id, reason: $reason, showLoading: $showLoading, delayUILocking: $delayUILocking, loadingDelay: $loadingDelay";
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -15,16 +15,13 @@
  */
 
 import '../../request/api_insert_record_request.dart';
-import 'session_command.dart';
+import 'dal_command.dart';
 
-/// Sends [ApiInsertRecordRequest]
-class InsertRecordCommand extends SessionCommand {
+/// The command for inserting a record.
+class InsertRecordCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Data provider to insert to
-  final String dataProvider;
 
   /// After which row number the new record will be inserted
   final int? rowNumber;
@@ -37,10 +34,11 @@ class InsertRecordCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   InsertRecordCommand({
-    required this.dataProvider,
+    required super.dataProvider,
     this.rowNumber,
     this.before,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,6 +47,6 @@ class InsertRecordCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "InsertRecordCommand{dataProvider: $dataProvider, rowNumber: $rowNumber, before: $before, ${super.toString()}}";
+    return "InsertRecordCommand{rowNumber: $rowNumber, before: $before, ${super.toString()}}";
   }
 }

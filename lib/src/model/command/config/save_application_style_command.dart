@@ -16,6 +16,7 @@
 
 import 'config_command.dart';
 
+/// The command for saving application style locally.
 class SaveApplicationStyleCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

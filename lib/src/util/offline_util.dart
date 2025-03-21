@@ -111,7 +111,7 @@ abstract class OfflineUtil {
         failedStep = "Preparing synchronization";
         await ICommandService().sendCommand(
           OpenScreenCommand(
-            screenClassName: offlineWorkScreenClassName,
+            className: offlineWorkScreenClassName,
             reason: "We are back online",
             parameter: {"mobile.onlineSync": true},
           ),
@@ -282,7 +282,7 @@ abstract class OfflineUtil {
           FlPanelModel? workScreenModel =
           IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkScreenClassName)!;
           await ICommandService().sendCommand(CloseScreenCommand(
-            screenName: workScreenModel.name,
+            componentName: workScreenModel.name,
             reason: "We have synced",
           ));
 
@@ -592,7 +592,7 @@ abstract class OfflineUtil {
 
         // Close and delete screen
         await ICommandService().sendCommand(CloseScreenCommand(
-          screenName: panelModel.name,
+          componentName: panelModel.name,
           reason: "We have fetched",
         ));
         await ICommandService().sendCommand(ExitCommand(reason: "Going offline"));

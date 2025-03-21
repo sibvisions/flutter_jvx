@@ -14,15 +14,15 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'component_command.dart';
 
-class CloseScreenCommand extends SessionCommand {
+/// The command to close a screen.
+class CloseScreenCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final String screenName;
-
+  /// The parameter for close.
   final Map<String, dynamic>? parameter;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,13 +30,14 @@ class CloseScreenCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CloseScreenCommand({
-    required this.screenName,
+    required super.componentName,
     this.parameter,
     required super.reason,
+    super.showLoading,
   });
 
   @override
   String toString() {
-    return "CloseScreenCommand{screenName: $screenName, ${super.toString()}}";
+    return "CloseScreenCommand{parameter: $parameter, ${super.toString()}}";
   }
 }

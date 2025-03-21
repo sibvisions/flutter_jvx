@@ -15,19 +15,13 @@
  */
 
 import '../../data/subscriptions/data_subscription.dart';
-import 'data_command.dart';
+import 'dataprovider_data_command.dart';
 
-/// Command to get data of a specific column of the selectedRow of an dataBook(dataProvider)
-class GetSelectedDataCommand extends DataCommand {
+/// The command to get a value of the selected row of a data provider (from cache).
+class GetSelectedDataCommand extends DataProviderDataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Data provider
-  final String dataProvider;
-
-  /// Id of the [DataSubscription]
-  final String subId;
 
   /// Name of the column
   final List<String>? columnNames;
@@ -37,11 +31,12 @@ class GetSelectedDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   GetSelectedDataCommand({
-    required this.subId,
-    required this.dataProvider,
+    required super.dataProvider,
+    required super.subId,
     this.columnNames,
     required super.reason,
-  });
+    super.showLoading,
+  }) : assert(subId != null);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -49,6 +44,6 @@ class GetSelectedDataCommand extends DataCommand {
 
   @override
   String toString() {
-    return "GetSelectedDataCommand{dataProvider: $dataProvider, subId: $subId, columnNames: $columnNames, ${super.toString()}}";
+    return "GetSelectedDataCommand{columnNames: $columnNames, ${super.toString()}}";
   }
 }

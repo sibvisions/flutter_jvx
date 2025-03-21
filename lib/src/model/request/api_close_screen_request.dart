@@ -23,7 +23,7 @@ class ApiCloseScreenRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Name of the screen to close
-  final String screenName;
+  final String componentId;
 
   /// Parameter to pass to the screen
   final Map<String, dynamic>? parameter;
@@ -33,7 +33,7 @@ class ApiCloseScreenRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiCloseScreenRequest({
-    required this.screenName,
+    required this.componentId,
     this.parameter,
   });
 
@@ -44,7 +44,7 @@ class ApiCloseScreenRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.componentId: screenName,
+        ApiObjectProperty.componentId: componentId,
         if (parameter != null) ApiObjectProperty.parameter: parameter,
       };
 }

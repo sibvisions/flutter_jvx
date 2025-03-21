@@ -15,18 +15,19 @@
  */
 
 import '../../request/api_mouse_request.dart';
-import 'session_command.dart';
+import 'component_command.dart';
 
-abstract class MouseCommand extends SessionCommand {
+/// The base command for all mouse notifications.
+abstract class MouseCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Component name of the button clicked
-  final String componentName;
-
   /// Which button has been pressed
   final MouseButtonClicked? button;
+
+  /// The amount of times the mouse was clicked
+  final int? clickCount;
 
   /// The x coordinate where the mouse was.
   final double? x;
@@ -34,20 +35,18 @@ abstract class MouseCommand extends SessionCommand {
   /// The y coordinate where the mouse was.
   final double? y;
 
-  /// The amount of times the mouse was clicked
-  final int? clickCount;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   MouseCommand({
-    required super.reason,
-    required this.componentName,
+    required super.componentName,
     this.button,
     this.clickCount,
     this.x,
     this.y,
+    required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,6 +55,7 @@ abstract class MouseCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "MouseCommand{componentName: $componentName, button: $button, x: $x, y: $y, clickCount: $clickCount, ${super.toString()}}";
+    return "MouseCommand{button: $button, clickCount: $clickCount, x: $x, y: $y, ${super.toString()}}";
   }
+
 }

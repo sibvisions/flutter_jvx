@@ -16,25 +16,35 @@
 
 import '../../../service/ui/i_ui_service.dart';
 import '../../request/api_navigation_request.dart';
-import 'session_command.dart';
+import 'component_command.dart';
 
-/// Command to send [ApiNavigationRequest] to remote server, will get screenName
-/// from [IUiService]
-class NavigationCommand extends SessionCommand {
+
+/// The navigation types
+enum NavigationType {
+  /// forward navigation
+  Forward,
+  /// backward navigation
+  Back,
+}
+
+/// The command for navigation.
+class NavigationCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Screen name to navigate
-  final String openScreen;
+  /// What type of feedback this is.
+  final NavigationType type;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   NavigationCommand({
-    required this.openScreen,
+    required super.componentName,
+    this.type = NavigationType.Back,
     required super.reason,
+    super.showLoading,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +53,7 @@ class NavigationCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "NavigationCommand{openScreen: $openScreen, ${super.toString()}}";
+    return "NavigationCommand{type: $type, ${super.toString()}}";
   }
+
 }

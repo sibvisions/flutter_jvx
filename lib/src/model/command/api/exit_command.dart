@@ -16,6 +16,7 @@
 
 import 'session_command.dart';
 
+/// The command for application exit.
 class ExitCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

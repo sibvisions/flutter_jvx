@@ -16,7 +16,13 @@
 
 import 'session_command.dart';
 
+/// The command for alive notification.
 class AliveCommand extends SessionCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Whether to retry the request
   bool? retryRequest;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

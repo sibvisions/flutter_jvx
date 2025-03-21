@@ -311,7 +311,7 @@ class ModernLogin extends StatelessWidget implements Login {
           errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
-      case LoginMode.MFURL:
+      case LoginMode.MFUrl:
         // Is repeatedly called
         card = MFAUrlCard(
           timeout: dataMap?[ApiObjectProperty.timeout],
