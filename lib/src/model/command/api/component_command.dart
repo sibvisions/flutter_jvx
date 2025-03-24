@@ -15,10 +15,10 @@
  */
 
 import '../../../service/ui/i_ui_service.dart';
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// BaseType of any command that needs a component
-abstract class ComponentCommand extends SessionCommand {
+abstract class ComponentCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

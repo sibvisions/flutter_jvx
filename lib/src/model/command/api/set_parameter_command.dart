@@ -14,10 +14,10 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// The command for setting global parameter.
-class SetParameterCommand extends SessionCommand {
+class SetParameterCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

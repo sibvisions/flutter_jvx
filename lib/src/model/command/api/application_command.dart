@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 SIB Visions GmbH
+ * Copyright 2022 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,25 +14,34 @@
  * the License.
  */
 
-import 'application_command.dart';
+import '../../../service/ui/i_ui_service.dart';
+import 'api_command.dart';
 
-/// The command to cancel the login (window).
-class CancelLoginCommand extends ApplicationCommand {
+/// BaseType of any api command that needs a valid client identifier
+abstract class ApplicationCommand extends ApiCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The client identifier
+  final String? clientId;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  CancelLoginCommand({
+  ApplicationCommand({
     required super.reason,
     super.showLoading,
-  });
+  }) : clientId = IUiService().clientId.value;
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overriden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   String toString() {
-    return "CancelLoginCommand{${super.toString()}}";
+    return "clientId: $clientId, ${super.toString()}";
   }
+
 }

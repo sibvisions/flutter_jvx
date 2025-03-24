@@ -14,10 +14,10 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// The command for rollback all.
-class RollbackCommand extends SessionCommand {
+class RollbackCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

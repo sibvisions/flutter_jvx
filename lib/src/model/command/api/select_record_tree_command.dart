@@ -15,10 +15,10 @@
  */
 
 import '../../request/filter.dart';
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// The command for selecting a record in a tree.
-class SelectRecordTreeCommand extends SessionCommand {
+class SelectRecordTreeCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

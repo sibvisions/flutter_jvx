@@ -16,7 +16,7 @@
 
 import 'dart:typed_data';
 
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// The feedback types
 enum FeedbackType {
@@ -27,7 +27,7 @@ enum FeedbackType {
 }
 
 /// The command for feedback.
-class FeedbackCommand extends SessionCommand {
+class FeedbackCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

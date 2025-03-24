@@ -14,10 +14,10 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// Command to reset the password of the current user
-class ResetPasswordCommand extends SessionCommand {
+class ResetPasswordCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

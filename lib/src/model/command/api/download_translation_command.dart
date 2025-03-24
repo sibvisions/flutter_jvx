@@ -14,10 +14,10 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// The command for translation download.
-class DownloadTranslationCommand extends SessionCommand {
+class DownloadTranslationCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

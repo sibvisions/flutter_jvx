@@ -16,10 +16,10 @@
 
 import 'package:cross_file/cross_file.dart';
 
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// The command for uploading data.
-class UploadCommand extends SessionCommand {
+class UploadCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

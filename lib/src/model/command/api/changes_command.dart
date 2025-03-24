@@ -16,11 +16,11 @@
 
 import '../../../service/ui/i_ui_service.dart';
 import '../../request/api_navigation_request.dart';
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// Command to send [ApiNavigationRequest] to remote server, will get screenName
 /// from [IUiService].
-class ChangesCommand extends SessionCommand {
+class ChangesCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

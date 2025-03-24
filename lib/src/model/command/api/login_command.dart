@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'session_command.dart';
+import 'application_command.dart';
 
 /// All available login request modes
 enum LoginMode {
@@ -44,7 +44,7 @@ enum LoginMode {
 }
 
 /// The command for login.
-class LoginCommand extends SessionCommand {
+class LoginCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -24,7 +24,7 @@ import 'package:queue/queue.dart';
 import '../../../commands.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/alive_command.dart';
-import '../../../model/command/api/session_command.dart';
+import '../../../model/command/api/application_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../../../util/jvx_logger.dart';
@@ -156,7 +156,7 @@ class CommandService implements ICommandService {
       }
 
       // Discard SessionCommands which are sent from an older session (e.g. dispose sends an command).
-      if (pCommand is SessionCommand && pCommand.clientId != IUiService().clientId.value) {
+      if (pCommand is ApplicationCommand && pCommand.clientId != IUiService().clientId.value) {
         if (FlutterUI.logCommand.cl(Lvl.d)) {
           FlutterUI.logCommand.d("${pCommand.runtimeType} uses old/invalid Client ID, discarding.");
         }
