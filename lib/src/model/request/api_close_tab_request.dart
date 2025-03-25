@@ -15,10 +15,10 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Request to notify the server which tab on a tab-set panel is being closed/deleted
-class ApiCloseTabRequest extends SessionRequest {
+class ApiCloseTabRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -14,6 +14,6 @@
  * the License.
  */
 
-import 'session_request.dart';
+import 'application_request.dart';
 
-class ApiRollbackRequest extends SessionRequest {}
+class ApiRollbackRequest extends ApplicationRequest {}

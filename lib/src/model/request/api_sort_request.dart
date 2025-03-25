@@ -16,9 +16,9 @@
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../util/sort_list.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
-class ApiSortRequest extends SessionRequest {
+class ApiSortRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

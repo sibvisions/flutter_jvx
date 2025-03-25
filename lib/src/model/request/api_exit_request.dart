@@ -14,6 +14,6 @@
  * the License.
  */
 
-import 'session_request.dart';
+import 'application_request.dart';
 
-class ApiExitRequest extends SessionRequest {}
+class ApiExitRequest extends ApplicationRequest {}

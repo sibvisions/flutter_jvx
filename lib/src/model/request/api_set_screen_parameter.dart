@@ -15,10 +15,10 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Request to set the screen parameter.
-class ApiSetScreenParameter extends SessionRequest {
+class ApiSetScreenParameter extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

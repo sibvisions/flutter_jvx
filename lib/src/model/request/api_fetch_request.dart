@@ -18,9 +18,9 @@ import '../../service/api/shared/api_object_property.dart';
 import '../command/api/fetch_command.dart';
 import 'api_filter_request.dart';
 import 'filter.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
-class ApiFetchRequest extends SessionRequest {
+class ApiFetchRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

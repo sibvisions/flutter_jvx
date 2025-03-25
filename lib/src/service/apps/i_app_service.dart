@@ -146,4 +146,7 @@ abstract class IAppService implements Service {
   /// Gets whether the [app] is the current app
   bool isCurrentApp(App app);
 
+  ///  Sets [parameter] as application parameter.
+  Future<void> setParameter(Map<String, dynamic> parameter);
+
 }

@@ -15,10 +15,10 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Request to set the value of an unbound(no-dataProvider) component
-class ApiSetValueRequest extends SessionRequest {
+class ApiSetValueRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -15,10 +15,10 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Request to set application parameters.
-class ApiSetParameter extends SessionRequest {
+class ApiSetParameter extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

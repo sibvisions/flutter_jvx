@@ -14,6 +14,14 @@
  * the License.
  */
 
-import 'application_request.dart';
+import '../../service/api/shared/api_object_property.dart';
+import 'api_request.dart';
 
-class ApiSaveRequest extends ApplicationRequest {}
+/// Base class for all outgoing requests which require a client identifier
+abstract class ApplicationRequest extends ApiRequest {
+  /// Session id
+  late String clientId;
+
+  @override
+  Map<String, dynamic> toJson() => {ApiObjectProperty.clientId: clientId};
+}

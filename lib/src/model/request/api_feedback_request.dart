@@ -18,10 +18,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../command/api/feedback_command.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Sends feedback (errors) to the server
-class ApiFeedbackRequest extends SessionRequest {
+class ApiFeedbackRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +56,7 @@ class ApiFeedbackRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        "name": "feedback.${type.name}",
+        "name": "feedback.${type.name}".toLowerCase(),
         if (message != null) "message": message,
         if (image != null) "image": base64Encode(image!),
         ...?properties

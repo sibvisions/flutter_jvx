@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Base class for all download api requests
-abstract class DownloadRequest extends SessionRequest {}
+abstract class DownloadRequest extends ApplicationRequest {}

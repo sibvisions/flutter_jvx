@@ -15,11 +15,11 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Request that should be sent when navigating(user pressing back),
 /// while being in work screen and when navigating back to the menu
-class ApiNavigationRequest extends SessionRequest {
+class ApiNavigationRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

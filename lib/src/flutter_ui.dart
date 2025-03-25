@@ -391,14 +391,15 @@ class FlutterUI extends StatefulWidget {
       uriCurrent = uri;
 
       if (FlutterUI.started) {
-        Map<String, String>? params = uriCurrent?.queryParameters;
+        if (uriCurrent?.queryParameters.isNotEmpty != null) {
+          //because unmodifiable
+          Map<String, String> params = Map.of(uriCurrent!.queryParameters);
 
-        if (params != null) {
           App? app = await _loadOrCreateAppFromParameters(params);
 
           if (app != null) {
             if (IAppService().isCurrentApp(app)) {
-              //unawaited(WorkScreen.setScreenParameter(parameter: params));
+              unawaited(IAppService().setParameter(params));
             }
             else {
               bool startedManually = bool.tryParse(params.remove("startedManually") ?? "") ?? false;
@@ -497,7 +498,9 @@ class FlutterUI extends StatefulWidget {
     //the unchanged list for later use
     Map<String, String> queryParametersOriginal = {...queryParameters};
 
-print("Params in start = $queryParametersOriginal");
+    if (log.cl(Lvl.d)) {
+      log.d("Params in start $queryParametersOriginal");
+    }
 
     await configService.loadConfig(appConfig, devConfig != null);
 
@@ -910,7 +913,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       // Init
       if (startupApp != null) {
 
-        print("START app: ${startupApp!.id}");
+        if (FlutterUI.log.cl(Lvl.d)) {
+          FlutterUI.log.d("Start app ${startupApp!.id}");
+        }
 
         IAppService().startApp(appId: startupApp!.id, autostart: true);
       }

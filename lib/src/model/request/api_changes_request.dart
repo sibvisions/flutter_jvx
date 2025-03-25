@@ -14,9 +14,9 @@
  * the License.
  */
 
-import 'session_request.dart';
+import 'application_request.dart';
 
-class ApiChangesRequest extends SessionRequest {
+class ApiChangesRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

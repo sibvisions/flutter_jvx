@@ -86,7 +86,7 @@ import '../../../../model/request/api_sort_request.dart';
 import '../../../../model/request/api_startup_request.dart';
 import '../../../../model/request/api_upload_request.dart';
 import '../../../../model/request/download_request.dart';
-import '../../../../model/request/session_request.dart';
+import '../../../../model/request/application_request.dart';
 import '../../../../model/request/upload_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
@@ -785,7 +785,7 @@ class OnlineApiRepository extends IRepository {
     required Map<String, dynamic> headers,
     required String? clientId,
   }) async {
-    if (pRequest is SessionRequest) {
+    if (pRequest is ApplicationRequest) {
       if (clientId?.isNotEmpty == true) {
         pRequest.clientId = clientId!;
       } else {

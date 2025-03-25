@@ -147,6 +147,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     item = IUiService().getMenuItem(widget.screenName);
     if (item != null) {
       model = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
+
       customScreen = IUiService().getCustomScreen(item!.screenLongName);
 
       String className = model?.screenClassName ?? IStorageService().convertLongScreenToClassName(item!.screenLongName);
@@ -246,7 +247,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             FrameState? frame = Frame.maybeOf(context);
             List<Widget>? actions = frame?.getActions();
 
-            model = IStorageService().getComponentByScreenClassName(pScreenClassName: item?.screenLongName ?? "");
             bool noMenu = model?.noMenu ?? false;
             bool simpleMenu = model?.hasSimpleMenu ?? false;
 
@@ -373,9 +373,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     // Update screenTitle
     screenTitle = builtScreen.screenTitle;
 
-    return WorkScreen(
+    WorkScreen screen = WorkScreen(
       isOffline: isOffline && !OfflineUtil.isGoingOffline,
       item: item!,
+      model: model,
       screen: builtScreen,
       updateSize: (size) {
         if (!sentScreenSizeForLayout) {
@@ -387,6 +388,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
         }
       },
     );
+
+    WorkScreen.add(model?.name, screen);
+
+    return screen;
   }
 /*
   void rebuildAllChildren(BuildContext context) {
@@ -427,6 +432,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   @override
   void dispose() {
+    WorkScreen.remove(model?.name);
+
     subscription.cancel();
     subject.close();
     IUiService().disposeSubscriptions(this);

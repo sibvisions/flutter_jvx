@@ -14,11 +14,14 @@
  * the License.
  */
 
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
+import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
 import 'error_screen.dart';
 import 'util/screen_wrapper.dart';
@@ -30,8 +33,14 @@ class WorkScreen extends StatelessWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The cached map of opened work screens in the right order
+  static final LinkedHashMap<String, WorkScreen> _screenList = LinkedHashMap<String, WorkScreen>();
+  /// The cache for opened work screen names in the right order
+  static final List<String> _screenNames = [];
+
   final MenuItemModel item;
   final ScreenWrapper? screen;
+  final FlComponentModel? model;
   final bool isOffline;
   final void Function(Size size) updateSize;
 
@@ -41,6 +50,7 @@ class WorkScreen extends StatelessWidget {
     required this.screen,
     required this.isOffline,
     required this.updateSize,
+    required this.model
   });
 
   String get screenLongName => item.screenLongName;
@@ -148,23 +158,53 @@ class WorkScreen extends StatelessWidget {
     );
   }
 
-  /// Sends a [SetParameterCommand].
-  static Future<void> setParameter(Map<String, dynamic> parameter) {
-    return ICommandService().sendCommand(SetParameterCommand(
-      parameter: parameter,
-      reason: "SetParameter API",
-    ));
+  static add(String? componentName, WorkScreen screen) {
+    if (componentName != null) {
+
+      if (!_screenList.containsKey(componentName)) {
+        _screenNames.add(componentName);
+
+        if (FlutterUI.log.cl(Lvl.d)) {
+          FlutterUI.log.d("Last screen is set to $componentName");
+        }
+      }
+      else if (FlutterUI.log.cl(Lvl.d)) {
+        FlutterUI.log.d("Update screen $componentName");
+      }
+
+      _screenList[componentName] = screen;
+    }
+  }
+
+  static remove(String? componentName) {
+    if (componentName != null) {
+      if (FlutterUI.log.cl(Lvl.d)) {
+        FlutterUI.log.d("Remove screen $componentName");
+      }
+      _screenList.remove(componentName);
+      _screenNames.remove(componentName);
+    }
+  }
+
+  static WorkScreen? current() {
+    if (_screenNames.isNotEmpty) {
+      return _screenList[_screenNames.last];
+    }
+    else {
+      return null;
+    }
   }
 
   /// Sends a [SetScreenParameterCommand].
-  static Future<void> setScreenParameter({
-    required String componentName,
-    required Map<String, dynamic> parameter,
-  }) {
-    return ICommandService().sendCommand(SetScreenParameterCommand(
-      componentName: componentName,
-      parameter: parameter,
-      reason: "SetScreenParameter API",
-    ));
+  Future<bool> setScreenParameter(Map<String, dynamic> parameter) async {
+    if (model != null) {
+      return ICommandService().sendCommand(SetScreenParameterCommand(
+        componentName: model!.name,
+        parameter: parameter,
+        reason: "Set screen parameter API",
+      ));
+    }
+
+    return false;
   }
 }

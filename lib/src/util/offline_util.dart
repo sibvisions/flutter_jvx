@@ -521,25 +521,32 @@ abstract class OfflineUtil {
   static Future<void> initOffline(String pScreenName) async {
     isGoingOffline = true;
 
+    IApiService servApi = IApiService();
+    IConfigService servCfg = IConfigService();
+
     try {
       var dialogKey = GlobalKey<ProgressDialogState>();
-      OnlineApiRepository onlineApiRepository = IApiService().getRepository() as OnlineApiRepository;
+      OnlineApiRepository onlineApiRepository = servApi.getRepository() as OnlineApiRepository;
       OfflineApiRepository offlineApiRepository = OfflineApiRepository();
 
       try {
         await WakelockPlus.enable();
         // Set already here to receive errors from api responses
-        await IConfigService().updateOffline(true);
+        await servCfg.updateOffline(true);
         // Save password for re-sync
-        await IConfigService().updatePassword(FlutterUI
+        await servCfg.updatePassword(FlutterUI
             .of(FlutterUI.getCurrentContext()!)
             .lastPassword);
 
-        var panelModel = IStorageService().getComponentByName(pComponentName: pScreenName) as FlPanelModel;
+        IStorageService servStorage = IStorageService();
 
-        await IConfigService().updateOfflineScreen(panelModel.screenClassName!);
+        var panelModel = servStorage.getComponentByName(pComponentName: pScreenName) as FlPanelModel;
 
-        unawaited(IUiService().openDialog(
+        await servCfg.updateOfflineScreen(panelModel.screenClassName!);
+
+        IUiService servUi = IUiService();
+
+        unawaited(servUi.openDialog(
           pIsDismissible: false,
           pBuilder: (context) {
             return ProgressDialogWidget(
@@ -571,7 +578,9 @@ abstract class OfflineUtil {
 
         await offlineApiRepository.start();
 
-        var dataBooks = IDataService()
+        IDataService servData = IDataService();
+
+        var dataBooks = servData
             .getDataBooks()
             .values
             .where((element) => activeDataProviders.contains(element.dataProvider))
@@ -590,24 +599,26 @@ abstract class OfflineUtil {
         // a DeleteScreenCommand which in turn triggers routing that kills the dialog.
         ProgressDialogWidget.safeClose(dialogKey);
 
+        ICommandService servCmd = ICommandService();
+
         // Close and delete screen
-        await ICommandService().sendCommand(CloseScreenCommand(
+        await servCmd.sendCommand(CloseScreenCommand(
           componentName: panelModel.name,
           reason: "We have fetched",
         ));
-        await ICommandService().sendCommand(ExitCommand(reason: "Going offline"));
+        await servCmd.sendCommand(ExitCommand(reason: "Going offline"));
 
         // Clear screen storage
-        IStorageService().clear(ClearReason.DEFAULT);
+        servStorage.clear(ClearReason.DEFAULT);
 
         // Clear data books for offline usage
-        IDataService().clearDataBooks();
+        servData.clearDataBooks();
         await offlineApiRepository.initDataBooks();
-        IApiService().setRepository(offlineApiRepository);
+        servApi.setRepository(offlineApiRepository);
 
         // Clear menu
-        IUiService().setMenuModel(null);
-        IUiService().routeToMenu(pReplaceRoute: true);
+        servUi.setMenuModel(null);
+        servUi.routeToMenu(pReplaceRoute: true);
 
         await onlineApiRepository.stop();
       }
@@ -620,8 +631,8 @@ abstract class OfflineUtil {
         }
 
         await offlineApiRepository.stop();
-        await IConfigService().updateOffline(false);
-        IApiService().setRepository(onlineApiRepository);
+        await servCfg.updateOffline(false);
+        servApi.setRepository(onlineApiRepository);
 
         ProgressDialogWidget.safeClose(dialogKey);
         await IUiService().openDialog(

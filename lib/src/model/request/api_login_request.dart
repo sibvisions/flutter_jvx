@@ -16,10 +16,10 @@
 
 import '../../service/api/shared/api_object_property.dart';
 import '../command/api/login_command.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Request to login into the app
-class ApiLoginRequest extends SessionRequest {
+class ApiLoginRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

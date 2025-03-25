@@ -20,6 +20,7 @@ import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../config/app_config.dart';
 import '../../../config/server_config.dart';
 import '../../../flutter_ui.dart';
@@ -132,7 +133,7 @@ class AppService implements IAppService {
 
   @override
   Uri? getApplicableReturnUri(List<MenuEntryResponse> menuItems) {
-    Uri? uri = IAppService().returnUri;
+    Uri? uri = returnUri;
     if (uri == null) {
       BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
       var returnString = state.queryParameters[MainLocation.returnUriKey];
@@ -153,10 +154,8 @@ class AppService implements IAppService {
 
   @override
   Future<void> removeAllApps() async {
-    await Future.forEach<App>(
-      IAppService().getApps(),
-      (app) => app.delete(),
-    );
+    await Future.forEach<App>(getApps(), (app) => app.delete(),);
+
     await IConfigService().updatePrivacyPolicy(null);
   }
 
@@ -205,16 +204,16 @@ class AppService implements IAppService {
 
   @override
   Future<void> startCustomApp({ServerConfig? config, App? app, String? appTitle, bool force = false, bool autostart = true}) async {
-    App? startApp;
+    App? appToStart;
 
     if (app != null) {
-      startApp = app;
+      appToStart = app;
     }
     else if (config != null) {
-      startApp = await App.createAppFromConfig(config);
+      appToStart = await App.createAppFromConfig(config);
     }
 
-    if (startApp == null) {
+    if (appToStart == null) {
       return;
     }
 
@@ -222,8 +221,8 @@ class AppService implements IAppService {
     bool loggedOut = (state.uri.path.startsWith("/login") || !IUiService().loggedIn());
 
     // Only start app if it isn't already running or the user isn't logged in.
-    if (force || IConfigService().currentApp.value != startApp.id || loggedOut) {
-      await IAppService().startApp(appId: startApp.id, appTitle: appTitle, autostart: autostart);
+    if (force || IConfigService().currentApp.value != appToStart.id || loggedOut) {
+      await startApp(appId: appToStart.id, appTitle: appTitle, autostart: autostart);
     }
   }
 
@@ -321,6 +320,14 @@ class AppService implements IAppService {
   @override
   bool isCurrentApp(App app) {
     return IConfigService().currentApp.value == app.id;
+  }
+
+  @override
+  Future<void> setParameter(Map<String, dynamic> parameter) {
+    return ICommandService().sendCommand(SetParameterCommand(
+      parameter: parameter,
+      reason: "Set application parameter API",
+    ));
   }
 
 }

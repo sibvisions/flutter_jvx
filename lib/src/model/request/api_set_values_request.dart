@@ -16,10 +16,10 @@
 
 import '../../service/api/shared/api_object_property.dart';
 import 'filter.dart';
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Request to set the value of a data-bound component
-class ApiSetValuesRequest extends SessionRequest {
+class ApiSetValuesRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

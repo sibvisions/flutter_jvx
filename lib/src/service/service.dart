@@ -39,6 +39,6 @@ enum ClearReason {
   ;
 
   bool isFull() {
-    return [DEFAULT, RESTART].contains(this);
+    return this == DEFAULT || this == RESTART;
   }
 }

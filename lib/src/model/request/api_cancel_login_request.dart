@@ -14,9 +14,9 @@
  * the License.
  */
 
-import 'session_request.dart';
+import 'application_request.dart';
 
 /// Request to cancel the MFA login
-class ApiCancelLoginRequest extends SessionRequest {
+class ApiCancelLoginRequest extends ApplicationRequest {
   ApiCancelLoginRequest();
 }
