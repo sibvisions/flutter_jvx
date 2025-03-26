@@ -346,37 +346,70 @@ class _AppEditDialogState extends State<AppEditDialog> {
       actionsPadding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 12.0),
       actionsAlignment: actions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
       actions: actions,
+//      actions: [Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [actions[0], actions[1], actions[2] ])]
+
     );
   }
 
   List<Widget> _getActions() {
-    List<Widget> actions = [
-      if (widget.config != null)
-        TextButton(
-          onPressed: widget.onDelete,
-          onLongPress: widget.onLongDelete,
-          style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
-          child: Text(FlutterUI.translateLocal(widget.predefined ? "Reset" : "Delete")),
-        ),
-    ];
+
+    int iCharCount = 0;
+
+    List<Widget> actions = [];
+
+    if (widget.config != null) {
+      String resetOrDelete = FlutterUI.translateLocal(widget.predefined ? "Reset" : "Delete");
+
+      iCharCount += resetOrDelete.length;
+
+      actions.add(TextButton(
+        onPressed: widget.onDelete,
+        onLongPress: widget.onLongDelete,
+        style: TextButton.styleFrom(foregroundColor: Theme
+            .of(context)
+            .colorScheme
+            .error),
+        child: Text(resetOrDelete),
+      ));
+    }
 
     if (!widget.locked) {
+      String cancel = FlutterUI.translateLocal("Cancel");
+      String ok = FlutterUI.translateLocal("OK");
+
+      iCharCount += cancel.length + ok.length;
+
       actions.addAll([
         TextButton(
           onPressed: widget.onCancel,
-          child: Text(FlutterUI.translateLocal("Cancel")),
+          child: Text(cancel),
         ),
         TextButton(
           onPressed: appAlreadyExists || !appNameIsValid ? null : _onSubmit,
-          child: Text(FlutterUI.translateLocal("OK")),
+          child: Text(ok),
         ),
       ]);
     } else {
+      String close = FlutterUI.translateLocal("Close");
+
+      iCharCount += close.length;
+
       actions.add(TextButton(
         onPressed: widget.onCancel,
-        child: Text(FlutterUI.translateLocal("Close")),
+        child: Text(close),
       ));
     }
+
+    //otherwise actions would be in separate lines
+    if (actions.length > 2 && iCharCount > 22) {
+      actions = [
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [actions[0]]),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Column(children: [actions[1]]),
+          Column(children: [actions[2]])])
+      ];
+    }
+
     return actions;
   }
 
