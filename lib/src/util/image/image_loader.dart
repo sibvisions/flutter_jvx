@@ -341,8 +341,6 @@ abstract class ImageLoader {
 
   ///Checks whether the given [value] is base64 encoded
   static bool isBase64(dynamic value) {
-    log(value);
-
     if (value == null) {
       return false;
     }

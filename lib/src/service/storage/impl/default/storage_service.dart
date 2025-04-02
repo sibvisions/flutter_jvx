@@ -19,6 +19,7 @@ import 'dart:collection';
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../../flutter_ui.dart';
@@ -293,7 +294,7 @@ class StorageService implements IStorageService {
     Set<String> directChildren = _childrenTree[pParentModel.id] ?? {};
 
     if (pIncludeItself) {
-      if (pPrint) {
+      if (kDebugMode && pPrint) {
         debugPrint(List.filled(pDepth, "-").join() + pParentModel.id);
       }
       allDescendants.add(pParentModel);
@@ -310,7 +311,7 @@ class StorageService implements IStorageService {
       if (childModel != null &&
           (pIgnoreVisibility || childModel.isVisible || pParentModel.className == FlContainerClassname.TABSET_PANEL)) {
         allDescendants.add(childModel);
-        if (pPrint) {
+        if (kDebugMode && pPrint) {
           debugPrint(List.filled(pDepth + 1, "-").join() + childModel.id);
         }
         if (pRecursively) {
