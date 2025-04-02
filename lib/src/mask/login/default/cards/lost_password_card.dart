@@ -36,7 +36,7 @@ class LostPasswordCard extends StatefulWidget {
 }
 
 class _LostPasswordCardState extends State<LostPasswordCard> {
-  /// Controller for Email/Username text field
+  /// Controller for Email text field
   final TextEditingController identifierController = TextEditingController();
 
   @override

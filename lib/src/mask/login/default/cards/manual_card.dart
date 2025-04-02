@@ -96,6 +96,8 @@ class _ManualCardState extends State<ManualCard> {
           onTap: resetButton,
           onChanged: (_) => resetButton(),
           controller: usernameController,
+          autocorrect: false,
+          spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
           decoration: InputDecoration(
             labelText: "${FlutterUI.translate("Username")}:",
             suffixIcon: usernameController.text.isNotEmpty

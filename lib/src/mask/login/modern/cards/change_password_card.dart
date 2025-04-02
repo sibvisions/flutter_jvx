@@ -139,6 +139,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                             textInputAction: TextInputAction.next,
                             onTap: resetButton,
                             onChanged: (_) => resetButton(),
+                            autocorrect: false,
+                            spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.user),
                               labelText: FlutterUI.translate("Username"),

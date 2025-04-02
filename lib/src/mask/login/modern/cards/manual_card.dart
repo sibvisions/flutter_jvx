@@ -163,6 +163,8 @@ class _ManualCardState extends State<ManualCard> {
                             textInputAction: TextInputAction.next,
                             onTap: resetButton,
                             onChanged: (_) => resetButton(),
+                            autocorrect: false,
+                            spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                             decoration: InputDecoration(
                               icon: const Icon(Icons.person_outline, size: 22),
                               labelText: FlutterUI.translate("Username"),

@@ -53,6 +53,8 @@ class _MFATextCardState extends State<MFATextCard> {
             textInputAction: TextInputAction.done,
             keyboardType: TextInputType.visiblePassword,
             onSubmitted: (_) => _onLoginPressed(),
+            autocorrect: false,
+            spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.only(bottom: 12.0),
               labelText: FlutterUI.translate("Code"),

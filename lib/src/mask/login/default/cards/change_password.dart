@@ -77,6 +77,8 @@ class _ChangePasswordState extends State<ChangePassword> {
         TextField(
           enabled: false,
           controller: usernameController,
+          autocorrect: false,
+          spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
           decoration: InputDecoration(
             labelText: FlutterUI.translate("Username:"),
             hintText: FlutterUI.translate("Username"),

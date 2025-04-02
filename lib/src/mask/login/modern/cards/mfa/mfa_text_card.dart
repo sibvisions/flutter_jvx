@@ -71,6 +71,8 @@ class _MFATextCardState extends State<MFATextCard> {
                 keyboardType: TextInputType.visiblePassword,
                 onTap: resetButton,
                 onChanged: (_) => resetButton(),
+                autocorrect: false,
+                spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                 decoration: InputDecoration(
                   icon: const FaIcon(FontAwesomeIcons.lock),
                   labelText: FlutterUI.translate("Code"),

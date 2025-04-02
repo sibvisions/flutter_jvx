@@ -112,9 +112,11 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                             onSubmitted: (_) => _onResetPasswordPressed(),
                             onTap: resetButton,
                             onChanged: (_) => resetButton(),
+                            autocorrect: false,
+                            spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.envelope),
-                              labelText: "${FlutterUI.translate("E-mail")}/${FlutterUI.translate("Username")}",
+                              labelText: FlutterUI.translate("E-mail"),
                               border: InputBorder.none,
                             ),
                           ),
