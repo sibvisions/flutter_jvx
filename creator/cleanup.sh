@@ -29,14 +29,17 @@ rm -r $pubCache/hosted/pub.dev/flutter_tts*
 rm -r $pubCache/hosted/pub.dev/speech_to_text*
 rm -r $pubCache/hosted/pub.dev/file_saver*
 rm -r $pubCache/hosted/pub.dev/html_editor_enhanced*
-rm -r $pubCache/git/fix-html_editor_enhanced*
 rm -r $pubCache/hosted/pub.dev/push-*
 rm -r $pubCache/hosted/pub.dev/flutter_local_notifications*
 rm -r $pubCache/hosted/pub.dev/screen_brightness*
 rm -r $pubCache/hosted/pub.dev/open_filex*
-rm -r $pubCache/git/open_filex*
 rm -r $pubCache/hosted/pub.dev/pointer_interceptor*
 rm -r $pubCache/hosted/pub.dev/webview_flutter*
 rm -r $pubCache/hosted/pub.dev/android_id*
+rm -r $pubCache/hosted/pub.dev/app_links*
+rm -r $pubCache/hosted/pub.dev/screenshot*
+rm -r $pubCache/hosted/pub.dev/json_dynamic_widget*
+rm -r $pubCache/git/fix_html_editor_enhanced*
+rm -r $pubCache/git/open_filex*
 
 echo $pubCache

@@ -31,7 +31,8 @@ android {
     namespace = "com.sibvisions.flutter_jvx"
     //compileSdk = flutter.compileSdkVersion
     compileSdk = 35
-    ndkVersion = flutter.ndkVersion
+    //ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         // Enable core library desugaring to support Java 8+ language features
