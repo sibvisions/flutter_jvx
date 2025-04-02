@@ -16,7 +16,6 @@
 
 import '../../request/filter.dart';
 import 'dal_command.dart';
-import 'application_command.dart';
 
 /// This is the command to delete a record.
 class DeleteRecordCommand extends DalCommand {

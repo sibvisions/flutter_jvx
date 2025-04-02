@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../../service/ui/i_ui_service.dart';
 import 'application_command.dart';
 
 /// BaseType of any command that needs a component

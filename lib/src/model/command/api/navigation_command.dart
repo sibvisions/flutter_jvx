@@ -14,8 +14,6 @@
  * the License.
  */
 
-import '../../../service/ui/i_ui_service.dart';
-import '../../request/api_navigation_request.dart';
 import 'component_command.dart';
 
 

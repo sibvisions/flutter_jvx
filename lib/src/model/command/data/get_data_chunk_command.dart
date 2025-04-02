@@ -14,9 +14,6 @@
  * the License.
  */
 
-import 'package:rxdart/rxdart.dart';
-
-import '../../data/subscriptions/data_subscription.dart';
 import 'dataprovider_data_command.dart';
 
 /// The command to get a data chunk (from cache).

@@ -15,7 +15,6 @@
  */
 
 import '../../../util/sort_list.dart';
-import '../../request/api_set_values_request.dart';
 import 'dal_command.dart';
 
 /// The command for setting sort of data provider.

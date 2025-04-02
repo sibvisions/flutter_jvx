@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../request/api_insert_record_request.dart';
 import 'dal_command.dart';
 
 /// The command for inserting a record.

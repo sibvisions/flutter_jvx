@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../data/subscriptions/data_subscription.dart';
 import 'dataprovider_data_command.dart';
 
 /// The command to get a value of the selected row of a data provider (from cache).

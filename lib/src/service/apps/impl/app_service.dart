@@ -16,28 +16,15 @@
 
 import 'dart:async';
 
-import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../flutter_jvx.dart';
-import '../../../config/app_config.dart';
-import '../../../config/server_config.dart';
-import '../../../flutter_ui.dart';
-import '../../../model/command/api/startup_command.dart';
 import '../../../model/request/api_exit_request.dart';
-import '../../../model/response/menu_view_response.dart';
-import '../../../routing/locations/main_location.dart';
 import '../../../util/jvx_logger.dart';
-import '../../api/i_api_service.dart';
 import '../../api/shared/repository/offline_api_repository.dart';
 import '../../api/shared/repository/online_api_repository.dart';
-import '../../command/i_command_service.dart';
-import '../../config/i_config_service.dart';
 import '../../service.dart';
-import '../../ui/i_ui_service.dart';
-import '../app.dart';
-import '../i_app_service.dart';
 
 /// Manages and controls the individual apps.
 class AppService implements IAppService {
