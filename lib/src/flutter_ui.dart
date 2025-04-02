@@ -1043,7 +1043,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         );
 
         // Former debug overlay is available under cc4f5fd9f82ce0ce8c4894ce3ae59c63f3319d83
-        return DebugOverlay(
+        //without LayoutBuilder, a rendering exception will be thrown in web preview
+        return LayoutBuilder(builder: (contextX, xSnapshot) => DebugOverlay(
           opacity: 0.95,
           logBucket: FlutterUI.logBucket,
           httpBucket: FlutterUI.httpBucket,
@@ -1053,6 +1054,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             const UIDebug(),
           ],
           child: futureBuilder,
+        )
         );
       },
     );
