@@ -16,6 +16,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,10 +35,14 @@ abstract class ImageLoader {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The default image if image loading fails
   static const Widget DEFAULT_IMAGE = FaIcon(FontAwesomeIcons.circleQuestion, size: IconUtil.DEFAULT_ICON_SIZE);
 
   /// The image cache
   static final Map<String, (MemoryImage image, Size? size)> _imageCache = {};
+
+  /// Base64 check regexp (see https://github.com/dart-lang/sdk/issues/60436#issuecomment-2768499393)
+  static final RegExp rxBase64 = RegExp(r'^(?:[A-Za-z\d+/]{2}(?:==$|[A-Za-z\d+/](?:=$|[A-Za-z\d+/])))*?$');
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -156,13 +161,23 @@ abstract class ImageLoader {
 
     Uint8List? base64Decoded;
 
-    if (isBase64(imageDefinition)) {
+    bool decodeDone = false;
+
+    try {
       try {
-        base64Decoded = base64Decode(imageDefinition);
-      } catch (ex) {
-        FlutterUI.log.e(ex);
-        //decode problem -
+        if (isBase64(imageDefinition)) {
+          decodeDone = true;
+          base64Decoded = base64Decode(imageDefinition);
+        }
       }
+      catch (ex, stack) {
+        if (!decodeDone) {
+          //https://github.com/flutter/flutter/issues/165995 -> https://github.com/dart-lang/core/issues/874
+          base64Decoded = base64Decode(imageDefinition);
+        }
+      }
+    } catch (ex) {
+      FlutterUI.log.e(ex);
     }
 
     var listener_ = imageStreamListener;
@@ -326,17 +341,20 @@ abstract class ImageLoader {
 
   ///Checks whether the given [value] is base64 encoded
   static bool isBase64(dynamic value) {
+    log(value);
+
     if (value == null) {
       return false;
     }
 
-    if (value.runtimeType == String) {
-      final RegExp rx = RegExp(r'^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$',
-        multiLine: true,
-        unicode: true,
-      );
-      return rx.hasMatch(value);
+    if (value is String) {
+      if (value.isEmpty) {
+        return false;
+      }
+
+      return value.length % 4 == 0 && rxBase64.hasMatch(value);
     }
+
     return false;
   }
 
