@@ -39,15 +39,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The height of a mobile text field.
-  static const double MOBILE_HEIGHT = kMinInteractiveDimension;
-
-  /// The height of a web frame text field.
-  static const double WEBFRAME_HEIGHT = 32;
-
   /// The height of a text field.
   // ignore: non_constant_identifier_names
-  static double get TEXT_FIELD_HEIGHT => Frame.isWebFrame() ? WEBFRAME_HEIGHT : MOBILE_HEIGHT;
+  static double get TEXT_FIELD_HEIGHT => JVxColors.componentHeight;
 
   /// The height of a text.
   // ignore: non_constant_identifier_names

@@ -150,11 +150,8 @@ class FlButtonModel extends FlComponentModel {
     }
 
     if (isSlideStyle) {
-      double height = kMinInteractiveDimension;
-      if (Frame.isWebFrame()) {
-        height = 32;
-      }
-      return Size(height, height);
+      //+4 because the icon needs more space
+      return const Size(JVxColors.componentHeight, JVxColors.componentHeight + 5);
     }
 
     return Size.square(FlTextFieldWidget.TEXT_FIELD_HEIGHT);

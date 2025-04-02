@@ -79,8 +79,14 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
 
   @override
   Widget build(BuildContext context) {
+
     return LayoutBuilder(
       builder: (context, constraints) {
+        //avoids problem with invalid size
+        if (constraints.maxHeight == 0 && constraints.maxWidth == 0) {
+          return const SizedBox();
+        }
+
         Size minimumSize = model.minimumSize!;
         return OverflowBox(
           minWidth: minimumSize.width,

@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../flutter_jvx.dart';
@@ -32,6 +33,14 @@ abstract class JVxColors {
   static const Color COMPONENT_DISABLED_LIGHTER = Color(0xFFE6E6E6);
   static const Color TEXT_HINT_LABEL_COLOR = Color(0xFF999999);
   static const Color STANDARD_BORDER = Color(0xFF999999);
+
+  /// The height of a mobile text field.
+  static const double MOBILE_HEIGHT = kMinInteractiveDimension;
+
+  /// The height of a web frame text field.
+  static const double WEBFRAME_HEIGHT = 32;
+
+  static const double componentHeight = kIsWeb ? WEBFRAME_HEIGHT : MOBILE_HEIGHT;
 
   /// The default border radius
   static const double BORDER_RADIUS = 5;
@@ -276,4 +285,5 @@ abstract class JVxColors {
     }
     return lighten(pSource);
   }
+
 }
