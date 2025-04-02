@@ -65,6 +65,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     } else {
       return GestureDetector(
         onTap: image == null && !IconUtil.isFontIcon(model.image)
+               && model.image != null && model.image!.isNotEmpty
             ? () => showDialog(
                   context: context,
                   builder: (context) {
