@@ -22,5 +22,6 @@ import 'src/flutter_ui.dart';
 void main() async {
   FlutterUI.package = false;
   DebugOverlay.enabled = kDebugMode;
+
   await FlutterUI.start(const FlutterUI());
 }

@@ -24,6 +24,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -45,7 +46,6 @@ import 'mask/menu/menu.dart';
 import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/jvx_splash.dart';
 import 'mask/splash/splash.dart';
-import 'mask/work_screen/work_screen.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
@@ -390,6 +390,11 @@ class FlutterUI extends StatefulWidget {
     StreamSubscription<Uri> appLinksListener = appLinks.uriLinkStream.listen((uri) async {
       uriCurrent = uri;
 
+      //not started with deep link
+      if (uriInitial == null) {
+          FlutterUI.started = true;
+      }
+
       if (FlutterUI.started) {
         if (uriCurrent?.queryParameters.isNotEmpty != null) {
           //because unmodifiable
@@ -409,6 +414,11 @@ class FlutterUI extends StatefulWidget {
             }
           }
         }
+      }
+
+      //in case the app was started with deep link and opened again
+      if (uriInitial == uriCurrent) {
+          FlutterUI.started = true;
       }
     });
 
@@ -669,19 +679,34 @@ class FlutterUI extends StatefulWidget {
   static Future<App?> _loadOrCreateAppFromParameters(Map<String, String> queryParameters) async {
     String? sAppName = queryParameters["appName"];
 
+    //search app in the list of known apps, if it's unique
+    List<App> apps = IAppService().getApps();
+
     ServerConfig? urlConfig = ParseUtil.extractAppParameters(queryParameters);
 
+    App? appFound;
+
+    int iFoundCount = 0;
+
     if (urlConfig != null) {
+      //try to find with URL and appName
+      //the id is not a good variant because predefined apps have a prefix in the id and simple
+      //id comparison would fail
+      for (int i = 0; i < apps.length; i++){
+        if (apps[i].name == urlConfig.appName
+            && apps[i].baseUrl == urlConfig.baseUrl) {
+          appFound = apps[i];
+          iFoundCount++;
+        }
+      }
+
+      if (iFoundCount == 1) {
+        return appFound;
+      }
+
       return await App.createAppFromConfig(urlConfig);
     }
     else if (sAppName != null) {
-      //search app in the list of known apps, if it's unique
-      List<App> apps = IAppService().getApps();
-
-      App? appFound;
-
-      int iFoundCount = 0;
-
       for (int i = 0; i < apps.length; i++){
         if (apps[i].name == sAppName) {
           appFound = apps[i];
@@ -977,9 +1002,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             builder: (contextD, exitSnapshot) {
               if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
                   (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
-
-                FlutterUI.started = true;
-
                 retrySplash() => IAppService().startApp();
 
                 VoidCallback? returnToApps =
