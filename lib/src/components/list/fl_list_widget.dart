@@ -836,6 +836,17 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
     selectedRowIndex = rowIndex;
 
+    var obj = ObserverUtils.findRenderObject(_sliverContext);
+
+    if (obj == null || obj is! RenderSliver
+        || (obj.geometry?.paintExtent ?? 0) == 0) {
+
+      selectedRowIndex = -1;
+      _scrollToSelected = true;
+
+      return;
+    }
+
     unawaited(_observerController.animateTo(
       sliverContext: _sliverContext,
       duration: kThemeAnimationDuration,
@@ -846,6 +857,13 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
         var obj = ObserverUtils.findRenderObject(_sliverContext);
 
         if (obj == null || obj is! RenderSliver) {
+          return 0;
+        }
+
+        if ((obj.geometry?.paintExtent ?? 0) == 0) {
+          selectedRowIndex = -1;
+          _scrollToSelected = true;
+
           return 0;
         }
 

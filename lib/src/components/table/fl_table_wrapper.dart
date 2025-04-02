@@ -104,10 +104,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// How many "pages" of the table data have been loaded multiplied by: [FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE]
   int pageCount = 1;
 
-  /// The last selected row. Used to calculate the current scroll position
-  /// if the table has not yet been scrolled.
-  int lastScrolledToIndex = -1;
-
   /// The row index of last tap.
   int? lastTapRowIndex;
 
@@ -116,12 +112,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   /// If the selection has to be cancelled.
   bool cancelSelect = false;
-
-  /// If the last scrolled item got scrolled to the top edge or bottom edge.
-  bool? scrolledIndexTopAligned;
-
-  /// The known scroll notification.
-  ScrollNotification? lastScrollNotification;
 
   /// If the table should show a floating insert button
   bool get showFloatingButton =>
@@ -183,7 +173,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       onValueChanged: _setValueChanged,
       onRefresh: refresh,
       onEndScroll: _loadMore,
-      onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
       onLongPress: _onLongPress,
       onTap: _onTimedCellTap,
       onHeaderTap: _sortColumn,
