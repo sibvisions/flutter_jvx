@@ -494,7 +494,14 @@ class ConfigService implements IConfigService {
 
   @override
   Future<void> updateUsername(String? username) async {
-    String? fallback = App.getPredefinedConfig(_appId.value)?.username;
+    PredefinedServerConfig? config = App.getPredefinedConfig(_appId.value);
+
+    //it's not allowed to update a locked config
+    if (config?.locked == true) {
+      return;
+    }
+
+    String? fallback = config?.username;
     await _configHandler.updateUsername(username == fallback ? null : username);
     _username.value = username ?? fallback;
   }
