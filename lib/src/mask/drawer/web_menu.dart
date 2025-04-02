@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/device_status_response.dart';
@@ -98,8 +99,8 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
   Widget _buildMenu(BuildContext context, LayoutMode layoutMode) {
     AppStyle appStyle = AppStyle.of(context);
     Color? tileColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.color')) ?? const Color(0xFF3d3d3d);
-    Color? groupTextColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.groupColor')) ?? Colors.white;
-    Color? textColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.textColor')) ?? Colors.white;
+    Color? groupTextColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.groupColor')) ?? JVxColors.DARKER_WHITE;
+    Color? textColor = ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.textColor')) ?? JVxColors.DARKER_WHITE;
     Color? selectionColor =
         ParseUtil.parseHexColor(appStyle.style(context, 'web.sidemenu.selectionColor')) ?? Theme.of(context).colorScheme.primary;
 
@@ -123,7 +124,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
             useAlternativeLabel: true,
             grouped: true,
           ),
-        ),
+        )
       ],
     );
 
@@ -142,7 +143,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
       selectedColor: selectionColor,
       selectedTileColor: tileColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-      horizontalTitleGap: 0,
+      horizontalTitleGap: 10,
       child: IconTheme.merge(
         data: const IconThemeData(size: 16),
         child: DividerTheme(

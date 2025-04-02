@@ -95,10 +95,12 @@ class ListMenuGroup extends StatelessWidget {
           delegate: GridMenuHeader(
             headerText: FlutterUI.translate(menuGroupModel.name),
             headerColor: headerColor,
-            height: (ListTileTheme.of(context).dense ?? false) ? 40 : 48,
+            height: (ListTileTheme
+                  .of(context)
+                  .dense ?? false) ? 40 : 48,
             textStyle: textStyle,
             embedded: embedded,
-          ),
+          )
         ),
         SliverList(
           delegate: SliverChildListDelegate.fixed(
