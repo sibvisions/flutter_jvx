@@ -422,7 +422,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
           child: NotificationListener<ScrollNotification>(
             onNotification: (notification) => _onInternalScroll(notification),
             child:
-              FixedSliverViewObserver(
+              SliverViewObserver(
                 controller: _observerController,
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),

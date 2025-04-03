@@ -25,7 +25,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
-import 'package:scrollview_observer/src/sliver/models/sliver_observer_observe_result_model.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../util/extensions/double_extensions.dart';
@@ -373,7 +372,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: Stack(
           children: [
-            FixedSliverViewObserver(
+            SliverViewObserver(
               controller: _observerController,
               child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -714,52 +713,3 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     widget.onLongPress?.call(-1, sFoundColumn ?? "", FlDummyCellEditor(), globalPosition);
   }
 }
-
-class FixedSliverViewObserver extends SliverViewObserver {
-  const FixedSliverViewObserver({
-    super.key,
-    required super.child,
-    super.tag,
-    super.controller,
-    super.sliverListContexts,
-    super.sliverContexts,
-    super.onObserveAll,
-    super.onObserve,
-    super.onObserveViewport,
-    super.leadingOffset,
-    super.dynamicLeadingOffset,
-    super.customOverlap,
-    super.toNextOverPercent,
-    super.scrollNotificationPredicate,
-    super.autoTriggerObserveTypes,
-    super.triggerOnObserveType,
-    super.customHandleObserve,
-    super.extendedHandleObserve
-  });
-
-  @override
-  State<SliverViewObserver> createState() => FixMixViewObserverState();
-}
-
-class FixMixViewObserverState extends MixViewObserverState {
-
-    @override
-    SliverObserverHandleContextsResultModel<ObserveModel>? handleContexts({
-      bool isForceObserve = false,
-      bool isFromObserveNotification = false,
-      bool isDependObserveCallback = true,
-      bool isIgnoreInnerCanHandleObserve = true,
-    }) {
-      //means: disposed
-      if (innerSliverListeners == null) {
-        return null;
-      }
-
-      return super.handleContexts(
-        isForceObserve: isForceObserve,
-        isFromObserveNotification: isFromObserveNotification,
-        isDependObserveCallback: isDependObserveCallback,
-        isIgnoreInnerCanHandleObserve: isIgnoreInnerCanHandleObserve);
-    }
-
-  }

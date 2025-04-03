@@ -18,6 +18,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  web: ^1.0.0
+
   flutter_web_plugins:
     sdk: flutter
 
@@ -98,7 +100,7 @@ dependencies:
   flutter_map_cancellable_tile_provider: ^3.1.0
   latlong2: ^0.9.1
   geolocator: ^13.0.1
-  scrollview_observer: ^1.25.0
+  scrollview_observer: ^1.26.0
   url_launcher: ^6.3.1
   linked_scroll_controller: ^0.2.0
   liquid_progress_indicator:
