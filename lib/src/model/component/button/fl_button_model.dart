@@ -143,20 +143,6 @@ class FlButtonModel extends FlComponentModel {
   /// If the button is a geolocation button
   bool get isGeolocationStyle => styles.contains(STYLE_MOBILE_GEOLOCATION);
 
-  @override
-  Size? get minimumSize {
-    if (_minimumSize != null) {
-      return _minimumSize;
-    }
-
-    if (isSlideStyle) {
-      //+4 because the icon needs more space
-      return const Size(JVxColors.componentHeight, JVxColors.componentHeight + 5);
-    }
-
-    return Size.square(FlTextFieldWidget.TEXT_FIELD_HEIGHT);
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
