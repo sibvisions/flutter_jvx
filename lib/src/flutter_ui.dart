@@ -848,20 +848,24 @@ class FlutterUI extends StatefulWidget {
     ));
   }
 
-  static void setTitle(BuildContext? context, String title) {
+  /// Sets the title
+  static void setTitle(String title) {
     lastTitle = title;
 
-    _setTitle(context, title);
+    _setTitle(title);
   }
 
-  static void updateTitle([BuildContext? context]) {
+  /// Updates the title to the last title
+  static void updateTitle() {
       if (lastTitle != null) {
-        _setTitle(context, lastTitle!);
+        _setTitle(lastTitle!);
       }
   }
 
-  static Future<void> _setTitle(BuildContext? context, String title) async {
+  /// Sets the title (intern)
+  static Future<void> _setTitle(String title) async {
     if (kIsWeb) {
+      //needed, otherwise the title won't be changed -> flutter bug
       browser_tab_title_util.setTabTitle("");
       browser_tab_title_util.setTabTitle(title);
     }
@@ -1020,6 +1024,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     );
   }
 
+  /// Updates the application title for the current application (if started)
   String _updateTitle(BuildContext context) {
     String title = (kIsWeb ? IUiService().applicationParameters.value.applicationTitleWeb : null) ??
         IConfigService().getAppConfig()?.title ??
@@ -1031,10 +1036,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
 
     if (kIsWeb) {
-      FlutterUI.setTitle(context, title);
+      FlutterUI.setTitle(title);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        FlutterUI.updateTitle(context);
+        FlutterUI.updateTitle();
       });
     }
 
