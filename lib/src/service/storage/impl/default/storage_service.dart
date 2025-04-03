@@ -20,7 +20,6 @@ import 'dart:collection';
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../mask/frame/frame.dart';

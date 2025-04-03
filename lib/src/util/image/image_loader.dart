@@ -16,7 +16,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -170,7 +169,7 @@ abstract class ImageLoader {
           base64Decoded = base64Decode(imageDefinition);
         }
       }
-      catch (ex, stack) {
+      catch (ex) {
         if (!decodeDone) {
           //https://github.com/flutter/flutter/issues/165995 -> https://github.com/dart-lang/core/issues/874
           base64Decoded = base64Decode(imageDefinition);
