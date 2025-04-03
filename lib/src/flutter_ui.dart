@@ -29,7 +29,6 @@ import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:logger/logger.dart' hide LogEvent;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:push/push.dart';
@@ -76,7 +75,6 @@ import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
-import 'util/extensions/color_extensions.dart';
 import 'util/json_template_manager.dart';
 import 'util/jvx_logger.dart';
 import 'util/extensions/list_extensions.dart';
@@ -90,8 +88,8 @@ import 'util/parse_util.dart';
 import 'util/push_util.dart';
 import 'util/widgets/future_nested_navigator.dart';
 
-import 'package:beamer/src/browser_tab_title_util_non_web.dart'
-if (dart.library.html) 'package:beamer/src/browser_tab_title_util_web.dart' as browser_tab_title_util;
+import 'util/web/browser_tab_title_util_non_web.dart'
+if (dart.library.js_interop) 'util/web/browser_tab_title_util_web.dart' as browser_tab_title_util;
 
 T? cast<T>(x) => x is T ? x : null;
 
@@ -653,10 +651,10 @@ class FlutterUI extends StatefulWidget {
 
     if (kIsWeb) {
       if (mobileOnly != null) {
-        IUiService().updateMobileOnly(mobileOnly == "true");
+        IUiService().updateMobileOnly(mobileOnly.isEmpty || mobileOnly == "true");
       }
       if (webOnly != null) {
-        IUiService().updateWebOnly(webOnly == "true");
+        IUiService().updateWebOnly(webOnly.isEmpty || webOnly == "true");
       }
     }
 
