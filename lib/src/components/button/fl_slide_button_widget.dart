@@ -43,6 +43,9 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
   /// The controller of the button.
   final ActionSliderController controller;
 
+  /// The minimum size
+  final Size minimumSize = Size.square(JVxColors.componentHeight() + 5);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +67,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [FlSlideButtonWidget]
-  const FlSlideButtonWidget({
+  FlSlideButtonWidget({
     super.key,
     required super.model,
     required this.controller,
@@ -87,7 +90,6 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
           return const SizedBox();
         }
 
-        Size minimumSize = model.minimumSize!;
         return OverflowBox(
           minWidth: minimumSize.width,
           maxWidth: max(minimumSize.width, constraints.maxWidth),

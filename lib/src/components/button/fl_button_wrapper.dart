@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:action_slider/action_slider.dart';
 import 'package:flutter/foundation.dart';
@@ -140,13 +141,34 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   @override
   Size calculateSize(BuildContext context) {
     if (model.isSlideStyle) {
-      Size minimumSize = model.minimumSize!;
-      double textWidth = ParseUtil.getTextWidth(text: model.labelModel.text, style: model.labelModel.createTextStyle());
+      Size? size = model.preferredSize;
 
-      return Size(minimumSize.height + textWidth, minimumSize.height);
+      if (size == null) {
+        size = model.minimumSize;
+
+        double textWidth = ParseUtil.getTextWidth(text: model.labelModel.text, style: model.labelModel.createTextStyle());
+
+        if (size != null) {
+          if (textWidth < size.width) {
+            textWidth = size.width;
+          }
+        }
+
+        return Size(textWidth + 55 + JVxColors.componentHeight() + 2, JVxColors.componentHeight());
+      }
     }
 
-    return super.calculateSize(context);
+    Size calcSize = super.calculateSize(context);
+
+    if (model.preferredSize == null) {
+      double height = JVxColors.componentHeight();
+
+      if (calcSize.width < height || calcSize.height < height) {
+        return Size(max(calcSize.width, height), max(calcSize.height, height));
+      }
+    }
+
+    return calcSize;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

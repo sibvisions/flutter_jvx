@@ -28,11 +28,21 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   @override
   Widget get image {
     if (model.isSwitch) {
-      return Switch.adaptive(
+
+      Widget switchWidget = Switch.adaptive(
         focusNode: radioFocusNode,
         value: model.selected,
-        onChanged: model.isEnabled ? (_) => onPress?.call() : null,
+        splashRadius: 10,
+        onChanged: onPress != null && model.isEnabled ? (_) => onPress?.call() : null,
       );
+
+      if (JVxColors.componentHeight() < JVxColors.MOBILE_HEIGHT) {
+        return Transform.scale(
+          scale: 0.8,
+          child: switchWidget);
+      }
+
+      return switchWidget;
     }
 
     BorderSide? borderSide;
