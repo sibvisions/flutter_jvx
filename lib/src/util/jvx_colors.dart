@@ -40,8 +40,6 @@ abstract class JVxColors {
   /// The height of a web frame text field.
   static const double WEBFRAME_HEIGHT = 32;
 
-  static const double componentHeight = kIsWeb ? WEBFRAME_HEIGHT : MOBILE_HEIGHT;
-
   /// The default border radius
   static const double BORDER_RADIUS = 5;
 
@@ -284,6 +282,18 @@ abstract class JVxColors {
       return darken(pSource);
     }
     return lighten(pSource);
+  }
+
+  static double componentHeight() {
+    if (IUiService().mobileOnly.value) {
+      return MOBILE_HEIGHT;
+    }
+
+    if (IUiService().webOnly.value) {
+      return WEBFRAME_HEIGHT;
+    }
+
+    return kIsWeb ? WEBFRAME_HEIGHT : MOBILE_HEIGHT;
   }
 
 }

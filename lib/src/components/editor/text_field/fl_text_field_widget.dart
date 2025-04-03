@@ -22,7 +22,6 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_jvx.dart';
-import '../../../mask/frame/frame.dart';
 import '../../../model/layout/alignments.dart';
 
 enum FlTextBorderType {
@@ -41,7 +40,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   /// The height of a text field.
   // ignore: non_constant_identifier_names
-  static double get TEXT_FIELD_HEIGHT => JVxColors.componentHeight;
+  static double TEXT_FIELD_HEIGHT = JVxColors.componentHeight();
 
   /// The height of a text.
   // ignore: non_constant_identifier_names

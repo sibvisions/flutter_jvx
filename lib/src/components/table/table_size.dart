@@ -98,13 +98,14 @@ class TableSize {
     this.columnDividerWidth = 1.0,
     this.minColumnWidth = 50,
     this.maxColumnWidth = 400,
-    this.tableHeaderHeight = JVxColors.componentHeight + 2,
-    this.rowHeight = JVxColors.componentHeight + 2,
+    tableHeaderHeight,
+    rowHeight,
     this.checkCellWidth = 55.0,
     this.imageCellWidth = 55.0,
     this.choiceCellWidth = 55.0,
     this.cellPaddings = paddingsDefault,
-  });
+  }) : tableHeaderHeight = tableHeaderHeight ?? JVxColors.componentHeight() + 2,
+       rowHeight = rowHeight ?? JVxColors.componentHeight() + 2;
 
   /// Always calculates the table size.
   TableSize.direct({
@@ -112,8 +113,8 @@ class TableSize {
     this.columnDividerWidth = 1.0,
     this.minColumnWidth = 50,
     this.maxColumnWidth = 400,
-    this.tableHeaderHeight = JVxColors.componentHeight + 2,
-    this.rowHeight = JVxColors.componentHeight + 2,
+    tableHeaderHeight,
+    rowHeight,
     this.checkCellWidth = 55.0,
     this.imageCellWidth = 55.0,
     this.choiceCellWidth = 55.0,
@@ -122,7 +123,9 @@ class TableSize {
     required DataChunk dataChunk,
     required DalMetaData metaData,
     double? availableWidth,
-  }) {
+  }) : tableHeaderHeight = tableHeaderHeight ?? JVxColors.componentHeight() + 2,
+       rowHeight = rowHeight ?? JVxColors.componentHeight() + 2
+  {
     calculateTableSize(tableModel: tableModel, metaData: metaData, availableWidth: availableWidth, dataChunk: dataChunk);
   }
 
