@@ -18,6 +18,8 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart' as web_plugins;
 import 'package:web_socket_channel/html.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../flutter_ui.dart';
+
 /// Web "Implementation" of [ImportHandler]
 class ImportHandler {
   static void setHashUrlStrategy() {
@@ -40,4 +42,21 @@ class FixedHashUrlStrategy extends web_plugins.HashUrlStrategy {
     // Workaround for https://github.com/flutter/flutter/issues/116415
     return "${_platformLocation.pathname}${_platformLocation.search}${internalUrl.isEmpty ? '' : '#$internalUrl'}";
   }
+
+  @override
+  void pushState(Object? state, String title, String url) {
+    super.pushState(state, title, url);
+
+    //otherwise, title will be wrong
+    FlutterUI.updateTitle();
+  }
+
+  @override
+  void replaceState(Object? state, String title, String url) {
+    super.replaceState(state, title, url);
+
+    //otherwise, title will be wrong
+    FlutterUI.updateTitle();
+  }
+
 }

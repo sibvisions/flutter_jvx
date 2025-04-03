@@ -29,6 +29,7 @@ import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:logger/logger.dart' hide LogEvent;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:push/push.dart';
@@ -75,6 +76,7 @@ import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
+import 'util/extensions/color_extensions.dart';
 import 'util/json_template_manager.dart';
 import 'util/jvx_logger.dart';
 import 'util/extensions/list_extensions.dart';
@@ -87,6 +89,9 @@ import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
 import 'util/push_util.dart';
 import 'util/widgets/future_nested_navigator.dart';
+
+import 'package:beamer/src/browser_tab_title_util_non_web.dart'
+if (dart.library.html) 'package:beamer/src/browser_tab_title_util_web.dart' as browser_tab_title_util;
 
 T? cast<T>(x) => x is T ? x : null;
 
@@ -241,9 +246,13 @@ class FlutterUI extends StatefulWidget {
   /// show or hide the debug banner in dev mode
   final bool debugBanner;
 
+  /// The last/current title
+  static String? lastTitle;
+
   /// Application metadata
   static late PackageInfo packageInfo;
 
+  /// All global tap subscriptions
   static final List<GlobalSubscription> _globalSubscriptions = [];
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -410,7 +419,7 @@ class FlutterUI extends StatefulWidget {
               bool startedManually = bool.tryParse(params.remove("startedManually") ?? "") ?? false;
               IConfigService().setCustomStartupProperties(params);
 
-              unawaited(IAppService().startCustomApp(app: app, appTitle: IConfigService().title.value, autostart: !startedManually));
+              unawaited(IAppService().startCustomApp(app: app, appTitle: IConfigService().title.value ?? app.effectiveTitle, autostart: !startedManually));
             }
           }
         }
@@ -576,6 +585,7 @@ class FlutterUI extends StatefulWidget {
 
     if (urlApp != null) {
       FlutterUIState.startupApp = urlApp;
+      FlutterUIState.appTitle = urlApp.effectiveTitle;
       configService.setCustomStartupProperties(queryParameters);
     } else if (!kIsWeb) {
       // Handle notification launching app from terminated state
@@ -838,10 +848,30 @@ class FlutterUI extends StatefulWidget {
     ));
   }
 
+  static void setTitle(BuildContext? context, String title) {
+    lastTitle = title;
+
+    _setTitle(context, title);
+  }
+
+  static void updateTitle([BuildContext? context]) {
+      if (lastTitle != null) {
+        _setTitle(context, lastTitle!);
+      }
+  }
+
+  static Future<void> _setTitle(BuildContext? context, String title) async {
+    if (kIsWeb) {
+      browser_tab_title_util.setTabTitle("");
+      browser_tab_title_util.setTabTitle(title);
+    }
+  }
+
 }
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   static App? startupApp;
+  static String? appTitle;
 
   final JVxRoutesObserver jvxRouteObserver = JVxRoutesObserver();
 
@@ -881,6 +911,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           MainLocation(),
         ],
       ).call,
+      buildListener: (context, delegate) {
+        _updateTitle(context);
+      },
+      routeListener: (routeinfo, delegate) {
+        _updateTitle(context);
+      },
       transitionDelegate: transitionDelegate,
       beamBackTransitionDelegate: transitionDelegate,
       guards: [
@@ -942,7 +978,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           FlutterUI.log.d("Start app ${startupApp!.id}");
         }
 
-        IAppService().startApp(appId: startupApp!.id, autostart: true);
+        IAppService().startApp(appId: startupApp!.id, appTitle: appTitle, autostart: true);
       }
     });
   }
@@ -965,9 +1001,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         IConfigService().applicationStyle,
       ]),
       builder: (context, _) {
-        String title = (kIsWeb ? IUiService().applicationParameters.value.applicationTitleWeb : null) ??
-            widget.appConfig?.title ??
-            FlutterUI.packageInfo.appName;
         return MaterialApp.router(
           themeMode: IConfigService().getThemeMode(),
           theme: themeData,
@@ -979,12 +1012,33 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           routeInformationParser: BeamerParser(),
           routerDelegate: routerDelegate,
           backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
-          title: title,
+          onGenerateTitle: (context) => _updateTitle(context),
           builder: _routeBuilder,
           debugShowCheckedModeBanner: widget.debugBanner,
         );
       },
     );
+  }
+
+  String _updateTitle(BuildContext context) {
+    String title = (kIsWeb ? IUiService().applicationParameters.value.applicationTitleWeb : null) ??
+        IConfigService().getAppConfig()?.title ??
+        FlutterUI.packageInfo.appName;
+
+    if (routerDelegate.currentPages.length < 2) {
+      title = IConfigService().getAppConfig()?.title ??
+          FlutterUI.packageInfo.appName;
+    }
+
+    if (kIsWeb) {
+      FlutterUI.setTitle(context, title);
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        FlutterUI.updateTitle(context);
+      });
+    }
+
+    return title;
   }
 
   Widget _routeBuilder(BuildContext contextA, Widget? child) {
