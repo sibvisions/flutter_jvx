@@ -1,4 +1,6 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html>
+<html>
+<head>
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
@@ -88,6 +90,13 @@
       bottom: 0;
       right: 0;
     }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #000000;
+        background-image: url("splash/img/dark-background.png");
+      }
+    }
   </style>
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
@@ -108,5 +117,5 @@
     {{flutter_bootstrap_js}}
   </script>
 
-
-</body></html>
+</body>
+</html>

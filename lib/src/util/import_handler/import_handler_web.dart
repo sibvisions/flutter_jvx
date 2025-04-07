@@ -31,6 +31,7 @@ class ImportHandler {
 }
 
 class FixedHashUrlStrategy extends web_plugins.HashUrlStrategy {
+  // ignore: unused_field
   final web_plugins.PlatformLocation _platformLocation;
 
   // ignore: use_super_parameters
