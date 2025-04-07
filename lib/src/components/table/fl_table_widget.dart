@@ -579,6 +579,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       return;
     }
 
+    //not enough records -> wait
+    if (widget.chunkData.data.length < rowIndex) {
+      return;
+    }
+
     if (!_scrollToSelected) {
       return;
     }
@@ -642,7 +647,6 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         if ((obj.geometry?.paintExtent ?? 0) == 0) {
           selectedRowIndex = -1;
           _scrollToSelected = true;
-
           return 0;
         }
 

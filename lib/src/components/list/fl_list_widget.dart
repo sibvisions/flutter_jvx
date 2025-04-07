@@ -801,6 +801,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       return;
     }
 
+    //not enough records -> wait
+    if (widget.chunkData.data.length < rowIndex) {
+      return;
+    }
+
     if (!_scrollToSelected) {
       return;
     }
