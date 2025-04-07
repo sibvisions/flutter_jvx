@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../../../flutter_ui.dart';
+import '../../../../../model/command/api/home_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../../../../model/component/fl_component_model.dart';
@@ -41,20 +42,26 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
     FlPanelModel? screenModel =
         IStorageService().getComponentByName(pComponentName: command.componentName) as FlPanelModel?;
 
-    if (screenModel != null && command.popPage) {
-      if (IUiService().getCurrentWorkScreenName() == screenModel.screenNavigationName) {
-        var context = FlutterUI.getEffectiveContext()!;
-        // We need to try beamBack first.
-        // (PopupExampleWorkScreen) For example, a Modal WorkScreen should show the underlying WorkScreen again after closing, not the menu.
-        if (!context.beamBack() && Navigator.canPop(context)) {
-          // Pop ignores willPopScope! Do not use maybePop; it calls willPopScope
-          Navigator.pop(context);
+    if (origin is! HomeCommand) {
+      if (screenModel != null && command.popPage) {
+        if (IUiService().getCurrentWorkScreenName() == screenModel.screenNavigationName) {
+          var context = FlutterUI.getEffectiveContext()!;
+          // We need to try beamBack first.
+          // (PopupExampleWorkScreen) For example, a Modal WorkScreen should show the underlying WorkScreen again after closing, not the menu.
+          if (!context.beamBack() && Navigator.canPop(context)) {
+            // Pop ignores willPopScope! Do not use maybePop; it calls willPopScope
+            Navigator.pop(context);
+          }
+        } else if (!kIsWeb) {
+          FlutterUI
+              .getBeamerDelegate()
+              .beamingHistory
+              .whereType<MainLocation>()
+              .forEach((location) {
+            location.history
+                .removeWhere((element) => element.routeInformation.uri.toString().endsWith(screenModel.screenNavigationName!));
+          });
         }
-      } else if (!kIsWeb) {
-        FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
-          location.history
-              .removeWhere((element) => element.routeInformation.uri.toString().endsWith(screenModel.screenNavigationName!));
-        });
       }
     }
 

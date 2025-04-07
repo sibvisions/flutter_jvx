@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
+import '../../model/command/api/home_command.dart';
 import '../../model/command/api/reload_command.dart';
 import '../../model/command/api/rollback_command.dart';
 import '../../model/command/api/save_command.dart';
@@ -191,7 +192,9 @@ class WebFrameState extends FrameState {
                 FontAwesomeIcons.house,
                 color: iconColor,
               ),
-              onPressed: () => IUiService().routeToMenu(),
+              onPressed: () {
+                ICommandService().sendCommand(HomeCommand(reason: "Clicked in topbar"));
+              },
             ),
           ),
         if (appStyle.applicationSettings.userSettingsVisible)

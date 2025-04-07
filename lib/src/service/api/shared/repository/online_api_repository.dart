@@ -70,6 +70,7 @@ import '../../../../model/request/api_open_tab_request.dart';
 import '../../../../model/request/api_press_button_request.dart';
 import '../../../../model/request/api_reload_menu_request.dart';
 import '../../../../model/request/api_reload_request.dart';
+import '../../../../model/request/api_home_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/request/api_reset_password_request.dart';
 import '../../../../model/request/api_restore_data_request.dart';
@@ -190,6 +191,7 @@ class OnlineApiRepository extends IRepository {
     ApiSaveRequest: (_) => APIRoute.POST_SAVE,
     ApiReloadRequest: (_) => APIRoute.POST_RELOAD,
     ApiRollbackRequest: (_) => APIRoute.POST_ROLLBACK,
+    ApiHomeRequest: (_) => APIRoute.POST_HOME,
     ApiSortRequest: (_) => APIRoute.POST_SORT,
     ApiCloseContentRequest: (_) => APIRoute.POST_CLOSE_CONTENT,
     ApiDalSaveRequest: (_) => APIRoute.POST_DAL_SAVE,

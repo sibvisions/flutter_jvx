@@ -37,6 +37,7 @@ import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/api/filter_command.dart';
 import '../../../../../model/command/api/focus_gained_command.dart';
 import '../../../../../model/command/api/focus_lost_command.dart';
+import '../../../../../model/command/api/home_command.dart';
 import '../../../../../model/command/api/insert_record_command.dart';
 import '../../../../../model/command/api/login_command.dart';
 import '../../../../../model/command/api/logout_command.dart';
@@ -85,6 +86,7 @@ import 'fetch_command_processor.dart';
 import 'filter_command_processor.dart';
 import 'focus_gained_command_processor.dart';
 import 'focus_lost_command_processor.dart';
+import 'home_command_processor.dart';
 import 'insert_record_command_processor.dart';
 import 'login_command_processor.dart';
 import 'logout_command_processor.dart';
@@ -150,6 +152,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final SaveCommandProcessor _saveProcessor = SaveCommandProcessor();
   final ReloadCommandProcessor _reloadProcessor = ReloadCommandProcessor();
   final RollbackCommandProcessor _rollbackProcessor = RollbackCommandProcessor();
+  final HomeCommandProcessor _homeProcessor = HomeCommandProcessor();
 
   //data access
   final SetValuesCommandProcessor _setValuesProcessor = SetValuesCommandProcessor();
@@ -248,6 +251,8 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _reloadProcessor;
     } else if (command is RollbackCommand) {
       return _rollbackProcessor;
+    } else if (command is HomeCommand) {
+      return _homeProcessor;
     } else if (command is SortCommand) {
       return _sortProcessor;
     } else if (command is SetParameterCommand) {

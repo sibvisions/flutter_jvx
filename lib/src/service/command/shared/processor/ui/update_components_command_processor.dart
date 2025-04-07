@@ -28,6 +28,7 @@ import '../../i_command_processor.dart';
 class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponentsCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command, BaseCommand? origin) async {
+
     final stopwatch = Stopwatch()..start();
     await ILayoutService().setValid(isValid: false);
 

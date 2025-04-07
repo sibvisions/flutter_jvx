@@ -142,7 +142,7 @@ class ApiController implements IController {
       if (processor != null) {
         commands.addAll(await processor.processResponse(response, apiInteraction.request));
       } else {
-        throw Exception("Couldn't find processor belonging to ${response.name}, add it to the map");
+        throw Exception("Couldn't find response processor for ${response.name}");
       }
     }
 
