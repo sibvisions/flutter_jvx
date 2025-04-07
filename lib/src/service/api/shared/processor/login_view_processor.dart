@@ -44,12 +44,10 @@ class LoginViewProcessor implements IResponseProcessor<LoginViewResponse> {
 
     loginProps.removeWhere((key, value) => value == null);
 
-    RouteToLoginCommand routeToLoginCommand = RouteToLoginCommand(
+    return [RouteToLoginCommand(
       mode: pResponse.mode,
       loginData: loginProps,
       reason: "Login as response",
-    );
-
-    return [routeToLoginCommand];
+    )];
   }
 }

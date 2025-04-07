@@ -35,13 +35,11 @@ class DalFetchProcessor extends IResponseProcessor<DalFetchResponse> {
       filter = pRequest.filter ?? filter;
     }
 
-    SaveFetchDataCommand saveFetchDataCommand = SaveFetchDataCommand(
+    return [SaveFetchDataCommand(
       response: pResponse,
       reason: "Server sent FetchData",
       requestFilter: filter,
       setRootKey: setRootKey,
-    );
-
-    return [saveFetchDataCommand];
+    )];
   }
 }

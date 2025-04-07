@@ -23,10 +23,9 @@ import '../i_response_processor.dart';
 class AuthenticationDataProcessor extends IResponseProcessor<AuthenticationDataResponse> {
   @override
   List<BaseCommand> processResponse(AuthenticationDataResponse pResponse, ApiRequest? pRequest) {
-    SaveAuthKeyCommand saveAuthKeyCommand = SaveAuthKeyCommand(
+    return [SaveAuthKeyCommand(
       authKey: pResponse.authKey,
       reason: "Auth key from server ",
-    );
-    return [saveAuthKeyCommand];
+    )];
   }
 }
