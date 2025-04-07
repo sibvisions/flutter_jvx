@@ -694,8 +694,13 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void setCustomStartupProperties(Map<String, dynamic> pProperties) {
-    _customStartupProperties = Map.of(pProperties);
+  void setCustomStartupProperties(Map<String, dynamic>? pProperties) {
+    if (pProperties == null) {
+      _customStartupProperties = {};
+    }
+    else {
+      _customStartupProperties = Map.of(pProperties);
+    }
   }
 
   @override

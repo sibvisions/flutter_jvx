@@ -393,6 +393,10 @@ class FlutterUI extends StatefulWidget {
 
     uriInitial = await appLinks.getInitialLink();
 
+    if (kDebugMode) {
+      print("Deep link initial URI $uriInitial");
+    }
+
     // ignore: unused_local_variable
     StreamSubscription<Uri> appLinksListener = appLinks.uriLinkStream.listen((uri) async {
       uriCurrent = uri;
@@ -403,6 +407,11 @@ class FlutterUI extends StatefulWidget {
       }
 
       if (FlutterUI.started) {
+
+        if (log.cl(Lvl.d)) {
+          log.d("Deep link update URI $uriCurrent");
+        }
+
         if (uriCurrent?.queryParameters.isNotEmpty != null) {
           //because unmodifiable
           Map<String, String> params = Map.of(uriCurrent!.queryParameters);
@@ -532,6 +541,10 @@ class FlutterUI extends StatefulWidget {
     _commandLogFilter.level = appConfig.logConfig?.levels?.command ?? _defaultLogLevel;
     _uiLogFilter.level = appConfig.logConfig?.levels?.ui ?? _defaultLogLevel;
     _layoutLogFilter.level = appConfig.logConfig?.levels?.layout ?? _defaultLogLevel;
+
+    if (log.cl(Lvl.d)) {
+      log.d("Deep link initial URI $uriInitial");
+    }
 
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService.create() : await IsolateLayoutService.create();

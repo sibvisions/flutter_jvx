@@ -312,7 +312,7 @@ abstract class IConfigService implements Service {
   ///
   /// See also:
   /// * [getCustomStartupProperties]
-  void setCustomStartupProperties(Map<String, dynamic> pProperties);
+  void setCustomStartupProperties(Map<String, dynamic>? pProperties);
 
   /// Register a callback that will be called when the locally saved images change.
   ///

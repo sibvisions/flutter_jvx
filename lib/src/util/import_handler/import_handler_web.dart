@@ -40,7 +40,9 @@ class FixedHashUrlStrategy extends web_plugins.HashUrlStrategy {
   @override
   String prepareExternalUrl(String internalUrl) {
     // Workaround for https://github.com/flutter/flutter/issues/116415
-    return "${_platformLocation.pathname}${_platformLocation.search}${internalUrl.isEmpty ? '' : '#$internalUrl'}";
+    // return "${_platformLocation.pathname}${_platformLocation.search}${internalUrl.isEmpty ? '' : '#$internalUrl'}";
+
+    return super.prepareExternalUrl(internalUrl);
   }
 
   @override
