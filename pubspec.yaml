@@ -6,7 +6,7 @@ issue_tracker: https://github.com/sibvisions/flutter_jvx/issues
 
 publish_to: 'none'
 
-version: 3.3.0+17
+version: 3.3.0+20
 
 environment:
   sdk: ">=3.0.2 <4.0.0"
@@ -136,11 +136,7 @@ dependencies:
 
   push: ^3.0.0
   flutter_local_notifications: ^19.0.0
-  #open_filex: ^4.5.0
-
-  #temp required for: https://github.com/javaherisaber/open_filex/pull/19 (flutter 3.29)
-  open_filex:
-    git: https://github.com/mufassalhussain/open_filex
+  open_filex: ^4.7.0
 
   json_dynamic_widget: ^9.0.0
   screenshot: ^3.0.0

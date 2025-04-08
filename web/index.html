@@ -113,8 +113,16 @@
       <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
   </picture>
 
+
   <script>
-    {{flutter_bootstrap_js}}
+    {{flutter_js}}
+    {{flutter_build_config}}
+
+    const usrConfig = {'canvasKitBaseUrl': 'canvaskit/', 'renderer': 'canvaskit'};
+
+    _flutter.loader.load({
+      config: usrConfig,
+    });
   </script>
 
 </body>
