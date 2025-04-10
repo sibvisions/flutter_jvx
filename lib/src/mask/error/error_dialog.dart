@@ -49,9 +49,9 @@ class ErrorDialog extends StatelessWidget with JVxDialog implements IError {
     this.title,
     this.goToAppOverview = false,
     this.retry = false,
-    dismissible,
+    bool? dismissible,
   }) {
-    this.dismissible = dismissible;
+    this.dismissible = dismissible == true;
     modal = true;
   }
 

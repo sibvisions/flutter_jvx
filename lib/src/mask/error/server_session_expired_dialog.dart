@@ -34,9 +34,9 @@ class ServerSessionExpiredDialog extends StatelessWidget with JVxDialog implemen
   ServerSessionExpiredDialog({
     super.key,
     required this.command,
-    dismissible,
+    bool? dismissible,
   }) {
-    this.dismissible = dismissible;
+    this.dismissible = dismissible == true;
     modal = true;
   }
 
