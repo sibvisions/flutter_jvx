@@ -22,7 +22,9 @@ import 'package:dio/dio.dart';
 import 'package:queue/queue.dart';
 
 import '../../../commands.dart';
+import '../../../exceptions/invalid_server_response_exception.dart';
 import '../../../flutter_ui.dart';
+import '../../../mask/error/error_dialog.dart';
 import '../../../model/command/api/alive_command.dart';
 import '../../../model/command/api/application_command.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -145,6 +147,15 @@ class CommandService implements ICommandService {
     bool? delayUILocking,
     bool? showLoading,
   ]) async {
+
+    bool wasConnected = true;
+
+    var repository = IApiService().getRepository();
+
+    if (repository is OnlineApiRepository) {
+      wasConnected = repository.connected;
+    }
+
     try {
       pCommand.delayUILocking = delayUILocking ?? pCommand.delayUILocking;
       pCommand.showLoading = showLoading ?? pCommand.showLoading;
@@ -168,7 +179,7 @@ class CommandService implements ICommandService {
         FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
       }
 
-      List<BaseCommand>? followCommands = await processCommand(pCommand, null, showDialogOnError);
+      List<BaseCommand>? followCommands = await _processCommand(pCommand, null, showDialogOnError);
       ErrorCommand? firstErrorCommand;
 
       while (followCommands != null) {
@@ -177,7 +188,11 @@ class CommandService implements ICommandService {
         List<BaseCommand>? newFollowCommands;
 
         for (BaseCommand followCommand in followCommands) {
-          List<BaseCommand>? newCommands = await processCommand(followCommand, pCommand, showDialogOnError);
+          if (wasConnected && repository is OnlineApiRepository) {
+            wasConnected = repository.connected;
+          }
+
+          List<BaseCommand>? newCommands = await _processCommand(followCommand, pCommand, showDialogOnError);
           if (newCommands != null) {
             newFollowCommands ??= [];
             newFollowCommands.addAll(newCommands);
@@ -198,9 +213,38 @@ class CommandService implements ICommandService {
       }
 
       return true;
-    } catch (error) {
+    } catch (error, stack) {
       if (FlutterUI.logCommand.cl(Lvl.e)) {
         FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
+      }
+
+      if (pCommand is! ErrorCommand && pCommand is! FeedbackCommand) {
+        bool showError = true;
+
+        if (pCommand is AliveCommand) {
+          if (!wasConnected) {
+            showError = false;
+          }
+        }
+
+        bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException;
+
+        if (showError) {
+          if (showDialogOnError && FlutterUI.getCurrentContext() != null && FlutterUI.getCurrentContext()!.mounted) {
+            IUiService().showJVxDialog(
+              ErrorDialog(
+                message: FlutterUI.translate(IUiService.getErrorMessage(error)),
+                goToAppOverview: isConnectionError,
+              ),
+            );
+          }
+        }
+
+        // If there is a current session and a "probably" working connection, report to the server.
+        // but don't report if server returns status code 500
+        if (!isConnectionError && error is! InvalidServerResponseException) {
+          FlutterUI.sendFeedback(error, stack, "Command service error");
+        }
       }
 
       if (throwFirstErrorCommand) {
@@ -221,7 +265,7 @@ class CommandService implements ICommandService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<List<BaseCommand>?> processCommand(BaseCommand pCommand, BaseCommand? origin, bool showDialogOnError) async {
+  Future<List<BaseCommand>?> _processCommand(BaseCommand pCommand, BaseCommand? origin, bool showDialogOnError) async {
     if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
       FlutterUI.logCommand.i("Processing ${pCommand.runtimeType} (${pCommand.reason})");
     }
@@ -237,14 +281,6 @@ class CommandService implements ICommandService {
     }
 
     List<BaseCommand> commands;
-
-    bool wasConnected = true;
-
-    var repository = IApiService().getRepository();
-
-    if (repository is OnlineApiRepository) {
-      wasConnected = repository.connected;
-    }
 
     try {
       await processor.beforeProcessing(pCommand, origin);
@@ -271,53 +307,10 @@ class CommandService implements ICommandService {
       }
     } catch (error, stackTrace) {
       if (FlutterUI.logAPI.cl(Lvl.e)) {
-        FlutterUI.logAPI.e("Error while processing ${pCommand.runtimeType} with ${processor.runtimeType} $error");
+        FlutterUI.logAPI.e("Error while processing ${pCommand.runtimeType} with ${processor.runtimeType} $error $stackTrace");
       }
 
-      bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException;
-
-      if (pCommand is! ErrorCommand && pCommand is! FeedbackCommand) {
-
-        bool showError = true;
-
-        if (pCommand is AliveCommand) {
-          if (!wasConnected) {
-            showError = false;
-          }
-        }
-
-        if (showError) {
-          commands = [
-            OpenErrorDialogCommand(
-              silentAbort: !showDialogOnError,
-              message: FlutterUI.translate(IUiService.getErrorMessage(error)),
-              error: error,
-              stackTrace: stackTrace,
-              isTimeout: isConnectionError,
-              reason: "Failed processing ${pCommand.runtimeType}",
-            ),
-          ];
-        }
-        else {
-          commands = [];
-        }
-
-        // If there is a current session and a "probably" working connection, report to the server.
-        if (!isConnectionError && IUiService().clientId.value != null) {
-          commands.add(
-            FeedbackCommand(
-              type: FeedbackType.Error,
-              message: IUiService.getErrorMessage(error),
-              properties: {
-                "error": error.toString(),
-              },
-              reason: "UIService async error",
-            ),
-          );
-        }
-      } else {
-        commands = [];
-      }
+      rethrow;
     }
 
     return commands;

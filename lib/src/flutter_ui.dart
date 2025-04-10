@@ -806,32 +806,7 @@ class FlutterUI extends StatefulWidget {
     };
 
     PlatformDispatcher.instance.onError = (error, stack) {
-      //no client, no connection
-      if (IUiService().clientId.value != null) {
-        JVxOverlayState? overlay = JVxOverlay.maybeOf(FlutterUI.getCurrentContext());
-
-        if (overlay != null) {
-          overlay.capture((imageData) => _sendFeedback(
-            IUiService.getErrorMessage(error),
-            {
-              "exception": error.toString(),
-              "error": stack.toString(),
-            },
-            "PlatformDispatcher.instance.onError",
-            imageData
-          ));
-        }
-        else {
-          _sendFeedback(
-            IUiService.getErrorMessage(error),
-            {
-              "exception": error.toString(),
-              "error": stack.toString()
-            },
-            "PlatformDispatcher.instance.onError"
-          );
-        }
-      }
+      sendFeedback(error, stack, "PlatformDispatcher.instance.onError");
 
       return true;
     };
@@ -849,14 +824,50 @@ class FlutterUI extends StatefulWidget {
     };
   }
 
-  static _sendFeedback(String? message, Map<String, dynamic> properties, String reason, [Uint8List? image]) {
-    ICommandService().sendCommand(FeedbackCommand(
-      type: FeedbackType.Error,
-      message: message,
-      image: image,
-      properties: properties,
-      reason: reason
-    ));
+  /// Sends feedback to backend with [error] and an optional [stackTrace].
+  static sendFeedback(Object error, StackTrace? stackTrace, String reason) {
+    //no client, no connection
+    if (IUiService().clientId.value != null) {
+      JVxOverlayState? overlay = JVxOverlay.maybeOf(FlutterUI.getCurrentContext());
+
+      if (overlay != null) {
+        overlay.capture((imageData) => _sendFeedback(
+          IUiService.getErrorMessage(error),
+          {
+            "exception": error.toString(),
+            if (stackTrace != null)
+            "error": stackTrace.toString(),
+          },
+          reason,
+          imageData
+        ));
+      }
+      else {
+        return _sendFeedback(
+          IUiService.getErrorMessage(error),
+          {
+            "exception": error.toString(),
+            if (stackTrace != null)
+            "error": stackTrace.toString()
+          },
+          reason
+        );
+      }
+    }
+
+    return null;
+  }
+
+  static FeedbackCommand? _sendFeedback(String? message, Map<String, dynamic> properties, String reason, [Uint8List? image]) {
+    FeedbackCommand command = FeedbackCommand(
+        type: FeedbackType.Error,
+        message: message,
+        image: image,
+        properties: properties,
+        reason: reason
+    );
+
+    ICommandService().sendCommand(command);
   }
 
   /// Sets the title
@@ -1072,22 +1083,19 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             builder: (contextD, exitSnapshot) {
               if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
                   (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
-                retrySplash() => IAppService().startApp();
-
                 VoidCallback? returnToApps =
                     IUiService().canRouteToAppOverview() ? IUiService().routeToAppOverview : null;
 
                 return _buildSplash(
                   future: IAppService().startupFuture.value!,
                   context: contextD,
-                  retry: retrySplash,
                   returnToApps: returnToApps,
                   childrenBuilder: (snapshot) => [
                     if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
                       _getStartupErrorDialog(
                         contextD,
                         snapshot,
-                        retry: retrySplash,
+                        retry: () => IAppService().startApp(),
                         returnToApps: returnToApps,
                       ),
                   ],
@@ -1136,7 +1144,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     BuildContext? context,
     Widget? child,
     List<Widget> Function(AsyncSnapshot snapshot)? childrenBuilder,
-    required VoidCallback retry,
     required VoidCallback? returnToApps,
   }) {
     return FutureNestedNavigator(

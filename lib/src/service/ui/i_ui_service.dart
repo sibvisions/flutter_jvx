@@ -328,8 +328,7 @@ abstract class IUiService implements Service {
     String? title,
     String? message,
     required Object error,
-    StackTrace? stackTrace,
-    bool sendFeedback = false,
+    StackTrace? stackTrace
   });
 
   void closeMessageDialog(String componentName);

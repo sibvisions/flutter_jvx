@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import '../../../../../../../../flutter_jvx.dart';
 import '../../../../../../../mask/error/server_session_expired_dialog.dart';
 import '../../../../../../../model/command/base_command.dart';
 import '../../../../../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
@@ -29,7 +30,9 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
   Future<List<BaseCommand>> processCommand(OpenSessionExpiredDialogCommand command, BaseCommand? origin) async {
     IUiService().updateClientId(null);
 
-    if (!IConfigService().getAppConfig()!.autoRestartOnSessionExpired!) {
+    if (!IConfigService().getAppConfig()!.autoRestartOnSessionExpired!
+        //restart while starting won't work because of an endless loop
+        || origin is StartupCommand) {
       IUiService().showJVxDialog(ServerSessionExpiredDialog(command: command));
     } else {
       IAppService().saveLocationAsReturnUri();

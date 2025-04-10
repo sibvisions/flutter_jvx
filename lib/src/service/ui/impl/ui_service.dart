@@ -1181,8 +1181,7 @@ class UiService implements IUiService {
     String? title,
     String? message,
     required Object error,
-    StackTrace? stackTrace,
-    bool sendFeedback = false,
+    StackTrace? stackTrace
   }) {
     ICommandService().sendCommand(
       OpenErrorDialogCommand(
@@ -1195,15 +1194,6 @@ class UiService implements IUiService {
       ),
     );
 
-    if (sendFeedback && IUiService().clientId.value != null) {
-      ICommandService().sendCommand(FeedbackCommand(
-        type: FeedbackType.Error,
-        message: IUiService.getErrorMessage(error),
-        properties: {
-          "error": error.toString(),
-        },
-        reason: "UIService async error",
-      ));
-    }
+    FlutterUI.sendFeedback(error, stackTrace, "UIService async error");
   }
 }

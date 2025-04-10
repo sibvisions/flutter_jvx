@@ -19,6 +19,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:dio/browser.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -318,7 +319,7 @@ class OnlineApiRepository extends IRepository {
       },
     );
 
-    return Dio(options)..interceptors.add(DioLogInterceptor(FlutterUI.httpBucket));
+    return Dio(options)..interceptors.add(DioLogInterceptor(FlutterUI.httpBucket));;
   }
 
   void setConnected(bool connected) {
@@ -630,12 +631,13 @@ class OnlineApiRepository extends IRepository {
       Response response;
       try {
         if (retryRequest ?? true) {
+
           response = await retry(
             sendFunction,
             retryIf: (e) => shouldRetry(e),
             retryIfResult: (response) => response.statusCode == 503,
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", error: e),
-            onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
+            onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (${response.statusCode}): ${pRequest.runtimeType}"),
             maxAttempts: 3,
             maxDelay: client?.options.receiveTimeout,
           );
@@ -808,6 +810,7 @@ class OnlineApiRepository extends IRepository {
       requestCookies = List.of(cookies);
       IUiService().getAppManager()?.modifyCookies(requestCookies);
     }
+
     Map<String, dynamic> requestHeaders = Map.of(headers);
     IUiService().getAppManager()?.modifyHeaders(requestHeaders);
 
@@ -817,7 +820,7 @@ class OnlineApiRepository extends IRepository {
       options: Options(
         method: route.method.name,
         headers: {
-          if (!kIsWeb) HttpHeaders.cookieHeader: requestCookies?.map((e) => e.toString()).join("; "),
+          if (requestCookies != null) HttpHeaders.cookieHeader: requestCookies.map((e) => e.toString()).join("; "),
           ...requestHeaders,
         },
         // To ensure maximum flexibility
@@ -839,6 +842,7 @@ class OnlineApiRepository extends IRepository {
         );
       }
     }
+
     return response;
   }
 

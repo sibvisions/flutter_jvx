@@ -40,18 +40,23 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
-    await IAppService().removePreviousAppVersions(IConfigService().currentApp.value!, version);
+    IApiService servApi = IApiService();
+    IConfigService servConf = IConfigService();
 
-    IUiService().updateClientId(command.metaData.clientId);
-    await IConfigService().updateVersion(version);
+    await IAppService().removePreviousAppVersions(servConf.currentApp.value!, version);
 
-    await IConfigService().updateCustomLanguage(command.metaData.customLanguage);
-    await IConfigService().updateApplicationLanguage(command.metaData.langCode);
-    await IConfigService().updateApplicationTimeZone(command.metaData.timeZoneCode);
+    IUiService servUi = IUiService();
 
-    IUiService().updateApplicationMetaData(command.metaData);
+    servUi.updateClientId(command.metaData.clientId);
+    await servConf.updateVersion(version);
 
-    IFileManager fileManager = IConfigService().getFileManager();
+    await servConf.updateCustomLanguage(command.metaData.customLanguage);
+    await servConf.updateApplicationLanguage(command.metaData.langCode);
+    await servConf.updateApplicationTimeZone(command.metaData.timeZoneCode);
+
+    servUi.updateApplicationMetaData(command.metaData);
+
+    IFileManager fileManager = servConf.getFileManager();
 
     String languagesPath = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/");
     String imagesPath = fileManager.getAppSpecificPath("${IFileManager.IMAGES_PATH}/");
@@ -62,7 +67,7 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
     Directory? templatesDir = fileManager.getDirectory(templatesPath);
 
     // Start WebSocket
-    unawaited((IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket().catchError(
+    unawaited((servApi.getRepository() as OnlineApiRepository?)?.startWebSocket().catchError(
         (e, stack) => FlutterUI.logAPI.w("Initial WebSocket connection failed", error: e, stackTrace: stack)));
 
     List<BaseCommand> commands = [];
@@ -70,8 +75,8 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
     if (kDebugMode || !(languagesDir?.existsSync() ?? false)) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
     } else {
-      await IConfigService().reloadSupportedLanguages();
-      await IUiService().i18n().setLanguage(IConfigService().getLanguage());
+      await servConf.reloadSupportedLanguages();
+      await servUi.i18n().setLanguage(servConf.getLanguage());
     }
 
     if (!kIsWeb && (kDebugMode || !(imagesDir?.existsSync() ?? false))) {

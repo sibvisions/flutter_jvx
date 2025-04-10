@@ -146,22 +146,25 @@ class RetryOptions {
     FutureOr<void> Function(T)? onRetryResult,
   }) async {
     var attempt = 0;
+
     // ignore: literal_only_boolean_expressions
     while (true) {
       attempt++; // first invocation is the first attempt
+
       try {
         final value = await fn();
         if (attempt >= maxAttempts || retryIfResult == null || !(await retryIfResult(value))) {
           return value;
-        } else {
-          if (onRetryResult != null) {
-            await onRetryResult(value);
-          }
+        }
+
+        if (onRetryResult != null) {
+          await onRetryResult(value);
         }
       } on Exception catch (e) {
         if (attempt >= maxAttempts || (retryIf != null && !(await retryIf(e)))) {
           rethrow;
         }
+
         if (onRetry != null) {
           await onRetry(e);
         }
