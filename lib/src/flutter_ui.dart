@@ -589,6 +589,7 @@ class FlutterUI extends StatefulWidget {
 
     // Init translation
     await IConfigService().reloadSupportedLanguages();
+
     await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     IUiService().setAppManager(pAppToRun.appManager);
 

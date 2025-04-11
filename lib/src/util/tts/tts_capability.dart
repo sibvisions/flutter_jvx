@@ -30,6 +30,7 @@ mixin TtsCapability<T extends StatefulWidget> on State<T> {
       if (Platform.isIOS || Platform.isMacOS) {
         await tts.autoStopSharedSession(true);
       }
+
       await tts.setLanguage(pLanguageCode ?? IConfigService().getLanguage());
       await tts.setIosAudioCategory(
         IosTextToSpeechAudioCategory.playback,

@@ -47,12 +47,12 @@ class ConfigProcessor implements ICommandProcessorHandler<ConfigCommand> {
   final SaveApplicationSettingsCommandProcessor _saveApplicationSettingsProcessor =
       SaveApplicationSettingsCommandProcessor();
   final SaveUserDataCommandProcessor _saveUserDataCommandProcessor = SaveUserDataCommandProcessor();
-  final SaveAuthKeyCommandProcessor _authKeyCommandProcessor = SaveAuthKeyCommandProcessor();
-  final SaveApplicationImagesCommandProcessor _applicationImagesCommandProcessor =
+  final SaveAuthKeyCommandProcessor _saveAuthKeyCommandProcessor = SaveAuthKeyCommandProcessor();
+  final SaveApplicationImagesCommandProcessor _saveApplicationImagesCommandProcessor =
       SaveApplicationImagesCommandProcessor();
-  final SaveApplicationTemplatesCommandProcessor _applicationTemplatesCommandProcessor =
+  final SaveApplicationTemplatesCommandProcessor _saveApplicationTemplatesCommandProcessor =
       SaveApplicationTemplatesCommandProcessor();
-  final SaveApplicationTranslationCommandProcessor _applicationTranslationCommandProcessor =
+  final SaveApplicationTranslationCommandProcessor _saveApplicationTranslationCommandProcessor =
       SaveApplicationTranslationCommandProcessor();
   final SaveApplicationStyleCommandProcessor _applicationStyleCommandProcessor = SaveApplicationStyleCommandProcessor();
   final SaveOrShowFileCommandProcessor _saveDownloadCommandProcessor = SaveOrShowFileCommandProcessor();
@@ -68,13 +68,13 @@ class ConfigProcessor implements ICommandProcessorHandler<ConfigCommand> {
     } else if (command is SaveUserDataCommand) {
       return _saveUserDataCommandProcessor;
     } else if (command is SaveAuthKeyCommand) {
-      return _authKeyCommandProcessor;
+      return _saveAuthKeyCommandProcessor;
     } else if (command is SaveApplicationImagesCommand) {
-      return _applicationImagesCommandProcessor;
+      return _saveApplicationImagesCommandProcessor;
     } else if (command is SaveApplicationTemplatesCommand) {
-      return _applicationTemplatesCommandProcessor;
+      return _saveApplicationTemplatesCommandProcessor;
     } else if (command is SaveApplicationTranslationCommand) {
-      return _applicationTranslationCommandProcessor;
+      return _saveApplicationTranslationCommandProcessor;
     } else if (command is SaveApplicationStyleCommand) {
       return _applicationStyleCommandProcessor;
     } else if (command is SaveOrShowFileCommand) {

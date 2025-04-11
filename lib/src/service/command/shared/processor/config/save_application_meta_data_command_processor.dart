@@ -47,12 +47,14 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
 
     IUiService servUi = IUiService();
 
-    servUi.updateClientId(command.metaData.clientId);
     await servConf.updateVersion(version);
-
+    await servConf.updateApplicationTimeZone(command.metaData.timeZoneCode);
     await servConf.updateCustomLanguage(command.metaData.customLanguage);
     await servConf.updateApplicationLanguage(command.metaData.langCode);
-    await servConf.updateApplicationTimeZone(command.metaData.timeZoneCode);
+
+    //update clientid after language to avoid warnings because language will be downloaded in next step
+    //and is not available in web environment right now
+    servUi.updateClientId(command.metaData.clientId);
 
     servUi.updateApplicationMetaData(command.metaData);
 
