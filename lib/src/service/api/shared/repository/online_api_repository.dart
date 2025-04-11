@@ -19,7 +19,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:dio/browser.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -319,7 +318,7 @@ class OnlineApiRepository extends IRepository {
       },
     );
 
-    return Dio(options)..interceptors.add(DioLogInterceptor(FlutterUI.httpBucket));;
+    return Dio(options)..interceptors.add(DioLogInterceptor(FlutterUI.httpBucket));
   }
 
   void setConnected(bool connected) {

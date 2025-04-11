@@ -18,11 +18,6 @@ import 'dart:async';
 
 import '../../../../../../../../flutter_jvx.dart';
 import '../../../../../../../mask/error/server_session_expired_dialog.dart';
-import '../../../../../../../model/command/base_command.dart';
-import '../../../../../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
-import '../../../../../../apps/i_app_service.dart';
-import '../../../../../../config/i_config_service.dart';
-import '../../../../../../ui/i_ui_service.dart';
 import '../../../../i_command_processor.dart';
 
 class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSessionExpiredDialogCommand> {

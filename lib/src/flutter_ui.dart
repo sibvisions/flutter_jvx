@@ -858,7 +858,7 @@ class FlutterUI extends StatefulWidget {
     return null;
   }
 
-  static FeedbackCommand? _sendFeedback(String? message, Map<String, dynamic> properties, String reason, [Uint8List? image]) {
+  static _sendFeedback(String? message, Map<String, dynamic> properties, String reason, [Uint8List? image]) {
     FeedbackCommand command = FeedbackCommand(
         type: FeedbackType.Error,
         message: message,
