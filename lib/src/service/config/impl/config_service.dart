@@ -446,9 +446,12 @@ class ConfigService implements IConfigService {
 
   @override
   Future<void> updatePrivacyPolicy(Uri? policy) async {
-    Uri? fallback = getAppConfig()?.privacyPolicy;
-    await _configHandler.updatePrivacyPolicy(policy == fallback ? null : policy?.toString());
-    _privacyPolicy.value = policy ?? fallback;
+    //only update if already initialized
+    if (_appConfig != null) {
+      Uri? fallback = getAppConfig()?.privacyPolicy;
+      await _configHandler.updatePrivacyPolicy(policy == fallback ? null : policy?.toString());
+      _privacyPolicy.value = policy ?? fallback;
+    }
   }
 
   @override

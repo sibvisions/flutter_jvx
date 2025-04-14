@@ -118,6 +118,9 @@ class AppConfig {
 
   final Map<String, dynamic>? applicationParameters;
 
+  /// optional for json only (clear local storage)
+  final bool? clearLocalStorage;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -141,49 +144,51 @@ class AppConfig {
     this.versionConfig,
     this.offlineConfig,
     this.applicationParameters,
+    this.clearLocalStorage
   });
 
   const AppConfig.defaults()
-      : this(
-          title: "JVx Mobile",
-          connectTimeout: const Duration(seconds: 10),
-          aliveInterval: const Duration(seconds: 30),
-          wsPingInterval: const Duration(seconds: 10),
-          autoRestartOnSessionExpired: true,
-          showAppOverviewWithoutDefault: false,
-          customAppsAllowed: true,
-          forceSingleAppMode: false,
-          predefinedConfigsLocked: true,
-          predefinedConfigsParametersHidden: true,
-          logConfig: const LogConfig.defaults(),
-          uiConfig: const UiConfig.defaults(),
-          serverConfigs: const [],
-          versionConfig: const VersionConfig.defaults(),
-          offlineConfig: const OfflineConfig.defaults(),
-        );
+    : this(
+      title: "JVx Mobile",
+      connectTimeout: const Duration(seconds: 10),
+      aliveInterval: const Duration(seconds: 30),
+      wsPingInterval: const Duration(seconds: 10),
+      autoRestartOnSessionExpired: true,
+      showAppOverviewWithoutDefault: false,
+      customAppsAllowed: true,
+      forceSingleAppMode: false,
+      predefinedConfigsLocked: true,
+      predefinedConfigsParametersHidden: true,
+      logConfig: const LogConfig.defaults(),
+      uiConfig: const UiConfig.defaults(),
+      serverConfigs: const [],
+      versionConfig: const VersionConfig.defaults(),
+      offlineConfig: const OfflineConfig.defaults(),
+  );
 
   AppConfig.fromJson(Map<String, dynamic> json)
-      : this(
-          title: json['title'],
-          privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
-          connectTimeout: json['connectTimeout'] != null ? Duration(milliseconds: json['connectTimeout']) : null,
-          requestTimeout: json['requestTimeout'] != null ? Duration(milliseconds: json['requestTimeout']) : null,
-          aliveInterval: json['aliveInterval'] != null ? Duration(milliseconds: json['aliveInterval']) : null,
-          wsPingInterval: json['wsPingInterval'] != null ? Duration(milliseconds: json['wsPingInterval']) : null,
-          autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
-          showAppOverviewWithoutDefault: json['showAppOverviewWithoutDefault'],
-          customAppsAllowed: json['customAppsAllowed'],
-          forceSingleAppMode: json['forceSingleAppMode'],
-          predefinedConfigsLocked: json['serverConfigsLocked'],
-          predefinedConfigsParametersHidden: json['serverConfigsParametersHidden'],
-          logConfig: json['logConfig'] != null ? LogConfig.fromJson(json['logConfig']) : null,
-          uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
-          serverConfigs:
-              (json['serverConfigs'] as List<dynamic>?)?.map((e) => PredefinedServerConfig.fromJson(e)).toList(),
-          versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json['versionConfig']) : null,
-          offlineConfig: json['offlineConfig'] != null ? OfflineConfig.fromJson(json['offlineConfig']) : null,
-          applicationParameters: json['applicationParameters'],
-        );
+  : this(
+      title: json['title'],
+      privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
+      connectTimeout: json['connectTimeout'] != null ? Duration(milliseconds: json['connectTimeout']) : null,
+      requestTimeout: json['requestTimeout'] != null ? Duration(milliseconds: json['requestTimeout']) : null,
+      aliveInterval: json['aliveInterval'] != null ? Duration(milliseconds: json['aliveInterval']) : null,
+      wsPingInterval: json['wsPingInterval'] != null ? Duration(milliseconds: json['wsPingInterval']) : null,
+      autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
+      showAppOverviewWithoutDefault: json['showAppOverviewWithoutDefault'],
+      customAppsAllowed: json['customAppsAllowed'],
+      forceSingleAppMode: json['forceSingleAppMode'],
+      predefinedConfigsLocked: json['serverConfigsLocked'],
+      predefinedConfigsParametersHidden: json['serverConfigsParametersHidden'],
+      logConfig: json['logConfig'] != null ? LogConfig.fromJson(json['logConfig']) : null,
+      uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
+      serverConfigs:
+          (json['serverConfigs'] as List<dynamic>?)?.map((e) => PredefinedServerConfig.fromJson(e)).toList(),
+      versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json['versionConfig']) : null,
+      offlineConfig: json['offlineConfig'] != null ? OfflineConfig.fromJson(json['offlineConfig']) : null,
+      applicationParameters: json['applicationParameters'],
+      clearLocalStorage: json['clearLocalStorage']
+    );
 
   AppConfig merge(AppConfig? other) {
     if (other == null) return this;
@@ -207,6 +212,7 @@ class AppConfig {
       versionConfig: versionConfig?.merge(other.versionConfig) ?? other.versionConfig,
       offlineConfig: offlineConfig?.merge(other.offlineConfig) ?? other.offlineConfig,
       applicationParameters: (applicationParameters ?? {})..addAll(other.applicationParameters ?? {}),
+      clearLocalStorage: other.clearLocalStorage ?? clearLocalStorage,
     );
   }
 }

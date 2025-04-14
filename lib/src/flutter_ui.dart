@@ -487,9 +487,11 @@ class FlutterUI extends StatefulWidget {
     IAppService appService = AppService.create();
     services.registerSingleton(appService);
 
+    SharedPreferences shPrefs = await SharedPreferences.getInstance();
+
     // Config
     IConfigService configService = ConfigService.create(
-      configHandler: SharedPrefsHandler.create(sharedPrefs: await SharedPreferences.getInstance()),
+      configHandler: SharedPrefsHandler.create(sharedPrefs: shPrefs),
       fileManager: await IFileManager.getFileManager(),
     );
     services.registerSingleton(configService);
@@ -520,6 +522,12 @@ class FlutterUI extends StatefulWidget {
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
     Map<String, String> queryParameters = {...Uri.base.queryParameters, ...?uriInitial?.queryParameters};
     appConfig = appConfig.merge(_extractURIConfigParameters(queryParameters));
+
+    if (appConfig.clearLocalStorage == true)
+    {
+      await appService.removeAllApps();
+      await shPrefs.clear();
+    }
 
     //the unchanged list for later use
     Map<String, String> queryParametersOriginal = {...queryParameters};
