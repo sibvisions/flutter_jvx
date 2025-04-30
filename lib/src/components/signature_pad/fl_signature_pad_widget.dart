@@ -152,7 +152,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                   ),
                 ),
               ),
-            if (canUse &&  !currentlyDrawing && !locked)
+            if (widget.model.isEnabled && canUse && !currentlyDrawing && !locked)
               Positioned(
                 right: 0,
                 bottom: 0,
