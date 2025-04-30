@@ -19,6 +19,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -104,12 +105,26 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
     );
 
     bool locked = widget.model.saveLock && contentWidget is! Signature;
+    bool canUse = widget.model.dataProvider != null && widget.model.columnName != null;
+
+    Color? colInvalid;
+
+    if (!canUse) {
+      if (JVxColors.isLightTheme(context)) {
+        colInvalid = AppStyle.of(context).applicationSettings.colors?.invalidEditorBackground;
+      }
+      else {
+        colInvalid = AppStyle.of(context).applicationSettings.darkColors?.invalidEditorBackground;
+      }
+
+      colInvalid ??= Colors.red.shade300;
+    }
 
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: JVxColors.COMPONENT_BORDER),
         borderRadius: BorderRadius.circular(4),
-        color: widget.model.background ?? JVxColors.DARKER_WHITE,
+        color: !canUse ? colInvalid : widget.model.background ?? JVxColors.DARKER_WHITE,
       ),
       child: Padding(
         padding: const EdgeInsets.all(3.0),
@@ -121,7 +136,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                 child: contentWidget,
               ),
             ),
-            if (widget.model.saveLock && !currentlyDrawing)
+            if (canUse && widget.model.saveLock && !currentlyDrawing)
               Positioned(
                 child: Padding(
                   padding: const EdgeInsets.all(5),
@@ -137,7 +152,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                   ),
                 ),
               ),
-            if (!currentlyDrawing && !locked)
+            if (canUse &&  !currentlyDrawing && !locked)
               Positioned(
                 right: 0,
                 bottom: 0,
