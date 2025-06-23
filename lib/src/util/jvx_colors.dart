@@ -131,9 +131,9 @@ abstract class JVxColors {
     themeData = themeData.copyWith(
         appBarTheme: AppBarTheme(backgroundColor: isSelectedLight ? colorScheme.primary : colorScheme.surface,
                                  foregroundColor: isSelectedLight ? (isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white) : themeData.textTheme.labelSmall!.color),
-        cardTheme: CardTheme(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+        cardTheme: CardThemeData(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
         dividerTheme: DividerThemeData(color: dividerColor(themeData)),
-        dialogTheme: DialogTheme(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
+        dialogTheme: DialogThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             surfaceTintColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(BORDER_RADIUS))),

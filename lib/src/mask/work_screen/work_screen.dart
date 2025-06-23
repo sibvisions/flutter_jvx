@@ -158,7 +158,7 @@ class WorkScreen extends StatelessWidget {
     );
   }
 
-  static add(String? componentName, WorkScreen screen) {
+  static void add(String? componentName, WorkScreen screen) {
     if (componentName != null) {
 
       if (!_screenList.containsKey(componentName)) {
@@ -176,7 +176,7 @@ class WorkScreen extends StatelessWidget {
     }
   }
 
-  static remove(String? componentName) {
+  static void remove(String? componentName) {
     if (componentName != null) {
       if (FlutterUI.log.cl(Lvl.d)) {
         FlutterUI.log.d("Remove screen $componentName");

@@ -127,7 +127,7 @@ abstract class ComponentsFactory {
   }
 
   /// Used for replace components
-  static buildCustomWidget(FlComponentModel pModel, CustomComponent pCustomComponent) {
+  static Widget buildCustomWidget(FlComponentModel pModel, CustomComponent pCustomComponent) {
     return FlCustomWrapper(model: pModel, key: GlobalObjectKey(pModel.id), customComponent: pCustomComponent);
   }
 }

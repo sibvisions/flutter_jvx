@@ -42,7 +42,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
     }
   }
 
-  Widget createMeter(context) {
+  Widget createMeter(BuildContext context) {
     return Center(
       child: RadialGauge(
         axes: [
@@ -83,7 +83,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Widget createSpeedometer(context) {
+  Widget createSpeedometer(BuildContext context) {
     return Center(
       child: RadialGauge(
         axes: [
@@ -119,7 +119,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Widget createRing(context) {
+  Widget createRing(BuildContext context) {
     return Center(
       child: RadialGauge(
         axes: [
@@ -135,7 +135,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Widget createFlat(context) {
+  Widget createFlat(BuildContext context) {
     return Center(
       child: RadialGauge(
         axes: [

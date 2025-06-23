@@ -559,7 +559,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     );
   }
 
-  _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
+  void _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
     List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
 
     int separator = 0;

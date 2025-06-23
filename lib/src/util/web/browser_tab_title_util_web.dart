@@ -5,6 +5,6 @@ import 'package:web/web.dart' as web;
 ///
 /// This is a no-op on non-web platforms.
 /// {@endtemplate}
-setTabTitle(String title) {
+void setTabTitle(String title) {
     web.document.title = title;
 }

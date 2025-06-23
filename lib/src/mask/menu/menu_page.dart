@@ -344,7 +344,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     );
   }
 
-  _setScreenSize(Size size) {
+  void _setScreenSize(Size size) {
     ILayoutService()
         .setScreenSize(
           pScreenComponentId: IStorageService().getDesktopPanelNotifier().value!.id,

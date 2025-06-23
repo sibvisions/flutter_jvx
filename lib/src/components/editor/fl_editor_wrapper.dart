@@ -309,7 +309,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  SetValuesCommand _sendValueToServer(pValue) {
+  SetValuesCommand _sendValueToServer(dynamic pValue) {
     if (pValue is HashMap<String, dynamic>) {
       if (FlutterUI.logUI.cl(Lvl.d)) {
         FlutterUI.logUI.d("Values of ${model.id} set to $pValue");

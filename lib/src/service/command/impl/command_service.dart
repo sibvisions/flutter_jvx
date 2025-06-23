@@ -179,7 +179,7 @@ class CommandService implements ICommandService {
         FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
       }
 
-      List<BaseCommand>? followCommands = await _processCommand(pCommand, null, showDialogOnError);
+      List<BaseCommand>? followCommands = await _processCommand(pCommand, null);
       ErrorCommand? firstErrorCommand;
 
       while (followCommands != null) {
@@ -192,7 +192,7 @@ class CommandService implements ICommandService {
             wasConnected = repository.connected;
           }
 
-          List<BaseCommand>? newCommands = await _processCommand(followCommand, pCommand, showDialogOnError);
+          List<BaseCommand>? newCommands = await _processCommand(followCommand, pCommand);
           if (newCommands != null) {
             newFollowCommands ??= [];
             newFollowCommands.addAll(newCommands);
@@ -218,7 +218,8 @@ class CommandService implements ICommandService {
         FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
       }
 
-      if (pCommand is! ErrorCommand && pCommand is! FeedbackCommand) {
+      if ((error is! ErrorCommand)
+          && pCommand is! ErrorCommand && pCommand is! FeedbackCommand) {
         bool showError = true;
 
         if (pCommand is AliveCommand) {
@@ -265,7 +266,7 @@ class CommandService implements ICommandService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<List<BaseCommand>?> _processCommand(BaseCommand pCommand, BaseCommand? origin, bool showDialogOnError) async {
+  Future<List<BaseCommand>?> _processCommand(BaseCommand pCommand, BaseCommand? origin) async {
     if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
       FlutterUI.logCommand.i("Processing ${pCommand.runtimeType} (${pCommand.reason})");
     }

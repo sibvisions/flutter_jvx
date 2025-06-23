@@ -192,7 +192,7 @@ class LayoutData implements ICloneable {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  applyFromOther(LayoutData pLayoutData) {
+  void applyFromOther(LayoutData pLayoutData) {
     parentId = pLayoutData.parentId;
     layout = pLayoutData.layout?.clone();
     children = List.of(pLayoutData.children);

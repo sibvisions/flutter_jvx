@@ -91,7 +91,7 @@ import 'util/widgets/future_nested_navigator.dart';
 import 'util/web/browser_tab_title_util_non_web.dart'
 if (dart.library.js_interop) 'util/web/browser_tab_title_util_web.dart' as browser_tab_title_util;
 
-T? cast<T>(x) => x is T ? x : null;
+T? cast<T>(dynamic x) => x is T ? x : null;
 
 /// Builder function for dynamic color creation
 typedef ColorBuilder = Color? Function(BuildContext context);
@@ -388,7 +388,7 @@ class FlutterUI extends StatefulWidget {
     await IAppService().clear(reason);
   }
 
-  static start([FlutterUI pAppToRun = const FlutterUI()]) async {
+  static Future<void> start([FlutterUI pAppToRun = const FlutterUI()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     uriInitial = await appLinks.getInitialLink();
@@ -770,7 +770,7 @@ class FlutterUI extends StatefulWidget {
   }
 
   /// Initializes error handling
-  static _initErrorHandling() {
+  static void _initErrorHandling() {
     FlutterError.onError = (details) {
       FlutterError.presentError(details);
 
@@ -834,7 +834,7 @@ class FlutterUI extends StatefulWidget {
   }
 
   /// Sends feedback to backend with [error] and an optional [stackTrace].
-  static sendFeedback(Object error, StackTrace? stackTrace, String reason) {
+  static void sendFeedback(Object error, StackTrace? stackTrace, String reason) {
     //no client, no connection
     if (IUiService().clientId.value != null) {
       JVxOverlayState? overlay = JVxOverlay.maybeOf(FlutterUI.getCurrentContext());
@@ -852,7 +852,7 @@ class FlutterUI extends StatefulWidget {
         ));
       }
       else {
-        return _sendFeedback(
+        _sendFeedback(
           IUiService.getErrorMessage(error),
           {
             "exception": error.toString(),
@@ -863,11 +863,9 @@ class FlutterUI extends StatefulWidget {
         );
       }
     }
-
-    return null;
   }
 
-  static _sendFeedback(String? message, Map<String, dynamic> properties, String reason, [Uint8List? image]) {
+  static void _sendFeedback(String? message, Map<String, dynamic> properties, String reason, [Uint8List? image]) {
     FeedbackCommand command = FeedbackCommand(
         type: FeedbackType.Error,
         message: message,

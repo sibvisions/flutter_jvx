@@ -36,7 +36,7 @@ enum Lvl {
 
   final Level level;
 
-  get value => level.value;
+  int get value => level.value;
 
   const Lvl(this.level);
 }

@@ -132,7 +132,7 @@ class CustomScreen {
         sendOpenScreenRequests = false;
 
   /// Returns a beautified version of the key.
-  get keyNavigationName {
+  String get keyNavigationName {
     String navigationName = IStorageService().convertLongScreenToClassName(key);
 
     int end = navigationName.lastIndexOf(".");

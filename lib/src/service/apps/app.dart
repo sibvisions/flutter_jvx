@@ -67,7 +67,7 @@ class App {
     return computeId(config?.appName, config?.baseUrl?.toString(), predefined: false);
   }
 
-  static isValidAppName(String name) {
+  static bool isValidAppName(String name) {
     return !name.trim().startsWith(App.predefinedPrefix);
   }
 

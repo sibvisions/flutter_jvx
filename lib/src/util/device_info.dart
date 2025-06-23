@@ -42,7 +42,7 @@ class DeviceInfo {
     this.deviceId,
   });
 
-  static fromPlatform() async {
+  static Future<DeviceInfo> fromPlatform() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     DeviceInfo deviceInfo;
 

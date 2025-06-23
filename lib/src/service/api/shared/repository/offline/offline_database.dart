@@ -86,7 +86,7 @@ class OfflineDatabase {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes the database and creates structure tables.
-  init() async {
+  Future<void> init() async {
     // Avoid errors caused by flutter upgrade.
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -659,7 +659,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Executes a list of sql statements, calls [pProgressCallback] after each statement.
-  bulk({required Iterable<String> pSqlStatements, VoidCallback? pProgressCallback}) {
+  Future<dynamic> bulk({required Iterable<String> pSqlStatements, VoidCallback? pProgressCallback}) {
     return db.transaction((txn) {
       return Future.forEach(pSqlStatements, (String sql) async {
         await txn.execute(sql);

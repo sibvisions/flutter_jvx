@@ -247,7 +247,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   /// Gets the button style.
-  ButtonStyle createButtonStyle(context) {
+  ButtonStyle createButtonStyle(BuildContext context) {
     Color? backgroundColor;
 
     if (!model.borderPainted || model.borderOnMouseEntered) {

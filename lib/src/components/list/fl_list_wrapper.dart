@@ -504,7 +504,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
  */
   }
 
-  _onLongPress(int index, Offset pGlobalPosition) {
+  void _onLongPress(int index, Offset pGlobalPosition) {
     List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
 
     int separator = 0;

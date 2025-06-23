@@ -152,7 +152,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     }
   }
 
-  _onMetaData(String dataProvider, DalMetaData metaData) {
+  void _onMetaData(String dataProvider, DalMetaData metaData) {
     metaDatas[dataProvider] = metaData;
 
     if (!initialized && _hasAllMetaData()) {
@@ -172,7 +172,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     }
   }
 
-  _onSelectedRecord(String dataProvider, DataRecord? record) {
+  void _onSelectedRecord(String dataProvider, DataRecord? record) {
     if (record != null) {
       selectedRecords[dataProvider] = record;
     } else {
@@ -209,11 +209,11 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     initialized = true;
   }
 
-  _handleNodeDoubleTap(String pNodeKey) {
+  void _handleNodeDoubleTap(String pNodeKey) {
     // Do nothing
   }
 
-  _handleNodeTap(String pNodeKey) {
+  void _handleNodeTap(String pNodeKey) {
     List<String> dataProviders = [];
     List<Filter?> filters = [];
 
@@ -244,7 +244,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     );
   }
 
-  _handleExpansionChanged(String pNodeKey, bool pExpanded) {
+  void _handleExpansionChanged(String pNodeKey, bool pExpanded) {
     Node<dynamic> node = controller.getNode(pNodeKey)!;
     node = node.copyWith(expanded: pExpanded);
     controller = controller.withUpdateNode(node.key, node);
@@ -284,7 +284,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     );
   }
 
-  _onDataChunk(DataChunk dataChunk) {
+  void _onDataChunk(DataChunk dataChunk) {
     if (IDataService().getDataBook(dataProviderAtTreeDepth(0)!)!.rootKey == null) {
       _onPage(dataProviderAtTreeDepth(0)!, null, dataChunk);
     }

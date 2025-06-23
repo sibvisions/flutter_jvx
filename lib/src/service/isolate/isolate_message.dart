@@ -21,7 +21,7 @@ import 'dart:isolate';
 /// from the execution of the message.
 abstract class IsolateMessage<T> {
   // TODO remove every wrapper message and co&kg
-  sendResponse({required T? pResponse, required SendPort pSendPort}) {
+  void sendResponse({required T? pResponse, required SendPort pSendPort}) {
     pSendPort.send(pResponse);
   }
 }

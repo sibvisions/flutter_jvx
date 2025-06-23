@@ -133,7 +133,7 @@ class TableSize {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  calculateTableSize({
+  void calculateTableSize({
     required FlTableModel tableModel,
     required DataChunk dataChunk,
     required DalMetaData metaData,

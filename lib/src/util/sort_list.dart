@@ -95,7 +95,7 @@ class SortList extends ListBase<SortDefinition> {
     }
 
     /// Updates internal element caching
-    _update() {
+    void _update() {
         names.clear();
 
         for (int i = 0; i < list.length; i++) {

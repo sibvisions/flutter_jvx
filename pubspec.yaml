@@ -53,7 +53,7 @@ dependencies:
   #  git:
   #    url: https://github.com/Sub6Resources/flutter_html
   #    ref: flutter_html-v3.0.0-beta.2
-  async: ^2.12.0
+  async: ^2.13.0
 
   # IO handling
   universal_io: ^2.0.0
@@ -99,7 +99,7 @@ dependencies:
   flutter_map: ^8.0.0
   flutter_map_cancellable_tile_provider: ^3.1.0
   latlong2: ^0.9.1
-  geolocator: ^13.0.1
+  geolocator: ^14.0.1
   scrollview_observer: ^1.26.0
   url_launcher: ^6.3.1
   linked_scroll_controller: ^0.2.0
@@ -111,7 +111,7 @@ dependencies:
 
   community_charts_flutter: ^1.0.4
   gauges: ^1.0.0
-  graphic: ^2.2.0
+  graphic: ^2.6.0
   flutter_keyboard_visibility: ^6.0.0
   flutter_slidable: ^4.0.0
   action_slider: ^0.7.0
@@ -138,7 +138,7 @@ dependencies:
   flutter_local_notifications: ^19.0.0
   open_filex: ^4.7.0
 
-  json_dynamic_widget: ^9.0.0
+  json_dynamic_widget: ^10.0.0
   screenshot: ^3.0.0
 
   app_links: ^6.4.0
@@ -146,10 +146,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
   build_runner: ^2.4.14
-  json_dynamic_widget_codegen: 2.1.0+3
+  json_dynamic_widget_codegen: 3.0.0
 
 dependency_overrides:
 

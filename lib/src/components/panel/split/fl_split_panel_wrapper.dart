@@ -212,7 +212,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     _calculateSlider(pDragDetails, true);
   }
 
-  _calculateSlider(DragUpdateDetails pDragDetails, bool pHorizontal) {
+  void _calculateSlider(DragUpdateDetails pDragDetails, bool pHorizontal) {
     final RenderBox container = context.findRenderObject() as RenderBox;
     final pos = container.globalToLocal(pDragDetails.globalPosition);
 

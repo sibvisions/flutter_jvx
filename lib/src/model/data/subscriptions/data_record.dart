@@ -22,7 +22,7 @@ enum RecordStatus {
   UNKNOWN,
   NONE;
 
-  static parseRecordStatus(List<dynamic>? values, ColumnList columnDefinitions) {
+  static RecordStatus parseRecordStatus(List<dynamic>? values, ColumnList columnDefinitions) {
     if (values == null || values.isEmpty || values.length <= columnDefinitions.length) {
       return NONE;
     }

@@ -226,7 +226,7 @@ class JVxWebSocket {
     );
   }
 
-  void _handleError(error) {
+  void _handleError(dynamic error) {
     _connectedState.value = false;
     onConnectedChange?.call(false);
     resetPingInterval();

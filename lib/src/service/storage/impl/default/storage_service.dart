@@ -473,7 +473,7 @@ class StorageService implements IStorageService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  _addAsChild(FlComponentModel pChild) {
+  void _addAsChild(FlComponentModel pChild) {
     if (pChild.parent != null && pChild.parent!.isNotEmpty) {
       Set<String> children = _childrenTree[pChild.parent] ?? {};
       children.add(pChild.id);
@@ -481,7 +481,7 @@ class StorageService implements IStorageService {
     }
   }
 
-  _removeAsChild(FlComponentModel pChild) {
+  void _removeAsChild(FlComponentModel pChild) {
     if (pChild.parent != null && pChild.parent!.isNotEmpty) {
       Set<String> children = _childrenTree[pChild.parent] ?? {};
       children.remove(pChild.id);

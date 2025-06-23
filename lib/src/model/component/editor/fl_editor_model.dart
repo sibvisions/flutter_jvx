@@ -84,7 +84,7 @@ class FlEditorModel extends FlComponentModel {
   }
 
   /// Applies component specific layout size information
-  applyComponentInformation(FlComponentModel pComponentModel) {
+  void applyComponentInformation(FlComponentModel pComponentModel) {
     preferredSize ??= pComponentModel.preferredSize;
     minimumSize ??= pComponentModel.minimumSize;
     maximumSize ??= pComponentModel.maximumSize;

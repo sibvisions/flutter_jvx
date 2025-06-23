@@ -305,7 +305,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     return num.tryParse(e.toString()) ?? fallback;
   }
 
-  void handleSelection(event) {
+  void handleSelection(Selected? event) {
     final dataChunk = this.dataChunk;
     final metaData = this.metaData;
 

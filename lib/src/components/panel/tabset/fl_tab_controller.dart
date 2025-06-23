@@ -60,7 +60,7 @@ class FlTabController extends TabController {
         lastControllers.every((FlTabController controller) => _isAllowedToAnimate(controller));
   }
 
-  _isAllowedToAnimate(FlTabController controller) {
+  bool _isAllowedToAnimate(FlTabController controller) {
     bool isAllowed = controller.offset == 0.0 && !controller.indexIsChanging;
 
     if (isAllowed && animation != null) {

@@ -71,7 +71,7 @@ class FlIconModel extends FlComponentModel {
     );
   }
 
-  _parseDefinition(Map<String, dynamic> pJson, FlIconModel pDefaultModel) {
+  void _parseDefinition(Map<String, dynamic> pJson, FlIconModel pDefaultModel) {
     if (pJson.containsKey(ApiObjectProperty.image)) {
       dynamic value = pJson[ApiObjectProperty.image];
       if (value != null) {

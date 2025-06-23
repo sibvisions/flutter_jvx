@@ -437,7 +437,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   }
 
   /// Captures an image of current application and invokes given [callback].
-  capture(ImageCallback callback) async {
+  Future<void> capture(ImageCallback callback) async {
     Future<Uint8List?> future = _screenshotController.capture();
 
     unawaited(

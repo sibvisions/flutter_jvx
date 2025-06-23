@@ -111,7 +111,7 @@ class ColumnList extends ListBase<ColumnDefinition> {
     }
 
     /// Updates internal element caching
-    _update() {
+    void _update() {
         names.clear();
         index.clear();
         listNames.clear();

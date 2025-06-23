@@ -77,12 +77,12 @@ class DataChunk {
   }
 
   /// Gets the record status of this row.
-  RecordStatus getRecordStatus(index) {
+  RecordStatus getRecordStatus(int index) {
     return RecordStatus.parseRecordStatus(data[index], columnDefinitions);
   }
 
   /// Gets the raw record status of row [index] or null if no row at given [index] is available.
-  String? getRecordStatusRaw(index) {
+  String? getRecordStatusRaw(int index) {
     List<dynamic>? values = data[index];
 
     if (values == null || values.isEmpty || values.length <= columnDefinitions.length) {

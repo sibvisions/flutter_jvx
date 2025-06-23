@@ -20,11 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../flutter_ui.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/data/subscriptions/data_record.dart';
-import '../../util/image/image_loader.dart';
-import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 
 class FlSignaturePadWidget extends FlStatefulWidget<FlCustomContainerModel> {
@@ -124,7 +119,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
       decoration: BoxDecoration(
         border: Border.all(color: JVxColors.COMPONENT_BORDER),
         borderRadius: BorderRadius.circular(4),
-        color: !canUse ? colInvalid : widget.model.background ?? JVxColors.DARKER_WHITE,
+        color: !canUse ? colInvalid : widget.model.background ?? (widget.model.isEnabled ? JVxColors.DARKER_WHITE : JVxColors.COMPONENT_DISABLED),
       ),
       child: Padding(
         padding: const EdgeInsets.all(3.0),
