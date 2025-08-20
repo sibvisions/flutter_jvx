@@ -236,6 +236,7 @@ class CommandService implements ICommandService {
               ErrorDialog(
                 message: FlutterUI.translate(IUiService.getErrorMessage(error)),
                 goToAppOverview: isConnectionError,
+                dismissible: true,
               ),
             );
           }
