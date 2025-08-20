@@ -33,21 +33,29 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
         data: Theme.of(context).copyWith(
           disabledColor: JVxColors.COMPONENT_DISABLED,
         ),
-        child: wrapShrink(Radio<bool>(
-          materialTapTargetSize: shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : null,
-          visualDensity: shrinkSize == true ?
-          const VisualDensity(
-            horizontal: VisualDensity.minimumDensity,
-            vertical: VisualDensity.minimumDensity
-          )
-          :
-          VisualDensity.compact,
-          value: true,
-          focusNode: radioFocusNode,
-          groupValue: model.selected,
-          onChanged: model.isEnabled ? (_) => onPress?.call() : null,
-          toggleable: true,
-        )),
+        child: RadioGroup<bool>(
+            groupValue: model.selected,
+            onChanged: (value) {
+              if (model.isEnabled && onPress != null) {
+                onPress!.call();
+              }
+            },
+            child: wrapShrink(Radio<bool>(
+              materialTapTargetSize: shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : null,
+              visualDensity: shrinkSize == true ?
+              const VisualDensity(
+                  horizontal: VisualDensity.minimumDensity,
+                  vertical: VisualDensity.minimumDensity
+              )
+                  :
+              VisualDensity.compact,
+              value: true,
+              focusNode: radioFocusNode,
+              toggleable: true,
+              enabled: model.isEnabled,
+            )))
+
+        ,
       );
     });
   }

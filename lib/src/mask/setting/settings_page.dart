@@ -318,7 +318,7 @@ class _SettingsPageState extends State<SettingsPage> {
         frontIcon: FontAwesomeIcons.image,
         title: "Picture Size",
         value: resolution,
-        itemBuilder: <int>(BuildContext context, int value, Widget? widget) =>
+        itemBuilder: (BuildContext context, int value, Widget? widget) =>
             Text("$value ${FlutterUI.translateLocal("px")}"),
         onPressed: (context, value) {
           var items = resolutions.map((e) => "$e ${FlutterUI.translateLocal("px")}").toList();

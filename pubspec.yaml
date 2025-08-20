@@ -64,7 +64,7 @@ dependencies:
   cross_file: ^0.3.0
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
   file_picker: ^10.0.0
-  file_saver: 0.2.14
+  file_saver: ^0.3.1
 
 # SVG Support
   flutter_svg: ^2.0.0
@@ -96,12 +96,11 @@ dependencies:
       url: https://github.com/sibvisions/flutter_debug_overlay
 
   # Custom Dependencies
-  flutter_map: ^8.0.0
-  flutter_map_cancellable_tile_provider: ^3.1.0
+  flutter_map: ^8.2.0
   latlong2: ^0.9.1
-  geolocator: ^14.0.1
+  geolocator: ^14.0.2
   scrollview_observer: ^1.26.0
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.0
   linked_scroll_controller: ^0.2.0
   liquid_progress_indicator:
     git:
@@ -132,7 +131,12 @@ dependencies:
     git: https://github.com/sibvisions/fix_html-editor-enhanced
 
   flutter_tts: ^4.0.0
-  speech_to_text: ^7.0.0
+  speech_to_text: 7.2.0
+
+#  speech_to_text:
+#    git:
+#      url: https://github.com/csdcorp/speech_to_text
+#      path: speech_to_text
 
   push: ^3.0.0
   flutter_local_notifications: ^19.0.0
@@ -152,6 +156,11 @@ dev_dependencies:
   json_dynamic_widget_codegen: 3.0.0
 
 dependency_overrides:
+
+  json_theme:
+    git:
+      url: https://github.com/wardbj93/json_theme
+      path: packages/json_theme
 
 flutter:
   uses-material-design: true
