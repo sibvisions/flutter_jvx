@@ -76,8 +76,9 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
     Color effectiveValueColor = _config.progressValueColor ?? Theme.of(context).colorScheme.primary;
     Color effectiveProgressBgColor = _config.progressBgColor ?? Theme.of(context).colorScheme.surface;
 
-    return WillPopScope(
-      child: AlertDialog(
+    return PopScope(
+        canPop: _config.barrierDismissible ?? false,
+        child: AlertDialog(
         backgroundColor: effectiveBackgroundColor,
         elevation: _config.elevation,
         shape: RoundedRectangleBorder(
@@ -150,8 +151,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
         actions: _config.actions,
         actionsPadding: _config.actionsPadding!,
         actionsAlignment: _config.actionsAlignment,
-      ),
-      onWillPop: () => Future.value(_config.barrierDismissible),
+      )
     );
   }
 }

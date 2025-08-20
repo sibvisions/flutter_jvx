@@ -40,13 +40,21 @@ class JVxWebViewState extends State<JVxWebView> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
+        }
+        //before await, to avoid problem and warning
+        NavigatorState navigator = Navigator.of(context);
+
         if (await _controller.canGoBack()) {
           await _controller.goBack();
-          return false;
         }
-        return widget.dismissible;
+        else if (widget.dismissible) {
+          navigator.pop();
+        }
       },
       child: WebViewWidget(controller: _controller),
     );

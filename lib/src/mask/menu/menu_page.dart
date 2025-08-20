@@ -55,8 +55,19 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onPopMenu,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
+        }
+
+        if (isMenuSearchEnabled) {
+          setState(() => isMenuSearchEnabled = false);
+        } else if (IUiService().canRouteToAppOverview() && IAppService().wasStartedManually()) {
+          unawaited(IUiService().routeToAppOverview());
+        }
+      },
       child: Frame.wrapWithFrame(
         builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
           valueListenable: IUiService().getMenuNotifier(),
@@ -400,15 +411,5 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
         ),
       ),
     );
-  }
-
-  Future<bool> _onPopMenu() async {
-    if (isMenuSearchEnabled) {
-      setState(() => isMenuSearchEnabled = false);
-    } else if (IUiService().canRouteToAppOverview() && IAppService().wasStartedManually()) {
-      unawaited(IUiService().routeToAppOverview());
-    }
-
-    return false;
   }
 }

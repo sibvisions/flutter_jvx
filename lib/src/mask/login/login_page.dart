@@ -221,14 +221,18 @@ class _LoginPageState extends State<LoginPage> {
       login = DefaultLogin(mode: widget.loginMode);
     }
 
-    return WillPopScope(onWillPop: _onPopLogin, child: login);
-  }
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
+        }
 
-  Future<bool> _onPopLogin() async {
-    if (IUiService().canRouteToAppOverview() && IAppService().wasStartedManually()) {
-      unawaited(IUiService().routeToAppOverview());
-    }
-
-    return false;
+        if (IUiService().canRouteToAppOverview() && IAppService().wasStartedManually()) {
+          unawaited(IUiService().routeToAppOverview());
+        }
+      },
+      child: login
+    );
   }
 }
