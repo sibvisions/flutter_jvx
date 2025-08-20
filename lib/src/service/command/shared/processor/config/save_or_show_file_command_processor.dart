@@ -39,11 +39,10 @@ class SaveOrShowFileCommandProcessor extends ICommandProcessor<SaveOrShowFileCom
     if (command.showFile || kIsWeb) {
       // saveAs is not implemented for web.
       unawaited(
-        FileSaver.instance
-            .saveFile(
+        FileSaver.instance.saveFile(
           name: path.basenameWithoutExtension(command.fileName),
           bytes: command.content,
-          ext: extension,
+          fileExtension: extension,
           mimeType: MimeType.other,
         )
             .then((String filePath) {
@@ -57,7 +56,7 @@ class SaveOrShowFileCommandProcessor extends ICommandProcessor<SaveOrShowFileCom
         FileSaver.instance.saveAs(
           name: path.basenameWithoutExtension(command.fileName),
           bytes: command.content,
-          ext: extension,
+          fileExtension: extension,
           mimeType: MimeType.other,
         ),
       );
