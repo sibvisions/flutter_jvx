@@ -325,7 +325,9 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
         transposed: true,
         // dimCount 1, Otherwise each group would be a different ring.
         dimCount: 1,
-        startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.80 : null,
+        //moves text ouf of the segments
+        //dimFill: 1.05,
+        startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.60 : null,
       );
     }
 
@@ -391,7 +393,6 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
           on: {
             GestureType.tap,
           },
-          dim: Dim.y,
           variable: "index",
         ),
         'value': PointSelection(
@@ -399,7 +400,6 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
           on: {
             GestureType.tap,
           },
-          dim: Dim.y,
           variable: "value",
         ),
       };
