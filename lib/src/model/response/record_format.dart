@@ -71,7 +71,7 @@ class RowFormat {
       formatIndex = columnIndexToFormatIndex.last;
     }
 
-    if (formatIndex >= formats.length) {
+    if (formatIndex < 0 ||formatIndex >= formats.length) {
       return null;
     }
 
