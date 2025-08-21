@@ -17,7 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility_temp_fork/flutter_keyboard_visibility_temp_fork.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:rxdart/transformers.dart';
