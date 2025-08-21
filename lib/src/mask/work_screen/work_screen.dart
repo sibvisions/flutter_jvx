@@ -17,7 +17,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_keyboard_visibility_temp_fork/flutter_keyboard_visibility_temp_fork.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../components/panel/fl_panel_wrapper.dart';

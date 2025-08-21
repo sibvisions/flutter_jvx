@@ -111,7 +111,9 @@ dependencies:
   community_charts_flutter: ^1.0.4
   gauges: ^1.0.0
   graphic: ^2.6.0
-  flutter_keyboard_visibility: ^6.0.0
+  #flutter_keyboard_visibility: ^6.0.0
+  #until wasm is fixed in original package
+  flutter_keyboard_visibility_temp_fork: ^0.1.5
   flutter_slidable: ^4.0.0
   action_slider: ^0.7.0
   webview_flutter: ^4.0.0
