@@ -131,7 +131,9 @@ dependencies:
     git: https://github.com/sibvisions/fix_html-editor-enhanced
 
   flutter_tts: ^4.0.0
-  speech_to_text: ^7.2.0
+
+  # see https://github.com/csdcorp/speech_to_text/issues/627
+  speech_to_text: 7.2.0
 
 #  speech_to_text:
 #    git:
