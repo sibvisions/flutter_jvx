@@ -73,7 +73,7 @@ dependencies:
   # Managing different persistent classes
   get_it: ^8.0.0
   # QR Scanner
-  mobile_scanner: ^5.0.0
+  mobile_scanner: ^7.0.0
   # Signature Pad
   signature: ^6.0.0
   # Saving files on system
@@ -131,7 +131,7 @@ dependencies:
     git: https://github.com/sibvisions/fix_html-editor-enhanced
 
   flutter_tts: ^4.0.0
-  speech_to_text: 7.2.0
+  speech_to_text: ^7.2.0
 
 #  speech_to_text:
 #    git:
