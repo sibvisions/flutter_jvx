@@ -233,13 +233,11 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
           value: "",
           reason: "Opened the linked cell picker",
         ),
-      )
-          .then((success) {
+      ).then((success) {
         if (!success) {
           return null;
         }
-        return IUiService()
-            .openDialog(
+        return IUiService().openDialog(
           pBuilder: (_) => FlLinkedCellPicker(
             linkedCellEditor: this,
             model: model,
@@ -247,8 +245,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
             editorColumnDefinition: columnDefinition,
           ),
           pIsDismissible: true,
-        )
-            .then((value) {
+        ).then((value) {
           if (value != null) {
             if (value == FlLinkedCellPicker.NULL_OBJECT) {
               receiveNull();
@@ -311,14 +308,16 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   void receiveNull() {
     List<String> columnsToSend = [columnName];
     if (model.linkReference.columnNames.isNotEmpty) {
-      columnsToSend = model.linkReference.columnNames;
+      columnsToSend = List.from(model.linkReference.columnNames);
     }
 
     if (model.additionalClearColumnNames?.isNotEmpty == true) {
+      //no matter if element is already in list
       columnsToSend.addAll(model.additionalClearColumnNames!);
     }
 
     if (model.clearColumnNames?.isNotEmpty == true) {
+      //no matter if element is already in list
       columnsToSend.addAll(model.clearColumnNames!);
     }
 
@@ -328,13 +327,10 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       dataMap[columnName] = null;
     }
 
-    ICommandService()
-        .sendCommand(SelectRecordCommand.deselect(
+    ICommandService().sendCommand(SelectRecordCommand.deselect(
       dataProvider: model.linkReference.referencedDataBook,
       reason: "Tapped",
-    ))
-        .then(
-      (success) {
+    )).then((success) {
         if (success) {
           onEndEditing(dataMap);
         }
