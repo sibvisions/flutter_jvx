@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:collection';
+
 import '../../../../../service/api/shared/api_object_property.dart';
 
 /// Maps different column names between referenced tables.
@@ -33,28 +35,6 @@ class ColumnMapping {
   ColumnMapping.fromJson(Map<String, dynamic> json)
       : columnNames = json[ApiObjectProperty.columnNames].cast<String>(),
         referencedColumnNames = json[ApiObjectProperty.referencedColumnNames].cast<String>();
-
-  String? getColumnName(String? pReferencedColumnName) {
-    if (pReferencedColumnName == null) {
-      return null;
-    }
-    var index = referencedColumnNames.indexOf(pReferencedColumnName);
-    if (index == -1) {
-      return null;
-    }
-    return columnNames[index];
-  }
-
-  String? getReferencedColumnName(String? pColumnName) {
-    if (pColumnName == null) {
-      return null;
-    }
-    var index = columnNames.indexOf(pColumnName);
-    if (index == -1) {
-      return null;
-    }
-    return referencedColumnNames[index];
-  }
 
   Map<String, dynamic> toJson() => {
         ApiObjectProperty.columnNames: columnNames,

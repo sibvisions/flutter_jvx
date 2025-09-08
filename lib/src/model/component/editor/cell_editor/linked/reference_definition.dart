@@ -37,7 +37,7 @@ class ReferenceDefinition extends ColumnMapping {
     super.referencedColumnNames,
     required this.referencedDataBook,
     Map<String, String>? dataToDisplay,
-  })  : dataToDisplay = dataToDisplay ?? {};
+  }) : dataToDisplay = dataToDisplay ?? {};
 
   ReferenceDefinition.fromJson(super.json)
       : referencedDataBook = json[ApiObjectProperty.referencedDataBook],
