@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:collection';
-
 import '../../../../../service/api/shared/api_object_property.dart';
 
 /// Maps different column names between referenced tables.

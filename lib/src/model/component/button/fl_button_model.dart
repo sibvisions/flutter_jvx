@@ -270,9 +270,11 @@ class FlButtonModel extends FlComponentModel {
     );
 
     // Label parsing
-    // Label alignment gets sent in 2 different keys than when sending a label directly.
+    // The button has a text position which is not the same as alignment, we copy the text position
+    // as alignment for the label
 
     Map<String, dynamic> labelJson = <String, dynamic>{};
+
     if (pJson.containsKey(ApiObjectProperty.horizontalTextPosition)) {
       labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
     }
@@ -283,12 +285,23 @@ class FlButtonModel extends FlComponentModel {
       labelJson[ApiObjectProperty.text] = pJson[ApiObjectProperty.text];
     }
 
-    labelModel.applyFromJson(labelJson);
+    if (labelJson.isNotEmpty) {
+      labelModel.applyFromJson(labelJson);
+    }
   }
 
   @override
   void applyCellEditorOverrides(Map<String, dynamic> pJson) {
     super.applyCellEditorOverrides(pJson);
-    labelModel.applyCellEditorOverrides(pJson);
+
+    Map<String, dynamic> labelJson = Map.from(pJson);
+    //remove alignments because the label is only aligned with horizontalTextPosition and verticalTextPostion, but not
+    //with "standard alignments"
+    labelJson.remove(ApiObjectProperty.cellEditorHorizontalAlignment);
+    labelJson.remove(ApiObjectProperty.cellEditorVerticalAlignment);
+
+    if (labelJson.isNotEmpty) {
+      labelModel.applyCellEditorOverrides(labelJson);
+    }
   }
 }

@@ -458,6 +458,7 @@ abstract class FlComponentModel {
   /// If this component is used in a cell editor, some values are overriden.
   void applyCellEditorOverrides(Map<String, dynamic> pJson) {
     Map<String, dynamic> overrideJson = {};
+
     if (pJson.containsKey(ApiObjectProperty.cellEditorHorizontalAlignment)) {
       overrideJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.cellEditorHorizontalAlignment];
     }
@@ -476,7 +477,13 @@ abstract class FlComponentModel {
     if (pJson.containsKey(ApiObjectProperty.cellEditorStyle)) {
       overrideJson[ApiObjectProperty.style] = pJson[ApiObjectProperty.cellEditorStyle];
     }
-    applyFromJson(overrideJson);
+    if (pJson.containsKey(ApiObjectProperty.cellEditorEditable)) {
+      overrideJson[ApiObjectProperty.editable] = pJson[ApiObjectProperty.cellEditorEditable];
+    }
+
+    if (overrideJson.isNotEmpty) {
+      applyFromJson(overrideJson);
+    }
   }
 
   /// Returns the [TextStyle] of the component.
