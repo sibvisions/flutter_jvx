@@ -14,6 +14,7 @@
  * the License.
  */
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -265,6 +266,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     hasElevation &= !model.isTextButton;
 
     return ButtonStyle(
+      textStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return TextStyle(decoration: TextDecoration.underline);
+        }
+        return TextStyle(decoration: TextDecoration.none);
+      }),
       minimumSize: WidgetStateProperty.all(Size.zero),
       elevation: WidgetStateProperty.all(hasElevation ? 2 : 0),
       backgroundColor: backgroundColor != null ? WidgetStateProperty.all(backgroundColor) : null,
@@ -275,8 +282,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         model.paddings
       ),
       tapTargetSize:  shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : tapTargetSize,
-      splashFactory: !model.borderPainted ? NoSplash.splashFactory : null,
-      overlayColor: !model.borderPainted
+      splashFactory: !model.borderPainted && !model.isHyperLink ? NoSplash.splashFactory : null,
+      overlayColor: !model.borderPainted && !model.isHyperLink
           ? WidgetStateProperty.all(Colors.transparent)
           : model.borderOnMouseEntered
               ? WidgetStateProperty.all(JVxColors.COMPONENT_DISABLED_LIGHTER)
