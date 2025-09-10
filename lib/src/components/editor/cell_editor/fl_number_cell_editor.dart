@@ -23,6 +23,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../service/config/i_config_service.dart';
 import '../../../util/parse_util.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
@@ -77,7 +78,7 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
   }
 
   @override
-  FlTextFieldWidget createWidget(Map<String, dynamic>? pJson) {
+  FlTextFieldWidget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);

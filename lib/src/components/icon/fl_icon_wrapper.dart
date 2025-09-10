@@ -17,12 +17,11 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../model/component/fl_component_model.dart';
+import '../../../flutter_jvx.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import 'fl_icon_widget.dart';
 
 class FlIconWrapper extends BaseCompWrapperWidget<FlIconModel> {
   const FlIconWrapper({super.key, required super.model});
@@ -36,13 +35,17 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
 
   @override
   Widget build(BuildContext context) {
-    final FlIconWidget widget = FlIconWidget(model: model);
+    final FlIconWidget widget = FlIconWidget(
+      model: model,
+      wrapper: (widget, padding) =>  wrapWithBadge(widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding)
+    );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: widget);
+    //we show the badge around the image and not around the whole area
+    return wrapWidget(child: widget, outlineBadge: false);
   }
 
   @override

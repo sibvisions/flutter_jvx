@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'package:flutter/widgets.dart';
+
 extension StringExtension on String {
 
   ///First character upper-case, all other characters lower-case.
@@ -59,5 +61,34 @@ extension StringExtension on String {
     }
 
     return list;
+  }
+
+  /// Converts a string representation of alignment (e.g. "topRight")
+  /// into a corresponding AlignmentGeometry instance.
+  /// Useful when alignment values are provided dynamically,
+  /// such as from JSON or user input.
+  AlignmentGeometry toAlignment() {
+    switch (this) {
+      case 'topLeft':
+        return Alignment.topLeft;
+      case 'topCenter':
+        return Alignment.topCenter;
+      case 'topRight':
+        return Alignment.topRight;
+      case 'centerLeft':
+        return Alignment.centerLeft;
+      case 'center':
+        return Alignment.center;
+      case 'centerRight':
+        return Alignment.centerRight;
+      case 'bottomLeft':
+        return Alignment.bottomLeft;
+      case 'bottomCenter':
+        return Alignment.bottomCenter;
+      case 'bottomRight':
+        return Alignment.bottomRight;
+      default:
+        return Alignment.center; // Fallback
+    }
   }
 }

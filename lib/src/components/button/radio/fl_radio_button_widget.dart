@@ -19,9 +19,17 @@ import 'package:flutter/material.dart';
 import '../../../model/component/editor/cell_editor/fl_choice_cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../util/jvx_colors.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../fl_button_widget.dart';
 
 class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The widget wrapper
+  final WidgetWrapper? wrapper;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,6 +87,22 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  const FlRadioButtonWidget({
+    super.key,
+    required super.model,
+    required super.focusNode,
+    required this.radioFocusNode,
+    super.shrinkSize,
+    super.onPress,
+    super.onPressDown,
+    super.onPressUp,
+    this.wrapper
+  });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   ButtonStyle createButtonStyle(context) {
     radioFocusNode.canRequestFocus = model.isFocusable;
@@ -100,20 +124,10 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
     );
   }
 
-  const FlRadioButtonWidget({
-    super.key,
-    required super.model,
-    required super.focusNode,
-    required this.radioFocusNode,
-    super.shrinkSize,
-    super.onPress,
-    super.onPressDown,
-    super.onPressUp,
-  });
-
   @override
   Widget? createButtonChild(BuildContext context) {
     Widget? child = super.createButtonChild(context);
+
 
     if (child != null) {
       child = InkWell(
@@ -125,6 +139,11 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
         ),
       );
     }
+
+    if (wrapper != null) {
+      child = wrapper!(child, null);
+    }
+
     return child;
   }
 
@@ -132,6 +151,10 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   Function()? getOnPressed(BuildContext context) {
     return model.isEnabled && model.isFocusable ? FlButtonWidget.EMPTY_CALLBACK : null;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget wrapShrink(Widget widget) {
     if (shrinkSize != true) {

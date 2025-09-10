@@ -16,6 +16,7 @@
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../dummy/fl_dummy_widget.dart';
 import 'i_cell_editor.dart';
 
@@ -36,7 +37,7 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dyna
   void dispose() {}
 
   @override
-  createWidget(Map<String, dynamic>? pJson) {
+  createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
     return FlDummyWidget(model: createWidgetModel());
   }
 

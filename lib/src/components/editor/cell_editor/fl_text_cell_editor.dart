@@ -21,6 +21,7 @@ import 'package:html_editor_enhanced/html_editor.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../util/parse_util.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../password_field/fl_password_field_widget.dart';
 import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_html_text_field_widget.dart';
@@ -130,7 +131,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   }
 
   @override
-  Widget createWidget(Map<String, dynamic>? pJson) {
+  Widget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);

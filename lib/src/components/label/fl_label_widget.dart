@@ -20,6 +20,7 @@ import 'package:flutter_html/flutter_html.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../util/parse_util.dart';
+import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/text_field/fl_text_field_widget.dart';
 
@@ -32,6 +33,8 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
 
   final bool dummy;
 
+  final WidgetWrapper? wrapper;
+
   const FlLabelWidget({
     super.key,
     required super.model,
@@ -40,7 +43,8 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     this.onTapDown,
     this.onTapUp,
     this.onTapCancel,
-    this.dummy = false
+    this.dummy = false,
+    this.wrapper
   });
 
   @override
@@ -56,6 +60,10 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     EdgeInsets textPadding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle()).copyWith(left: 0, right: 0);
 
     textPadding = adjustPaddingWithStyles(model, textPadding);
+
+    if (wrapper != null) {
+      child = wrapper!(child, textPadding);
+    }
 
     return GestureDetector(
       onTap: onTap,

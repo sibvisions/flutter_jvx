@@ -21,6 +21,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../util/icon_util.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
@@ -77,7 +78,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson) {
+  createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
     FlIconModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -87,6 +88,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
       model: widgetModel,
       imageStreamListener: onImage,
       inTable: isInTable,
+      wrapper: pWrapper,
     );
   }
 
@@ -144,4 +146,5 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
       recalculateSizeCallback?.call(true);
     }
   }
+
 }

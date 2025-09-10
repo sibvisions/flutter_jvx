@@ -23,6 +23,7 @@ import '../../../model/data/column_definition.dart';
 import '../../../model/response/record_format.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import 'date/fl_date_cell_editor.dart';
 import 'fl_check_box_cell_editor.dart';
 import 'fl_choice_cell_editor.dart';
@@ -113,7 +114,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
   ColumnDefinition? getColumnDefinition() => columnDefinition;
 
   /// Returns the widget representing the cell editor.
-  Widget createWidget(Map<String, dynamic>? pJson);
+  Widget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]);
 
   /// Returns the model of the widget representing the cell editor.
   WidgetModelType createWidgetModel();
@@ -250,9 +251,16 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
   }
 
   void applyEditorJson(FlComponentModel pModel, Map<String, dynamic>? pJson) {
-    pModel.applyFromJson(pJson ?? {});
+    if (pJson?.isNotEmpty == true) {
+      pModel.applyFromJson(pJson!);
+    }
+
     pModel.applyFromJson(cellEditorJson);
-    pModel.applyCellEditorOverrides(pJson ?? {});
+
+    if (pJson?.isNotEmpty == true) {
+      pModel.applyCellEditorOverrides(pJson!);
+    }
+
     if (cellFormat != null) {
       pModel.applyCellFormat(cellFormat!);
     }

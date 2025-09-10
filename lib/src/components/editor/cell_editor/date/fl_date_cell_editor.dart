@@ -26,6 +26,7 @@ import '../../../../model/component/fl_component_model.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';
+import '../../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../i_cell_editor.dart';
 import 'fl_date_picker.dart';
 import 'fl_time_picker.dart';
@@ -95,7 +96,7 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   }
 
   @override
-  FlDateEditorWidget createWidget(Map<String, dynamic>? pJson) {
+  FlDateEditorWidget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);

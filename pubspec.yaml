@@ -149,6 +149,8 @@ dependencies:
 
   app_links: ^6.4.0
 
+  badges: ^3.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

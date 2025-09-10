@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../components/base_wrapper/base_comp_wrapper_widget.dart';
 import '../../flutter_ui.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/apps/app.dart';
@@ -90,6 +91,7 @@ abstract class ImageLoader {
     Color? color,
     BoxFit fit = BoxFit.none,
     AlignmentGeometry alignment = Alignment.center,
+    WidgetWrapper? wrapper
   }) {
     if (imageDefinition.isNotEmpty) {
       var iconDef = IconUtil.fromString(imageDefinition, width, color);
@@ -100,7 +102,7 @@ abstract class ImageLoader {
 
         return Align(
           alignment: alignment,
-          child: iconDef!.icon,
+          child: wrapper != null ? wrapper(iconDef!.icon, null) : iconDef!.icon,
         );
       }
 
@@ -117,7 +119,7 @@ abstract class ImageLoader {
           height_ = double.tryParse(split[2]);
         }
 
-        return Image(
+        Image img = Image(
           image: imageProvider,
           loadingBuilder: createImageLoadingBuilder(),
           errorBuilder: createImageErrorBuilder(imageProvider),
@@ -127,12 +129,24 @@ abstract class ImageLoader {
           alignment: alignment,
           gaplessPlayback: imageProvider is MemoryImage,
         );
+
+        if (wrapper != null) {
+          return wrapper(img, null);
+        }
+        else {
+          return img;
+        }
       }
     }
 
     imageStreamListener?.call(const Size.square(IconUtil.DEFAULT_ICON_SIZE), true);
 
-    return DEFAULT_IMAGE;
+    if (wrapper != null) {
+      return wrapper(DEFAULT_IMAGE, null);
+    }
+    else {
+      return DEFAULT_IMAGE;
+    }
   }
 
   static ImageProvider? getBinaryImageProvider(

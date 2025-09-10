@@ -82,6 +82,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
     super.onPress,
     super.onPressDown,
     super.onPressUp,
-    super.shrinkSize
+    super.shrinkSize,
+    super.wrapper
   });
 }

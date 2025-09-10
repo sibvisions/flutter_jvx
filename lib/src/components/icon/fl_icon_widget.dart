@@ -19,6 +19,7 @@ import 'package:photo_view/photo_view.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/layout/alignments.dart';
+import '../base_wrapper/base_comp_wrapper_widget.dart';
 
 class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,6 +29,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   final VoidCallback? onPress;
 
   final Widget? image;
+
+  final WidgetWrapper? wrapper;
 
   final Function(Size, bool)? imageStreamListener;
 
@@ -44,11 +47,24 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     this.imageStreamListener,
     this.onPress,
     this.inTable = false,
+    this.wrapper
   });
 
   @override
   Widget build(BuildContext context) {
-    Widget? child = image ?? _loadImage();
+    Widget? child;
+
+    if (image != null) {
+      if (wrapper != null) {
+        child = wrapper!(image, null);
+      }
+      else {
+        child = image;
+      }
+    }
+    else{
+      child = _loadImage();
+    }
 
     if (model.toolTipText != null) {
       child = Tooltip(message: model.toolTipText!, child: child);
@@ -97,8 +113,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     }
 
     if (model.preserveAspectRatio) {
-      if ((model.horizontalAlignment == HorizontalAlignment.STRETCH) &&
-          (model.verticalAlignment == VerticalAlignment.STRETCH)) {
+      if (model.horizontalAlignment == HorizontalAlignment.STRETCH &&
+          model.verticalAlignment == VerticalAlignment.STRETCH) {
         return BoxFit.contain;
       } else if (model.horizontalAlignment == HorizontalAlignment.STRETCH) {
         return BoxFit.fitWidth;
@@ -106,8 +122,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
         return BoxFit.fitHeight;
       }
     } else {
-      if ((model.horizontalAlignment == HorizontalAlignment.STRETCH) &&
-          (model.verticalAlignment == VerticalAlignment.STRETCH)) {
+      if (model.horizontalAlignment == HorizontalAlignment.STRETCH &&
+          model.verticalAlignment == VerticalAlignment.STRETCH) {
         return BoxFit.fill;
       } else if (model.horizontalAlignment == HorizontalAlignment.STRETCH ||
           model.verticalAlignment == VerticalAlignment.STRETCH) {
@@ -148,6 +164,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
               imageStreamListener: imageStreamListener,
               color: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
               fit: BoxFit.fill,
+              wrapper: wrapper
             ),
           ),
         );
@@ -159,6 +176,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
         color: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
         fit: boxFit,
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+        wrapper: wrapper
       );
     }
   }

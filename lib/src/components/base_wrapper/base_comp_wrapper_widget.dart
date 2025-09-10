@@ -18,6 +18,8 @@ import 'package:flutter/widgets.dart';
 
 import '../../model/component/fl_component_model.dart';
 
+typedef WidgetWrapper = Widget Function(Widget? widget, EdgeInsets? padding);
+
 /// The base class for all of FlutterJVxs component wrapper.
 ///
 /// A wrapper is a stateful widget that wraps FlutterJVx widgets and handles all JVx specific implementations and functionality.

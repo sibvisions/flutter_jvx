@@ -33,6 +33,7 @@ import '../../../../service/command/i_command_service.dart';
 import '../../../../service/data/i_data_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';
+import '../../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../i_cell_editor.dart';
 
 class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLinkedCellEditorModel, dynamic> {
@@ -96,7 +97,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   @override
-  FlLinkedEditorWidget createWidget(Map<String, dynamic>? pJson) {
+  FlLinkedEditorWidget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);

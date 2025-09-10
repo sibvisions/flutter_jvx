@@ -17,9 +17,8 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../model/component/fl_component_model.dart';
+import '../../../flutter_jvx.dart';
 import '../button/radio/fl_radio_button_wrapper.dart';
-import 'fl_check_box_widget.dart';
 
 class FlCheckBoxWrapper extends FlRadioButtonWrapper<FlCheckBoxModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,12 +47,13 @@ class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlRadioButtonWra
       radioFocusNode: focusNode,
       model: model,
       onPress: sendButtonPressed,
+      wrapper: (widget, padding) => wrapWithBadge(widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding)
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: checkboxWidget);
+    return wrapWidget(child: checkboxWidget, outlineBadge: false);
   }
 }

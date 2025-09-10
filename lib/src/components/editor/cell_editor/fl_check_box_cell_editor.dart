@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../flutter_jvx.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import 'i_cell_editor.dart';
 
 class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheckBoxCellEditorModel, dynamic> {
@@ -67,7 +68,7 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
   }
 
   @override
-  Widget createWidget(Map<String, dynamic>? pJson) {
+  Widget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
     FlCheckBoxModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -119,6 +120,7 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
         radioFocusNode: focusNode,
         onPress: isEditable ? _onPress : null,
         shrinkSize: shrinkSize,
+        wrapper: pWrapper,
       );
     } else if (isToggle) {
       Widget w = FlToggleButtonWidget(
@@ -144,7 +146,8 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
       focusNode: _buttonFocusNode,
       model: widgetModel,
       onPress: isEditable ? _onPress : null,
-      shrinkSize: shrinkSize
+      shrinkSize: shrinkSize,
+      wrapper: pWrapper
     );
   }
 
