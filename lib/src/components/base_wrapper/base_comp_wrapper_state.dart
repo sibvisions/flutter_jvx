@@ -17,19 +17,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
 
-import '../../flutter_ui.dart';
-import '../../model/command/base_command.dart';
-import '../../model/command/layout/preferred_size_command.dart';
+import '../../../flutter_jvx.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/component_subscription.dart';
-import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
-import '../../service/command/i_command_service.dart';
-import '../../service/config/i_config_service.dart';
-import '../../service/layout/i_layout_service.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../../util/jvx_logger.dart';
 import 'base_comp_wrapper_widget.dart';
 import 'base_cont_wrapper_state.dart';
@@ -41,6 +35,21 @@ import 'base_cont_wrapper_state.dart';
 ///
 /// Model initializes/updates; Layout initializes/updates; Size calculation; Subscription handling for data widgets.
 abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget<T>> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// This style defines the badge label
+  static const String STYLE_BADGE = "f_badge_";
+  /// This style configures the badge border (size_color)
+  static const String STYLE_BADGE_BORDER = "f_badge_border_";
+  /// This style configures the badge color
+  static const String STYLE_BADGE_COLOR = "f_badge_color_";
+  /// This style configures the badge alignment
+  static const String STYLE_BADGE_ALIGN = "f_badge_align_";
+  /// This style configures the badge offset (x_y)
+  static const String STYLE_BADGE_OFFSET = "f_badge_offset_";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,6 +67,27 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// `true` if the layout data has been sent.
   bool sentLayoutData = false;
+
+  /// the badge text if not numeric
+  String? badgeText;
+
+  /// the badge alignment
+  String? badgeAlignment;
+
+  ///The last checked style
+  String? _lastStyle;
+
+  /// The color of the badge
+  Color? badgeColor;
+
+  /// The color of the badge border
+  Color? badgeBorderColor;
+
+  /// The badge offset
+  Offset? badgeOffset;
+
+  /// The size of the badge border
+  double? badgeBorderSize;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -97,6 +127,15 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       saveCallback: createSaveCommand,
     );
     IUiService().registerAsLiveComponent(componentSubscription);
+
+    _initStyle();
+  }
+
+  @override
+  void didUpdateWidget(BaseCompWrapperWidget<T> oldWidget ) {
+    super.didUpdateWidget(oldWidget);
+
+    _initStyle();
   }
 
   @override
@@ -116,24 +155,218 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// initializes styling
+  void _initStyle() {
+    String? currentStyle = widget.model.jsonBase?[ApiObjectProperty.style];
+
+    if (currentStyle != _lastStyle) {
+      _lastStyle = currentStyle;
+
+      Set<String> styles = widget.model.styles;
+
+      if (styles.isNotEmpty) {
+        String? styleDef;
+
+        for (int i = 0; i < styles.length; i++) {
+          styleDef = styles.elementAt(i);
+
+          if (styleDef.startsWith(STYLE_BADGE_ALIGN)) {
+            styleDef = styleDef.substring(STYLE_BADGE_ALIGN.length);
+
+            badgeAlignment = styleDef;
+          }
+          else if (styleDef.startsWith(STYLE_BADGE_COLOR)) {
+            styleDef = styleDef.substring(STYLE_BADGE_COLOR.length);
+
+            badgeColor = ParseUtil.parseColor(styleDef);
+          }
+          else if (styleDef.startsWith(STYLE_BADGE_OFFSET)) {
+            styleDef = styleDef.substring(STYLE_BADGE_OFFSET.length);
+
+            List<String> parts = styleDef.split("_");
+
+            double? x;
+            double? y;
+
+            if (parts.isNotEmpty) {
+              x = double.tryParse(parts[0]);
+
+              if (parts.length > 1) {
+                y = double.tryParse(parts[1]);
+              }
+            }
+
+            if (x != null || y != null) {
+              badgeOffset = Offset(x ?? 0, y ?? 0);
+            }
+          }
+          else if (styleDef.startsWith(STYLE_BADGE_BORDER)) {
+            styleDef = styleDef.substring(STYLE_BADGE_BORDER.length);
+
+            List<String> parts = styleDef.split("_");
+
+            if (parts.length == 2) {
+              badgeBorderSize = double.tryParse(parts[0]);
+              badgeBorderColor = ParseUtil.parseColor(parts[1]);
+            }
+          }
+          else if (styleDef.startsWith(STYLE_BADGE)) {
+            styleDef = styleDef.substring(STYLE_BADGE.length);
+
+            badgeText = styleDef;
+          }
+        }
+      }
+      }
+  }
+
   /// Returns a [Positioned] widget according to [layoutData].
   ///
   /// Every wrapper itself is "wrapped" in a [Positioned] widget,
   /// which will positioned itself inside the [Stack] of a [BaseContWrapperState]'s widget.
-  Positioned wrapWidget({BuildContext? context, required Widget child}) {
+  Positioned wrapWidget({BuildContext? context, required Widget child, bool outlineBadge = true}) {
     return Positioned(
       top: getTopForPositioned(context),
       left: getLeftForPositioned(context),
       width: getWidthForPositioned(context),
       height: getHeightForPositioned(context),
-      child: wrapWithSemantic(
+      child:
+      wrapWithSemantic(
         wrapWithDesignListener(
-          wrapWithOpacity(
-            child,
-          ),
+            outlineBadge && child is! Badge ? wrapWithBadge(child) : child
         ),
       ),
     );
+  }
+
+  Widget wrapWithBadge(Widget pChild, {bool? expand = false, EdgeInsets? padding}) {
+    AlignmentGeometry badgeAlign = badgeAlignment?.toAlignment() ?? AlignmentGeometry.topRight;
+    badges.BadgePosition? badgePosition;
+
+    Offset? offset;
+
+    double top = (padding?.top ?? 0) / 2;
+    double bottom = (padding?.bottom ?? 0) / 2;
+    double left = (padding?.left ?? 0) / 2;
+    double right = (padding?.right ?? 0) / 2;
+
+    if (badgeOffset != null) {
+      top += badgeOffset!.dy;
+      bottom -= badgeOffset!.dy;
+
+      left -= badgeOffset!.dx;
+      right += badgeOffset!.dx;
+    }
+
+    switch (badgeAlign) {
+      case AlignmentGeometry.topRight:
+        offset = Offset(5 + right, -7 - top);
+        badgePosition = badges.BadgePosition.topEnd(top: offset.dy - 4, end: -offset.dx -2);
+        break;
+      case AlignmentGeometry.centerRight:
+        offset = Offset(5 + right, -7);
+        break;
+      case AlignmentGeometry.topCenter:
+        offset = Offset(0, -7- top);
+        break;
+      case AlignmentGeometry.center:
+        offset = Offset(0, -7);
+        badgePosition = badges.BadgePosition.center();
+        break;
+      case AlignmentGeometry.topLeft:
+        offset = Offset(-8 - left, -7 - top);
+        badgePosition = badges.BadgePosition.topStart(top: offset.dy - 4, start: offset.dx);
+        break;
+      case AlignmentGeometry.centerLeft:
+        offset = Offset(-8 - left, -7);
+        break;
+      case AlignmentGeometry.bottomLeft:
+        offset = Offset(-8 - left, -9 + bottom);
+        badgePosition = badges.BadgePosition.bottomStart(bottom: -11 - bottom, start: offset.dx);
+        break;
+      case AlignmentGeometry.bottomCenter:
+        offset = Offset(0, -9 + bottom);
+        break;
+      case AlignmentGeometry.bottomRight:
+        offset = Offset(5 + right, -9 + bottom);
+        badgePosition = badges.BadgePosition.bottomEnd(bottom: offset.dy - 2, end: -offset.dx - 2);
+        break;
+    }
+
+    if (badgeText != null) {
+      Widget w = pChild;
+
+      if (expand == true) {
+        w = Stack(fit: StackFit.expand, children: [w]);
+      }
+
+      if (badgeText != null) {
+        int? count = int.tryParse(badgeText!);
+
+        String badgeLabel = badgeText!;
+
+        if (count != null) {
+          if (count > 999) {
+            badgeLabel = "999+";
+          }
+        }
+        /*
+        w = Badge(label: Text(badgeLabel),
+          alignment: badgeAlign,
+          offset: offset,
+          child: w);
+        */
+
+        BadgeThemeData theme = BadgeTheme.of(context);
+        ThemeData themeDefault = Theme.of(context);
+
+        badges.BadgeShape badgeShape;
+        if (badgeLabel.length > 2) {
+          badgeShape = badges.BadgeShape.square;
+        }
+        else {
+          badgeShape = badges.BadgeShape.circle;
+        }
+
+        BorderSide borderSide;
+
+        if (badgeBorderSize != null && badgeBorderColor != null) {
+          borderSide = BorderSide(color: badgeBorderColor!, width: badgeBorderSize!);
+        }
+        else {
+          borderSide = BorderSide.none;
+        }
+
+        w = badges.Badge(
+            badgeContent: Text(badgeLabel,
+              style: (theme.textStyle ?? themeDefault.textTheme.labelSmall ?? TextStyle()).copyWith(
+                color: theme.textColor ?? themeDefault.colorScheme.onError,
+                fontSize: theme.smallSize ?? themeDefault.textTheme.labelSmall?.fontSize
+              )
+            ),
+            position: badgePosition,
+            showBadge: true,
+            badgeAnimation: badges.BadgeAnimation.scale(),
+            badgeStyle: badges.BadgeStyle(
+              shape: badgeShape,
+              borderRadius: BorderRadius.circular(12),
+              borderSide: borderSide,
+              badgeColor: badgeColor ?? theme.backgroundColor ?? themeDefault.colorScheme.error,
+              padding: EdgeInsetsGeometry.all(5)
+            ),
+            child: w);
+      }
+
+      if (expand != true) {
+        if (pChild is Image) {
+          w = Align(child: w);
+        }
+      }
+
+      return w;
+    }
+
+    return pChild;
   }
 
   Widget wrapWithOpacity(Widget pChild) {
@@ -272,6 +505,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     if (FlutterUI.logUI.cl(Lvl.d)) {
       FlutterUI.logUI.d("${model.name}|${model.id} received new Model");
     }
+
+    _initStyle();
 
     setState(() {
       // Set potentially new layout data contained in the new model
