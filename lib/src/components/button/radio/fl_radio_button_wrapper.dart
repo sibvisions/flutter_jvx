@@ -68,14 +68,14 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
       focusNode: buttonFocusNode,
       model: model,
       onPress: sendButtonPressed,
-      wrapper: (widget, padding) => wrapWithBadge(widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding)
+      wrapper: (widget, padding) => wrapWithBadge(context, widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding)
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: radioButtonWidget, outlineBadge: false);
+    return wrapWidget(context, radioButtonWidget, false);
   }
 
   @override

@@ -80,7 +80,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: popupButtonWidget);
+    return wrapWidget(context, popupButtonWidget);
   }
 
   /// Register descendant models to receive ui updates

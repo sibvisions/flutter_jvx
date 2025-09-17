@@ -114,6 +114,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
       if (responseMenuEntry.group == groupName) {
         MenuItemModel menuItem = MenuItemModel(
           screenLongName: responseMenuEntry.componentId,
+          className: responseMenuEntry.className,
           navigationName: responseMenuEntry.navigationName,
           label: responseMenuEntry.text,
           alternativeLabel: responseMenuEntry.quickBarText ?? responseMenuEntry.sideBarText,

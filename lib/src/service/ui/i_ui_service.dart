@@ -45,6 +45,8 @@ import '../../model/response/application_settings_response.dart';
 import '../../model/response/device_status_response.dart';
 import '../service.dart';
 
+typedef ApplicationParameterChangedListener = void Function(String name, dynamic oldValue, dynamic newValue);
+
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
 abstract class IUiService implements Service {
@@ -267,6 +269,9 @@ abstract class IUiService implements Service {
     bool pFromStart = false
   });
 
+  /// Notify components belonging to [pDataProvider] that the display map has been changed.
+  void notifyDataToDisplayMapChanged(String pDataProvider);
+
   /// Notify all components belonging to [pDataProvider] that their underlying
   /// data selection has changed.
   void notifySelectionChange(String pDataProvider);
@@ -289,19 +294,19 @@ abstract class IUiService implements Service {
     required DataChunk pDataChunk,
   });
 
-  /// Calls the callback of all subscribed [DataSubscription]s with the changed meta data.
-  void sendSubsMetaData({
-    required String pSubId,
-    required String pDataProvider,
-    required DalMetaData pMetaData,
-  });
-
   /// Calls the callback of all subscribed [DataSubscription]s
   void sendSubsPageChunk({
     required String pSubId,
     required String pDataProvider,
     required DataChunk pDataChunk,
     required String pPageKey,
+  });
+
+  /// Calls the callback of all subscribed [DataSubscription]s with the changed meta data.
+  void sendSubsMetaData({
+    required String pSubId,
+    required String pDataProvider,
+    required DalMetaData pMetaData,
   });
 
   /// Returns the highest row which any component is subscribed to on this data provider
@@ -311,27 +316,18 @@ abstract class IUiService implements Service {
   // Custom
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// If this screen beams or sends an open work-screen command first.
-  bool usesNativeRouting(String pScreenLongName);
-
   /// Gets replace-type screen by screenName
   CustomScreen? getCustomScreen(String key);
 
   /// Gets a custom component with given name (ignores screen)
   CustomComponent? getCustomComponent(String pComponentName);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Unsorted method definitions
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /// If this screen beams or sends an open work-screen command first.
+  bool usesNativeRouting(String pScreenLongName);
 
-  void showErrorDialog({
-    String? title,
-    String? message,
-    required Object error,
-    StackTrace? stackTrace
-  });
-
-  void closeMessageDialog(String componentName);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Uncategorized method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   List<JVxDialog> getJVxDialogs();
 
@@ -341,15 +337,22 @@ abstract class IUiService implements Service {
 
   void closeJVxDialogs();
 
-  void disposeContents();
+  void closeMessageDialog(String componentName);
+
+  void showErrorDialog({
+    String? title,
+    String? message,
+    required Object error,
+    StackTrace? stackTrace
+  });
 
   Future<bool> saveAllEditors({String? pId, required String pReason});
 
   void setFocus(String pComponentId);
 
-  bool hasFocus(String pComponentId);
-
   FlComponentModel? getFocus();
+
+  bool hasFocus(String pComponentId);
 
   void removeFocus([String? pComponentId]);
 
@@ -362,7 +365,14 @@ abstract class IUiService implements Service {
 
   void closeContent(String name, [bool pSendClose = true]);
 
+  void disposeContents();
+
   bool isContentVisible(String pContentName);
 
-  void notifyDataToDisplayMapChanged(String pDataProvider);
+  /// Adds a listener which receives application parameter changes
+  void addApplicationParameterChangedListener(ApplicationParameterChangedListener listener);
+
+  /// Removes a listener which receives application parameter changes
+  void removeApplicationParameterChangedListener(ApplicationParameterChangedListener listener);
+
 }

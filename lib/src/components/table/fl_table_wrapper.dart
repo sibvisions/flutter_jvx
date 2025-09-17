@@ -186,7 +186,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: widget);
+    return wrapWidget(context, widget);
   }
 
   @override

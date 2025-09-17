@@ -75,6 +75,9 @@ class UiService implements IUiService {
   /// All data subscriptions
   final List<DataSubscription> _dataSubscriptions = [];
 
+  /// All application parameter changed listeners
+  final List<ApplicationParameterChangedListener> _appParameterListener = [];
+
   /// Map of all active frames (dialogs) with their componentId
   final List<JVxDialog> _activeDialogs = [];
 
@@ -322,86 +325,6 @@ class UiService implements IUiService {
         IConfigService().userInfo.value != null;
   }
 
-  /// Modifies the original menu model to include custom screens and replace screens.
-  ///
-  /// [CustomMenuItem]'s are included by either:
-  /// * Using the one provided by [AppManager.customMenuItems].
-  /// * Using the one from the original replaced screen (only works if there is one).
-  /// * And lastly creates one on a best-effort strategy (It is recommended to provide one).
-  ///
-  /// We have to deliver it "fresh" because of the offline state change, possible solution, connect with offlineNotifier
-  /// ```dart
-  /// ConfigController().getOfflineNotifier().addListener(() {
-  ///   _menuNotifier.value = _updateMenuModel(_originalMenuModel);
-  /// });
-  /// ```
-  MenuModel _updateMenuModel(MenuModel? pMenuModel) {
-    List<MenuGroupModel> menuGroupModels = [];
-
-    if (!IConfigService().offline.value && pMenuModel != null) {
-      menuGroupModels.addAll(pMenuModel.copy().menuGroups);
-    }
-
-    if (appManager != null) {
-      appManager!.customScreens.forEach((key, screen) {
-        CustomMenuItem? customMenuItem = appManager!.customMenuItems[key];
-
-        MenuItemModel? originalItem = menuGroupModels
-            .expand((element) => element.items)
-            .where((menuItem) => [menuItem.navigationName, menuItem.screenLongName].contains(key))
-            .firstOrNull;
-
-        if (originalItem == null && customMenuItem == null && screen.screenBuilder != null) {
-          // We have no menu item, therefore, create one on best-effort basis.
-          customMenuItem = CustomMenuItem(
-            group: "Custom",
-            label: screen.screenTitle ?? "Custom Screen",
-            faIcon: FontAwesomeIcons.notdef,
-          );
-        }
-
-        // Whether we should show the item in the current setting.
-        if (customMenuItem != null &&
-            ((screen.showOnline && !IConfigService().offline.value) ||
-                (screen.showOffline && IConfigService().offline.value))) {
-          MenuItemModel overrideMenuItem = MenuItemModel(
-            screenLongName: originalItem?.screenLongName ?? screen.key,
-            navigationName: originalItem?.navigationName ?? screen.keyNavigationName,
-            label: customMenuItem.label,
-            alternativeLabel: customMenuItem.alternativeLabel ?? originalItem?.alternativeLabel,
-            imageBuilder: customMenuItem.imageBuilder,
-            // Only override image if there is no image builder.
-            image: customMenuItem.imageBuilder == null ? originalItem?.image : null,
-          );
-
-          // Check if group already exists.
-          MenuGroupModel? menuGroupModel =
-              menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem!.group);
-
-          if (menuGroupModel == null) {
-            // Make new group if it didn't exist.
-            menuGroupModel = MenuGroupModel(
-              name: customMenuItem.group,
-              items: [],
-            );
-            menuGroupModels.add(menuGroupModel);
-          }
-
-          menuGroupModel.items.add(overrideMenuItem);
-
-          // Finally remove menu items that we replaced.
-          menuGroupModels.forEach((menuGroup) => menuGroup.items.remove(originalItem));
-        }
-      });
-    }
-
-    MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
-
-    appManager?.modifyMenuModel(menuModel);
-
-    return menuModel;
-  }
-
   @override
   ValueNotifier<String?> get clientId => _clientId;
 
@@ -432,12 +355,16 @@ class UiService implements IUiService {
   @override
   void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) {
     var oldAppParam = _applicationParameters.value;
-    var newAppParam = ApplicationParameters(
-      applicationTitleName: oldAppParam.applicationTitleName,
-      applicationTitleWeb: oldAppParam.applicationTitleWeb,
-      designModeAllowed: oldAppParam.designModeAllowed,
-      parameters: oldAppParam.parameters,
-    )..applyResponse(pApplicationParameters);
+    var newAppParam = oldAppParam.copyWith()..applyResponse(pApplicationParameters);
+
+    //Notify listeners about changed parameters
+    List<ApplicationParameterChangedListener> copy = _appParameterListener.toList(growable: false);
+
+    for (String key in pApplicationParameters.parameters.keys) {
+      for (int i = 0; i < copy.length; i++) {
+          copy[i](key, oldAppParam.parameters[key], pApplicationParameters.parameters[key]);
+      }
+    }
 
     getAppManager()?.modifyApplicationParameters(newAppParam);
 
@@ -599,26 +526,6 @@ class UiService implements IUiService {
     disposeDataSubscription(pSubscriber: pSubscriber);
     _disposeComponentSubscription(pSubscriber);
     _disposeModelSubscription(pSubscriber);
-  }
-
-  void _disposeModelSubscription(Object pSubscriber) {
-    List<ModelSubscription> copy = _modelSubscriptions.toList(growable: false);
-
-    for (int i = 0; i < copy.length; i++) {
-      if (copy[i].subbedObj == pSubscriber) {
-        _modelSubscriptions.remove(copy[i]);
-      }
-    }
-  }
-
-  void _disposeComponentSubscription(Object pSubscriber) {
-    List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
-
-    for (int i = 0; i < copy.length; i++) {
-      if (copy[i].subbedObj == pSubscriber) {
-        _componentSubscriptions.remove(copy[i]);
-      }
-    }
   }
 
   @override
@@ -934,7 +841,7 @@ class UiService implements IUiService {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Unsorted method definitions
+  // Uncategorized method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
@@ -984,6 +891,12 @@ class UiService implements IUiService {
   }
 
   @override
+  void closeJVxDialogs() {
+    _activeDialogs.clear();
+    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
+  }
+
+  @override
   void closeMessageDialog(String componentName) {
     _activeDialogs.removeWhere((element) => element is MessageDialog && element.command.componentName == componentName);
 
@@ -991,46 +904,24 @@ class UiService implements IUiService {
   }
 
   @override
-  void closeJVxDialogs() {
-    _activeDialogs.clear();
-    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
-  }
+  void showErrorDialog({
+    String? title,
+    String? message,
+    required Object error,
+    StackTrace? stackTrace
+  }) {
+    ICommandService().sendCommand(
+      OpenErrorDialogCommand(
+        title: title,
+        message: FlutterUI.translate(IUiService.getErrorMessage(error)),
+        error: error,
+        isTimeout: false,
+        stackTrace: stackTrace,
+        reason: "UIService async error",
+      ),
+    );
 
-  @override
-  void disposeContents() {
-    _activeContents.clear();
-
-    BuildContext? uicontext = FlutterUI.getCurrentContext();
-
-    //also clean routes, otherwise the navigator of the cached route would be the old navigator and
-    //this would throw an exception in Navigator
-    if (uicontext != null) {
-      List<Route<dynamic>>? routes = FlutterUI.maybeOf(uicontext)?.jvxRouteObserver.knownRoutes;
-
-      if (routes?.isNotEmpty == true) {
-        List<Route<dynamic>>? copy = routes?.toList(growable: false);
-
-        if (copy != null) {
-          NavigatorState nav = Navigator.of(uicontext);
-
-          for (int i = 0; i < copy.length; i++) {
-            if (copy[i].settings.name?.startsWith(Content.ROUTE_SETTINGS_PREFIX) == true
-                // different navigator state -> remove
-                || copy[i].navigator != nav) {
-              routes!.remove(copy[i]);
-
-              try {
-                copy[i].navigator?.removeRoute(copy[i]);
-              }
-              catch (e) {
-                //not relevant because of old navigator
-                FlutterUI.logUI.e(e);
-              }
-            }
-          }
-        }
-      }
-    }
+    FlutterUI.sendFeedback(error, stackTrace, "UIService async error");
   }
 
   @override
@@ -1049,17 +940,17 @@ class UiService implements IUiService {
   }
 
   @override
-  bool hasFocus(String pComponentId) {
-    return focusedComponentId == pComponentId;
-  }
-
-  @override
   FlComponentModel? getFocus() {
     if (focusedComponentId == null) {
       return null;
     }
 
     return IStorageService().getComponentModel(pComponentId: focusedComponentId!);
+  }
+
+  @override
+  bool hasFocus(String pComponentId) {
+    return focusedComponentId == pComponentId;
   }
 
   @override
@@ -1073,14 +964,6 @@ class UiService implements IUiService {
   String? getCurrentWorkScreenName() {
     return (FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState)
         .pathParameters[MainLocation.screenNameKey];
-  }
-
-  @override
-  bool isContentVisible(String pContentName) {
-    return _activeContents.contains(pContentName) &&
-        FlutterUI.of(FlutterUI.getCurrentContext()!).jvxRouteObserver.knownRoutes.firstWhereOrNull(
-                (element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName)) !=
-            null;
   }
 
   @override
@@ -1177,23 +1060,165 @@ class UiService implements IUiService {
   }
 
   @override
-  void showErrorDialog({
-    String? title,
-    String? message,
-    required Object error,
-    StackTrace? stackTrace
-  }) {
-    ICommandService().sendCommand(
-      OpenErrorDialogCommand(
-        title: title,
-        message: FlutterUI.translate(IUiService.getErrorMessage(error)),
-        error: error,
-        isTimeout: false,
-        stackTrace: stackTrace,
-        reason: "UIService async error",
-      ),
-    );
+  void disposeContents() {
+    _activeContents.clear();
 
-    FlutterUI.sendFeedback(error, stackTrace, "UIService async error");
+    BuildContext? uicontext = FlutterUI.getCurrentContext();
+
+    //also clean routes, otherwise the navigator of the cached route would be the old navigator and
+    //this would throw an exception in Navigator
+    if (uicontext != null) {
+      List<Route<dynamic>>? routes = FlutterUI.maybeOf(uicontext)?.jvxRouteObserver.knownRoutes;
+
+      if (routes?.isNotEmpty == true) {
+        List<Route<dynamic>>? copy = routes?.toList(growable: false);
+
+        if (copy != null) {
+          NavigatorState nav = Navigator.of(uicontext);
+
+          for (int i = 0; i < copy.length; i++) {
+            if (copy[i].settings.name?.startsWith(Content.ROUTE_SETTINGS_PREFIX) == true
+                // different navigator state -> remove
+                || copy[i].navigator != nav) {
+              routes!.remove(copy[i]);
+
+              try {
+                copy[i].navigator?.removeRoute(copy[i]);
+              }
+              catch (e) {
+                //not relevant because of old navigator
+                FlutterUI.logUI.e(e);
+              }
+            }
+          }
+        }
+      }
+    }
   }
+
+  @override
+  bool isContentVisible(String pContentName) {
+    return _activeContents.contains(pContentName) &&
+        FlutterUI.of(FlutterUI.getCurrentContext()!).jvxRouteObserver.knownRoutes.firstWhereOrNull(
+                (element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName)) !=
+            null;
+  }
+
+  /// Adds a listener which receives application parameter changes
+  @override
+  void addApplicationParameterChangedListener(ApplicationParameterChangedListener listener) {
+    _appParameterListener.add(listener);
+  }
+
+  /// Removes a listener which receives application parameter changes
+  @override
+  void removeApplicationParameterChangedListener(ApplicationParameterChangedListener listener) {
+    _appParameterListener.remove(listener);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Intern methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Modifies the original menu model to include custom screens and replace screens.
+  ///
+  /// [CustomMenuItem]'s are included by either:
+  /// * Using the one provided by [AppManager.customMenuItems].
+  /// * Using the one from the original replaced screen (only works if there is one).
+  /// * And lastly creates one on a best-effort strategy (It is recommended to provide one).
+  ///
+  /// We have to deliver it "fresh" because of the offline state change, possible solution, connect with offlineNotifier
+  /// ```dart
+  /// ConfigController().getOfflineNotifier().addListener(() {
+  ///   _menuNotifier.value = _updateMenuModel(_originalMenuModel);
+  /// });
+  /// ```
+  MenuModel _updateMenuModel(MenuModel? pMenuModel) {
+    List<MenuGroupModel> menuGroupModels = [];
+
+    if (!IConfigService().offline.value && pMenuModel != null) {
+      menuGroupModels.addAll(pMenuModel.copy().menuGroups);
+    }
+
+    if (appManager != null) {
+      appManager!.customScreens.forEach((key, screen) {
+        CustomMenuItem? customMenuItem = appManager!.customMenuItems[key];
+
+        MenuItemModel? originalItem = menuGroupModels
+            .expand((element) => element.items)
+            .where((menuItem) => [menuItem.navigationName, menuItem.screenLongName].contains(key))
+            .firstOrNull;
+
+        if (originalItem == null && customMenuItem == null && screen.screenBuilder != null) {
+          // We have no menu item, therefore, create one on best-effort basis.
+          customMenuItem = CustomMenuItem(
+            group: "Custom",
+            label: screen.screenTitle ?? "Custom Screen",
+            faIcon: FontAwesomeIcons.notdef,
+          );
+        }
+
+        // Whether we should show the item in the current setting.
+        if (customMenuItem != null &&
+            ((screen.showOnline && !IConfigService().offline.value) ||
+                (screen.showOffline && IConfigService().offline.value))) {
+          MenuItemModel overrideMenuItem = MenuItemModel(
+            screenLongName: originalItem?.screenLongName ?? screen.key,
+            className: originalItem?.className,
+            navigationName: originalItem?.navigationName ?? screen.keyNavigationName,
+            label: customMenuItem.label,
+            alternativeLabel: customMenuItem.alternativeLabel ?? originalItem?.alternativeLabel,
+            imageBuilder: customMenuItem.imageBuilder,
+            // Only override image if there is no image builder.
+            image: customMenuItem.imageBuilder == null ? originalItem?.image : null,
+          );
+
+          // Check if group already exists.
+          MenuGroupModel? menuGroupModel =
+          menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem!.group);
+
+          if (menuGroupModel == null) {
+            // Make new group if it didn't exist.
+            menuGroupModel = MenuGroupModel(
+              name: customMenuItem.group,
+              items: [],
+            );
+            menuGroupModels.add(menuGroupModel);
+          }
+
+          menuGroupModel.items.add(overrideMenuItem);
+
+          // Finally remove menu items that we replaced.
+          menuGroupModels.forEach((menuGroup) => menuGroup.items.remove(originalItem));
+        }
+      });
+    }
+
+    MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
+
+    appManager?.modifyMenuModel(menuModel);
+
+    return menuModel;
+  }
+
+  void _disposeModelSubscription(Object pSubscriber) {
+    List<ModelSubscription> copy = _modelSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].subbedObj == pSubscriber) {
+        _modelSubscriptions.remove(copy[i]);
+      }
+    }
+  }
+
+  void _disposeComponentSubscription(Object pSubscriber) {
+    List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i].subbedObj == pSubscriber) {
+        _componentSubscriptions.remove(copy[i]);
+      }
+    }
+  }
+
 }

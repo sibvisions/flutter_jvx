@@ -34,6 +34,9 @@ class ApplicationParametersResponse extends ApiResponse {
   /// Which screen to open, is a screen name
   final String? openScreen;
 
+  /// Additional parameters
+  final Map<String, dynamic> parameters;
+
   /// Whether design mode is allowed
   final bool? designModeAllowed;
 
@@ -51,5 +54,21 @@ class ApplicationParametersResponse extends ApiResponse {
         openScreen = json[ApiObjectProperty.openScreen],
         designModeAllowed = ParseUtil.parseBool(json[ApiObjectProperty.designMode]),
         pushNotificationsEnabled = ParseUtil.parseBool(json[ApiObjectProperty.pushNotifications]),
+        parameters = extractParameters(json),
         super.fromJson();
+
+  /// Extracts only parameters from original json
+  static Map<String, dynamic> extractParameters(Map<String, dynamic> json) {
+    Map<String, dynamic> copy = Map.of(json);
+
+    copy.remove(ApiObjectProperty.name);
+    copy.remove(ApiObjectProperty.applicationTitleName);
+    copy.remove(ApiObjectProperty.applicationTitleWeb);
+    copy.remove(ApiObjectProperty.authenticated);
+    copy.remove(ApiObjectProperty.openScreen);
+    copy.remove(ApiObjectProperty.designMode);
+    copy.remove(ApiObjectProperty.pushNotifications);
+
+    return copy;
+  }
 }

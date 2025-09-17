@@ -43,6 +43,29 @@ class ApplicationParameters {
     openScreen = other.openScreen ?? openScreen;
     designModeAllowed = other.designModeAllowed ?? designModeAllowed;
     pushNotificationsEnabled = other.pushNotificationsEnabled ?? pushNotificationsEnabled;
-    parameters = {...parameters, ...(other.json)};
+    parameters = {...parameters, ...(other.parameters)};
+  }
+
+  ApplicationParameters copyWith({
+    String? applicationTitleName,
+    String? applicationTitleWeb,
+    String? authenticated,
+    String? openScreen,
+    bool? designModeAllowed,
+    bool? pushNotificationsEnabled,
+    Map<String, dynamic>? parameters,
+  }) {
+    return ApplicationParameters(
+      applicationTitleName: applicationTitleName ?? this.applicationTitleName,
+      applicationTitleWeb: applicationTitleWeb ?? this.applicationTitleWeb,
+      authenticated: authenticated ?? this.authenticated,
+      openScreen: openScreen ?? this.openScreen,
+      designModeAllowed: designModeAllowed ?? this.designModeAllowed,
+      pushNotificationsEnabled: pushNotificationsEnabled ?? this.pushNotificationsEnabled,
+      parameters: {
+        ...this.parameters,
+        if (parameters != null) ...parameters,
+      },
+    );
   }
 }

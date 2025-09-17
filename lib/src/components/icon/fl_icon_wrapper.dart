@@ -37,7 +37,7 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
   Widget build(BuildContext context) {
     final FlIconWidget widget = FlIconWidget(
       model: model,
-      wrapper: (widget, padding) =>  wrapWithBadge(widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding)
+      wrapper: (widget, padding) =>  wrapWithBadge(context, widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding)
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -45,7 +45,7 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
     });
 
     //we show the badge around the image and not around the whole area
-    return wrapWidget(child: widget, outlineBadge: false);
+    return wrapWidget(context, widget, false);
   }
 
   @override

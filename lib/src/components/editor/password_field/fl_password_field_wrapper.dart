@@ -55,6 +55,6 @@ class FlPasswordFieldWrapperState extends FlTextFieldWrapperState<FlTextFieldMod
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: passwordWidget);
+    return wrapWidget(context, passwordWidget);
   }
 }

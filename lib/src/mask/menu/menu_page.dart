@@ -45,12 +45,30 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
   bool sentScreen = false;
 
+  ApplicationParameterChangedListener appParamListener = (name, oldValue, newValue) {
+    //In case of screenbadge update -> update the menu as well
+    if (name.startsWith("screenbadge.")) {
+      IUiService serv = IUiService();
+
+      serv.setMenuModel(serv.getMenuModel());
+    }
+  };
+
   @override
   void initState() {
     super.initState();
 
+    IUiService().addApplicationParameterChangedListener(appParamListener);
+
     IUiService().getAppManager()?.onMenuPage();
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    IUiService().removeApplicationParameterChangedListener(appParamListener);
   }
 
   @override

@@ -100,7 +100,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: widget);
+    return wrapWidget(context, widget);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

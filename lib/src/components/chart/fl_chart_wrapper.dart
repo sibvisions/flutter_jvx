@@ -99,15 +99,16 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     });
 
     if (model.yColumnNames.isEmpty && model.xColumnName.isEmpty) {
-      return wrapWidget(child: Center(child: Text("Invalid Chart: ${model.name}")));
+      return wrapWidget(context, Center(child: Text("Invalid Chart: ${model.name}")));
     }
 
     if (dataChunk == null || metaData == null) {
-      return wrapWidget(child: const Center(child: CircularProgressIndicator()));
+      return wrapWidget(context, const Center(child: CircularProgressIndicator()));
     }
 
     return wrapWidget(
-      child: FlChartWidget(
+      context,
+      FlChartWidget(
         model: model,
         data: chartData,
         highestValue: highestValue,

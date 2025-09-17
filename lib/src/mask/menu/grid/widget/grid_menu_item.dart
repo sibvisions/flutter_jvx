@@ -16,8 +16,10 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
 
 import '../../../../../flutter_jvx.dart';
+import '../../../../util/badge_util.dart';
 
 class GridMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +48,24 @@ class GridMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Widget wItem = Container(
+      color: Colors.black.withAlpha(Color.getAlphaFromOpacity(0.1)),
+      child: MenuItemModel.getImage(
+        context,
+        pMenuItemModel: menuItemModel,
+        pSize: 72,
+        pColor: JVxColors.isLightTheme(context) ? Colors.white : Colors.white70,
+      ),
+    );
+
+    BadgeConfig badgeConfig = BadgeConfig.fromApplicationParameter(menuItemModel.className);
+    //set defaults if not set
+    badgeConfig.alignment ??= Alignment.bottomRight;
+    badgeConfig.offset ??= Offset(-20, -20);
+
+    wItem = BadgeUtil.wrapWithBadge(context, wItem, badgeConfig, expand: true);
+
     var theme = Theme.of(context);
     return Material(
       color: (JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.canvasColor)
@@ -81,15 +101,7 @@ class GridMenuItem extends StatelessWidget {
             ),
             Expanded(
               flex: 75,
-              child: Container(
-                color: Colors.black.withAlpha(Color.getAlphaFromOpacity(0.1)),
-                child: MenuItemModel.getImage(
-                  context,
-                  pMenuItemModel: menuItemModel,
-                  pSize: 72,
-                  pColor: JVxColors.isLightTheme(context) ? Colors.white : Colors.white70,
-                ),
-              ),
+              child: wItem
             )
           ],
         ),

@@ -43,6 +43,6 @@ class _FlDummyWrapperState extends BaseCompWrapperState<FlComponentModel> {
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: dummyWidget);
+    return wrapWidget(context, dummyWidget);
   }
 }

@@ -85,7 +85,7 @@ class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperSt
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
-    return wrapWidget(child: customComponent.componentBuilder.call(context, model));
+    return wrapWidget(context, customComponent.componentBuilder.call(context, model));
   }
 
 }

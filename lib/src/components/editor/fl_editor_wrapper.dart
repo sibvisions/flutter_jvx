@@ -122,6 +122,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     if (!useOutlineBadge) {
       wrapper = (widget, padding) => wrapWithBadge(
+          context,
           widget ?? ImageLoader.DEFAULT_IMAGE,
           expand: cellEditor is FlImageCellEditor,
           padding: padding
@@ -129,8 +130,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
 
     return wrapWidget(
-      child: cellEditor.createWidget(model.json, wrapper),
-      outlineBadge: useOutlineBadge
+      context,
+      cellEditor.createWidget(model.json, wrapper),
+      useOutlineBadge
     );
   }
 

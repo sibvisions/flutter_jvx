@@ -47,13 +47,13 @@ class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlRadioButtonWra
       radioFocusNode: focusNode,
       model: model,
       onPress: sendButtonPressed,
-      wrapper: (widget, padding) => wrapWithBadge(widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding)
+      wrapper: (widget, padding) => wrapWithBadge(context, widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding)
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: checkboxWidget, outlineBadge: false);
+    return wrapWidget(context, checkboxWidget, false);
   }
 }

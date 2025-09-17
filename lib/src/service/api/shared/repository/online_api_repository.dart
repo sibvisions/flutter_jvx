@@ -861,8 +861,14 @@ class OnlineApiRepository extends IRepository {
   ApiInteraction _responseParser(List<dynamic> jsonList, {required ApiRequest? request}) {
     List<ApiResponse> returnList = [];
 
+    bool log = FlutterUI.logAPI.cl(Lvl.i);
+
     for (dynamic responseItem in jsonList) {
       ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
+
+      if (log) {
+        FlutterUI.logAPI.i(responseItem);
+      }
 
       if (builder != null) {
         returnList.add(builder(responseItem));

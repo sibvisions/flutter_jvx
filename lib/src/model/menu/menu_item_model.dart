@@ -32,6 +32,9 @@ class MenuItemModel {
   /// "com.sibvisions.apps.mobile.demo.screens.features.SecondWorkScreen:L1_MI_DOOPENWORKSCREEN_COM-SIB-APP-MOB-DEM-SCR-FEA-SECWORSCR"
   final String screenLongName;
 
+  /// The class name.
+  final String? className;
+
   /// Navigation name of the screen.
   final String navigationName;
 
@@ -53,6 +56,7 @@ class MenuItemModel {
 
   const MenuItemModel({
     required this.screenLongName,
+    this.className,
     required this.navigationName,
     required this.label,
     this.alternativeLabel,

@@ -53,13 +53,13 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
       onTapDown: model.eventMousePressed ? onPressed : null,
       onTapUp: model.eventMouseReleased ? onReleased : null,
       onTapCancel: model.eventMouseReleased && model.eventMousePressed ? onCancelPressed : null,
-      wrapper: (widget, padding) => wrapWithBadge(widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding));
+      wrapper: (widget, padding) => wrapWithBadge(context, widget ?? ImageLoader.DEFAULT_IMAGE, padding: padding));
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: widget, outlineBadge: false);
+    return wrapWidget(context, widget, false);
   }
 
   @override

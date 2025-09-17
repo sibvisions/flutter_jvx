@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../routing/locations/main_location.dart';
+import '../../../../service/ui/i_ui_service.dart';
+import '../../../../util/badge_util.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../menu.dart';
 
@@ -73,6 +75,13 @@ class ListMenuItem extends StatelessWidget {
       pSize: 25,
       pColor: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white70,
     );
+
+    BadgeConfig badgeConfig = BadgeConfig.fromApplicationParameter(menuItemModel.className);
+    //set defaults if not set
+    badgeConfig.alignment ??= Alignment.bottomRight;
+    badgeConfig.offset ??= Offset(-5, -8);
+
+    leading = BadgeUtil.wrapWithBadge(context, leading, badgeConfig);
 
     onTap() => onClick(context, item: menuItemModel);
 

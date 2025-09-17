@@ -391,6 +391,9 @@ class FlutterUI extends StatefulWidget {
   static Future<void> start([FlutterUI pAppToRun = const FlutterUI()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    //e.g. to use it in release mode
+    //DebugOverlay.enabled = true;
+
     uriInitial = await appLinks.getInitialLink();
 
     if (kDebugMode) {
@@ -450,7 +453,9 @@ class FlutterUI extends StatefulWidget {
 
     Logger.addOutputListener((event) {
       LogLevel? level = LogLevel.values.firstWhereOrNull((element) => element.name == event.origin.level.name);
+
       if (level == null) return;
+
       logBucket.add(LogEvent(
         level: level,
         message: event.origin.message,
@@ -608,9 +613,11 @@ class FlutterUI extends StatefulWidget {
       FlutterUIState.appTitle = urlApp.effectiveTitle;
       configService.setCustomStartupProperties(queryParameters);
     } else if (!kIsWeb) {
+
       // Handle notification launching app from terminated state
       Map<String?, Object?>? data = await Push.instance.notificationTapWhichLaunchedAppFromTerminated;
       data = PushUtil.extractJVxData(data);
+
       // "payload" means it's a local notification, handle below.
       if (data?.containsKey("payload") ?? false) data = null;
       if (data == null) {
@@ -817,7 +824,8 @@ class FlutterUI extends StatefulWidget {
     PlatformDispatcher.instance.onError = (error, stack) {
       sendFeedback(error, stack, "PlatformDispatcher.instance.onError");
 
-      return true;
+      //shows error
+      return false;
     };
 
     RenderErrorBox.backgroundColor = RenderErrorBox.backgroundColor.withAlpha(180);
@@ -1357,7 +1365,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       themeData = JVxColors.createTheme(Colors.blue, Brightness.light);
       darkThemeData = JVxColors.createTheme(Colors.blue, Brightness.dark);
     }
-    setState(() {});
+
+    refresh();
   }
 
   void refresh() {
@@ -1464,9 +1473,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     messagesReceived = ValueNotifier([]);
     backgroundMessagesReceived = ValueNotifier([]);
 
-    newTokenSubscription = Push.instance.addOnNewToken(PushUtil.handleTokenUpdates);
+    newTokenSubscription = Push.instance.addOnNewToken((token) {
+      FlutterUI.log.d("notification new token: $token");
+
+      PushUtil.handleTokenUpdates(token);
+    });
 
     notificationTapSubscription = Push.instance.addOnNotificationTap((data) {
+      FlutterUI.log.d("notification tap: $data");
+
       // "payload" means it's a local notification, handle elsewhere.
       if (data.containsKey("payload")) return;
 
@@ -1474,10 +1489,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     });
 
     notificationSubscription = Push.instance.addOnMessage((message) {
+      FlutterUI.log.d("notification message: $message ${message.data}");
+
       PushUtil.handleOnMessage(messagesReceived, message);
     });
 
     backgroundNotificationSubscription = Push.instance.addOnBackgroundMessage((message) {
+      FlutterUI.log.d("notification background message: $message ${message.data}");
+
       PushUtil.handleOnBackgroundMessages(backgroundMessagesReceived, message);
     });
   }

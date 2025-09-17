@@ -115,7 +115,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: buttonWidget);
+    return wrapWidget(context, buttonWidget);
   }
 
   @override

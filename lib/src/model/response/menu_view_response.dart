@@ -73,6 +73,9 @@ class MenuEntryResponse {
   /// Alternative Text to be displayed in the menu entry
   final String? quickBarText;
 
+  /// The class name
+  final String? className;
+
   /// Image to be displayed (usually Font-awesome icon)
   final String? image;
 
@@ -82,6 +85,7 @@ class MenuEntryResponse {
 
   MenuEntryResponse({
     required this.componentId,
+    required this.className,
     required this.navigationName,
     required this.text,
     this.sideBarText,
@@ -92,6 +96,7 @@ class MenuEntryResponse {
 
   MenuEntryResponse.fromJson(Map<String, dynamic> json)
       : componentId = json[ApiObjectProperty.componentId],
+        className = json[ApiObjectProperty.className],
         navigationName = json[ApiObjectProperty.navigationName],
         text = json[ApiObjectProperty.text],
         sideBarText = json[ApiObjectProperty.sideBarText],

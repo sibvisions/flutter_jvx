@@ -184,7 +184,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     }
 
     return wrapWidget(
-      child: Wrap(
+      context,
+      Wrap(
         direction: Axis.vertical,
         verticalDirection: TabPlacements.BOTTOM == model.tabPlacement ? VerticalDirection.up : VerticalDirection.down,
         children: [
