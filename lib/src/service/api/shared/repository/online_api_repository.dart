@@ -259,6 +259,9 @@ class OnlineApiRepository extends IRepository {
 
   bool get connected => _connected;
 
+  /// Whether communication is compressed
+  bool compress = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -699,17 +702,24 @@ class OnlineApiRepository extends IRepository {
         return parsedDownloadObject;
       }
 
-      String responseBody = _decodeUTF8(response.data);
       List<dynamic> jsonResponse = [];
 
       if (response.statusCode != 204) {
         var contentTypes = response.headers[Headers.contentTypeHeader];
-        if (!(contentTypes?.contains(ContentType.json.value) ?? false)) {
-          throw FormatException("Invalid server response"
-              "\nType: $contentTypes"
-              "\nStatus: ${response.statusCode}");
+
+        if (contentTypes == null
+            || contentTypes.contains(ContentType.json.value)
+            || contentTypes.contains(ContentType.text.value)) {
+          jsonResponse = _parseAndCheckJson(_decodeUTF8(response.data));
         }
-        jsonResponse = _parseAndCheckJson(responseBody);
+        else if (contentTypes.contains(ContentType.binary.value)) {
+          compress = true;
+
+          jsonResponse = _parseAndCheckJson(utf8.decode(GZipCodec().decode(response.data)));
+        }
+        else {
+          throw FormatException("Invalid server response\nType: $contentTypes\nStatus: ${response.statusCode}");
+        }
       }
 
       ApiInteraction apiInteraction = _responseParser(jsonResponse, request: pRequest);
@@ -748,7 +758,15 @@ class OnlineApiRepository extends IRepository {
         throw UnimplementedError("${pRequest.runtimeType} is an unknown UploadRequest.");
       }
     }
-    return jsonEncode(pRequest);
+
+    String json = jsonEncode(pRequest);
+
+    if (compress) {
+      return GZipCodec().encode(utf8.encode(json));
+    }
+    else {
+      return json;
+    }
   }
 
   /// Sends a single [ApiRequest] by creating a new client, ignoring every response and closing it after.
@@ -812,6 +830,10 @@ class OnlineApiRepository extends IRepository {
 
     Map<String, dynamic> requestHeaders = Map.of(headers);
     IUiService().getAppManager()?.modifyHeaders(requestHeaders);
+
+    if (compress) {
+      requestHeaders['content-type'] = ContentType.binary.mimeType;
+    }
 
     Response response = await client.requestUri(
       Uri(path: "/${route.route}"),
