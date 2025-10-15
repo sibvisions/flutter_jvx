@@ -266,7 +266,11 @@ class OnlineApiRepository extends IRepository {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  OnlineApiRepository();
+  OnlineApiRepository() {
+    if (IConfigService().getAppConfig()?.payloadCompress != null) {
+      compress = IConfigService().getAppConfig()?.payloadCompress == true;
+    }
+  }
 
   /// Initializes the [client].
   ///

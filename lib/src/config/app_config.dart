@@ -121,6 +121,9 @@ class AppConfig {
   /// optional for json only (clear local storage)
   final bool? clearLocalStorage;
 
+  /// whether to compress payload
+  final bool? payloadCompress;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -144,7 +147,8 @@ class AppConfig {
     this.versionConfig,
     this.offlineConfig,
     this.applicationParameters,
-    this.clearLocalStorage
+    this.clearLocalStorage,
+    this.payloadCompress
   });
 
   const AppConfig.defaults()
@@ -174,6 +178,7 @@ class AppConfig {
       requestTimeout: json['requestTimeout'] != null ? Duration(milliseconds: json['requestTimeout']) : null,
       aliveInterval: json['aliveInterval'] != null ? Duration(milliseconds: json['aliveInterval']) : null,
       wsPingInterval: json['wsPingInterval'] != null ? Duration(milliseconds: json['wsPingInterval']) : null,
+      payloadCompress : json['payloadCompress'] != null ? (json['wsPingInterval'] == true || json['wsPingInterval'] == "true") : null,
       autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
       showAppOverviewWithoutDefault: json['showAppOverviewWithoutDefault'],
       customAppsAllowed: json['customAppsAllowed'],
@@ -213,6 +218,7 @@ class AppConfig {
       offlineConfig: offlineConfig?.merge(other.offlineConfig) ?? other.offlineConfig,
       applicationParameters: (applicationParameters ?? {})..addAll(other.applicationParameters ?? {}),
       clearLocalStorage: other.clearLocalStorage ?? clearLocalStorage,
+      payloadCompress: other.payloadCompress ?? payloadCompress,
     );
   }
 }
