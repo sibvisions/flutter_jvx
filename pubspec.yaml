@@ -32,18 +32,18 @@ dependencies:
   # Translations capability
   intl: any # An exact version pin will be provided by the Flutter SDK
   timezone: ^0.10.0
-  flutter_timezone: ^4.0.0
+  flutter_timezone: ^5.0.0
 
   # Config
   shared_preferences: ^2.5.0
 
   # Device Identification
-  package_info_plus: ^8.3.0
-  device_info_plus: ^11.0.0
+  package_info_plus: ^9.0.0
+  device_info_plus: ^12.0.0
   android_id: ^0.4.0
 
   # Util
-  dio: ^5.8.0
+  dio: ^5.9.0
   logger: ^2.0.0
   collection: ^1.19.0
   rxdart: ^0.28.0
@@ -59,12 +59,12 @@ dependencies:
   universal_io: ^2.0.0
 
   web_socket_channel: ^3.0.0
-  connectivity_plus: ^6.1.0
+  connectivity_plus: ^7.0.0
 
   cross_file: ^0.3.0
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
   file_picker: ^10.0.0
-  file_saver: ^0.3.1
+  file_saver: ^0.3.0
 
 # SVG Support
   flutter_svg: ^2.0.0
@@ -80,7 +80,7 @@ dependencies:
   path: ^1.9.0
   path_provider: ^2.1.0
   # Zip files handling
-  archive: ^4.0.2
+  archive: ^4.0.0
   # Special Slivers for lists and grids (menu)
   sliver_tools: ^0.2.0
   # Auto resizing text widget
@@ -89,7 +89,7 @@ dependencies:
   beamer: ^1.7.0
   # Used for offline mode
   sqflite: ^2.4.0
-  wakelock_plus: ^1.2.0
+  wakelock_plus: ^1.0.0
   # Used for debugging
   flutter_debug_overlay:
     git:
@@ -98,7 +98,7 @@ dependencies:
   # Custom Dependencies
   flutter_map: ^8.2.0
   latlong2: ^0.9.1
-  geolocator: ^14.0.2
+  geolocator: ^14.0.0
   scrollview_observer: ^1.26.0
   url_launcher: ^6.3.0
   linked_scroll_controller: ^0.2.0

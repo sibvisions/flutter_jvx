@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../routing/locations/main_location.dart';
-import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/badge_util.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../menu.dart';

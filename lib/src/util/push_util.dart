@@ -32,10 +32,13 @@ import 'jvx_logger.dart';
 import 'parse_util.dart';
 
 abstract class PushUtil {
-  static FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  static Map<String?, Object?>? notificationWhichLaunchedApp;
   static const String parameterPushToken = "Mobile.pushToken";
   static const String parameterPushData = "Mobile.pushData";
+
+  static FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  static Map<String?, Object?>? notificationWhichLaunchedApp;
+
+  static String? currentToken;
 
   static ServerConfig? handleNotificationData(Map<String?, Object?> data) {
     Map<String, dynamic> parameters = Map.fromEntries(
@@ -119,6 +122,7 @@ abstract class PushUtil {
     messagesReceived.value += [message];
 
     var data = PushUtil.extractJVxData(message.data);
+
     if (data != null) {
       if (message.notification != null) {
         await localNotificationsPlugin.show(
@@ -139,10 +143,10 @@ abstract class PushUtil {
         );
         return;
       }
-
       // Potentially check for current app == notification app and send it.
       // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});
     }
+
   }
 
   /// Handles push notifications received while app is in background.
@@ -173,6 +177,8 @@ abstract class PushUtil {
     if (FlutterUI.log.cl(Lvl.d)) {
       FlutterUI.log.d("New APNS/FCM registration token: $token");
     }
+
+    currentToken = token;
 
     await PushUtil.sendPushData({parameterPushToken: token});
   }

@@ -16,7 +16,6 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart' as badges;
 
 import '../../../../../flutter_jvx.dart';
 import '../../../../util/badge_util.dart';

@@ -174,7 +174,9 @@ class ConfigService implements IConfigService {
     _applicationTimeZone = ValueNotifier(null);
 
     // Update native timezone
-    _platformTimeZone = await FlutterTimezone.getLocalTimezone();
+    TimezoneInfo tzInfo = await FlutterTimezone.getLocalTimezone();
+
+    _platformTimeZone = tzInfo.identifier;
   }
 
   @override

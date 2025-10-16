@@ -253,6 +253,12 @@ class FlutterUI extends StatefulWidget {
   /// All global tap subscriptions
   static final List<GlobalSubscription> _globalSubscriptions = [];
 
+  /// The new push token subscription (temporary)
+  static VoidCallback? onNewTokenSubscription;
+
+  /// Whether push is already initialized
+  static bool pushInitialized = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -277,6 +283,39 @@ class FlutterUI extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Initialize push for early handling of new token request. If we don't handle
+  /// it early, the newly created token (first app start after install) will be lost,
+  /// because handling in initState() is too late. So we cache it for later use.
+  Future<void> _initPush() async {
+    if (!kIsWeb) {
+      if (!pushInitialized) {
+        Push.instance.registerForRemoteNotifications();
+
+        PushUtil.currentToken = await PushUtil.retrievePushToken();
+
+        if (kDebugMode) {
+          print("Existing push token ${PushUtil.currentToken}");
+        }
+
+        onNewTokenSubscription = Push.instance.addOnNewToken((token) {
+          if (kDebugMode) {
+            print("Push token received before app was initialized $token");
+          }
+
+          PushUtil.currentToken = token;
+        });
+
+        pushInitialized = true;
+      }
+    }
+  }
+
+  void _clearPush() {
+    if (onNewTokenSubscription != null) {
+      onNewTokenSubscription!();
+    }
+  }
 
   /// Finds the [FlutterUIState] from the closest instance of this class that
   /// encloses the given context.
@@ -390,6 +429,9 @@ class FlutterUI extends StatefulWidget {
 
   static Future<void> start([FlutterUI pAppToRun = const FlutterUI()]) async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    //as soon as possible
+    await pAppToRun._initPush();
 
     //e.g. to use it in release mode
     //DebugOverlay.enabled = true;
@@ -989,6 +1031,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     subscription = Connectivity().onConnectivityChanged.listen(didChangeConnectivity);
 
+    Push.instance.requestPermission();
+
     if (!kIsWeb) {
       registerPushStreams();
     }
@@ -1478,6 +1522,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
       PushUtil.handleTokenUpdates(token);
     });
+
+    if (PushUtil.currentToken != null) {
+      PushUtil.handleTokenUpdates(PushUtil.currentToken!);
+    }
+
+    widget._clearPush();
 
     notificationTapSubscription = Push.instance.addOnNotificationTap((data) {
       FlutterUI.log.d("notification tap: $data");

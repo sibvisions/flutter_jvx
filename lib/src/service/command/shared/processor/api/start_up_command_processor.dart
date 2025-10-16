@@ -21,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../../../flutter_ui.dart';
-import '../../../../../model/command/api/set_parameter_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_startup_request.dart';
@@ -30,7 +29,6 @@ import '../../../../../util/push_util.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../config/i_config_service.dart';
 import '../../../../ui/i_ui_service.dart';
-import '../../../i_command_service.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
@@ -44,16 +42,48 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   Future<List<BaseCommand>> processCommand(StartupCommand command, BaseCommand? origin) async {
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
 
+    assert(IConfigService().baseUrl.value != null, "baseUrl can not be empty!");
+    assert(IConfigService().baseUrl.value != null, "baseUrl can not be empty!");
+
     // Close frames on (re-)start
     if (FlutterUI.getCurrentContext() != null) {
       IUiService().closeJVxDialogs();
       IUiService().disposeContents();
     }
 
-    Size? phoneSize = MediaQuery.maybeSizeOf(FlutterUI.getEffectiveContext()!);
+    Map<String, dynamic> mpProps = Map.of(IConfigService().getCustomStartupProperties());
+    if (PushUtil.currentToken != null) {
+      mpProps[PushUtil.parameterPushToken] = PushUtil.currentToken;
+    }
 
-    assert(IConfigService().baseUrl.value != null, "baseUrl can not be empty!");
-    assert(IConfigService().baseUrl.value != null, "baseUrl can not be empty!");
+    BuildContext? context = FlutterUI.getEffectiveContext();
+
+    Size? phoneSize;
+
+    if (context != null) {
+      // ignore: use_build_context_synchronously
+      phoneSize = MediaQuery.maybeSizeOf(context);
+      // ignore: use_build_context_synchronously
+      var state = FlutterUI.of(context);
+
+      var data = state.tappedNotificationPayloads.value.lastOrNull ?? PushUtil.notificationWhichLaunchedApp;
+
+      if (data != null) {
+        mpProps[PushUtil.parameterPushData] = jsonEncode(data);
+      }
+
+      state.tappedNotificationPayloads.value.clear();
+      PushUtil.notificationWhichLaunchedApp = null;
+    }
+    else {
+      var data = PushUtil.notificationWhichLaunchedApp;
+
+      if (data != null) {
+        mpProps[PushUtil.parameterPushData] = jsonEncode(data);
+      }
+
+      PushUtil.notificationWhichLaunchedApp = null;
+    }
 
     ApiStartupRequest startupRequest = ApiStartupRequest(
       baseUrl: IConfigService().baseUrl.value!.toString(),
@@ -78,7 +108,7 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
       serverVersion: FlutterUI.supportedServerVersion,
-      customProperties: IConfigService().getCustomStartupProperties(),
+      customProperties: mpProps.isNotEmpty ? mpProps : null,
     );
 
     return IApiService().sendRequest(startupRequest).then((value) {
@@ -96,38 +126,7 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   @override
   Future<void> onFinish(StartupCommand command) async {
     FlutterUI.clearLocationHistory();
+
     IUiService().getAppManager()?.onSuccessfulStartup();
-
-    unawaited(_sendPushToken());
-  }
-
-  Future<void> _sendPushToken() async {
-    String? pushToken = await PushUtil.retrievePushToken();
-    if (pushToken != null) {
-      try {
-        await ICommandService().sendCommand(
-          SetParameterCommand(
-            parameter: {PushUtil.parameterPushToken: pushToken},
-            reason: "Send PushToken after startup",
-          ),
-        );
-
-        var state = FlutterUI.of(FlutterUI.getEffectiveContext()!);
-        var data = state.tappedNotificationPayloads.value.lastOrNull ?? PushUtil.notificationWhichLaunchedApp;
-        if (data != null) {
-          await ICommandService().sendCommand(
-            SetParameterCommand(
-              parameter: {PushUtil.parameterPushData: jsonEncode(data)},
-              reason: "Send PushData after startup",
-            ),
-          );
-        }
-        // Clear on success
-        state.tappedNotificationPayloads.value.clear();
-        PushUtil.notificationWhichLaunchedApp = null;
-      } catch (e, stack) {
-        FlutterUI.log.w("Failed to send push token/data to server", error: e, stackTrace: stack);
-      }
-    }
   }
 }
