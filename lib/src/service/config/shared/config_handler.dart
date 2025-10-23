@@ -192,4 +192,7 @@ abstract class ConfigHandler {
 
   /// Sets the offline screen.
   Future<void> updateOfflineScreen(String workScreen);
+
+  /// Gets the install id. This is a unique id for each installation.
+  Future<String> installId();
 }

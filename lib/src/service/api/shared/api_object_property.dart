@@ -376,6 +376,7 @@ abstract class ApiObjectProperty {
   static const String requestUri = "requestUri";
   static const String readAheadLimit = "readAheadLimit";
   static const String deviceId = "deviceId";
+  static const String installId = "installId";
   static const String technology = "technology";
   static const String osName = "osName";
   static const String osVersion = "osVersion";

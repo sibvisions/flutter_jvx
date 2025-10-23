@@ -24,15 +24,19 @@ import '../model/response/application_settings_response.dart';
 import '../service/api/shared/api_object_property.dart';
 
 abstract class ParseUtil {
-  static const String urlSuffix = "/services/mobile";
+  static const String mobileServicePath = "/services/mobile";
+  static const String servicePath = "/services/";
 
   static bool isHTML(String? text) {
     return text != null && text.length >= 6 && text.substring(0, 6).toLowerCase().startsWith("<html>");
   }
 
-  static Uri appendJVxUrlSuffix(Uri uri) {
-    if (!uri.path.endsWith(urlSuffix) && !uri.path.endsWith("$urlSuffix/")) {
-      String appendingSuffix = urlSuffix;
+  static Uri appendMobileServicePath(Uri uri) {
+    if (!uri.path.endsWith(mobileServicePath)
+        && !uri.path.endsWith("$mobileServicePath/")
+        //maybe another service is configured
+        && !uri.path.contains(servicePath)) {
+      String appendingSuffix = mobileServicePath;
       if (uri.path.endsWith("/")) {
         appendingSuffix = appendingSuffix.substring(1);
       }
@@ -356,24 +360,22 @@ abstract class ParseUtil {
   /// Returns either a valid [ServerConfig] or `null`.
   static ServerConfig? extractAppParameters(Map<String, dynamic> data) {
     String? appName = data.remove("appName") as String?;
-    Uri? baseUrl = Uri.tryParse(data.remove("baseUrl") ?? "::"); //Empty string returns uri, "::" not.
+    Uri? baseUrl = data["baseUrl"] != null ? Uri.tryParse(data.remove("baseUrl")) : null;
     String? username = (data.remove("username") ?? data.remove("userName")) as String?;
     String? password = data.remove("password") as String?;
     String? title = data.remove("title") as String?;
 
-    ServerConfig extractedConfig = ServerConfig(
+    if (baseUrl != null) {
+      baseUrl = ParseUtil.appendMobileServicePath(baseUrl);
+    }
+
+    return ServerConfig(
       appName: appName,
       baseUrl: baseUrl,
       title: title,
       username: username,
       password: password,
     );
-
-    if (extractedConfig.isValid) {
-      return extractedConfig;
-    }
-
-    return null;
   }
 
   static List<BarcodeFormat>? parseScanFormat(String s) {

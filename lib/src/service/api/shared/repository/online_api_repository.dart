@@ -542,21 +542,31 @@ class OnlineApiRepository extends IRepository {
   }
 
   Uri? _getWebSocketUri() {
-    if (IUiService().clientId.value == null) {
+    String? clientId = IUiService().clientId.value;
+
+    if (clientId == null) {
       FlutterUI.logAPI.i("WebSocket URI: ClientID is missing");
       return null;
     }
 
     Uri location = IConfigService().baseUrl.value!;
 
-    int? end = location.path.lastIndexOf(ParseUtil.urlSuffix);
-    if (end == -1) end = null;
+    int? end = location.path.lastIndexOf(ParseUtil.mobileServicePath);
+
+    if (end == -1) {
+      //maybe another service name
+      end = location.path.lastIndexOf(ParseUtil.servicePath);
+    }
+
+    if (end == -1) {
+      end = null;
+    }
 
     return location.replace(
       scheme: location.scheme == "https" ? "wss" : "ws",
       path: "${location.path.substring(0, end)}/pushlistener",
       queryParameters: {
-        "clientId": IUiService().clientId.value!,
+        "clientId": clientId,
         // `reconnect` forces the server to respond to invalid session with close instead of an error.
         "reconnect": true.toString(),
       },

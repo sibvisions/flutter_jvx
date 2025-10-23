@@ -24,6 +24,8 @@ import 'package:push/push.dart';
 import '../config/server_config.dart';
 import '../flutter_ui.dart';
 import '../model/command/api/set_parameter_command.dart';
+import '../service/apps/app.dart';
+import '../service/apps/app_parameter_names.dart';
 import '../service/apps/i_app_service.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
@@ -32,97 +34,208 @@ import 'jvx_logger.dart';
 import 'parse_util.dart';
 
 abstract class PushUtil {
-  static const String parameterPushToken = "Mobile.pushToken";
-  static const String parameterPushData = "Mobile.pushData";
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static ValueNotifier<List<Map<String?, Object?>>>? tappedNotificationPayloads;
+  static ValueNotifier<List<RemoteMessage>>? messagesReceived;
+  static ValueNotifier<List<RemoteMessage>>? backgroundMessagesReceived;
+
+  /// the local notifications plugin instance
   static FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  static Map<String?, Object?>? notificationWhichLaunchedApp;
 
+  /// the current push token
   static String? currentToken;
 
-  static ServerConfig? handleNotificationData(Map<String?, Object?> data) {
-    Map<String, dynamic> parameters = Map.fromEntries(
-      data.entries.where((entry) => entry.key != null).map((e) => MapEntry(e.key!, e.value)),
-    );
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    var notificationConfig = ParseUtil.extractAppParameters(parameters);
-
-    if (notificationConfig != null) {
-      IConfigService().setCustomStartupProperties(parameters);
-
-      return notificationConfig;
+  /// Initializes push handling
+  static Future<void> init() async {
+    if (tappedNotificationPayloads != null) {
+      tappedNotificationPayloads!.value.clear();
+    }
+    else {
+      tappedNotificationPayloads = ValueNotifier([]);
     }
 
-    return null;
+    if (messagesReceived != null) {
+      messagesReceived!.value.clear();
+    }
+    else {
+      messagesReceived = ValueNotifier([]);
+    }
+
+    if (backgroundMessagesReceived != null) {
+      backgroundMessagesReceived!.value.clear();
+    }
+    else {
+      backgroundMessagesReceived = ValueNotifier([]);
+    }
+
+    var platform = localNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+    if (platform != null) {
+      AndroidNotificationChannel fallbackChannel = AndroidNotificationChannel(
+        'fcm_fallback_notification_channel',
+        'Notifications',
+        importance: Importance.max,
+      );
+
+      List<AndroidNotificationChannel>? list = await platform.getNotificationChannels();
+
+      if (list != null) {
+        for (int i = 0; i < list.length; i++) {
+          if (fallbackChannel.id == list[i].id) {
+            if (list[i].importance != fallbackChannel.importance) {
+              FlutterUI.log.d("Delete fallback notification channel!");
+              await platform.deleteNotificationChannel(list[i].id);
+            }
+          }
+        }
+      }
+
+      await platform.createNotificationChannel(fallbackChannel);
+
+      FlutterUI.log.d("Configured fallback notification channel!");
+    }
+  }
+
+  /// Disposes push handling
+  static void dispose() {
+    tappedNotificationPayloads?.dispose();
+    tappedNotificationPayloads = null;
+
+    messagesReceived?.dispose();
+    messagesReceived = null;
+
+    backgroundMessagesReceived?.dispose();
+    backgroundMessagesReceived = null;
   }
 
   /// Only returns the custom data set by the server in the notification.
-  static T extractJVxData<T extends Map<K, V>?, K extends String?, V extends Object?>(T data) {
-    if (data == null) return data;
-    Map<K, V> map = Map<K, V>.from(data);
-    map.remove("aps");
-    return map as T;
+  static Map<String, dynamic>? getCustomData(Map<String?, Object?>? data) {
+    if (data == null) {
+      return null;
+    }
+
+    Map<String, dynamic> map = {};
+
+    for (var entry in data.entries) {
+      if (entry.key != null
+          && entry.key != "aps") {
+        map[entry.key!] = entry.value;
+      }
+    }
+
+    return map;
   }
 
-  static Future<void> sendPushData(Map<String, Object?> data) async {
-    if (!IConfigService().offline.value && IUiService().clientId.value != null) {
-      await ICommandService().sendCommand(
-        SetParameterCommand(
-          parameter: data,
-          reason: "Received new push data",
-        ),
-        showDialogOnError: false,
-      );
+  static ServerConfig? prepareAppStart(Map<String, dynamic> data) {
+    ServerConfig? serverConfig = ParseUtil.extractAppParameters(data);
+
+    if (serverConfig != null) {
+      if (IUiService().clientId.value == null) {
+        IConfigService().getTemporaryStartupParameters().addAll(data);
+      }
+
+      return serverConfig;
+    }
+    else {
+      return null;
+    }
+  }
+
+  static void tryAppStartOrUpdateParameters(Map<String, dynamic> data) {
+    //keep original key/value pairs as well
+    Map<String, dynamic> dataStart = Map.of(data);
+
+    //no app is running -> start app if possible
+    if (IUiService().clientId.value == null) {
+
+      ServerConfig? serverConfig = prepareAppStart(dataStart);
+
+      //for push, the application must exist - we don't create apps by push notifications
+      App? app = FlutterUI.searchAvailableApp(serverConfig);
+
+      if (app != null) {
+        IAppService().startApp(appId: app.id, autostart: true);
+      }
+    }
+    else {
+      //check if it's the same app and set parameters, otherwise start another app
+      ServerConfig? serverConfig = ParseUtil.extractAppParameters(dataStart);
+
+      //for push, the application must exist - we don't create apps by push notifications
+      App? app = FlutterUI.searchAvailableApp(serverConfig);
+
+      if (app != null) {
+        if (IAppService().isCurrentApp(app)) {
+          //send parameter to app
+          unawaited(ICommandService().sendCommand(
+            SetParameterCommand(
+              parameter: dataStart,
+              reason: "Received new push token",
+            ),
+            showDialogOnError: false,
+          ));
+        }
+        else {
+          IConfigService().getTemporaryStartupParameters().addAll(dataStart);
+
+          IAppService().startApp(appId: app.id, autostart: true);
+        }
+      }
+      else {
+        if (data["appName"] == null && data.isNotEmpty) {
+          //we have no app name... send parameters anyway
+          unawaited(ICommandService().sendCommand(
+            SetParameterCommand(
+              parameter: dataStart,
+              reason: "Received new push token",
+            ),
+            showDialogOnError: false,
+          ));
+        }
+      }
     }
   }
 
   /// Handles local notification taps.
-  static Future<void> handleLocalNotificationTap(
-    ValueNotifier<List<Map<String?, Object?>>> notifier,
-    NotificationResponse notificationResponse,
-  ) async {
+  static Future<void> handleLocalNotificationTap(NotificationResponse notificationResponse) async {
     final String? payload = notificationResponse.payload;
+
     if (payload != null) {
       var data = jsonDecode(payload);
-      notifier.value += [data];
+      tappedNotificationPayloads?.value += [data];
 
-      var notificationConfig = PushUtil.handleNotificationData(data);
-      if (notificationConfig != null) {
-        unawaited(IAppService().startCustomApp(config: notificationConfig, force: true));
-      } else {
-        // Potentially check for current app == notification app and send it.
-        // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});
+      if (data != null) {
+        tryAppStartOrUpdateParameters(data);
       }
     }
   }
 
   /// Handles push notification taps.
-  static Future<void> handleNotificationTap(
-    ValueNotifier<List<Map<String?, Object?>>> notifier,
-    Map<String?, Object?> data,
-  ) async {
-    notifier.value += [data];
+  static Future<void> handleNotificationTap(Map<String?, Object?> data) async {
+    tappedNotificationPayloads?.value += [data];
 
-    data = PushUtil.extractJVxData(data);
+    Map<String, dynamic>? dataCustom = PushUtil.getCustomData(data);
 
-    var notificationConfig = PushUtil.handleNotificationData(data);
-    if (notificationConfig != null) {
-      unawaited(IAppService().startCustomApp(config: notificationConfig, force: true));
-    } else {
-      // Potentially check for current app == notification app and send it.
-      // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});
+    if (dataCustom?.isNotEmpty == true) {
+      tryAppStartOrUpdateParameters(dataCustom!);
     }
   }
 
   /// Handles push notifications received while app is in foreground.
-  static Future<void> handleOnMessage(
-    ValueNotifier<List<RemoteMessage>> messagesReceived,
-    RemoteMessage message,
-  ) async {
-    messagesReceived.value += [message];
+  static Future<void> handleOnMessage(RemoteMessage message) async {
+    messagesReceived?.value += [message];
 
-    var data = PushUtil.extractJVxData(message.data);
+    var data = PushUtil.getCustomData(message.data);
 
+    //We only show a notification - nothing else
+    //If user taps, it will be handled
     if (data != null) {
       if (message.notification != null) {
         await localNotificationsPlugin.show(
@@ -133,7 +246,9 @@ abstract class PushUtil {
             android: const AndroidNotificationDetails(
               // FCM channel
               "fcm_fallback_notification_channel",
-              "Misc",
+              "Notifications",
+              importance: Importance.max,
+              priority: Priority.high
             ),
             iOS: DarwinNotificationDetails(
               subtitle: (message.data?["aps"] as Map?)?["alert"]?["subtitle"],
@@ -143,43 +258,51 @@ abstract class PushUtil {
         );
         return;
       }
-      // Potentially check for current app == notification app and send it.
-      // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});
     }
-
   }
 
   /// Handles push notifications received while app is in background.
-  static Future<void> handleOnBackgroundMessages(
-    ValueNotifier<List<RemoteMessage>> notifier,
-    RemoteMessage message,
-  ) async {
-    notifier.value += [message];
+  static Future<void> handleOnBackgroundMessages(RemoteMessage message) async {
+    backgroundMessagesReceived?.value += [message];
 
-    // await PushUtil.sendPushData({
-    //   parameterPushData: jsonEncode(PushUtil.extractJVxData<Map<String?, Object?>?, String?, Object?>(message.data)),
-    // });
+    //We do nothing here because notification has been shown and user has to tap
   }
 
+  /// Gets the current push token if available
   static Future<String?> retrievePushToken() async {
     String? pushToken;
     try {
       // In case Push-Swift receives no token in time, it blocks until one arrives.
       pushToken = await Push.instance.token.timeout(const Duration(seconds: 1));
+
+      //DON'T set currentToken = pushToken -> handleTokenUpdate will check changes
+      //and requires registered services
     } catch (e, stack) {
       FlutterUI.log.e("Error retrieving push token", error: e, stackTrace: stack);
     }
     return pushToken;
   }
 
-  /// Handles device token updates.
-  static FutureOr<void> handleTokenUpdates(String token) async {
+  /// Handles push token update.
+  static FutureOr<void> handleTokenUpdate(String token) async {
     if (FlutterUI.log.cl(Lvl.d)) {
-      FlutterUI.log.d("New APNS/FCM registration token: $token");
+      FlutterUI.log.d("${currentToken != token ? 'New' : '(Existing)'} APNS/FCM registration token: $token");
     }
 
-    currentToken = token;
+    if (currentToken != token) {
+      currentToken = token;
 
-    await PushUtil.sendPushData({parameterPushToken: token});
+      if (!IConfigService().offline.value && IUiService().clientId.value != null) {
+        //send new token to server
+        unawaited(ICommandService().sendCommand(
+          SetParameterCommand(
+            parameter: {AppParameterNames.pushToken: token},
+            reason: "Received new push token",
+          ),
+          showDialogOnError: false,
+        ));
+      }
+    }
   }
+
 }

@@ -250,7 +250,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                     ),
                                     labelText: "${FlutterUI.translateLocal("URL")} *",
                                     border: InputBorder.none,
-                                    hintText: "http://host:port/services/mobile",
+                                    hintText: "http://host:port${ParseUtil.mobileServicePath}",
                                     suffixIcon: !widget.locked && baseUrlController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
@@ -438,7 +438,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
   }
 
   Uri _transformUri(String url) {
-    return ParseUtil.appendJVxUrlSuffix(Uri.parse(url.trim()));
+    return ParseUtil.appendMobileServicePath(Uri.parse(url.trim()));
   }
 
   Future<void> _onSubmit() async {

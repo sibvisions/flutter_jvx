@@ -36,7 +36,7 @@ import '../../service.dart';
 import '../../ui/i_ui_service.dart';
 import '../i_config_service.dart';
 import '../shared/config_handler.dart';
-import '../shared/handler/shared_prefs_handler.dart';
+import '../shared/impl/shared_prefs_handler.dart';
 
 class ConfigService implements IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,7 +51,9 @@ class ConfigService implements IConfigService {
   /// Map of all active callbacks.
   final Map<String, List<Function>> _callbacks = {};
 
-  Map<String, dynamic> _customStartupProperties = {};
+  Map<String, dynamic> _customStartupParameters = {};
+
+  final Map<String, dynamic> _temporaryStartupParameters = {};
 
   AppConfig? _appConfig;
 
@@ -694,18 +696,23 @@ class ConfigService implements IConfigService {
   // ------------------------------
 
   @override
-  Map<String, dynamic> getCustomStartupProperties() {
-    return Map.of(_customStartupProperties);
+  Map<String, dynamic> getCustomStartupParameters() {
+    return Map.of(_customStartupParameters);
   }
 
   @override
-  void setCustomStartupProperties(Map<String, dynamic>? pProperties) {
-    if (pProperties == null) {
-      _customStartupProperties = {};
+  void setCustomStartupParameters(Map<String, dynamic>? pParameters) {
+    if (pParameters == null) {
+      _customStartupParameters = {};
     }
     else {
-      _customStartupProperties = Map.of(pProperties);
+      _customStartupParameters = Map.of(pParameters);
     }
+  }
+
+  @override
+  Map<String, dynamic> getTemporaryStartupParameters() {
+    return _temporaryStartupParameters;
   }
 
   @override

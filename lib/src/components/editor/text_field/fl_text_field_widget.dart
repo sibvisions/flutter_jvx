@@ -159,6 +159,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       controller: textController,
       decoration: InputDecoration(
         enabled: model.isEnabled,
+        alignLabelWithHint: true,
         hintText: model.isBorderVisible ? null : model.placeholder,
         labelText: model.isBorderVisible ? model.placeholder : null,
         labelStyle: model.createTextStyle(

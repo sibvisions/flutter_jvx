@@ -306,13 +306,19 @@ abstract class IConfigService implements Service {
   ///
   /// See also:
   /// * [ApiStartupRequest]
-  Map<String, dynamic> getCustomStartupProperties();
+  Map<String, dynamic> getCustomStartupParameters();
 
-  /// Sets custom startup parameter.
+  /// Sets custom startup parameters, for all startups.
   ///
   /// See also:
   /// * [getCustomStartupProperties]
-  void setCustomStartupProperties(Map<String, dynamic>? pProperties);
+  void setCustomStartupParameters(Map<String, dynamic>? pParameters);
+
+  /// Returns a map of all temporary parameters which are sent on the next [ApiStartupRequest].
+  ///
+  /// See also:
+  /// * [ApiStartupRequest]
+  Map<String, dynamic> getTemporaryStartupParameters();
 
   /// Register a callback that will be called when the locally saved images change.
   ///

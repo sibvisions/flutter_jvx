@@ -15,7 +15,6 @@
  */
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -27,6 +26,7 @@ import '../../../../../model/request/api_startup_request.dart';
 import '../../../../../util/device_info.dart';
 import '../../../../../util/push_util.dart';
 import '../../../../api/i_api_service.dart';
+import '../../../../apps/app_parameter_names.dart';
 import '../../../../config/i_config_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
@@ -42,18 +42,33 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   Future<List<BaseCommand>> processCommand(StartupCommand command, BaseCommand? origin) async {
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
 
-    assert(IConfigService().baseUrl.value != null, "baseUrl can not be empty!");
-    assert(IConfigService().baseUrl.value != null, "baseUrl can not be empty!");
+    IConfigService servConf = IConfigService();
+
+    assert(servConf.baseUrl.value != null, "baseUrl can not be empty!");
+    assert(servConf.baseUrl.value != null, "baseUrl can not be empty!");
+
+    IUiService servUi = IUiService();
 
     // Close frames on (re-)start
     if (FlutterUI.getCurrentContext() != null) {
-      IUiService().closeJVxDialogs();
-      IUiService().disposeContents();
+      servUi.closeJVxDialogs();
+      servUi.disposeContents();
     }
 
-    Map<String, dynamic> mpProps = Map.of(IConfigService().getCustomStartupProperties());
+    //map is already a clone
+    Map<String, dynamic> mpProps = servConf.getCustomStartupParameters();
+    mpProps.addAll(servConf.getTemporaryStartupParameters());
+
     if (PushUtil.currentToken != null) {
-      mpProps[PushUtil.parameterPushToken] = PushUtil.currentToken;
+      mpProps[AppParameterNames.pushToken] = PushUtil.currentToken;
+    }
+
+    //can be used for push
+    mpProps[AppParameterNames.packageName] = FlutterUI.packageInfo.packageName;
+
+    //send additional debug information
+    if (kDebugMode) {
+      mpProps[AppParameterNames.debugMode] = "true";
     }
 
     BuildContext? context = FlutterUI.getEffectiveContext();
@@ -63,43 +78,23 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
     if (context != null) {
       // ignore: use_build_context_synchronously
       phoneSize = MediaQuery.maybeSizeOf(context);
-      // ignore: use_build_context_synchronously
-      var state = FlutterUI.of(context);
-
-      var data = state.tappedNotificationPayloads.value.lastOrNull ?? PushUtil.notificationWhichLaunchedApp;
-
-      if (data != null) {
-        mpProps[PushUtil.parameterPushData] = jsonEncode(data);
-      }
-
-      state.tappedNotificationPayloads.value.clear();
-      PushUtil.notificationWhichLaunchedApp = null;
-    }
-    else {
-      var data = PushUtil.notificationWhichLaunchedApp;
-
-      if (data != null) {
-        mpProps[PushUtil.parameterPushData] = jsonEncode(data);
-      }
-
-      PushUtil.notificationWhichLaunchedApp = null;
     }
 
     ApiStartupRequest startupRequest = ApiStartupRequest(
-      baseUrl: IConfigService().baseUrl.value!.toString(),
+      baseUrl: servConf.baseUrl.value!.toString(),
       requestUri: kIsWeb ? Uri.base.toString() : null,
       appMode: "full",
-      applicationName: IConfigService().appName.value!,
-      authKey: IConfigService().authKey.value,
+      applicationName: servConf.appName.value!,
+      authKey: servConf.authKey.value,
       screenHeight: phoneSize?.height.toInt(),
       screenWidth: phoneSize?.width.toInt(),
       readAheadLimit: FlutterUI.readAheadLimit,
-      deviceMode: (kIsWeb && !IUiService().mobileOnly.value) || IUiService().webOnly.value ? "mobileDesktop" : "mobile",
+      deviceMode: (kIsWeb && !servUi.mobileOnly.value) || servUi.webOnly.value ? "mobileDesktop" : "mobile",
       darkMode: MediaQuery.platformBrightnessOf(FlutterUI.getEffectiveContext()!) == Brightness.dark,
-      username: command.username ?? IConfigService().username.value,
-      password: command.password ?? IConfigService().password.value,
-      langCode: IConfigService().userLanguage.value ?? IConfigService().getPlatformLocale(),
-      timeZoneCode: IConfigService().getPlatformTimeZone()!,
+      username: command.username ?? servConf.username.value,
+      password: command.password ?? servConf.password.value,
+      langCode: servConf.userLanguage.value ?? servConf.getPlatformLocale(),
+      timeZoneCode: servConf.getPlatformTimeZone()!,
       technology: deviceInfo.technology,
       osName: deviceInfo.osName,
       osVersion: deviceInfo.osVersion,
@@ -107,13 +102,14 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
       deviceType: deviceInfo.deviceType,
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
+      installId: await servConf.getConfigHandler().installId(),
       serverVersion: FlutterUI.supportedServerVersion,
       customProperties: mpProps.isNotEmpty ? mpProps : null,
     );
 
     return IApiService().sendRequest(startupRequest).then((value) {
-      // Only clear on successful startup.
-      IConfigService().getCustomStartupProperties().clear();
+      // Only clear on successful startup (will work with retry)
+      IConfigService().getTemporaryStartupParameters().clear();
       return value;
     });
   }

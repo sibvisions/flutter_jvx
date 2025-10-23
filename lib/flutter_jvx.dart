@@ -126,7 +126,7 @@ export 'src/service/command/impl/command_service.dart';
 export 'src/service/config/i_config_service.dart';
 export 'src/service/config/impl/config_service.dart';
 export 'src/service/config/shared/config_handler.dart';
-export 'src/service/config/shared/handler/shared_prefs_handler.dart';
+export 'src/service/config/shared/impl/shared_prefs_handler.dart';
 export 'src/service/data/i_data_service.dart';
 export 'src/service/data/impl/data_service.dart';
 export 'src/service/file/file_manager.dart';

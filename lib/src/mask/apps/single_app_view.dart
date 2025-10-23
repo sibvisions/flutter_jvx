@@ -149,7 +149,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                           icon: const FaIcon(FontAwesomeIcons.globe),
                           labelText: FlutterUI.translateLocal("URL"),
                           border: InputBorder.none,
-                          hintText: "http://host:port/services/mobile",
+                          hintText: "http://host:port${ParseUtil.mobileServicePath}" ,
                           suffixIcon: baseUrlController.text.isNotEmpty
                               ? ExcludeFocus(
                                   child: IconButton(
@@ -228,7 +228,7 @@ class _SingleAppViewState extends State<SingleAppView> {
       try {
         var newConfig = ServerConfig(
           appName: appName,
-          baseUrl: ParseUtil.appendJVxUrlSuffix(Uri.parse(baseUrl)),
+          baseUrl: ParseUtil.appendMobileServicePath(Uri.parse(baseUrl)),
         );
 
         widget.onStart.call(newConfig);

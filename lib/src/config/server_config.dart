@@ -87,9 +87,6 @@ class ServerConfig {
           isDefault: json[QRConfig.IS_DEFAULT],
         );
 
-  /// Whether this config contains enough information to be valid.
-  bool get isValid => (appName?.isNotEmpty ?? false) && baseUrl != null;
-
   /// Returns a new [ServerConfig] which contains the merged fields of [this] and [other].
   ServerConfig merge(ServerConfig? other) {
     if (other == null) return this;
@@ -121,6 +118,40 @@ class ServerConfig {
     );
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overrides
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is ServerConfig &&
+              runtimeType == other.runtimeType &&
+              appName == other.appName &&
+              baseUrl == other.baseUrl &&
+              username == other.username &&
+              password == other.password &&
+              title == other.title &&
+              icon == other.icon &&
+              isDefault == other.isDefault;
+
+  @override
+  int get hashCode =>
+      appName.hashCode ^
+      baseUrl.hashCode ^
+      username.hashCode ^
+      password.hashCode ^
+      title.hashCode ^
+      icon.hashCode ^
+      isDefault.hashCode;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Whether this config contains enough information to be valid.
+  bool get isValid => (appName?.isNotEmpty ?? false) && baseUrl != null;
+
   Map<String, dynamic> toJson() => {
         'appName': appName,
         'baseUrl': baseUrl,
@@ -139,26 +170,4 @@ class ServerConfig {
         if (isDefault != null) QRConfig.IS_DEFAULT: isDefault,
       };
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ServerConfig &&
-          runtimeType == other.runtimeType &&
-          appName == other.appName &&
-          baseUrl == other.baseUrl &&
-          username == other.username &&
-          password == other.password &&
-          title == other.title &&
-          icon == other.icon &&
-          isDefault == other.isDefault;
-
-  @override
-  int get hashCode =>
-      appName.hashCode ^
-      baseUrl.hashCode ^
-      username.hashCode ^
-      password.hashCode ^
-      title.hashCode ^
-      icon.hashCode ^
-      isDefault.hashCode;
 }

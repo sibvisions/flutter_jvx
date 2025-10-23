@@ -61,7 +61,7 @@ import 'service/command/i_command_service.dart';
 import 'service/command/impl/command_service.dart';
 import 'service/config/i_config_service.dart';
 import 'service/config/impl/config_service.dart';
-import 'service/config/shared/handler/shared_prefs_handler.dart';
+import 'service/config/shared/impl/shared_prefs_handler.dart';
 import 'service/data/i_data_service.dart';
 import 'service/data/impl/data_service.dart';
 import 'service/file/file_manager.dart';
@@ -287,7 +287,7 @@ class FlutterUI extends StatefulWidget {
   /// Initialize push for early handling of new token request. If we don't handle
   /// it early, the newly created token (first app start after install) will be lost,
   /// because handling in initState() is too late. So we cache it for later use.
-  Future<void> _initPush() async {
+  Future<void> _initTemporaryPush() async {
     if (!kIsWeb) {
       if (!pushInitialized) {
         Push.instance.registerForRemoteNotifications();
@@ -303,6 +303,8 @@ class FlutterUI extends StatefulWidget {
             print("Push token received before app was initialized $token");
           }
 
+          //Update the currentToken here, because we don't have any services registered at this time
+          //so PushUtil.handleUpdateToken is not a good idea -> will do this later
           PushUtil.currentToken = token;
         });
 
@@ -311,7 +313,7 @@ class FlutterUI extends StatefulWidget {
     }
   }
 
-  void _clearPush() {
+  void _disposeTempraryPush() {
     if (onNewTokenSubscription != null) {
       onNewTokenSubscription!();
     }
@@ -431,7 +433,7 @@ class FlutterUI extends StatefulWidget {
     WidgetsFlutterBinding.ensureInitialized();
 
     //as soon as possible
-    await pAppToRun._initPush();
+    await pAppToRun._initTemporaryPush();
 
     //e.g. to use it in release mode
     //DebugOverlay.enabled = true;
@@ -457,7 +459,7 @@ class FlutterUI extends StatefulWidget {
           log.d("Deep link update URI $uriCurrent");
         }
 
-        if (uriCurrent?.queryParameters.isNotEmpty != null) {
+        if (uriCurrent?.queryParameters.isNotEmpty == true) {
           //because unmodifiable
           Map<String, String> params = Map.of(uriCurrent!.queryParameters);
 
@@ -469,7 +471,7 @@ class FlutterUI extends StatefulWidget {
             }
             else {
               bool startedManually = bool.tryParse(params.remove("startedManually") ?? "") ?? false;
-              IConfigService().setCustomStartupProperties(params);
+              IConfigService().getTemporaryStartupParameters().addAll(params);
 
               unawaited(IAppService().startCustomApp(app: app, appTitle: IConfigService().title.value ?? app.effectiveTitle, autostart: !startedManually));
             }
@@ -519,10 +521,9 @@ class FlutterUI extends StatefulWidget {
         ),
       ),
       onDidReceiveNotificationResponse: (details) {
-        var state = FlutterUI.maybeOf(FlutterUI.getEffectiveContext());
-        if (state != null) {
-          PushUtil.handleLocalNotificationTap(state.tappedNotificationPayloads, details);
-        }
+        FlutterUI.log.d("Local notification tap (running): ${details.payload} ${details.data}");
+
+        PushUtil.handleLocalNotificationTap(details);
       },
     );
 
@@ -653,37 +654,58 @@ class FlutterUI extends StatefulWidget {
     if (urlApp != null) {
       FlutterUIState.startupApp = urlApp;
       FlutterUIState.appTitle = urlApp.effectiveTitle;
-      configService.setCustomStartupProperties(queryParameters);
+      configService.getTemporaryStartupParameters().addAll(queryParameters);
     } else if (!kIsWeb) {
+      try
+      {
+        // Handle notification launching app from terminated state
+        Map<String?, Object?>? data = await Push.instance.notificationTapWhichLaunchedAppFromTerminated;
 
-      // Handle notification launching app from terminated state
-      Map<String?, Object?>? data = await Push.instance.notificationTapWhichLaunchedAppFromTerminated;
-      data = PushUtil.extractJVxData(data);
+        FlutterUI.log.d("Notification tap check (terminated): $data");
 
-      // "payload" means it's a local notification, handle below.
-      if (data?.containsKey("payload") ?? false) data = null;
-      if (data == null) {
-        var notificationLaunchDetails = await PushUtil.localNotificationsPlugin.getNotificationAppLaunchDetails();
-        if (notificationLaunchDetails?.didNotificationLaunchApp ?? false) {
-          var payload = notificationLaunchDetails!.notificationResponse?.payload;
-          if (payload != null) {
-            try {
-              data = jsonDecode(payload);
-            } catch (e, stack) {
-              FlutterUI.log.f("Failed to parse notification payload", error: e, stackTrace: stack);
+        Map<String, dynamic>? dataCustom = PushUtil.getCustomData(data);
+
+        // "payload" means it's a local notification, handle below.
+        if (dataCustom?.containsKey("payload") == true) {
+          dataCustom = null;
+        }
+
+        if (dataCustom == null) {
+          var notificationLaunchDetails = await PushUtil.localNotificationsPlugin.getNotificationAppLaunchDetails();
+          if (notificationLaunchDetails?.didNotificationLaunchApp ?? false) {
+            var payload = notificationLaunchDetails!.notificationResponse?.payload;
+
+            FlutterUI.log.d("Local Notification tap (terminated): $payload");
+
+            if (payload != null) {
+              try {
+                dataCustom = jsonDecode(payload);
+              } catch (e, stack) {
+                FlutterUI.log.f("Failed to parse notification payload", error: e, stackTrace: stack);
+              }
             }
           }
         }
-      }
 
-      if (data != null) {
-        FlutterUI.log.d("App launched from notification");
-        PushUtil.notificationWhichLaunchedApp = data;
-        var notificationConfig = PushUtil.handleNotificationData(data);
-        if (notificationConfig != null) {
-          App notificationApp = await App.createAppFromConfig(notificationConfig);
-          FlutterUIState.startupApp = notificationApp;
+        if (dataCustom != null) {
+          FlutterUI.log.d("App launched from notification tap");
+
+          var serverConfig = PushUtil.prepareAppStart(dataCustom);
+
+          if (serverConfig != null) {
+            App? app = searchAvailableApp(serverConfig);
+
+            if (app == null && serverConfig.isValid) {
+              app = await App.createAppFromConfig(serverConfig);
+            }
+
+            FlutterUIState.startupApp = app;
+          }
         }
+      }
+      catch (ex, stack) {
+        //don't prevent app from starting
+        FlutterUI.log.e("Starting app failed: ${ex.toString()} because of ${stack.toString()}");
       }
     }
 
@@ -755,25 +777,23 @@ class FlutterUI extends StatefulWidget {
     return appFromParameters;
   }
 
-  static Future<App?> _loadOrCreateAppFromParameters(Map<String, String> queryParameters) async {
-    String? sAppName = queryParameters["appName"];
-
+  ///Search an existing app by [config]
+  static App? searchAvailableApp(ServerConfig? config) {
     //search app in the list of known apps, if it's unique
-    List<App> apps = IAppService().getApps();
 
-    ServerConfig? urlConfig = ParseUtil.extractAppParameters(queryParameters);
+    List<App> apps = IAppService().getApps();
 
     App? appFound;
 
     int iFoundCount = 0;
 
-    if (urlConfig != null) {
+    if (config?.isValid == true) {
       //try to find with URL and appName
       //the id is not a good variant because predefined apps have a prefix in the id and simple
       //id comparison would fail
       for (int i = 0; i < apps.length; i++){
-        if (apps[i].name == urlConfig.appName
-            && apps[i].baseUrl == urlConfig.baseUrl) {
+        if (apps[i].name == config!.appName
+            && apps[i].baseUrl == config.baseUrl) {
           appFound = apps[i];
           iFoundCount++;
         }
@@ -782,12 +802,10 @@ class FlutterUI extends StatefulWidget {
       if (iFoundCount == 1) {
         return appFound;
       }
-
-      return await App.createAppFromConfig(urlConfig);
     }
-    else if (sAppName != null) {
+    else if (config?.appName != null) {
       for (int i = 0; i < apps.length; i++){
-        if (apps[i].name == sAppName) {
+        if (apps[i].name == config!.appName!) {
           appFound = apps[i];
           iFoundCount++;
         }
@@ -796,6 +814,23 @@ class FlutterUI extends StatefulWidget {
       if (iFoundCount == 1) {
         return appFound;
       }
+    }
+
+    return null;
+  }
+
+  /// Search an existing app if exists or creates a new app if configuration is available
+  static Future<App?> _loadOrCreateAppFromParameters(Map<String, String> parameters) async {
+    ServerConfig? serverConfig = ParseUtil.extractAppParameters(parameters);
+
+    App? app = searchAvailableApp(serverConfig);
+
+    if (app != null) {
+      return app;
+    }
+    else if (serverConfig?.isValid == true) {
+      //no app found, but we have a valid config -> create a new app
+      return await App.createAppFromConfig(serverConfig!);
     }
 
     return null;
@@ -976,11 +1011,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   late final VoidCallback newTokenSubscription;
   late final VoidCallback notificationTapSubscription;
-  late final ValueNotifier<List<Map<String?, Object?>>> tappedNotificationPayloads;
   late final VoidCallback notificationSubscription;
-  late final ValueNotifier<List<RemoteMessage>> messagesReceived;
   late final VoidCallback backgroundNotificationSubscription;
-  late final ValueNotifier<List<RemoteMessage>> backgroundMessagesReceived;
 
   @override
   void initState() {
@@ -1513,41 +1545,48 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   void registerPushStreams() {
-    tappedNotificationPayloads = ValueNotifier([]);
-    messagesReceived = ValueNotifier([]);
-    backgroundMessagesReceived = ValueNotifier([]);
+    PushUtil.init();
+
+    if (PushUtil.currentToken != null) {
+      PushUtil.handleTokenUpdate(PushUtil.currentToken!);
+    }
+    else {
+      FlutterUI.log.d("We don't have an initial push token");
+    }
 
     newTokenSubscription = Push.instance.addOnNewToken((token) {
       FlutterUI.log.d("notification new token: $token");
 
-      PushUtil.handleTokenUpdates(token);
+      PushUtil.handleTokenUpdate(token);
     });
 
-    if (PushUtil.currentToken != null) {
-      PushUtil.handleTokenUpdates(PushUtil.currentToken!);
-    }
-
-    widget._clearPush();
+    widget._disposeTempraryPush();
 
     notificationTapSubscription = Push.instance.addOnNotificationTap((data) {
-      FlutterUI.log.d("notification tap: $data");
+      bool payload = data.containsKey("payload");
 
-      // "payload" means it's a local notification, handle elsewhere.
-      if (data.containsKey("payload")) return;
+      // "payload" means it's a local notification, handled via handleLocalNotificationTap (other listener)
+      if (payload) {
+        FlutterUI.log.d("notification tap (payload: $payload) -> ignored because it's a local notification tap");
 
-      PushUtil.handleNotificationTap(tappedNotificationPayloads, data);
+        return;
+      }
+
+      FlutterUI.log.d("notification tap (payload: $payload): $data");
+
+      PushUtil.handleNotificationTap(data);
     });
 
     notificationSubscription = Push.instance.addOnMessage((message) {
       FlutterUI.log.d("notification message: $message ${message.data}");
 
-      PushUtil.handleOnMessage(messagesReceived, message);
+      PushUtil.handleOnMessage(message);
     });
 
     backgroundNotificationSubscription = Push.instance.addOnBackgroundMessage((message) {
       FlutterUI.log.d("notification background message: $message ${message.data}");
 
-      PushUtil.handleOnBackgroundMessages(backgroundMessagesReceived, message);
+      PushUtil.handleOnBackgroundMessages(message);
     });
   }
 
@@ -1557,9 +1596,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     notificationSubscription();
     backgroundNotificationSubscription();
 
-    tappedNotificationPayloads.dispose();
-    messagesReceived.dispose();
-    backgroundMessagesReceived.dispose();
+    PushUtil.dispose();
   }
 }
 

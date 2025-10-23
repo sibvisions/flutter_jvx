@@ -17,7 +17,6 @@
 import 'dart:collection';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../model/request/api_startup_request.dart';
 import '../api_response_names.dart';
 import '../i_controller.dart';
 import '../i_response_processor.dart';
@@ -134,13 +133,6 @@ class ApiController implements IController {
   @override
   Future<List<BaseCommand>> processResponse(ApiInteraction apiInteraction) async {
     List<BaseCommand> commands = [];
-
-    //Special startup handling
-    if (apiInteraction.request is ApiStartupRequest) {
-      //reset custom startup properties, otherwise same properties will be used for next application start
-      //which is not right
-      IConfigService().setCustomStartupProperties(null);
-    }
 
     for (ApiResponse response in apiInteraction.responses) {
       IResponseProcessor? processor = responseToProcessorMap[response.name];

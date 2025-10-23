@@ -69,6 +69,9 @@ class ApiStartupRequest extends ApiRequest {
   /// Unique id of this device.
   final String? deviceId;
 
+  /// Unique id of app after installation.
+  final String? installId;
+
   /// The technology of this app.
   final String? technology;
 
@@ -114,6 +117,7 @@ class ApiStartupRequest extends ApiRequest {
     this.customProperties,
     this.readAheadLimit,
     this.deviceId,
+    this.installId,
     this.technology,
     this.osName,
     this.osVersion,
@@ -144,6 +148,7 @@ class ApiStartupRequest extends ApiRequest {
         ApiObjectProperty.timeZoneCode: timeZoneCode,
         if (readAheadLimit != null) ApiObjectProperty.readAheadLimit: readAheadLimit,
         if (deviceId != null) ApiObjectProperty.deviceId: deviceId,
+        if (installId != null) ApiObjectProperty.installId: installId,
         if (technology != null) ApiObjectProperty.technology: technology,
         if (osName != null) ApiObjectProperty.osName: osName,
         if (osVersion != null) ApiObjectProperty.osVersion: osVersion,
