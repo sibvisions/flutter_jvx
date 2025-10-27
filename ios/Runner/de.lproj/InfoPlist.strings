@@ -1,0 +1,7 @@
+"NSCameraUsageDescription" = "Wir benötigen Zugriff auf Ihre Kamera, um QR-Codes zu scannen oder Fotos für Ihre persönlichen Unterlagen aufzunehmen.";
+"NSPhotoLibraryUsageDescription" = "Wir benötigen Zugriff auf Ihre Fotomediathek, um Daten zu Ihren persönlichen Unterlagen hinzuzufügen.";
+"NSLocationWhenInUseUsageDescription" = "Wir benötigen Zugriff auf Ihren Standort, um Daten zu Ihren persönlichen Unterlagen hinzuzufügen.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Wir benötigen dauerhaft Zugriff auf Ihren Standort, um Daten zu Ihren persönlichen Unterlagen hinzuzufügen.";
+"NSSpeechRecognitionUsageDescription" = "Wir möchten die Spracherkennung Ihres Geräts nutzen, um Daten zu Ihren persönlichen Unterlagen hinzuzufügen.";
+"NSMicrophoneUsageDescription" = "Wir benötigen Zugriff auf Ihr Mikrofon, um die Spracherkennung zu verwenden.";
+
