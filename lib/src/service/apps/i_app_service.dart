@@ -36,6 +36,11 @@ abstract class IAppService implements Service {
   /// Returns the singleton instance.
   factory IAppService() => services<IAppService>();
 
+  static bool isRegistered()
+  {
+    return services.isRegistered<IAppService>();
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

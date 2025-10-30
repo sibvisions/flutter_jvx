@@ -218,8 +218,8 @@ class FlutterUI extends StatefulWidget {
   /// The current URI
   static Uri? uriCurrent;
 
-  /// Whether the UI has started
-  static bool started = false;
+  /// sets the startup time
+  static int startupTime = -1;
 
   /// The initial application configuration
   final AppConfig? appConfig;
@@ -258,6 +258,9 @@ class FlutterUI extends StatefulWidget {
 
   /// Whether push is already initialized
   static bool pushInitialized = false;
+
+  /// Whether the app is in foreground
+  static ValueNotifier<bool> inForeground = ValueNotifier(true);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -438,6 +441,8 @@ class FlutterUI extends StatefulWidget {
     //e.g. to use it in release mode
     //DebugOverlay.enabled = true;
 
+    startupTime = DateTime.now().millisecondsSinceEpoch;
+
     uriInitial = await appLinks.getInitialLink();
 
     if (kDebugMode) {
@@ -446,42 +451,56 @@ class FlutterUI extends StatefulWidget {
 
     // ignore: unused_local_variable
     StreamSubscription<Uri> appLinksListener = appLinks.uriLinkStream.listen((uri) async {
+      //if we start a terminated app by URL, the uriInitial is set and this listener also will be notified
+      //... so we supress this call if started == false
+      //if we re-start an app in debug mode, the uriInitial is set and this listener will no be notified
+      //... started is still false and we handle the first deep link, but if we open the already started
+      //    app again by URL, the link wouldn't be handled because started is false
+      //... to handle such links, we check if this listene was already called.
+
       uriCurrent = uri;
 
-      //not started with deep link
-      if (uriInitial == null) {
-          FlutterUI.started = true;
+      if (!IAppService.isRegistered()) {
+        if (kDebugMode) {
+          print("Don't handle deep link $uriCurrent because app service was NOT initialized!");
+        }
       }
 
-      if (FlutterUI.started) {
+      int now = DateTime.now().millisecondsSinceEpoch;
 
-        if (log.cl(Lvl.d)) {
-          log.d("Deep link update URI $uriCurrent");
+      //if we start a terminated app by deep-link, this listener will be called with the same URI,
+      //but the app is in "normal" startup mode, so we don't handle calls which occur in under 1 sec
+      if (uriInitial != null
+          && uriInitial == uriCurrent
+          && now <= startupTime + 1000) {
+        if (kDebugMode) {
+          print("Don't handle URI $uriCurrent because it was the startup deep link!");
         }
 
-        if (uriCurrent?.queryParameters.isNotEmpty == true) {
-          //because unmodifiable
-          Map<String, String> params = Map.of(uriCurrent!.queryParameters);
+        return;
+      }
 
-          App? app = await _loadOrCreateAppFromParameters(params);
+      if (log.cl(Lvl.d)) {
+        log.d("Deep link update URI $uriCurrent");
+      }
 
-          if (app != null) {
-            if (IAppService().isCurrentApp(app)) {
-              unawaited(IAppService().setParameter(params));
-            }
-            else {
-              bool startedManually = bool.tryParse(params.remove("startedManually") ?? "") ?? false;
-              IConfigService().getTemporaryStartupParameters().addAll(params);
+      if (uriCurrent?.queryParameters.isNotEmpty == true) {
+        //because unmodifiable
+        Map<String, String> params = Map.of(uriCurrent!.queryParameters);
 
-              unawaited(IAppService().startCustomApp(app: app, appTitle: IConfigService().title.value ?? app.effectiveTitle, autostart: !startedManually));
-            }
+        App? app = await _loadOrCreateAppFromParameters(params);
+
+        if (app != null) {
+          if (IAppService().isCurrentApp(app)) {
+            unawaited(IAppService().setParameter(params));
+          }
+          else {
+            bool startedManually = bool.tryParse(params.remove("startedManually") ?? "") ?? false;
+            IConfigService().getTemporaryStartupParameters().addAll(params);
+
+            unawaited(IAppService().startCustomApp(app: app, appTitle: IConfigService().title.value ?? app.effectiveTitle, autostart: !startedManually));
           }
         }
-      }
-
-      //in case the app was started with deep link and opened again
-      if (uriInitial == uriCurrent) {
-          FlutterUI.started = true;
       }
     });
 
@@ -1350,6 +1369,29 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        FlutterUI.inForeground.value = true;
+        FlutterUI.logUI.d("✅ App is in foreground");
+        break;
+      case AppLifecycleState.inactive:
+        FlutterUI.inForeground.value = false;
+        FlutterUI.logUI.d("⚫ App is inactive");
+        break;
+      case AppLifecycleState.hidden:
+        FlutterUI.inForeground.value = false;
+        FlutterUI.logUI.d("👁️‍🗨️ App is hidden");
+        break;
+      case AppLifecycleState.paused:
+        FlutterUI.inForeground.value = false;
+        FlutterUI.logUI.d("⏸️ App is paused");
+        break;
+      case AppLifecycleState.detached:
+        FlutterUI.inForeground.value = false;
+        FlutterUI.logUI.d("❌ App is detached");
+        break;
+    }
 
     _checkAlive(state);
   }
