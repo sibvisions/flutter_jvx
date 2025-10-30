@@ -55,6 +55,7 @@ abstract class ApiObjectProperty {
   // Screen Properties -- only the most top Panel will have these
   static const String classNameEventSourceRef = "classNameEventSourceRef";
   static const String mobileAutoClose = "mobile.autoclose";
+  static const String screenActive = "screen_active_";
   static const String screenTitle = "screen_title_";
   static const String screenNavigationName = "screen_navigationName_";
   static const String screenModal = "screen_modal_";
