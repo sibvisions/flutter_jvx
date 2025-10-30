@@ -189,6 +189,22 @@ class AppService implements IAppService {
     return null;
   }
 
+  App? getCurrentApp() {
+    String? id = IConfigService().currentApp.value;
+
+    if (id != null) {
+      List<App> liApps = getApps();
+
+      for (int i = 0; i < liApps.length; i++) {
+        if (liApps[i].id == id) {
+          return liApps[i];
+        }
+      }
+    }
+
+    return null;
+  }
+
   @override
   Future<void> startCustomApp({ServerConfig? config, App? app, String? appTitle, bool force = false, bool autostart = true}) async {
     App? appToStart;

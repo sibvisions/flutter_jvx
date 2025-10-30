@@ -125,6 +125,9 @@ abstract class IAppService implements Service {
   /// Returns the startup app.
   App? getStartupApp();
 
+  /// Returns the current app
+  App? getCurrentApp();
+
   /// Creates an [App] from [customConfig] and starts it, if it isn't already running.
   ///
   /// Used by DeepLinks and Notifications.

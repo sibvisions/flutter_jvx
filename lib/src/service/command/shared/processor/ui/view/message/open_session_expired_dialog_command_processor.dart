@@ -30,8 +30,8 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
         || origin is StartupCommand) {
       IUiService().showJVxDialog(ServerSessionExpiredDialog(command: command));
     } else {
-      IAppService().saveLocationAsReturnUri();
-      unawaited(IAppService().startApp());
+      //use appTitle of last application. This is important if JVxSplash has a hardcoded appName
+      unawaited(IAppService().startApp(appTitle: IAppService().getCurrentApp()?.effectiveTitle));
     }
 
     return [];
