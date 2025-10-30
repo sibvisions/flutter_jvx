@@ -88,12 +88,7 @@ class _JVxSplashState extends State<JVxSplash> {
                     if (widget.showAppName)
                       Padding(
                         padding: const EdgeInsets.only(top: 15),
-                        child: Text(
-                          IAppService().temporaryTitle() ?? widget.appName
-                              ?? IUiService().applicationParameters.value.applicationTitleName
-                              ?? IConfigService().applicationStyle.value?["login.title"]
-                              ?? IConfigService().getAppConfig()?.title
-                              ?? FlutterUI.packageInfo.appName,
+                        child: Text(_appTitle(),
                           style: TextStyle(
                             fontSize: 32.0,
                             fontWeight: FontWeight.bold,
@@ -146,6 +141,15 @@ class _JVxSplashState extends State<JVxSplash> {
         ],
       ),
     );
+  }
+
+  String _appTitle()
+  {
+    return IAppService().temporaryTitle() ?? widget.appName
+        ?? IUiService().applicationParameters.value.applicationTitleName
+        ?? IConfigService().applicationStyle.value?["login.title"]
+        ?? IConfigService().getAppConfig()?.title
+        ?? FlutterUI.packageInfo.appName;
   }
 
   List<Widget> _createBottomBranding() {
