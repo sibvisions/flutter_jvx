@@ -45,7 +45,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  String lastSentValue = "";
+  String? lastSentValue;
 
   final TextEditingController textController = TextEditingController();
 
@@ -162,6 +162,8 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
       selection: TextSelection.collapsed(offset: model.text.characters.length),
       composing: null,
     );
+
+    lastSentValue = model.text;
   }
 
   @override
