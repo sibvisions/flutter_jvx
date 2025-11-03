@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 
+import '../../flutter_ui.dart';
+
 class ActiveObserver with WidgetsBindingObserver {
   Completer<void>? _completer;
   Timer? _timeoutTimer;
@@ -8,7 +10,7 @@ class ActiveObserver with WidgetsBindingObserver {
   Future<void> waitUntilActiveOrTimeout(Duration timeout) async {
     // in case, app is already active
     if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
-        print('ActiveObserver abgeschlossen wegen: Alread active');
+      FlutterUI.logUI.d("ActiveObserver not started because: Already active");
       return;
     }
     else {
@@ -32,7 +34,7 @@ class ActiveObserver with WidgetsBindingObserver {
       _completer!.complete();
       _timeoutTimer?.cancel();
 
-      print('ActiveObserver abgeschlossen wegen: $reason');
+      FlutterUI.logUI.d("ActiveObserver completed: $reason");
     }
   }
 
