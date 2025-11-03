@@ -114,7 +114,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
     );
 
     return Dialog(
-      insetPadding: const EdgeInsets.all(0.0),
+      insetPadding: const EdgeInsets.only(left: 10.0, right: 10),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
