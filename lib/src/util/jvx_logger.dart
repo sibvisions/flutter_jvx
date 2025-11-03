@@ -67,6 +67,14 @@ class JVxLogger extends Logger {
       return value >= _filter.level!.value;
     }
   }
+
+  Level getLevel() {
+    return _filter.level ?? Logger.level;
+  }
+
+  void setLevel(Level value) {
+    _filter.level = value;
+  }
 }
 
 class JVxFilter extends LogFilter {

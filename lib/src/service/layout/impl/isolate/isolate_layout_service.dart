@@ -19,7 +19,9 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
+import 'package:logger/logger.dart';
 
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/layout/layout_data.dart';
 import '../../../isolate/isolate_message.dart';
@@ -149,8 +151,18 @@ class IsolateLayoutService implements ILayoutService {
     // Local and temporary ReceivePort to retrieve the new isolate's SendPort
     ReceivePort receivePort = ReceivePort();
 
+    final payload = {
+      'sendPort': receivePort.sendPort,
+      'log.level': FlutterUI.log.getLevel(),
+      'logLayout.level': FlutterUI.logLayout.getLevel(),
+      'logUI.level': FlutterUI.logUI.getLevel(),
+      'logAPI.level': FlutterUI.logAPI.getLevel(),
+      'logCommand.level': FlutterUI.logCommand.getLevel(),
+      'SimplePrinter.levelPrefixes': SimplePrinter.levelPrefixes
+    };
+
     // Spawn isolate
-    _isolate = await Isolate.spawn(layoutCallback, receivePort.sendPort);
+    _isolate = await Isolate.spawn(layoutCallback, payload);
 
     // Retrieve the port to be used for further communication
     _apiSendPort = await receivePort.first;
