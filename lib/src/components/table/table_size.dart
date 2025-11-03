@@ -348,17 +348,19 @@ class TableSize {
     if (divideOutColumnNames.isEmpty)    { divideOutColumnNames.addAll(noWidth); }
     if (divideOutColumnNames.isEmpty)    { divideOutColumnNames.addAll(withWidth); }
 
-    double part = width / divideOutColumnNames.length;
+    if (divideOutColumnNames.isNotEmpty) {
+      double part = width / divideOutColumnNames.length;
 
-    double sumParts = part.toPrecision(2) * divideOutColumnNames.length;
+      double sumParts = part.toPrecision(2) * divideOutColumnNames.length;
 
-    double rest = width - sumParts;
+      double rest = width - sumParts;
 
-    for (int i = 0; i < divideOutColumnNames.length; i++) {
-      columnWidths[divideOutColumnNames[i]] = columnWidths[divideOutColumnNames[i]]! + part;
+      for (int i = 0; i < divideOutColumnNames.length; i++) {
+        columnWidths[divideOutColumnNames[i]] = columnWidths[divideOutColumnNames[i]]! + part;
+      }
+
+      columnWidths[divideOutColumnNames.last] = columnWidths[divideOutColumnNames.last]! + rest;
     }
-
-    columnWidths[divideOutColumnNames.last] = columnWidths[divideOutColumnNames.last]! + rest;
   }
 
   ///Tries to fit all columns in [availableWidth]
