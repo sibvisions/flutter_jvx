@@ -84,6 +84,7 @@ class _FlMapWidgetState extends State<FlMapWidget> {
           userAgentPackageName: 'com.sibvisions.flutter_jvx',
           tileProvider: NetworkTileProvider(),
         ),
+        BasicAttributionWidget(),
         PolygonLayer(
           polygons: widget.polygons,
         ),
@@ -111,6 +112,44 @@ class _FlMapWidgetState extends State<FlMapWidget> {
         ),
         //CustomPaint(painter: DebugPainter(), child: Container())
       ],
+    );
+  }
+}
+
+class BasicAttributionWidget extends StatelessWidget {
+  /// Attribution text, such as 'OpenStreetMap contributors'
+  final String? source;
+
+  /// A basic, classic style, attribution widget
+  const BasicAttributionWidget({
+    super.key,
+    this.source
+  });
+
+  @override
+  Widget build(BuildContext context)
+  {
+    TextStyle? style = Theme.of(context).textTheme.bodyMedium;
+
+    return SafeArea(
+      child: Align(
+        alignment: AlignmentGeometry.bottomRight,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(right: 5),
+              child: Text(
+                source ?? "© OpenStreetMap contributors",
+                style: TextStyle(
+                  color: style?.color?.withValues(alpha: 0.6) ?? Colors.black45,
+                  fontSize: 12
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
