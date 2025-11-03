@@ -77,7 +77,11 @@ class LayoutService implements ILayoutService {
     _layoutDataSet[pLayoutData.id] = pLayoutData;
 
     // Handle possible re-layout
-    if (_isLegalState(pLayoutData: pLayoutData)) {
+    if (_isLegalState(pLayoutData: pLayoutData, message: "reportLayout of ${pLayoutData.name}")) {
+      if (FlutterUI.logLayout.cl(Lvl.d)) {
+        FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} not in legal state --> perform Layout!");
+      }
+
       return _performLayout(pLayoutData: pLayoutData);
     }
 
@@ -119,7 +123,11 @@ class LayoutService implements ILayoutService {
       return commands;
     }
 
-    if (!_isLegalState(pLayoutData: parentData)) {
+    if (!_isLegalState(pLayoutData: parentData, message: "reportPreferredSize of ${pLayoutData.name}")) {
+      if (FlutterUI.logLayout.cl(Lvl.d)) {
+        FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} not in legal state!");
+      }
+
       return commands;
     }
 
@@ -139,7 +147,7 @@ class LayoutService implements ILayoutService {
       updateChildren.add(pLayoutData);
       updateChildren.addAll(_getChildren(pParentLayout: pLayoutData));
       updateChildren = updateChildren.where((entry) => (entry.receivedDate == null && !entry.preparedForSubmission &&
-                                                        entry.hasPosition && (entry.hasNewCalculatedSize || entry.hasNewCalculatedSize))).toList();
+                                                        entry.hasPosition && entry.hasNewCalculatedSize)).toList();
 
       updateChildren.forEach((element) {
         element.preparedForSubmission = true;
@@ -147,6 +155,10 @@ class LayoutService implements ILayoutService {
 
       if (updateChildren.isNotEmpty) {
         commands.add(UpdateLayoutPositionCommand(layoutDataList: updateChildren, reason: "Notify additional sub components"));
+      }
+
+      if (FlutterUI.logLayout.cl(Lvl.d)) {
+        FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} parent already has a position!");
       }
 
       return commands;
@@ -168,7 +180,7 @@ class LayoutService implements ILayoutService {
     if (existingLayout != null && existingLayout.layoutPosition?.toSize() != pSize) {
       applyScreenSize(existingLayout);
 
-      if (_isLegalState(pLayoutData: existingLayout)) {
+      if (_isLegalState(pLayoutData: existingLayout, message: "setScreenSize of $pScreenComponentId")) {
         return _performLayout(pLayoutData: existingLayout);
       }
     }
@@ -335,7 +347,7 @@ class LayoutService implements ILayoutService {
   /// Returns true if conditions to perform the layout are met.
   ///
   /// Checks if [pLayoutData] is valid and all it's children layout data are present and valid as well.
-  bool _isLegalState({required LayoutData pLayoutData}) {
+  bool _isLegalState({required LayoutData pLayoutData, String? message}) {
     if (!_isValid) {
       if (FlutterUI.logLayout.cl(Lvl.d)) {
         FlutterUI.logLayout.d("${pLayoutData.id} not valid, layoutService is not valid");
@@ -378,7 +390,7 @@ class LayoutService implements ILayoutService {
         return true;
       }
 
-      if (!child.hasCalculatedSize && !child.hasPreferredSize) {
+      if (!child.hasCalculatedSize && !child.hasNewCalculatedSize) {
         if (FlutterUI.logLayout.cl(Lvl.d)) {
           FlutterUI.logLayout.d("${pLayoutData.id} not valid because ${child.id} has no size");
         }

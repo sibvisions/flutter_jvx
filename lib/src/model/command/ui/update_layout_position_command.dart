@@ -36,7 +36,7 @@ class UpdateLayoutPositionCommand extends UiCommand {
   }) {
     //mark for submission to close the information gap between submission and received
     for (int i = 0; i < layoutDataList.length; i++) {
-        layoutDataList[i].preparedForSubmission = true;
+      layoutDataList[i].preparedForSubmission = true;
     }
   }
 
