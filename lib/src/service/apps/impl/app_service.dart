@@ -189,6 +189,7 @@ class AppService implements IAppService {
     return null;
   }
 
+  @override
   App? getCurrentApp() {
     String? id = IConfigService().currentApp.value;
 
