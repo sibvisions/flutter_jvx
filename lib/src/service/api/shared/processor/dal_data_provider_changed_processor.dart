@@ -34,6 +34,14 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
         deleteAll: true,
       ));
 
+      bool fetchMetaData = IDataService().getMetaData(pResponse.dataProvider) == null;
+
+      if (!fetchMetaData) {
+        if (IDataService().updateMetaDataChanged(pChangedResponse: pResponse)) {
+          IUiService().notifyMetaDataChange(pResponse.dataProvider);
+        }
+      }
+
       IUiService().notifySubscriptionsOfReload(pResponse.dataProvider);
 
       commands.add(
@@ -43,7 +51,7 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
           rowCount: IUiService().getSubscriptionRowCount(pResponse.dataProvider),
           dataProvider: pResponse.dataProvider,
           //if no metadata available -> include it with next fetch
-          includeMetaData: IDataService().getMetaData(pResponse.dataProvider) == null,
+          includeMetaData: fetchMetaData,
         ),
       );
     } else {
