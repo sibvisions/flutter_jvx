@@ -37,6 +37,7 @@ import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_data_mixin.dart';
+import 'fl_table_header_cell.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = FlutterUI.readAheadLimit;
@@ -570,7 +571,18 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
 
     if (pRowIndex == -1 && pColumnName.isNotEmpty && model.sortOnHeaderEnabled) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.sort, "Sort", DataContextMenuItemType.SORT));
+
+      String? columnLabel = dataChunk.columnDefinitions.byName(pColumnName)?.label;
+
+      if (columnLabel == FlTableHeaderCell.CHECKBOX_DESELECTED) {
+        popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squareCheck, "Select", DataContextMenuItemType.SORT));
+      }
+      else if (columnLabel == FlTableHeaderCell.CHECKBOX_SELECTED) {
+        popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.square, "Deselect", DataContextMenuItemType.SORT));
+      }
+      else {
+        popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.sort, "Sort", DataContextMenuItemType.SORT));
+      }
       separator++;
     }
 

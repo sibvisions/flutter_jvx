@@ -293,10 +293,10 @@ class _FlTableCellState extends State<FlTableCell> {
       dataProvider: widget.model.dataProvider,
       columnDefinition: widget.columnDefinition,
       cellEditorJson: widget.columnDefinition.cellEditorJson,
-      onChange: widget.onValueChanged != null && widget.model.isEnabled && widget.model.editable
+      onChange: widget.onValueChanged != null && widget.model.isEnabled && (widget.model.editable || widget.columnDefinition.forcedStateless)
           ? (value) => widget.onValueChanged!.call(value, widget.rowIndex, widget.columnDefinition.name)
           : null,
-      onEndEditing: widget.onEndEditing != null && widget.model.isEnabled && widget.model.editable
+      onEndEditing: widget.onEndEditing != null && widget.model.isEnabled && (widget.model.editable || widget.columnDefinition.forcedStateless)
           ? (value) => widget.onEndEditing!.call(value, widget.rowIndex, widget.columnDefinition.name)
           : null,
       isInTable: true,
@@ -314,7 +314,7 @@ class _FlTableCellState extends State<FlTableCell> {
     Widget cellWidget = cellEditor.createWidget(widget.model.json);
 
     return AbsorbPointer(
-      absorbing: !widget.model.isEnabled || !widget.model.editable || widget.readOnly,
+      absorbing: !widget.model.isEnabled || (!widget.model.editable && !widget.columnDefinition.forcedStateless) || widget.readOnly,
       child: cellWidget,
     );
   }

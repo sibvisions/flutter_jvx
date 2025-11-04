@@ -29,6 +29,11 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Text for selected Checkbox
+  static const String CHECKBOX_SELECTED = "\u2611";
+  /// Text for deselected Checkbox
+  static const String CHECKBOX_DESELECTED = "\u2610";
+
   // Callbacks
 
   /// Gets called with the name of column when the user taps a cell.
@@ -144,64 +149,75 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
 
     cellText = columnDefinition.label;
 
-    if (columnDefinition.nullable != true) {
-      ApplicationMetaDataResponse? metadata = IUiService().applicationMetaData.value;
-
-      if (metadata != null) {
-        if (metadata.mandatoryMarkVisible) {
-          cellText += " ${metadata.mandatoryMark ?? "*"}";
-        }
-      }
-      else {
-        cellText += " *";
-      }
+    if (cellText == CHECKBOX_SELECTED) {
+      return IgnorePointer(child: Checkbox(value: true, onChanged: (value) {}));
     }
-
-    style = model.createTextStyle(pFontWeight: FontWeight.bold);
-
-    Text text =
-        Text(cellText, style: style, overflow: TextOverflow.ellipsis, maxLines: model.wordWrapEnabled ? null : 1);
-
-    if (sortMode == null) {
-      return text;
-    }
-
-    MainAxisAlignment mainAxisAlignment;
-    if (columnDefinition.cellEditorHorizontalAlignment == HorizontalAlignment.RIGHT) {
-      mainAxisAlignment = MainAxisAlignment.end;
-    } else {
-      mainAxisAlignment = MainAxisAlignment.start;
-    }
-
-    double gap;
-
-    TextStyle sortStyle = style.copyWith(fontSize: 8);
-
-    //small gap if width is smaller than "only" icons (with separator)
-    if (width < 16 + 5 + (sortIndex != null ? ParseUtil.getTextWidth(text: sortIndex!.toString(), style: sortStyle) : 0) +
-                paddings.left + paddings.right + (model.showVerticalLines ? cellDividerWidth : 0)) {
-      gap = 1;
+    else if (cellText == CHECKBOX_DESELECTED) {
+      return IgnorePointer(child: Checkbox(value: false, onChanged: (value) {}));
     }
     else {
-      gap = 5;
-    }
+      if (columnDefinition.nullable != true) {
+        ApplicationMetaDataResponse? metadata = IUiService().applicationMetaData.value;
 
-    return Row(
-      mainAxisAlignment: mainAxisAlignment,
-      children: [
-        Flexible(fit: FlexFit.loose, child: text),
-        SizedBox(width: gap),
-        FaIcon(
-          sortMode == SortMode.ascending ? FontAwesomeIcons.sortUp : FontAwesomeIcons.sortDown,
-          size: 16,
-        ),
-        if (sortIndex != null)
-          Text(
-            sortIndex!.toString(),
-            style: sortStyle,
-            maxLines: 1,
+        if (metadata != null) {
+          if (metadata.mandatoryMarkVisible) {
+            cellText += " ${metadata.mandatoryMark ?? "*"}";
+          }
+        }
+        else {
+          cellText += " *";
+        }
+      }
+
+      style = model.createTextStyle(pFontWeight: FontWeight.bold);
+      Text text = Text(
+        cellText,
+        style: style,
+        overflow: TextOverflow.ellipsis,
+        maxLines: model.wordWrapEnabled ? null : 1
+      );
+
+      if (sortMode == null) {
+        return text;
+      }
+
+      MainAxisAlignment mainAxisAlignment;
+      if (columnDefinition.cellEditorHorizontalAlignment == HorizontalAlignment.RIGHT) {
+        mainAxisAlignment = MainAxisAlignment.end;
+      } else {
+        mainAxisAlignment = MainAxisAlignment.start;
+      }
+
+      double gap;
+
+      TextStyle sortStyle = style.copyWith(fontSize: 8);
+
+      //small gap if width is smaller than "only" icons (with separator)
+      if (width < 16 + 5 + (sortIndex != null ? ParseUtil.getTextWidth(text: sortIndex!.toString(), style: sortStyle) : 0) +
+          paddings.left + paddings.right + (model.showVerticalLines ? cellDividerWidth : 0)) {
+        gap = 1;
+      }
+      else {
+        gap = 5;
+      }
+
+      return Row(
+        mainAxisAlignment: mainAxisAlignment,
+        children: [
+          Flexible(fit: FlexFit.loose, child: text),
+          SizedBox(width: gap),
+          FaIcon(
+            sortMode == SortMode.ascending ? FontAwesomeIcons.sortUp : FontAwesomeIcons.sortDown,
+            size: 16,
           ),
-      ],
-    );
+          if (sortIndex != null)
+            Text(
+              sortIndex!.toString(),
+              style: sortStyle,
+              maxLines: 1,
+            ),
+        ],
+      );
+    }
   }
 }
