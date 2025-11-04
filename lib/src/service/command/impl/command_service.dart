@@ -215,7 +215,12 @@ class CommandService implements ICommandService {
       return true;
     } catch (error, stack) {
       if (FlutterUI.logCommand.cl(Lvl.e)) {
-        FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
+        if (error is OpenServerErrorDialogCommand && error.silentAbort) {
+          FlutterUI.logCommand.d("Silent abort while processing ${pCommand.runtimeType}-chain");
+        }
+        else {
+          FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
+        }
       }
 
       if ((error is! ErrorCommand)

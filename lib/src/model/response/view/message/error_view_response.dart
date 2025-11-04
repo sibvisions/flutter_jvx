@@ -58,7 +58,11 @@ class ErrorViewResponse extends MessageView {
             (json[ApiObjectProperty.exceptions] as List<dynamic>?)?.map((e) => ServerException.fromJson(e)).toList(),
         super.fromJson() {
     if (FlutterUI.log.cl(Lvl.w)) {
-      FlutterUI.log.w(toString());
+      if (silentAbort) {
+        FlutterUI.log.d(toString());
+      } else {
+        FlutterUI.log.w(toString());
+      }
     }
   }
 

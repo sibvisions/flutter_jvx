@@ -903,7 +903,7 @@ class OnlineApiRepository extends IRepository {
       ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
 
       if (log) {
-        FlutterUI.logAPI.i(responseItem);
+        FlutterUI.logAPI.d(responseItem);
       }
 
       if (builder != null) {
