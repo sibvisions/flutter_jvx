@@ -52,12 +52,21 @@ class FlLinkedCellPicker extends StatefulWidget {
 
   final FlLinkedCellEditor linkedCellEditor;
 
+  final bool? embeddable;
+
+  final bool showTitle;
+
+  final bool showSearch;
+
   const FlLinkedCellPicker({
     super.key,
     required this.linkedCellEditor,
     required this.name,
     required this.model,
     this.editorColumnDefinition,
+    this.embeddable,
+    this.showTitle = true,
+    this.showSearch = true
   });
 
   @override
@@ -147,17 +156,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.sizeOf(context);
-
-    EdgeInsets paddingInsets;
-
-    paddingInsets = EdgeInsets.fromLTRB(
-      screenSize.width / 16,
-      screenSize.height / 16,
-      screenSize.width / 16,
-      screenSize.height / 16,
-    );
-
     List<Widget> listBottomButtons = [];
 
     if (widget.editorColumnDefinition?.nullable == true && !model.hideClearIcon) {
@@ -194,33 +192,39 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     ThemeData theme = Theme.of(context);
 
-    return Dialog(
-      insetPadding: paddingInsets,
-      elevation: 10.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-      child: Container(
+    bool showSearch = widget.showSearch;
+
+    if (showSearch && _chunkData != null && _chunkData!.isAllFetched && _chunkData!.data.length < 7) {
+      showSearch = false;
+    }
+
+    return _wrapAsDialog(Container(
         clipBehavior: Clip.hardEdge,
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
         decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              FlutterUI.translate("Select value"),
-              style: theme.dialogTheme.titleTextStyle ??
-                  (theme.useMaterial3 ? theme.textTheme.titleLarge : theme.textTheme.headlineSmall),
-            ),
-            const SizedBox(height: 20),
-            FlTextFieldWidget(
-              key: widget.key,
-              model: FlTextFieldModel()..placeholder = FlutterUI.translate("Search"),
-              textController: _controller,
-              keyboardType: TextInputType.text,
-              valueChanged: _startTimerValueChanged,
-              endEditing: _startTimerValueChanged,
-              focusNode: focusNode,
-            ),
-            const SizedBox(height: 10),
+            if (widget.showTitle)
+              Text(
+                FlutterUI.translate("Select value"),
+                style: theme.dialogTheme.titleTextStyle ??
+                    (theme.useMaterial3 ? theme.textTheme.titleLarge : theme.textTheme.headlineSmall),
+              ),
+            if (widget.showTitle)
+              const SizedBox(height: 20),
+            if (showSearch)
+              FlTextFieldWidget(
+                key: widget.key,
+                model: FlTextFieldModel()..placeholder = FlutterUI.translate("Search"),
+                textController: _controller,
+                keyboardType: TextInputType.text,
+                valueChanged: _startTimerValueChanged,
+                endEditing: _startTimerValueChanged,
+                focusNode: focusNode,
+              ),
+            if (showSearch)
+              const SizedBox(height: 10),
             Expanded(
               child: _chunkData != null && _metaData != null
                   ? LayoutBuilder(
@@ -257,8 +261,33 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
             ),
           ],
         ),
-      ),
+      )
     );
+  }
+
+  Widget _wrapAsDialog(Widget child) {
+    if (widget.embeddable == true) {
+      return child;
+    }
+    else {
+      Size screenSize = MediaQuery.sizeOf(context);
+
+      EdgeInsets paddingInsets;
+
+      paddingInsets = EdgeInsets.fromLTRB(
+        screenSize.width / 16,
+        screenSize.height / 16,
+        screenSize.width / 16,
+        screenSize.height / 16,
+      );
+
+      return Dialog(
+          insetPadding: paddingInsets,
+          elevation: 10.0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          child: child
+      );
+    }
   }
 
   @override
