@@ -136,23 +136,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   @override
   Widget build(BuildContext context) {
-    Color? fillColor = model.background;
-
-    if (fillColor == null && isMandatory) {
-      ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
-      if (JVxColors.isLightTheme(context)) {
-        fillColor = applicationSettings.colors?.mandatoryBackground;
-      } else {
-        fillColor = applicationSettings.darkColors?.mandatoryBackground;
-      }
-    }
-
-    fillColor ??= defaultBackground(context);
-
-    if (fillColor != null && !model.isEditable) {
-      fillColor = fillColor.withAlpha(Color.getAlphaFromOpacity(0.3));
-    }
-
     focusNode.canRequestFocus = model.isFocusable;
 
     return TextField(
@@ -179,7 +162,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
         prefixIcon: createPrefixIcon(context),
         prefixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
-        fillColor: fillColor,
+        fillColor: getFillColor(context),
         filled: true,
         isDense: true,
       ),
@@ -209,6 +192,27 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     ThemeData themeData = Theme.of(context);
 
     return themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.surface;
+  }
+
+  Color? getFillColor(BuildContext context) {
+    Color? fillColor = model.background;
+
+    if (fillColor == null && isMandatory) {
+      ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
+      if (JVxColors.isLightTheme(context)) {
+        fillColor = applicationSettings.colors?.mandatoryBackground;
+      } else {
+        fillColor = applicationSettings.darkColors?.mandatoryBackground;
+      }
+    }
+
+    fillColor ??= defaultBackground(context);
+
+    if (fillColor != null && !model.isEditable) {
+      fillColor = fillColor.withAlpha(Color.getAlphaFromOpacity(0.3));
+    }
+
+    return fillColor;
   }
 
   /// Creates the clear icon at the end of a Text field.

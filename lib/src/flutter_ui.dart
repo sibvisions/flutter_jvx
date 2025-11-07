@@ -1082,9 +1082,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     subscription = Connectivity().onConnectivityChanged.listen(didChangeConnectivity);
 
-    Push.instance.requestPermission();
-
     if (!kIsWeb) {
+      Push.instance.requestPermission();
+
       registerPushStreams();
     }
 
