@@ -34,6 +34,18 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The style if an editor should be shown as dialog (default)
+  static const String STYLE_AS_DIALOG = "f_as_dialog";
+  /// The style if an editor should be shown as bottom sheet
+  static const String STYLE_AS_BOTTOMSHEET = "f_as_bottomsheet";
+  /// The style if an editor should be shown as popup
+  static const String STYLE_AS_POPUP = "f_as_popup";
+
+  static const String STYLE_POPUP_JUMP = "f_popup_jump";
+  static const String STYLE_POPUP_FADE_IN_BOUNCE = "f_popup_fade_in_bounce";
+  static const String STYLE_POPUP_FADE_IN_DOWN = "f_popup_fade_in_down";
+  static const String STYLE_POPUP_FADE_IN_ROLL_DOWN = "f_popup_fade_in_roll_down";
+
   ReferenceDefinition linkReference = ReferenceDefinition(referencedDataBook: "");
 
   ColumnView? columnView;

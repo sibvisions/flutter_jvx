@@ -64,8 +64,8 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The callback for long-press on cells.
   final TableLongPressCallback? onLongPress;
 
-  /// The callback in case of user scrolled to the edge of the table.
-  final VoidCallback? onEndScroll;
+  /// The callback in case of loading more data.
+  final VoidCallback? onLoadMore;
 
   /// The callback in case of user scrolled the table.
   final TableScrollCallback? onScroll;
@@ -130,8 +130,8 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.onHeaderTap,
     this.onHeaderDoubleTap,
     this.onLongPress,
-    this.onEndScroll,
     this.onScroll,
+    this.onLoadMore,
     this.onRefresh,
     this.onEndEditing,
     this.onValueChanged,
@@ -318,17 +318,24 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
               }
             : null,
         onTap: () => _closeSlidables(),
-        child: NotificationListener<ScrollEndNotification>(
-          onNotification: _onInternalEndScroll,
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              widget.onScroll?.call(notification);
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            widget.onScroll?.call(notification);
 
-              // Let it bubble upwards to our end notification listener!
-              return false;
-            },
-            child: table,
-          ),
+            if (widget.model.isEnabled &&
+                notification.metrics.extentAfter < 25 &&
+                notification.metrics.axis == Axis.vertical) {
+              /// Scrolled to the bottom
+              widget.onLoadMore?.call();
+
+              //don't bubble upwards to our end notification listener!
+              return true;
+            }
+
+            // Let it bubble upwards
+            return false;
+          },
+          child: table,
         ),
       ),
     );
@@ -500,20 +507,6 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       onLongPress: widget.onLongPress,
       sortDefinitions: widget.metaData?.sortDefinitions,
     );
-  }
-
-  /// Notifies if the bottom of the table has been reached
-  bool _onInternalEndScroll(ScrollEndNotification notification) {
-    // 25 is a grace value.
-    if (widget.model.isEnabled &&
-        notification.metrics.extentAfter < 25 &&
-        notification.metrics.atEdge &&
-        notification.metrics.axis == Axis.vertical) {
-      /// Scrolled to the bottom
-      widget.onEndScroll?.call();
-    }
-
-    return true;
   }
 
   /// Closes all slidables immediately without delay

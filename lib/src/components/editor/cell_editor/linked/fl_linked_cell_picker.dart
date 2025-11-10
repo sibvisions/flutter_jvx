@@ -41,7 +41,10 @@ import '../i_cell_editor.dart';
 import 'fl_linked_cell_editor.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
-  static const PAGE_LOAD = 50;
+  static const int PAGE_LOAD = 50;
+
+  static const int MIN_ROWS_FOR_SEARCH = 6;
+
   static const Object NULL_OBJECT = Object();
 
   final String name;
@@ -194,7 +197,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     bool showSearch = widget.showSearch;
 
-    if (showSearch && _chunkData != null && _chunkData!.isAllFetched && _chunkData!.data.length < 7) {
+    if (showSearch && _chunkData != null && _chunkData!.isAllFetched && _chunkData!.data.length <= FlLinkedCellPicker.MIN_ROWS_FOR_SEARCH) {
       showSearch = false;
     }
 
@@ -245,7 +248,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                           selectedRowIndex: selectedRow,
                           metaData: _metaData,
                           chunkData: isConcatMask ? _chunkDataConcatMask! : _chunkData!,
-                          onEndScroll: _increasePageLoad,
+                          onLoadMore: _loadMore,
                           model: tableModel,
                           onTap: _onRowTapped,
                           onRefresh: _refresh,
@@ -261,7 +264,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
             ),
           ],
         ),
-      )
+      ),
     );
   }
 
@@ -311,7 +314,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<void> _receiveData(DataChunk pChunkData) async {
+  Future<void> _receiveTableData(DataChunk pChunkData) async {
     _chunkData = pChunkData;
 
     _createTableColumnView();
@@ -505,9 +508,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         );
   }
 
-  void _increasePageLoad() {
-    scrollingPage++;
-    _subscribe();
+  void _loadMore() {
+    if (_chunkData != null && !_chunkData!.isAllFetched) {
+      scrollingPage++;
+      _subscribe();
+    }
   }
 
   void _subscribe() {
@@ -515,7 +520,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       pDataSubscription: DataSubscription(
         subbedObj: this,
         dataProvider: model.linkReference.referencedDataBook,
-        onDataChunk: _receiveData,
+        onDataChunk: _receiveTableData,
         onMetaData: _receiveMetaData,
         onReload: _onDataProviderReload,
         from: 0,
