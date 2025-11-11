@@ -110,6 +110,9 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// Whether an initial scroll to selected record should happen
   final bool initialScrollToSelected;
 
+  /// Whether automatic scrolling is enabled
+  final bool autoScrollEnabled;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,6 +129,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.tableHorizontalController,
     this.headerHorizontalController,
     this.slideActionFactory,
+    this.autoScrollEnabled = true,
     this.onTap,
     this.onHeaderTap,
     this.onHeaderDoubleTap,
@@ -560,6 +564,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   /// Can only be called in the post frame callback as the scroll controller
   /// otherwise has not yet been updated with the most recent items.
   Future<void> _scrollTo(int rowIndex) async {
+    if (!widget.autoScrollEnabled) {
+      return;
+    }
+
+
     if (_sliverContext == null) {
       return;
     }

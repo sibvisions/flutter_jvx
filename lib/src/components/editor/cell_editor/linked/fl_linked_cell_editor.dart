@@ -263,10 +263,12 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
         Future<dynamic> future;
 
-        if (focusNode.context != null && model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_POPUP)) {
+        bool bUseDefaultStyle = model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_DIALOG);
+
+        if (!bUseDefaultStyle && focusNode.context != null && model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_POPUP)) {
           future = _showAsPopup();
         }
-        else if (model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_BOTTOMSHEET)) {
+        else if (!bUseDefaultStyle && model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_BOTTOMSHEET)) {
           future = _showAsBottomSheet();
         }
         else {
@@ -323,173 +325,179 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       }
     }
 
-    if (model.styles.contains(FlLinkedCellEditorModel.STYLE_POPUP_FADE_IN_ROLL_DOWN)) {
-      return Navigator.push(
-        FlutterUI.getCurrentContext()!,
-        PageRouteBuilder(
-          opaque: false,
-          barrierDismissible: true,
-          barrierColor: Colors.black.withValues(alpha: 0.1),
-          pageBuilder: (context, animation, secondaryAnimation) {
-            Rect rect = getPopupRect(prefPopupHeight);
+    bool bUseDefault = model.styles.contains(FlLinkedCellEditorModel.STYLE_POPUP_FADE_IN_BOUNCE);
 
-            return Stack(
-              children: [
-                Positioned(
-                  top: rect.top,
-                  left: rect.left,
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: 1),
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                    builder: (context, value, _) {
-                      return Material(
-                        elevation: 4,
-                        borderRadius: BorderRadius.circular(8),
-                        clipBehavior: Clip.antiAlias,
-                        child: SizedBox(
-                          width: rect.width,
-                          height: rect.height * value,
-                          child: Opacity(
-                              opacity: value.clamp(0.0, 1.0),
-                              child: OverflowBox(
-                                fit: OverflowBoxFit.max,
-                                maxHeight: max(200, rect.height * value),
-                                child:
-                                FlLinkedCellPicker(
-                                  linkedCellEditor: this,
-                                  model: model,
-                                  name: name!,
-                                  editorColumnDefinition: columnDefinition,
-                                  embeddable: true,
-                                  showTitle: false,
-                                ),
-                              )
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      );
-    }
-    else if (model.styles.contains(FlLinkedCellEditorModel.STYLE_POPUP_JUMP)) {
-      return Navigator.push(
-        FlutterUI.getCurrentContext()!,
-        PageRouteBuilder(
-          opaque: false,
-          barrierDismissible: true,
-          barrierColor: Colors.black.withValues(alpha: 0.1),
-          pageBuilder: (context, animation, secondaryAnimation) {
-            Rect rect = getPopupRect(prefPopupHeight);
+    if (!bUseDefault) {
+      if (model.styles.contains(FlLinkedCellEditorModel.STYLE_POPUP_FADE_IN_ROLL_DOWN)) {
+        return Navigator.push(
+          FlutterUI.getCurrentContext()!,
+          PageRouteBuilder(
+            opaque: false,
+            barrierDismissible: true,
+            barrierColor: Colors.black.withValues(alpha: 0.1),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              Rect rect = getPopupRect(prefPopupHeight);
 
-            return Stack(
-              children: [
-                Positioned(
+              return Stack(
+                children: [
+                  Positioned(
                     top: rect.top,
                     left: rect.left,
-                    width: rect.width,
-                    height: rect.height,
-                    child:
-                    ScaleTransition(
-                      scale: CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.easeOutBack,
-                      ),
-                      child: FadeTransition(
-                        opacity: animation,
-                        child: Material(
-                            elevation: 4,
-                            borderRadius: BorderRadius.circular(8),
-                            child: FlLinkedCellPicker(
-                              linkedCellEditor: this,
-                              model: model,
-                              name: name!,
-                              editorColumnDefinition: columnDefinition,
-                              embeddable: true,
-                              showTitle: false,
-                            )
-                        ),
-                      ),
-                    )
-                )
-              ],
-            );
-          },
-        ),
-      );
-    }
-    else if (model.styles.contains(FlLinkedCellEditorModel.STYLE_POPUP_FADE_IN_DOWN)) {
-      return Navigator.push(
-        FlutterUI.getCurrentContext()!,
-        PageRouteBuilder(
-          opaque: false,
-          barrierDismissible: true,
-          barrierColor: Colors.black26.withAlpha(25),
-          pageBuilder: (context, animation, secondaryAnimation) {
-            final slide = Tween<Offset>(
-              begin: Offset(0, -0.1), // leicht von oben
-              end: Offset.zero,
-            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0, end: 1),
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                      builder: (context, value, _) {
 
-            final fade = Tween<double>(
-              begin: 0,
-              end: 1,
-            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
-
-            final expand = Tween<double>(
-              begin: 0,
-              end: 1,
-            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
-
-            Rect rect = getPopupRect(prefPopupHeight);
-
-            return Stack(
-              children: [
-                Positioned(
-                  top: rect.top,
-                  left: rect.left,
-                  child: SlideTransition(
-                    position: slide,
-                    child: FadeTransition(
-                      opacity: fade,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        heightFactor: expand.value,
-                        child: Container(
-                          width: rect.width,
-                          height: rect.height,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black26)],
+                        return Material(
+                          elevation: 4,
+                          borderRadius: BorderRadius.circular(8),
+                          clipBehavior: Clip.antiAlias,
+                          child: SizedBox(
+                            width: rect.width,
+                            height: rect.height * value,
+                            child: Opacity(
+                                opacity: value.clamp(0.0, 1.0),
+                                child: OverflowBox(
+                                  fit: OverflowBoxFit.max,
+                                  maxHeight: max(200, rect.height * value),
+                                  child:
+                                  FlLinkedCellPicker(
+                                    linkedCellEditor: this,
+                                    scrollToSelected: value == 1,
+                                    model: model,
+                                    name: name!,
+                                    editorColumnDefinition: columnDefinition,
+                                    embeddable: true,
+                                    showTitle: false,
+                                  ),
+                                )
+                            ),
                           ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      }
+      else if (model.styles.contains(FlLinkedCellEditorModel.STYLE_POPUP_JUMP)) {
+        return Navigator.push(
+          FlutterUI.getCurrentContext()!,
+          PageRouteBuilder(
+            opaque: false,
+            barrierDismissible: true,
+            barrierColor: Colors.black.withValues(alpha: 0.1),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              Rect rect = getPopupRect(prefPopupHeight);
+
+              return Stack(
+                children: [
+                  Positioned(
+                      top: rect.top,
+                      left: rect.left,
+                      width: rect.width,
+                      height: rect.height,
+                      child:
+                      ScaleTransition(
+                        scale: CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeOutBack,
+                        ),
+                        child: FadeTransition(
+                          opacity: animation,
                           child: Material(
-                            elevation: 4,
-                            borderRadius: BorderRadius.circular(8),
-                            child: FlLinkedCellPicker(
+                              elevation: 4,
+                              borderRadius: BorderRadius.circular(8),
+                              child: FlLinkedCellPicker(
                                 linkedCellEditor: this,
                                 model: model,
                                 name: name!,
                                 editorColumnDefinition: columnDefinition,
                                 embeddable: true,
-                                showTitle: false
+                                showTitle: false,
+                              )
+                          ),
+                        ),
+                      )
+                  )
+                ],
+              );
+            },
+          ),
+        );
+      }
+      else if (model.styles.contains(FlLinkedCellEditorModel.STYLE_POPUP_FADE_IN_DOWN)) {
+        return Navigator.push(
+          FlutterUI.getCurrentContext()!,
+          PageRouteBuilder(
+            opaque: false,
+            barrierDismissible: true,
+            barrierColor: Colors.black26.withAlpha(25),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              final slide = Tween<Offset>(
+                begin: Offset(0, -0.1), // leicht von oben
+                end: Offset.zero,
+              ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+
+              final fade = Tween<double>(
+                begin: 0,
+                end: 1,
+              ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+
+              final expand = Tween<double>(
+                begin: 0,
+                end: 1,
+              ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+
+              Rect rect = getPopupRect(prefPopupHeight);
+
+              return Stack(
+                children: [
+                  Positioned(
+                    top: rect.top,
+                    left: rect.left,
+                    child: SlideTransition(
+                      position: slide,
+                      child: FadeTransition(
+                        opacity: fade,
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          heightFactor: expand.value,
+                          child: Container(
+                            width: rect.width,
+                            height: rect.height,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black26)],
+                            ),
+                            child: Material(
+                              elevation: 4,
+                              borderRadius: BorderRadius.circular(8),
+                              child: FlLinkedCellPicker(
+                                  linkedCellEditor: this,
+                                  model: model,
+                                  name: name!,
+                                  editorColumnDefinition: columnDefinition,
+                                  embeddable: true,
+                                  showTitle: false
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
-        ),
-      );
+                ],
+              );
+            },
+          ),
+        );
+      }
     }
 
     //standard animation (fade_in_bounce)
