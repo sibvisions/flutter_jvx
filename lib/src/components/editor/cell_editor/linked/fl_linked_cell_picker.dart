@@ -322,35 +322,50 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     // This is the column index of the column of the linked cell editor in this data chunk.
     // This data chunk is the referenced data book! Not the data book of the linked cell editor!
     int colIndex = linkedCellEditor.effectiveLinkReference.columnNames.indexOf(linkedCellEditor.columnName);
-    colIndex = colIndex == -1 ? 0 : colIndex;
 
-    if (isConcatMask && _chunkData != null) {
-      Map<int, List<dynamic>> concatMaskData = {};
+    String? searchColumnName = colIndex >= 0 ? linkedCellEditor.effectiveLinkReference.referencedColumnNames[colIndex] : null;
 
-      for (int i = 0; i < _chunkData!.data.length; i++) {
-        dynamic oldValue = _chunkData!.data[i]![colIndex];
-        concatMaskData[i] = [linkedCellEditor.formatValue(oldValue)];
-      }
+    if (searchColumnName != null) {
+      colIndex = _chunkData!.columnDefinitions.indexByName(searchColumnName);
 
-      _chunkDataConcatMask = DataChunk(
-        columnDefinitions: ColumnList.fromElement(ColumnDefinition.fromJson({"name": "concat", "label": "concat"})),
-        data: concatMaskData,
-        from: _chunkData!.from,
-        isAllFetched: _chunkData!.isAllFetched,
-      );
-    } else {
-      _chunkDataConcatMask = null;
-    }
+      if (colIndex >= 0) {
+        if (isConcatMask && _chunkData != null) {
+          Map<int, List<dynamic>> concatMaskData = {};
 
-    if (_chunkData != null && _chunkData!.data.isNotEmpty) {
-      // loop through the chunk data and find the index of the record for which the value equals the linked cell editor get value
-      for (int i = 0; i < _chunkData!.data.length; i++) {
-        if (_chunkData!.data[i]![colIndex] == await linkedCellEditor.getValue()) {
-          selectedRow = i;
-          break;
+          for (int i = 0; i < _chunkData!.data.length; i++) {
+            dynamic oldValue = _chunkData!.data[i]![colIndex];
+            concatMaskData[i] = [linkedCellEditor.formatValue(oldValue)];
+          }
+
+          _chunkDataConcatMask = DataChunk(
+            columnDefinitions: ColumnList.fromElement(ColumnDefinition.fromJson({"name": "concat", "label": "concat"})),
+            data: concatMaskData,
+            from: _chunkData!.from,
+            isAllFetched: _chunkData!.isAllFetched,
+          );
+        } else {
+          _chunkDataConcatMask = null;
+        }
+
+        if (_chunkData != null && _chunkData!.data.isNotEmpty) {
+          dynamic value = await linkedCellEditor.getValue();
+
+          // loop through the chunk data and find the index of the record for which the value equals the linked cell editor get value
+          for (int i = 0; i < _chunkData!.data.length; i++) {
+            if (_chunkData!.data[i]![colIndex] == value) {
+              selectedRow = i;
+              break;
+            }
+          }
+        } else {
+          selectedRow = -1;
         }
       }
-    } else {
+      else {
+        selectedRow = -1;
+      }
+    }
+    else {
       selectedRow = -1;
     }
 
