@@ -263,10 +263,10 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
         Future<dynamic> future;
 
-        if (focusNode.context != null && (true || model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_POPUP))) {
+        if (focusNode.context != null && model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_POPUP)) {
           future = _showAsPopup();
         }
-        else if (true || model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_BOTTOMSHEET)) {
+        else if (model.styles.contains(FlLinkedCellEditorModel.STYLE_AS_BOTTOMSHEET)) {
           future = _showAsBottomSheet();
         }
         else {
