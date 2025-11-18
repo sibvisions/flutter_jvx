@@ -114,6 +114,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
             decreasedDensity: true,
             useAlternativeLabel: true,
             grouped: true,
+            smallBadge: true,
           ),
         )
       ],

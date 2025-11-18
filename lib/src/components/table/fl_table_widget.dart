@@ -16,7 +16,6 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +31,7 @@ import '../../util/extensions/double_extensions.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import '../util/ScrollMixin.dart';
+import '../util/scroll_mixin.dart';
 import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
 
@@ -40,7 +39,7 @@ typedef TableLongPressCallback = void Function(int rowIndex, String column, ICel
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
 typedef TableHeaderTapCallback = void Function(String column);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
-typedef TableSlideActionFactory = List<SlidableAction> Function(BuildContext context, int row);
+typedef TableSlideActionFactory = List<Widget> Function(BuildContext context, int row);
 typedef TableScrollCallback = Function(ScrollNotification scrollNotification);
 
 class FlTableWidget extends FlStatefulWidget<FlTableModel> {

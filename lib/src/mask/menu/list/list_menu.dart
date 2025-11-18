@@ -45,6 +45,7 @@ class ListMenu extends Menu {
   final bool sticky;
   final bool groupOnlyOnMultiple;
   final bool embedded;
+  final bool smallBadge;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -64,6 +65,7 @@ class ListMenu extends Menu {
     this.sticky = true,
     this.groupOnlyOnMultiple = false,
     this.embedded = false,
+    this.smallBadge = false
   });
 
   @override
@@ -82,6 +84,7 @@ class ListMenu extends Menu {
                     decreasedDensity: decreasedDensity,
                     useAlternativeLabel: useAlternativeLabel,
                     embedded: embedded,
+                    smallBadge : smallBadge
                   ))
               .toList()
           : [
@@ -96,6 +99,7 @@ class ListMenu extends Menu {
                             decreasedDensity: decreasedDensity,
                             useAlternativeLabel: useAlternativeLabel,
                             embedded: embedded,
+                            smallBadge: smallBadge,
                           ))
                       .toList(),
                 ),

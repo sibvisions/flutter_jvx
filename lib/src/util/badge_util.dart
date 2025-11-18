@@ -125,7 +125,7 @@ abstract class BadgeUtil {
       badgeContent: Text(badgeLabel,
         style: (theme.textStyle ?? themeDefault.textTheme.labelSmall ?? TextStyle()).copyWith(
           color: config.textColor ?? theme.textColor ?? themeDefault.colorScheme.onError,
-          fontSize: theme.smallSize ?? themeDefault.textTheme.labelSmall?.fontSize
+          fontSize: config.fontSize ?? theme.smallSize ?? themeDefault.textTheme.labelSmall?.fontSize
         )
       ),
       position: badgePosition,
@@ -136,7 +136,7 @@ abstract class BadgeUtil {
         borderRadius: BorderRadius.circular(12),
         borderSide: borderSide,
         badgeColor: config.color ?? theme.backgroundColor ?? themeDefault.colorScheme.error,
-        padding: EdgeInsetsGeometry.all(6 + borderSize)
+        padding: EdgeInsetsGeometry.all((config.paddingGap ?? 6) + borderSize)
       ),
       child: w);
 
@@ -186,6 +186,12 @@ class BadgeConfig {
 
   /// The size of the badge border
   double? borderSize;
+
+  /// The size of the font
+  double? fontSize;
+
+  /// The default padding gap
+  int? paddingGap;
 
   /// Creates a new config from styles
   BadgeConfig._(Set<String> pStyles) {

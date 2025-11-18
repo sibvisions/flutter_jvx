@@ -202,15 +202,31 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
     colRow ??= Theme.of(context).colorScheme.primary;
 
-    List<SlidableAction> slideActions = slideActionFactory?.call(context, index) ?? [];
+    List<Widget> slideActions = slideActionFactory?.call(context, index) ?? [];
 
     double singleActionExtent = SLIDEABLE_WIDTH / rowWidth;
     double slideableExtentRatio = singleActionExtent * slideActions.length;
     slideableExtentRatio = slideableExtentRatio.clamp(0.20, 0.9);
 
+    Color? slideForeground;
+
+    if (slideActions.isNotEmpty) {
+      Widget wFirst = slideActions.first;
+
+      if (wFirst is SlidableAction) {
+        slideForeground = wFirst.foregroundColor;
+      }
+      else if (wFirst is CustomSlidableAction) {
+        slideForeground = wFirst.foregroundColor;
+      }
+    }
+    else {
+      slideForeground = Colors.white;
+    }
+
     return Theme(
       data: Theme.of(context).copyWith(
-        outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white,
+        outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: slideForeground,
             textStyle: const TextStyle(fontWeight: FontWeight.normal),
             iconSize: 16))
       ),
@@ -227,7 +243,14 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
             if (onDismissed != null) {
               onDismissed!(index);
             }
-            slideActions.last.onPressed!(context);
+            Widget wLast = slideActions.last;
+
+            if (wLast is SlidableAction) {
+              wLast.onPressed!(context);
+            }
+            else if (wLast is CustomSlidableAction) {
+              wLast.onPressed!(context);
+            }
           },),
           motion: const StretchMotion(),
           children: slideActions,

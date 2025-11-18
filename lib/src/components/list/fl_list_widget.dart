@@ -27,7 +27,7 @@ import '../../util/json_template_manager.dart';
 import '../../util/jvx_logger.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import '../util/ScrollMixin.dart';
+import '../util/scroll_mixin.dart';
 import 'fl_list_entry.dart';
 import 'builder/list_cell_builder.dart';
 import 'builder/list_image_builder.dart';
