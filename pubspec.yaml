@@ -71,7 +71,7 @@ dependencies:
   # Icons
   font_awesome_flutter: ^10.0.0
   # Managing different persistent classes
-  get_it: ^8.0.0
+  get_it: ^9.0.0
   # QR Scanner
   mobile_scanner: ^7.0.0
   # Signature Pad
