@@ -19,8 +19,9 @@ import 'package:flutter_treeview/flutter_treeview.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
+import '../util/ScrollMixin.dart';
 
-class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
+class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> with ScrollMixin {
   final TreeViewController controller;
 
   final Function(String, bool)? onExpansionChanged;
@@ -58,10 +59,10 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
     );
 
     if (onRefresh != null) {
-      treeWidget = RefreshIndicator(
+      treeWidget = wrapWithScrollConfiguration(context, RefreshIndicator(
         onRefresh: onRefresh!,
         child: treeWidget,
-      );
+      ));
     }
 
     return Container(

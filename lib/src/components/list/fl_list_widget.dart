@@ -27,6 +27,7 @@ import '../../util/json_template_manager.dart';
 import '../../util/jvx_logger.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
+import '../util/ScrollMixin.dart';
 import 'fl_list_entry.dart';
 import 'builder/list_cell_builder.dart';
 import 'builder/list_image_builder.dart';
@@ -140,7 +141,8 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   State<FlListWidget> createState() => _FlListWidgetState();
 }
 
-class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMixin {
+class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMixin,
+                                                          ScrollMixin {
 
   /// The current sliver context
   BuildContext? _sliverContext;
@@ -647,11 +649,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     Widget listWidget = list;
 
     if (widget.onRefresh != null && widget.model.isEnabled) {
-      listWidget = RefreshIndicator(
+      listWidget = wrapWithScrollConfiguration(context, RefreshIndicator(
         onRefresh: widget.onRefresh!,
         child: listWidget,
         notificationPredicate: (notification) => notification.depth == 0,
-      );
+      ));
     }
 
     if (widget.onFloatingPress != null) {
