@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../components.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/config/i_config_service.dart';
@@ -77,15 +78,21 @@ class _ManualCardState extends State<ManualCard> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    String? loginTitle = AppStyle.of(context).style(context, 'login.title');
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
 
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          loginTitle ?? IConfigService().appName.value?.toUpperCase() ?? "",
+          AppStyle.of(context).style(context, 'login.title') ?? IConfigService().appName.value?.toUpperCase() ?? "",
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
@@ -103,9 +110,11 @@ class _ManualCardState extends State<ManualCard> {
             suffixIcon: usernameController.text.isNotEmpty
                 ? ExcludeFocus(
                     child: IconButton(
-                      tooltip: FlutterUI.translate("Clear"),
                       icon: const Icon(Icons.clear),
+                      tooltip: FlutterUI.translate("Clear"),
                       onPressed: () => setState(() => usernameController.clear()),
+                      color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                      iconSize: FlTextFieldWidget.iconSize,
                     ),
                   )
                 : null,
@@ -127,6 +136,8 @@ class _ManualCardState extends State<ManualCard> {
                         _passwordHidden ? Icons.visibility : Icons.visibility_off,
                       ),
                       onPressed: () => setState(() => _passwordHidden = !_passwordHidden),
+                      color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                      iconSize: FlTextFieldWidget.iconSize,
                     ),
                   )
                 : null,
@@ -184,14 +195,6 @@ class _ManualCardState extends State<ManualCard> {
         _createBottomRow(),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-
-    super.dispose();
   }
 
   void resetButton() {

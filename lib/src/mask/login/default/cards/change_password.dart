@@ -17,11 +17,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../components.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/change_password_command.dart';
 import '../../../../service/command/i_command_service.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
+import '../../../../util/jvx_colors.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
 
@@ -51,15 +53,46 @@ class ChangePassword extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController repeatPasswordController = TextEditingController();
+  late TextEditingController usernameController;
+  late TextEditingController passwordController;
+  late TextEditingController newPasswordController;
+  late TextEditingController repeatPasswordController;
+
+  bool _passwordHidden = true;
+  bool _newPasswordHidden = true;
+  bool _repeatPasswordHidden = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    usernameController = TextEditingController();
+    passwordController = TextEditingController();
+    newPasswordController = TextEditingController();
+    repeatPasswordController = TextEditingController();
+
+    usernameController.text = widget.username ?? "";
+    passwordController.text = widget.password ?? "";
+
+    passwordController.addListener(() {setState(() {});});
+    newPasswordController.addListener(() {setState(() {});});
+    repeatPasswordController.addListener(() {setState(() {});});
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    newPasswordController.dispose();
+    repeatPasswordController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    usernameController.text = widget.username ?? "";
-    passwordController.text = widget.password ?? "";
+    bool isPasswordMatch = _isPasswordMatch();
+    bool hasNewPassword = newPasswordController.text.isNotEmpty;
 
     Widget body = Column(
       children: [
@@ -87,33 +120,91 @@ class _ChangePasswordState extends State<ChangePassword> {
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
           enabled: widget.password == null,
-          obscureText: true,
+          obscureText: _passwordHidden,
           controller: passwordController,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
-            labelText: FlutterUI.translate("Password:"),
-            hintText: FlutterUI.translate("Password"),
+            labelText: FlutterUI.translate("Password"),
+            suffixIcon: passwordController.text.isNotEmpty
+                ? ExcludeFocus(
+                    child: IconButton(
+                      tooltip: FlutterUI.translate(_passwordHidden ? "Show password" : "Hide password"),
+                      icon: Icon(
+                        _passwordHidden ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () => setState(() => _passwordHidden = !_passwordHidden),
+                      color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                      iconSize: FlTextFieldWidget.iconSize,
+                    ),
+                  )
+                : null,
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
-          obscureText: true,
+          obscureText: _newPasswordHidden,
           controller: newPasswordController,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
-            labelText: FlutterUI.translate("Password (new):"),
-            hintText: FlutterUI.translate("New Password"),
+            labelText: FlutterUI.translate("Password (new):").replaceAll(":", ""),
+            suffixIcon: newPasswordController.text.isNotEmpty
+                ? ExcludeFocus(
+                    child: IconButton(
+                      tooltip: FlutterUI.translate(_newPasswordHidden ? "Show password" : "Hide password"),
+                      icon: Icon(
+                        _newPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () => setState(() => _newPasswordHidden = !_newPasswordHidden),
+                      color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                      iconSize: FlTextFieldWidget.iconSize,
+                    ),
+                  )
+                : null,
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
-          obscureText: true,
+          obscureText: _repeatPasswordHidden,
           controller: repeatPasswordController,
           textInputAction: TextInputAction.done,
           onSubmitted: (_) => _submitNewPassword(),
+          style: hasNewPassword ? TextStyle(color: isPasswordMatch ? Colors.green : Colors.red) : null,
           decoration: InputDecoration(
-            labelText: FlutterUI.translate("Password (confirm):"),
-            hintText: FlutterUI.translate("Confirm Password"),
+            labelText: FlutterUI.translate("Password (confirm):").replaceAll(":", ""),
+//            labelStyle: TextStyle(color: newPasswordController.text == repeatPasswordController.text ? Colors.green : Colors.red),
+            enabledBorder: hasNewPassword ? (Theme.of(context).inputDecorationTheme.enabledBorder?.copyWith(
+              borderSide: BorderSide(
+                color: isPasswordMatch ? Colors.green : Colors.red,
+                width: Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide.width ?? 1.0,
+              ),
+            ) ?? UnderlineInputBorder(borderSide: BorderSide(
+                color: isPasswordMatch ? Colors.green : Colors.red,
+                width: Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide.width ?? 1.0,
+              )
+            )) : null,
+            focusedBorder: hasNewPassword ? (Theme.of(context).inputDecorationTheme.focusedBorder?.copyWith(
+              borderSide: BorderSide(
+                color: isPasswordMatch ? Colors.green : Colors.red,
+                width: Theme.of(context).inputDecorationTheme.focusedBorder?.borderSide.width ?? 2.0,
+              ),
+            ) ?? UnderlineInputBorder(borderSide: BorderSide(
+                color: isPasswordMatch ? Colors.green : Colors.red,
+                width: Theme.of(context).inputDecorationTheme.border?.borderSide.width ?? 2.0,
+              )
+            )) : null,
+            suffixIcon: repeatPasswordController.text.isNotEmpty
+                ? ExcludeFocus(
+                    child: IconButton(
+                      tooltip: FlutterUI.translate(_repeatPasswordHidden ? "Show password" : "Hide password"),
+                      icon: Icon(
+                        _repeatPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () => setState(() => _repeatPasswordHidden = !_repeatPasswordHidden),
+                      color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                      iconSize: FlTextFieldWidget.iconSize,
+                    ),
+                  )
+                : null,
           ),
         ),
         if (!widget.asDialog)
@@ -144,15 +235,6 @@ class _ChangePasswordState extends State<ChangePassword> {
     }
   }
 
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    newPasswordController.dispose();
-    repeatPasswordController.dispose();
-    super.dispose();
-  }
-
   Widget passwordError(BuildContext context) {
     return AlertDialog(
       title: Text(FlutterUI.translate("Error")),
@@ -178,12 +260,12 @@ class _ChangePasswordState extends State<ChangePassword> {
 
     if (!widget.asDialog) {
       widgetList.add(ElevatedButton(
-        onPressed: _submitNewPassword,
+        onPressed: _hasPasswordInput() ? _submitNewPassword : null,
         child: Text(FlutterUI.translate("OK")),
       ));
     } else {
       widgetList.add(TextButton(
-        onPressed: _submitNewPassword,
+        onPressed: _hasPasswordInput() ? _submitNewPassword : null,
         child: Text(FlutterUI.translate("OK")),
       ));
     }
@@ -220,5 +302,13 @@ class _ChangePasswordState extends State<ChangePassword> {
     } else {
       IUiService().openDialog(pBuilder: (context) => passwordError(context), pIsDismissible: true);
     }
+  }
+
+  bool _isPasswordMatch() {
+    return newPasswordController.text == repeatPasswordController.text;
+  }
+
+  bool _hasPasswordInput() {
+    return passwordController.text.isNotEmpty && newPasswordController.text.isNotEmpty && _isPasswordMatch();
   }
 }

@@ -19,9 +19,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../flutter_ui.dart';
 import '../../service/config/i_config_service.dart';
+import '../jvx_colors.dart';
 
 enum UploadType {
   FILE_SYSTEM,
@@ -37,101 +39,110 @@ abstract class FilePickerDialog {
       return pick(UploadType.FILE_SYSTEM);
     }
 
-    return showModalBottomSheet<XFile?>(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          ),
+    return showBarModalBottomSheet<XFile?>(
+      context: context,
+      backgroundColor: Theme.of(FlutterUI.getCurrentContext()!).dialogTheme.backgroundColor,
+      barrierColor: JVxColors.LIGHTER_BLACK.withAlpha(Color.getAlphaFromOpacity(0.75)),
+      topControl: Container(
+        height: 20,
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          height: 6,
+          width: 40,
+          decoration: BoxDecoration(color: Colors.white.withAlpha(Color.getAlphaFromOpacity(0.5)), borderRadius: BorderRadius.circular(6)),
         ),
-        context: context,
-        builder: (BuildContext context) {
-          return SingleChildScrollView(
-            child: SizedBox(
-              height: 230,
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: Text(
-                          FlutterUI.translate("Choose file"),
-                          style: const TextStyle(fontSize: 20),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      shape: const RoundedRectangleBorder(
+        side: BorderSide.none,
+        borderRadius: BorderRadius.only(topLeft: kDefaultBarTopRadius, topRight: kDefaultBarTopRadius),
+      ),
+      enableDrag: true,
+      //otherwise the full height will be used - independent of the ContentBottomSheet
+      expand: false,
+      bounce: false,
+      builder: (BuildContext context) {
+        return SafeArea(child: SingleChildScrollView(
+          child: SizedBox(
+            height: 230,
+            width: double.infinity,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16, bottom: 12),
+                      child: Text(
+                        FlutterUI.translate("Choose file"),
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ],
+                ),
+                InkWell(
+                  onTap: () => pick(UploadType.CAMERA).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}}),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.camera,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                      ),
-                      IconButton(
-                        tooltip: FlutterUI.translate("Close"),
-                        color: Colors.grey[300],
-                        icon: const FaIcon(FontAwesomeIcons.circleXmark),
-                        onPressed: () => Navigator.of(context).pop(),
-                      )
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () => pick(UploadType.CAMERA).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}}),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.camera,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(width: 15),
-                          Text(
-                            FlutterUI.translate("Camera"),
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
+                        const SizedBox(width: 15),
+                        Text(
+                          FlutterUI.translate("Camera"),
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
                     ),
                   ),
-                  InkWell(
-                    onTap: () => pick(UploadType.GALLERY).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}} ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.images,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(width: 15),
-                          Text(
-                            FlutterUI.translate("Gallery"),
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
+                ),
+                InkWell(
+                  onTap: () => pick(UploadType.GALLERY).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}} ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.images,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 15),
+                        Text(
+                          FlutterUI.translate("Gallery"),
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
                     ),
                   ),
-                  InkWell(
-                    onTap: () => pick(UploadType.FILE_SYSTEM).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}}),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          FaIcon(FontAwesomeIcons.folderOpen, color: Theme.of(context).colorScheme.primary),
-                          const SizedBox(width: 15),
-                          Text(
-                            FlutterUI.translate("Filesystem"),
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
+                ),
+                InkWell(
+                  onTap: () => pick(UploadType.FILE_SYSTEM).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}}),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        FaIcon(FontAwesomeIcons.folderOpen, color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(width: 15),
+                        Text(
+                          FlutterUI.translate("Filesystem"),
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        });
+          ),
+        )
+      );
+    });
   }
 
   static Future<XFile?> pick(UploadType type) async {

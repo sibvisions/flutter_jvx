@@ -85,6 +85,16 @@ class ModernLogin extends StatelessWidget implements Login {
 
     bool replaceSettingsWithApps = IUiService().canRouteToAppOverview();
 
+    double bottomSpace;
+    double safeBottom = MediaQuery.of(context).padding.bottom;
+
+    if (safeBottom > 0) {
+      bottomSpace = safeBottom + 10;
+    }
+    else {
+      bottomSpace = 35;
+    }
+
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -95,7 +105,7 @@ class ModernLogin extends StatelessWidget implements Login {
               if (mode == LoginMode.Manual && !showSettingsInCard.value)
                 Positioned(
                   right: 0,
-                  bottom: 35,
+                  bottom: bottomSpace,
                   child: TextButton.icon(
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).textTheme.labelSmall?.color,

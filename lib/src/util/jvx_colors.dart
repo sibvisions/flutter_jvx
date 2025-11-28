@@ -138,8 +138,28 @@ abstract class JVxColors {
             shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(BORDER_RADIUS))),
 //        dialogBackgroundColor: isSelectedLight ? Colors.white : Colors.grey[850],
-        textButtonTheme: TextButtonThemeData(style: ButtonStyle(foregroundColor: WidgetStateProperty.all(isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color),
-                                                                overlayColor: WidgetStateProperty.all(isSelectedLight ? null : JVxColors.WHITE))),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor:
+              WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+                if (states.contains(WidgetState.disabled)) {
+                  return null;
+                }
+
+                return isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color;
+              },
+            ),
+            overlayColor: // WidgetStateProperty.all(isSelectedLight ? null : JVxColors.WHITE)
+              WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+                if (states.contains(WidgetState.disabled)) {
+                  return null;
+                }
+
+                return isSelectedLight ? null : JVxColors.WHITE;
+              },
+            ),
+          ),
+        ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(shape: CircleBorder(side: BorderSide(width: 0, style: BorderStyle.none))),
         elevatedButtonTheme: evbTheme,
         outlinedButtonTheme: otbTheme,
