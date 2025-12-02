@@ -332,18 +332,18 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
     if (additionalCondition is CompareCondition) {
       // Only use Equals conditions (or when there is no type: backwards compatibility)
       if (additionalCondition.type.toLowerCase() == "equals") {
-        // If dataProvider is build map then the map is initially built, then the dataRow already contains the referencedColumnNames
-        if (dataProvider == null) {
-          keyObject[additionalCondition.columnName] = [
-            dataRow[columnDefinitions.indexByName(additionalCondition.columnName)].toString(),
-          ];
-        } else {
-          // Check if the dataRow of the additionalCondition is the given dataProvider, if yes, use the value of the column of the dataRow, if not, use the value of the additionalCondition
-          keyObject[additionalCondition.columnName] = [
-            additionalCondition.dataRow == dataProvider
-                ? dataRow[columnDefinitions.indexByName(additionalCondition.dataRowColumnName)].toString()
-                : additionalCondition.value.toString(),
-          ];
+        int idxCol = columnDefinitions.indexByName(additionalCondition.columnName);
+
+        if (idxCol >= 0) {
+          // If dataProvider is build map then the map is initially built, then the dataRow already contains the referencedColumnNames
+          if (dataProvider == null) {
+            keyObject[additionalCondition.columnName] = [dataRow[idxCol].toString()];
+          } else {
+            // Check if the dataRow of the additionalCondition is the given dataProvider, if yes, use the value of the column of the dataRow, if not, use the value of the additionalCondition
+            keyObject[additionalCondition.columnName] = [
+              additionalCondition.dataRow == dataProvider ? dataRow[idxCol].toString() : additionalCondition.value.toString()
+            ];
+          }
         }
       }
     } else if (additionalCondition is OperatorCondition) {
