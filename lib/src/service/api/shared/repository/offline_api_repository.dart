@@ -27,6 +27,7 @@ import '../../../../model/request/api_delete_record_request.dart';
 import '../../../../model/request/api_fetch_request.dart';
 import '../../../../model/request/api_filter_request.dart';
 import '../../../../model/request/api_insert_record_request.dart';
+import '../../../../model/request/api_reload_data_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
@@ -164,6 +165,8 @@ class OfflineApiRepository extends IRepository {
       response = await _delete(pRequest);
     } else if (pRequest is ApiFetchRequest) {
       response = await _fetch(pRequest);
+    } else if (pRequest is ApiReloadDataRequest) {
+      response = await _reload(pRequest);
     } else if (pRequest is ApiFilterRequest) {
       response = await _filter(pRequest);
     } else if (pRequest is ApiInsertRecordRequest) {
@@ -230,34 +233,42 @@ class OfflineApiRepository extends IRepository {
   }
 
   Future<DalFetchResponse?> _fetch(ApiFetchRequest pRequest) async {
-    if (pRequest.fromRow <= -1) {
+    return _fetchData(pRequest.dataProvider, pRequest.fromRow, pRequest.rowCount);
+  }
+
+  Future<DalFetchResponse?> _reload(ApiReloadDataRequest pRequest) async {
+    return _fetchData(pRequest.dataProvider, pRequest.fromRow, pRequest.rowCount);
+  }
+
+  Future<DalFetchResponse?> _fetchData(String pDataProvider, int pFromRow, int pRowCount) async {
+    if (pFromRow <= -1) {
       return null;
     }
 
-    int? rowCount = pRequest.rowCount >= 0 ? pRequest.rowCount : null;
+    int? rowCount = pRowCount >= 0 ? pRowCount : null;
 
     if (rowCount == null) {
-      _dataBookFetchMap[pRequest.dataProvider] = -1;
+      _dataBookFetchMap[pDataProvider] = -1;
     } else {
-      int currentMaxFetch = _dataBookFetchMap[pRequest.dataProvider] ?? 0;
+      int currentMaxFetch = _dataBookFetchMap[pDataProvider] ?? 0;
 
-      int maxFetch = pRequest.fromRow + rowCount;
+      int maxFetch = pFromRow + rowCount;
 
       if (currentMaxFetch != -1 && currentMaxFetch < maxFetch) {
-        _dataBookFetchMap[pRequest.dataProvider] = maxFetch;
+        _dataBookFetchMap[pDataProvider] = maxFetch;
       }
     }
 
-    FilterCondition? filter = _getLastFilter(pRequest.dataProvider);
+    FilterCondition? filter = _getLastFilter(pDataProvider);
 
-    DataBook dataBook = IDataService().getDataBook(pRequest.dataProvider)!;
+    DataBook dataBook = IDataService().getDataBook(pDataProvider)!;
 
     List<String> columnNames = dataBook.metaData!.columnDefinitions.map((e) => e.name).toList();
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
       pColumns: columnNames,
-      pTableName: pRequest.dataProvider,
-      pOffset: pRequest.fromRow > 0 ? pRequest.fromRow : null,
+      pTableName: pDataProvider,
+      pOffset: pFromRow > 0 ? pFromRow : null,
       pLimit: rowCount,
       pFilter: filter,
     );
@@ -273,19 +284,19 @@ class OfflineApiRepository extends IRepository {
     }
 
     int rowCountDatabase = await offlineDatabase!.getCount(
-      pTableName: pRequest.dataProvider,
+      pTableName: pDataProvider,
       pFilter: filter,
     );
 
     bool isAllFetched = rowCountDatabase <= sortedMap.length;
 
     return DalFetchResponse(
-      dataProvider: pRequest.dataProvider,
-      from: pRequest.fromRow,
+      dataProvider: pDataProvider,
+      from: pFromRow,
       selectedRow: dataBook.selectedRow,
       isAllFetched: isAllFetched,
       columnNames: columnNames,
-      to: pRequest.fromRow + (sortedMap.length - 1),
+      to: pFromRow + (sortedMap.length - 1),
       records: sortedMap,
       name: "dal.fetch",
     );

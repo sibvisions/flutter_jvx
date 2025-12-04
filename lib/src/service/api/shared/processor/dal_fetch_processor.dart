@@ -17,6 +17,7 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/data/save_fetch_data_command.dart';
 import '../../../../model/request/api_fetch_request.dart';
+import '../../../../model/request/api_reload_data_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/filter.dart';
@@ -29,6 +30,9 @@ class DalFetchProcessor extends IResponseProcessor<DalFetchResponse> {
     bool setRootKey = false;
     Filter filter = const Filter.empty();
     if (pRequest is ApiFetchRequest) {
+      filter = pRequest.filter ?? filter;
+      setRootKey = pRequest.command?.setRootKey ?? setRootKey;
+    } else if (pRequest is ApiReloadDataRequest) {
       filter = pRequest.filter ?? filter;
       setRootKey = pRequest.command?.setRootKey ?? setRootKey;
     } else if (pRequest is ApiSetValuesRequest) {

@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/command/api/reload_data_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../util/column_list.dart';
 import '../../util/jvx_logger.dart';
@@ -164,12 +165,10 @@ mixin FlDataMixin {
     IUiService().notifySubscriptionsOfReload(model.dataProvider);
 
     return ICommandService().sendCommand(
-      FetchCommand(
-        fromRow: 0,
-        reload: true,
-        rowCount: IUiService().getSubscriptionRowCount(model.dataProvider),
+      ReloadDataCommand(
         dataProvider: model.dataProvider,
-        reason: "Refresh data of ${model.dataProvider}",
+        rowCount: FlutterUI.readAheadLimit,
+        reason: "Reload data of ${model.dataProvider}",
       ),
     );
   }

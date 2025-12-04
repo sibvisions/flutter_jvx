@@ -228,6 +228,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     if (namesChanged ||
         model.lastChangedProperties.contains(ApiObjectProperty.columnLabels) ||
         model.lastChangedProperties.contains(ApiObjectProperty.autoResize)) {
+
       _calcOnDataReceived = true;
       _recalculateTableSize();
     } else {

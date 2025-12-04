@@ -302,6 +302,7 @@ abstract class ApiObjectProperty {
   static const String closed = "closed";
   static const String offline = "offline";
   static const String before = "before";
+  static const String withoutFetch = "withoutFetch";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";

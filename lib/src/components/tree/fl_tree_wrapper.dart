@@ -23,6 +23,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 
 import '../../model/command/api/fetch_command.dart';
+import '../../model/command/api/reload_data_command.dart';
 import '../../model/command/api/select_record_tree_command.dart';
 import '../../model/command/data/get_meta_data_command.dart';
 import '../../model/component/editor/cell_editor/linked/reference_definition.dart';
@@ -195,18 +196,36 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   void _initTree() {
+    String dataProvider = dataProviderAtTreeDepth(0)!;
+
     ICommandService().sendCommand(
       FetchCommand(
+        dataProvider: dataProvider,
         fromRow: 0,
         rowCount: -1,
-        dataProvider: dataProviderAtTreeDepth(0)!,
         filter: Filter(columnNames: [], values: []),
-        reason: "Fetch base databook",
         setRootKey: true,
+        reason: "Fetch data of (base) $dataProvider",
       ),
     );
 
     initialized = true;
+  }
+
+  void _reloadTree() {
+      String dataProvider = dataProviderAtTreeDepth(0)!;
+
+      ICommandService().sendCommand(
+        ReloadDataCommand(
+          dataProvider: dataProvider,
+          rowCount: -1,
+          filter: Filter(columnNames: [], values: []),
+          setRootKey: true,
+          reason: "Reload data of $dataProvider",
+        ),
+      );
+
+      initialized = true;
   }
 
   void _handleNodeDoubleTap(String pNodeKey) {
@@ -558,11 +577,13 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   Future<void> _refresh() async {
     if (initialized && _hasAllMetaData()) {
       controller = TreeViewController(children: <Node<List<dynamic>>>[]);
+
       data.clear();
       selectedRecords.clear();
       nodesReceivingPage.clear();
       initialized = false;
-      _initTree();
+
+      _reloadTree();
     }
   }
 }

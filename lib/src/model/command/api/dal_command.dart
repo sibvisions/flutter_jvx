@@ -37,7 +37,7 @@ abstract class DalCommand extends ApplicationCommand {
 
   @override
   String toString() {
-    return "dataProvider: $dataProvider, ${super.toString()}}";
+    return "dataProvider: $dataProvider, ${super.toString()}";
   }
 
 }

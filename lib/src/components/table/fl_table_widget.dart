@@ -491,6 +491,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
 
   /// Creates the header row.
   Widget _createHeaderRow() {
+
     return FlTableHeaderRow(
       model: widget.model,
       columnDefinitions: widget.chunkData.columnDefinitions,

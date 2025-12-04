@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/fetch_command.dart';
 import '../../../../model/command/api/filter_command.dart';
+import '../../../../model/command/api/reload_data_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/fl_component_model.dart';
@@ -579,12 +580,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     showSearchInit = false;
 
     return ICommandService().sendCommand(
-      FetchCommand(
-        fromRow: 0,
-        reload: true,
-        rowCount: IUiService().getSubscriptionRowCount(model.linkReference.referencedDataBook),
+      ReloadDataCommand(
         dataProvider: model.linkReference.referencedDataBook,
-        reason: "Table refreshed",
+        rowCount: FlutterUI.readAheadLimit,
+        reason: "Reload data of ${model.linkReference.referencedDataBook}",
       ),
     );
   }
