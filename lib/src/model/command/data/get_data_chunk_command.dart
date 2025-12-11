@@ -48,7 +48,7 @@ class GetDataChunkCommand extends DataProviderDataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "GetDataChunkCommand{dataColumns: $dataColumns, fromStart: $fromStart, ${super.toString()}}";
+  String propertiesAsString() {
+    return "dataColumns: $dataColumns, fromStart: $fromStart, ${super.propertiesAsString()}";
   }
 }

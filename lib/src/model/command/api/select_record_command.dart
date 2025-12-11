@@ -69,7 +69,8 @@ class SelectRecordCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SelectRecordCommand{rowNumber: $rowNumber, selectedColumn: $selectedColumn, filter: $filter, ${super.toString()}}";
+  String propertiesAsString() {
+    return "rowNumber: $rowNumber, selectedColumn: $selectedColumn, filter: $filter, ${super.propertiesAsString()}";
   }
+
 }

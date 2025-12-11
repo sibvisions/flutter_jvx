@@ -35,13 +35,13 @@ abstract class ApplicationCommand extends ApiCommand {
     super.showLoading,
   }) : clientId = IUiService().clientId.value;
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "clientId: $clientId, ${super.toString()}";
+  String propertiesAsString() {
+    return "clientId: $clientId, ${super.propertiesAsString()}";
   }
 
 }

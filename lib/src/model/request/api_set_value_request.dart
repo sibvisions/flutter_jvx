@@ -46,6 +46,6 @@ class ApiSetValueRequest extends ApplicationRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.componentId: componentName,
-        ApiObjectProperty.value: value,
+        if (value != null) ApiObjectProperty.value: value,
       };
 }

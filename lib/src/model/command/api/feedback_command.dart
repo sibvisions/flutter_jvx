@@ -62,7 +62,8 @@ class FeedbackCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "FeedbackCommand{type: $type, message: $message, image: ${image != null ? '[bytes: ${image?.length}]' : 'null'}, properties: $properties, ${super.toString()}}";
+  String propertiesAsString() {
+    return "type: $type, message: $message, image: ${image != null ? '[bytes: ${image?.length}]' : 'null'}, "
+           "properties: $properties, ${super.propertiesAsString()}}";
   }
 }

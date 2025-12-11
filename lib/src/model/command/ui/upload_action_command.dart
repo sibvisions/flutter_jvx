@@ -39,7 +39,7 @@ class UploadActionCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "UploadActionCommand{fileId: $fileId, ${super.toString()}}";
+  String propertiesAsString() {
+    return "fileId: $fileId, ${super.propertiesAsString()}";
   }
 }

@@ -41,7 +41,7 @@ class SaveApplicationImagesCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SaveApplicationImagesCommand{images: $images, ${super.toString()}}";
+  String propertiesAsString() {
+    return "images: $images, ${super.propertiesAsString()}";
   }
 }

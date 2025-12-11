@@ -19,6 +19,6 @@ class SessionExpiredException implements Exception {
 
   @override
   String toString() {
-    return "Exception: Session expired";
+    return "SessionExpiredException";
   }
 }

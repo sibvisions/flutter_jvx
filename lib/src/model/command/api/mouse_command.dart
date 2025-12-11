@@ -54,8 +54,8 @@ abstract class MouseCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "MouseCommand{button: $button, clickCount: $clickCount, x: $x, y: $y, ${super.toString()}}";
+  String propertiesAsString() {
+    return "button: $button, clickCount: $clickCount, x: $x, y: $y, ${super.propertiesAsString()}";
   }
 
 }

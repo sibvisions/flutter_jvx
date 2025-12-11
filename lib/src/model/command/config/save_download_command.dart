@@ -53,8 +53,8 @@ class SaveOrShowFileCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SaveDownloadCommand{fileId: $fileId, fileName: $fileName, showFile: $showFile, "
-           "content: [bytes: ${content.length}]', ${super.toString()}}";
+  String propertiesAsString() {
+    return "fileId: $fileId, fileName: $fileName, showFile: $showFile, "
+           "content: [bytes: ${content.length}]', ${super.propertiesAsString()}";
   }
 }

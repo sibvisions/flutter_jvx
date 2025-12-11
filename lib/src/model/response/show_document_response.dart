@@ -37,4 +37,14 @@ class ShowDocumentResponse extends ApiResponse {
   ShowDocumentResponse.fromJson(super.json)
       : url = json[ApiObjectProperty.url],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "url: $url, ${super.propertiesAsString()}";
+  }
+
 }

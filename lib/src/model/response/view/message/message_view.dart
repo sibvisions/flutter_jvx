@@ -43,8 +43,13 @@ class MessageView extends ApiResponse {
         message = json[ApiObjectProperty.message],
         super.fromJson();
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "MessageView{title: $title, message: $message}";
+  String propertiesAsString() {
+    return "title: $title, message: $message, ${super.propertiesAsString()}";
   }
+
 }

@@ -50,8 +50,8 @@ class NavigationCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "NavigationCommand{type: $type, ${super.toString()}}";
+  String propertiesAsString() {
+    return "type: $type, ${super.propertiesAsString()}";
   }
 
 }

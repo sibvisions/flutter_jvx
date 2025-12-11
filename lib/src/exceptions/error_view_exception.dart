@@ -23,9 +23,20 @@ class ErrorViewException extends ViewException {
 
   ErrorViewException(this.errorCommand, [super.message]);
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   String toString() {
-    String s = super.toString();
-    return "${s.isNotEmpty ? "$s " : s}${errorCommand.message}";
+    if (message?.isNotEmpty == true) {
+      return "ErrorViewException: $message";
+    }
+    else if (errorCommand.message?.isNotEmpty == true) {
+      return "ErrorViewException: ${errorCommand.message}";
+    }
+    else {
+      return "ErrorViewException";
+    }
   }
 }

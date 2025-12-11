@@ -40,8 +40,8 @@ class SetParameterCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SetParameterCommand{parameter: $parameter, ${super.toString()}}";
+  String propertiesAsString() {
+    return "parameter: $parameter, ${super.propertiesAsString()}";
   }
 
 }

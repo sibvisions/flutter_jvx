@@ -207,6 +207,6 @@ class SplitLayout extends ILayout implements ICloneable {
 
   @override
   String toString() {
-    return "SplitLayout[firstComponentViewer: $firstComponentViewer; secondComponentViewer: $secondComponentViewer]";
+    return "SplitLayout{firstComponentViewer: $firstComponentViewer; secondComponentViewer: $secondComponentViewer}";
   }
 }

@@ -39,7 +39,7 @@ class AliveCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return 'AliveCommand{retryRequest: $retryRequest, ${super.toString()}}';
+  String propertiesAsString() {
+    return 'retryRequest: $retryRequest, ${super.propertiesAsString()}';
   }
 }

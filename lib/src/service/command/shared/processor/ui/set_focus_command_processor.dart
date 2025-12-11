@@ -34,7 +34,7 @@ class SetFocusCommandProcessor extends ICommandProcessor<SetFocusCommand> {
   }
 
   Future<List<BaseCommand>> focus(String? pComponentId) async {
-    if (pComponentId != null && IUiService().hasFocus(pComponentId)) {
+    if (IUiService().hasFocus(pComponentId)) {
       return [];
     }
     FlComponentModel? previousFocus = IUiService().getFocus();
@@ -64,12 +64,12 @@ class SetFocusCommandProcessor extends ICommandProcessor<SetFocusCommand> {
   }
 
   Future<List<BaseCommand>> unfocus(String? pComponentId) async {
-    if (pComponentId == null || !IUiService().hasFocus(pComponentId)) {
+    if (!IUiService().hasFocus(pComponentId)) {
       return [];
     }
     IUiService().removeFocus(pComponentId);
 
-    FlComponentModel? component = IStorageService().getComponentModel(pComponentId: pComponentId);
+    FlComponentModel? component = IStorageService().getComponentModel(pComponentId: pComponentId!);
     if (component == null || !component.eventFocusLost) {
       return [];
     }

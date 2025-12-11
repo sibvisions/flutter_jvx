@@ -35,9 +35,13 @@ abstract class ComponentCommand extends ApplicationCommand {
     super.showLoading,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "componentName: $componentName, ${super.toString()}}";
+  String propertiesAsString() {
+    return "componentName: $componentName, ${super.propertiesAsString()}}";
   }
 
 }

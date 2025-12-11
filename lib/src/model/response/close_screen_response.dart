@@ -40,4 +40,14 @@ class CloseScreenResponse extends ApiResponse {
   CloseScreenResponse.fromJson(super.json)
       : componentName = json[ApiObjectProperty.componentId],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "componentName: $componentName, ${super.propertiesAsString()}";
+  }
+
 }

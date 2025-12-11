@@ -949,8 +949,8 @@ class UiService implements IUiService {
   }
 
   @override
-  bool hasFocus(String pComponentId) {
-    return focusedComponentId == pComponentId;
+  bool hasFocus(String? pComponentId) {
+    return pComponentId != null && focusedComponentId == pComponentId;
   }
 
   @override

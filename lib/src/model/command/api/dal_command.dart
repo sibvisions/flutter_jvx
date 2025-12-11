@@ -35,9 +35,13 @@ abstract class DalCommand extends ApplicationCommand {
     super.showLoading,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "dataProvider: $dataProvider, ${super.toString()}";
+  String propertiesAsString() {
+    return "dataProvider: $dataProvider, ${super.propertiesAsString()}";
   }
 
 }

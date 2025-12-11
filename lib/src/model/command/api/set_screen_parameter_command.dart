@@ -41,8 +41,8 @@ class SetScreenParameterCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SetScreenParameterCommand{parameter: $parameter, ${super.toString()}}";
+  String propertiesAsString() {
+    return "parameter: $parameter, ${super.propertiesAsString()}";
   }
 
 }

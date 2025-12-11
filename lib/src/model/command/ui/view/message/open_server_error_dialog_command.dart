@@ -59,9 +59,9 @@ class OpenServerErrorDialogCommand extends MessageViewCommand implements ErrorCo
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "OpenErrorDialogCommand{componentName: $componentName, silentAbort: $silentAbort, details: $details, "
-           "exceptions: $exceptions, invalidApp: $invalidApp, ${super.toString()}}";
+  String propertiesAsString() {
+    return "componentName: $componentName, silentAbort: $silentAbort, details: $details, "
+           "exceptions: $exceptions, invalidApp: $invalidApp, ${super.propertiesAsString()}";
   }
 
   @override

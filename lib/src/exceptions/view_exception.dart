@@ -20,8 +20,17 @@ class ViewException implements Exception {
 
   ViewException([this.message]);
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   String toString() {
-    return message != null ? message! : "";
+
+    if (message == null) {
+      return "ViewException";
+    }
+    return "ViewException: $message";
   }
+
 }

@@ -352,7 +352,7 @@ abstract class IUiService implements Service {
 
   FlComponentModel? getFocus();
 
-  bool hasFocus(String pComponentId);
+  bool hasFocus(String? pComponentId);
 
   void removeFocus([String? pComponentId]);
 

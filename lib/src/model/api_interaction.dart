@@ -37,8 +37,13 @@ class ApiInteraction<Resp extends ApiResponse, Req extends ApiRequest> {
     required this.responses,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   String toString() {
     return 'ApiInteraction{request: $request, responses: $responses}';
   }
+
 }

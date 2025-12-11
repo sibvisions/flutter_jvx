@@ -87,9 +87,10 @@ class LoginCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "LoginCommand{loginMode: $loginMode, username: $username, password: ${password != null ? '<set>' : 'null'}, "
+  String propertiesAsString() {
+    return "loginMode: $loginMode, username: $username, password: ${password != null ? '<set>' : 'null'}, "
            "newPassword: ${newPassword != null ? '<set>' : 'null'}, createAuthKey: $createAuthKey, "
-           "confirmationCode: $confirmationCode, ${super.toString()}}";
+           "confirmationCode: $confirmationCode, ${super.propertiesAsString()}";
   }
+
 }

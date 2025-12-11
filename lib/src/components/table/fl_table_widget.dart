@@ -27,7 +27,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../util/extensions/double_extensions.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';

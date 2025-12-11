@@ -44,7 +44,8 @@ class ReloadMenuCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "ReloadMenuCommand{screenLongName: $screenLongName, screenClassName: $screenClassName, ${super.toString()}}";
+  String propertiesAsString() {
+    return "screenLongName: $screenLongName, screenClassName: $screenClassName, ${super.propertiesAsString()}";
   }
+
 }

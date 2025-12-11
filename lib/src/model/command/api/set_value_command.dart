@@ -41,8 +41,8 @@ class SetValueCommand extends ComponentCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SetValueCommand{value: $value, ${super.toString()}}";
+  String propertiesAsString() {
+    return "value: $value, ${super.propertiesAsString()}";
   }
 
 }

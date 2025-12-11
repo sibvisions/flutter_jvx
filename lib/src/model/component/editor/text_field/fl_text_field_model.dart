@@ -21,6 +21,13 @@ class FlTextFieldModel extends FlLabelModel {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// the enter key completion
+  static const String ENTER_KEY = "ENTER_KEY";
+
+  /// the focus lost completion
+  static const String FOCUS_LOST = "FOCUS_LOST";
+
+
   /// The placeholder text inside the text field if it is empty.
   String? placeholder;
 

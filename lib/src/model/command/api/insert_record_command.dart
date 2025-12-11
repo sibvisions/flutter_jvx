@@ -45,7 +45,8 @@ class InsertRecordCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "InsertRecordCommand{rowNumber: $rowNumber, before: $before, ${super.toString()}}";
+  String propertiesAsString() {
+    return "rowNumber: $rowNumber, before: $before, ${super.propertiesAsString()}";
   }
+
 }

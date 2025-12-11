@@ -99,4 +99,19 @@ class DalMetaDataResponse extends ApiResponse {
             : null,
         additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "dataProvider: $dataProvider, columnViewTable: $columnViewTable, columnViewTree: $columnViewTree, "
+           "columnDefinitions: $columnDefinitions, readOnly: $readOnly, deleteEnabled: $deleteEnabled, "
+           "updateEnabled: $updateEnabled, insertEnabled: $insertEnabled, modelDeleteEnabled: $modelDeleteEnabled, "
+           "modelInsertEnabled: $modelInsertEnabled, modelUpdateEnabled: $modelUpdateEnabled, primaryKeyColumns: $primaryKeyColumns, "
+           "masterReference: $masterReference, detailReferences: $detailReferences, rootReference: $rootReference,"
+           "additionalRowVisible: $additionalRowVisible, ${super.propertiesAsString()}";
+  }
+
 }

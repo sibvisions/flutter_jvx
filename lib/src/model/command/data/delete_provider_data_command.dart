@@ -44,7 +44,7 @@ class DeleteProviderDataCommand extends DataProviderDataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "DeleteProviderDataCommand{deleteAll: $deleteAll, ${super.toString()}}";
+  String propertiesAsString() {
+    return "deleteAll: $deleteAll, ${super.propertiesAsString()}";
   }
 }

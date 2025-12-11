@@ -66,8 +66,10 @@ class OpenErrorDialogCommand extends UiCommand implements ErrorCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "OpenErrorDialogCommand{title: $title, message: $message, error: $error, isTimeout: $isTimeout, "
-           "stackTrace: $stackTrace, dismissible: $dismissible, silentAbort: $silentAbort, ${super.toString()}";
+  String propertiesAsString() {
+    return "title: $title, message: $message, error: $error, isTimeout: $isTimeout, "
+           "stackTrace: $stackTrace, dismissible: $dismissible, silentAbort: $silentAbort, "
+           "${super.propertiesAsString()}";
   }
+
 }

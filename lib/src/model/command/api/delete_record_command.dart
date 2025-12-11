@@ -47,7 +47,7 @@ class DeleteRecordCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "DeleteRecordCommand{filter: $filter, rowNumber: $rowNumber, ${super.toString()}}";
+  String propertiesAsString() {
+    return "filter: $filter, rowNumber: $rowNumber, ${super.propertiesAsString()}";
   }
 }

@@ -92,6 +92,19 @@ class ApplicationSettingsResponse extends ApiResponse {
             : ApplicationColors.fromJson(json[ApiObjectProperty.colors], true),
         components = json[ApiObjectProperty.desktop],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "saveVisible: $saveVisible, reloadVisible: $reloadVisible, rollbackVisible: $rollbackVisible, "
+           "changePasswordVisible: $changePasswordVisible, menuBarVisible: $menuBarVisible, toolBarVisible: $toolBarVisible, "
+           "homeVisible: $homeVisible, logoutVisible: $logoutVisible, userSettingsVisible: $userSettingsVisible, "
+           "colors: $colors, darkColors: $darkColors, components: $components, "
+           "${super.propertiesAsString()}";
+  }
 }
 
 class ApplicationColors {
@@ -157,6 +170,20 @@ class ApplicationColors {
       return ColorConverter.fromJson(json[pPropertyName]);
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "ApplicationColors{background: $background, alternateBackground: $alternateBackground, foreground: $foreground, "
+           "activeSelectionBackground: $activeSelectionBackground, activeSelectionForeground: $activeSelectionForeground, "
+           "inactiveSelectionBackground: $inactiveSelectionBackground, inactiveSelectionForeground: $inactiveSelectionForeground, "
+           "mandatoryBackground: $mandatoryBackground, readOnlyBackground: $readOnlyBackground, "
+           "invalidEditorBackground: $invalidEditorBackground}";
+  }
+
 }
 
 abstract class ColorConverter {

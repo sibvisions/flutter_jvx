@@ -49,7 +49,8 @@ class RouteToCommand extends RouteCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "RouteToCommand{uri: $uri, replaceRoute: $replaceRoute, ${super.toString()}}";
+  String propertiesAsString() {
+    return "uri: $uri, replaceRoute: $replaceRoute, ${super.propertiesAsString()}";
   }
+
 }

@@ -123,6 +123,22 @@ class DalDataProviderChangedResponse extends ApiResponse {
         closed = json[ApiObjectProperty.closed],
         additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "dataProvider: $dataProvider, reload: $reload, changedColumns: $changedColumns, "
+           "selectedRow: $selectedRow, deletedRow: $deletedRow, changedColumnNames: $changedColumnNames, "
+           "changedValues: $changedValues, deleteEnabled: $deleteEnabled, insertEnabled: $insertEnabled, "
+           "updateEnabled: $updateEnabled, modelDeleteEnabled: $modelDeleteEnabled, modelInsertEnabled: $modelInsertEnabled, "
+           "modelUpdateEnabled: $modelUpdateEnabled, readOnly: $readOnly, treePath: $treePath, selectedColumn: $selectedColumn, "
+           "recordFormats: $recordFormats, recordReadOnly: $recordReadOnly, sortDefinitions: $sortDefinitions, closed: $closed, "
+           "additionalRowVisible: $additionalRowVisible, ${super.propertiesAsString()}";
+  }
+
 }
 
 class ChangedColumn {
@@ -140,4 +156,15 @@ class ChangedColumn {
         movable = json[ApiObjectProperty.movable],
         sortable = json[ApiObjectProperty.sortable],
         cellEditorJson = json[ApiObjectProperty.cellEditor];
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "ChangedColumn{name: $name, label: $label, readOnly: $readOnly, "
+        "movable: $movable, sortable: $sortable, cellEditorJson: $cellEditorJson}";
+  }
+
 }

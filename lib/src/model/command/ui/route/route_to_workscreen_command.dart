@@ -42,7 +42,8 @@ class RouteToWorkScreenCommand extends RouteCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "RouteToWorkScreenCommand{screenName: $screenName, replaceRoute: $replaceRoute, ${super.toString()}}";
+  String propertiesAsString() {
+    return "screenName: $screenName, replaceRoute: $replaceRoute, ${super.propertiesAsString()}";
   }
+
 }

@@ -32,12 +32,4 @@ class MouseReleasedCommand extends MouseCommand {
     super.showLoading,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "MouseReleasedCommand{${super.toString()}}";
-  }
 }

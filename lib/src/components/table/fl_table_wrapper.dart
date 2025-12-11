@@ -657,7 +657,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       }
 
       if (commands.isNotEmpty) {
-        commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Popup command Focus"));
+        commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Popup command focus"));
 
         ICommandService().sendCommands(commands);
       }

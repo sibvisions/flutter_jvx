@@ -52,8 +52,14 @@ class LanguageResponse extends ApiResponse {
         languageResource = json[ApiObjectProperty.languageResource],
         super.fromJson();
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return 'LanguageResponse{customLanguage: $customLanguage, langCode: $langCode, timeZoneCode: $timeZoneCode, languageResource: $languageResource}';
+  String propertiesAsString() {
+    return "customLanguage: $customLanguage, langCode: $langCode, "
+        "timeZoneCode: $timeZoneCode, languageResource: $languageResource, ${super.propertiesAsString()}";
   }
+
 }

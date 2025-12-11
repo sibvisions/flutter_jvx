@@ -45,7 +45,8 @@ class UpdateLayoutPositionCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "UpdateLayoutPositionCommand{layoutDataList: $layoutDataList, ${super.toString()}}";
+  String propertiesAsString() {
+    return "layoutDataList: $layoutDataList, ${super.propertiesAsString()}";
   }
+
 }

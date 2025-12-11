@@ -27,13 +27,5 @@ class ActivateScreenCommand extends ComponentCommand {
     required super.reason,
     super.showLoading,
   });
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "ActivateScreenCommand{${super.toString()}}";
-  }
+  
 }

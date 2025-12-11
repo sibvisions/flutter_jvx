@@ -16,6 +16,7 @@
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
+import '../../util/extensions/object_extensions.dart';
 
 abstract class ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,4 +39,23 @@ abstract class ApiResponse {
   });
 
   ApiResponse.fromJson(this.json) : name = json[ApiObjectProperty.name];
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "$className{${propertiesAsString()}}";
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Gets a string with all properties
+  String propertiesAsString() {
+    return "name: $name";
+  }
+
 }

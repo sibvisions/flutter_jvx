@@ -46,7 +46,8 @@ class SortCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SortCommand{sortDefinition: $sortDefinition, columnName: $columnName, ${super.toString()}}";
+  String propertiesAsString() {
+    return "sortDefinition: $sortDefinition, columnName: $columnName, ${super.propertiesAsString()}";
   }
+
 }

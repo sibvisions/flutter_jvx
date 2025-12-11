@@ -40,8 +40,8 @@ class SaveApplicationMetaDataCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SaveApplicationMetaDataCommand{metaData: $metaData, ${super.toString()}}";
+  String propertiesAsString() {
+    return "metaData: $metaData, ${super.propertiesAsString()}";
   }
 
 }

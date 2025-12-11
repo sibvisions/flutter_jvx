@@ -74,8 +74,9 @@ class FetchCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "FetchCommand{fromRow: $fromRow, rowCount: $rowCount, includeMetaData: $includeMetaData, "
-           "filter: $filter, reload:$reload, setRootKey: $setRootKey, offline: $offline, ${super.toString()}}";
+  String propertiesAsString() {
+    return "fromRow: $fromRow, rowCount: $rowCount, includeMetaData: $includeMetaData, "
+           "filter: $filter, reload:$reload, setRootKey: $setRootKey, offline: $offline, ${super.propertiesAsString()}";
   }
+
 }

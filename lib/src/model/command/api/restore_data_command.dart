@@ -41,7 +41,8 @@ class RestoreDataCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "RestoreDataCommand{onlySelected: $onlySelected  ${super.toString()}}";
+  String propertiesAsString() {
+    return "onlySelected: $onlySelected  ${super.propertiesAsString()}";
   }
+
 }

@@ -40,7 +40,7 @@ class RegisterParentCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "RegisterParentCommand{layoutData: $layoutData, ${super.toString()}}";
+  String propertiesAsString() {
+    return "layoutData: $layoutData, ${super.propertiesAsString()}";
   }
 }

@@ -96,15 +96,19 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "OpenMessageDialogCommand{componentName: $componentName, "
+  String propertiesAsString() {
+    return "componentName: $componentName, "
            "closable: $closable, buttonType: $buttonType, "
            "iconType: $iconType, okComponentName: $okComponentName, "
            "notOkComponentName: $notOkComponentName, cancelComponentName: $cancelComponentName, "
            "okText: $okText, notOkText: $notOkText, cancelText: $cancelText, "
            "dataProvider: $dataProvider, columnName: $columnName,"
-           "inputLabel: $inputLabel, ${super.toString()}";
+           "inputLabel: $inputLabel, ${super.propertiesAsString()}";
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void apply(OpenMessageDialogCommand command) {
     current.value = command;

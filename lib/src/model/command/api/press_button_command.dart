@@ -29,13 +29,4 @@ class PressButtonCommand extends ComponentCommand {
     super.showLoading,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "PressButtonCommand{${super.toString()}}";
-  }
-
 }

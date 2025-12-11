@@ -45,8 +45,8 @@ class UploadCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "UploadCommand{fileId: $fileId, file: $file, reason: $reason}";
+  String propertiesAsString() {
+    return "fileId: $fileId, file: $file, reason: $reason, ${super.propertiesAsString()}}";
   }
 
 }

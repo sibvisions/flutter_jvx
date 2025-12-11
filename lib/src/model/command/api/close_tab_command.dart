@@ -29,8 +29,4 @@ class CloseTabCommand extends TabCommand {
     super.showLoading,
   });
 
-  @override
-  String toString() {
-    return "CloseTabCommand{${super.toString()}}";
-  }
 }

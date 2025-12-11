@@ -59,8 +59,9 @@ class SetValuesCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SetValuesCommand{columnNames: $columnNames, values: $values, filter: $filter, "
-           "editorColumnName: $editorColumnName, rowNumber: $rowNumber, ${super.toString()}}";
+  String propertiesAsString() {
+    return "columnNames: $columnNames, values: $values, filter: $filter, "
+           "editorColumnName: $editorColumnName, rowNumber: $rowNumber, ${super.propertiesAsString()}";
   }
+
 }

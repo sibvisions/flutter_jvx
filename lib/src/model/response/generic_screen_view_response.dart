@@ -53,4 +53,15 @@ class GenericScreenViewResponse extends ApiResponse {
         update = json[ApiObjectProperty.update],
         home = json[ApiObjectProperty.home],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "componentName: $componentName, changedComponents: $changedComponents, "
+           "home: $home, update: $update, ${super.propertiesAsString()}";
+  }
+
 }

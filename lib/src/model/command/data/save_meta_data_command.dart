@@ -36,8 +36,12 @@ class SaveMetaDataCommand extends DataCommand {
     super.showLoading,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "SaveMetaDataCommand{response: $response, ${super.toString()}}";
+  String propertiesAsString() {
+    return "response: $response, ${super.propertiesAsString()}";
   }
 }

@@ -30,12 +30,4 @@ class ChangesCommand extends ApplicationCommand {
     super.showLoading,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "ChangesCommand{${super.toString()}}";
-  }
 }

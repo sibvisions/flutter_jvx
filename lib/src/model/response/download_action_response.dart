@@ -47,4 +47,14 @@ class DownloadActionResponse extends ApiResponse {
         url = json[ApiObjectProperty.url],
         fileName = json[ApiObjectProperty.fileName],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "fileId: $fileId, url: $url, fileName: $fileName, ${super.propertiesAsString()}";
+  }
+
 }

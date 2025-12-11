@@ -47,7 +47,8 @@ class DeviceStatusCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "DeviceStatusCommand{screenHeight: $screenHeight, screenWidth: $screenWidth, darkMode: $darkMode, ${super.toString()}}";
+  String propertiesAsString() {
+    return "screenHeight: $screenHeight, screenWidth: $screenWidth, darkMode: $darkMode, "
+           "${super.propertiesAsString()}";
   }
 }

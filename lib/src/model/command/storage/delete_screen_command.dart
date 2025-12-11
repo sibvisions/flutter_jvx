@@ -40,8 +40,8 @@ class DeleteScreenCommand extends StorageCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "DeleteScreenCommand{popPage: $popPage, ${super.toString()}}";
+  String propertiesAsString() {
+    return "popPage: $popPage, ${super.propertiesAsString()}";
   }
 
 }

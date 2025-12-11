@@ -38,8 +38,13 @@ class MessageViewCommand extends UiCommand {
     required super.reason,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "MessageViewCommand{title: $title, message: $message, ${super.toString()}}";
+  String propertiesAsString() {
+    return "title: $title, message: $message, ${super.propertiesAsString()}";
   }
+
 }

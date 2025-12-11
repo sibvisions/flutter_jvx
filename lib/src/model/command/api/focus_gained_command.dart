@@ -28,12 +28,4 @@ class FocusGainedCommand extends ComponentCommand {
     super.showLoading,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "FocusGainedCommand{${super.toString()}}";
-  }
 }

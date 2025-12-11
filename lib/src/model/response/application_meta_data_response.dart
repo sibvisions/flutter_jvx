@@ -83,12 +83,17 @@ class ApplicationMetaDataResponse extends ApiResponse {
         mandatoryMark = json[ApiObjectProperty.mandatoryMark],
         super.fromJson();
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, '
-           'serverVersion: $serverVersion, customLanguage: $customLanguage, '
-           'langCode: $langCode, timeZoneCode: $timeZoneCode, '
-           'lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled, '
-           'mandatoryMarkVisible: $mandatoryMarkVisible, mandatoryMark: $mandatoryMark}';
+  String propertiesAsString() {
+    return "clientId: $clientId, version: $version, "
+           "serverVersion: $serverVersion, customLanguage: $customLanguage, "
+           "langCode: $langCode, timeZoneCode: $timeZoneCode, "
+           "lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled, "
+           "mandatoryMarkVisible: $mandatoryMarkVisible, mandatoryMark: $mandatoryMark}, ${super.propertiesAsString()}";
   }
+
 }

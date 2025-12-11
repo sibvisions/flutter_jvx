@@ -36,4 +36,14 @@ class CloseFrameResponse extends ApiResponse {
   CloseFrameResponse.fromJson(super.json)
       : componentId = json[ApiObjectProperty.componentId],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "componentId: $componentId, ${super.propertiesAsString()}";
+  }
+
 }

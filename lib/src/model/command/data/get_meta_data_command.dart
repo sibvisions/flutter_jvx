@@ -29,12 +29,4 @@ class GetMetaDataCommand extends DataProviderDataCommand {
     super.showLoading,
   }) : assert(subId != null);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "GetMetaDataCommand{${super.toString()}}";
-  }
 }

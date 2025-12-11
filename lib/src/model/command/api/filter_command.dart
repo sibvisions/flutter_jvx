@@ -82,7 +82,9 @@ class FilterCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "FilterCommand{editorComponentId: $editorComponentId, value: $value, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, ${super.toString()}}";
+  String propertiesAsString() {
+    return "editorComponentId: $editorComponentId, value: $value, columnNames: $columnNames, "
+           "filter: $filter, filterCondition: $filterCondition, ${super.propertiesAsString()}";
   }
+
 }

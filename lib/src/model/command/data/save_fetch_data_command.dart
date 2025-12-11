@@ -51,7 +51,7 @@ class SaveFetchDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SaveFetchDataCommand{requestFilter: $requestFilter, response: $response, setRootKey: $setRootKey, ${super.toString()}}";
+  String propertiesAsString() {
+    return "requestFilter: $requestFilter, response: $response, setRootKey: $setRootKey, ${super.propertiesAsString()}";
   }
 }

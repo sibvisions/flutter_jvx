@@ -51,7 +51,7 @@ class OpenScreenCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "OpenScreenCommand{longName: $longName, className: $className, parameter: $parameter, reopen: $reopen, ${super.toString()}}";
+  String propertiesAsString() {
+    return "longName: $longName, className: $className, parameter: $parameter, reopen: $reopen, ${super.propertiesAsString()}";
   }
 }

@@ -451,11 +451,11 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Focuses this component.
   void focus() {
-    ICommandService().sendCommand(SetFocusCommand(componentId: model.id, focus: true, reason: "Sending Focus"));
+    ICommandService().sendCommand(SetFocusCommand(componentId: model.id, focus: true, reason: "Sending focus"));
   }
 
   /// Unfocus this component.
   void unfocus() {
-    ICommandService().sendCommand(SetFocusCommand(componentId: model.id, focus: false, reason: "Sending Focus"));
+    ICommandService().sendCommand(SetFocusCommand(componentId: model.id, focus: false, reason: "Sending unfocus"));
   }
 }

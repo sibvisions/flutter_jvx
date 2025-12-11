@@ -28,8 +28,4 @@ class OpenTabCommand extends TabCommand {
     super.showLoading,
   });
 
-  @override
-  String toString() {
-    return "OpenTabCommand{${super.toString()}}";
-  }
 }

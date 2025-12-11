@@ -35,4 +35,14 @@ class DownloadImagesResponse extends ApiResponse {
     required this.responseBody,
     required super.name,
   });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "responseBody: $responseBody, ${super.propertiesAsString()}";
+  }
+
 }

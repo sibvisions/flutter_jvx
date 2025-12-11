@@ -15,7 +15,6 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import '../../service/command/shared/processor/api/reload_data_processor.dart';
 import '../command/api/reload_data_command.dart';
 import 'application_request.dart';
 import 'filter.dart';

@@ -26,12 +26,4 @@ class DownloadTemplatesCommand extends ApplicationCommand {
     required super.reason,
   }) : super(showLoading: false);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "DownloadTemplatesCommand{${super.toString()}}";
-  }
 }

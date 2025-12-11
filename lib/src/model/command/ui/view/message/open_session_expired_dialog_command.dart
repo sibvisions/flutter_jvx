@@ -35,13 +35,9 @@ class OpenSessionExpiredDialogCommand extends MessageViewCommand implements Erro
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "OpenSessionExpiredDialogCommand{${super.toString()}}";
-  }
-
-  @override
   Object? get error => SessionExpiredException();
 
   @override
   StackTrace? get stackTrace => null;
+
 }

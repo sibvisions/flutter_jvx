@@ -26,12 +26,4 @@ class HomeCommand extends ApplicationCommand {
     required super.reason,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "HomeCommand{${super.toString()}}";
-  }
 }

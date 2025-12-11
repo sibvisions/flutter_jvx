@@ -41,7 +41,7 @@ class SaveApplicationTranslationCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SaveApplicationTranslationCommand{translations: $translations, ${super.toString()}}";
+  String propertiesAsString() {
+    return "translations: $translations, ${super.propertiesAsString()}";
   }
 }

@@ -24,7 +24,6 @@ import '../../model/layout/alignments.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
-import '../../util/extensions/color_extensions.dart';
 import '../../util/i_types.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import '../table/fl_table_cell.dart';

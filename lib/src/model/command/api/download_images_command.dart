@@ -26,12 +26,4 @@ class DownloadImagesCommand extends ApplicationCommand {
     required super.reason,
   }) : super(showLoading: false);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "DownloadImagesCommand{${super.toString()}}";
-  }
 }

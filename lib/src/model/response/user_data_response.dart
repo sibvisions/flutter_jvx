@@ -58,4 +58,15 @@ class UserDataResponse extends ApiResponse {
         profileImage = json[ApiObjectProperty.profileImage],
         roles = json[ApiObjectProperty.roles]?.cast<String>(),
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "userName: $userName, displayName: $displayName, eMail: $eMail, profileImage: $profileImage,"
+           "roles: $roles, ${super.propertiesAsString()}";
+  }
+
 }

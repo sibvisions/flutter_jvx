@@ -65,8 +65,8 @@ class ReloadDataCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "ReloadDataCommand{fromRow: $fromRow, rowCount: $rowCount, withoutFetch: $withoutFetch, "
-           "filter: $filter, setRootKey: $setRootKey, ${super.toString()}}";
+  String propertiesAsString() {
+    return "fromRow: $fromRow, rowCount: $rowCount, withoutFetch: $withoutFetch, "
+           "filter: $filter, setRootKey: $setRootKey, ${super.propertiesAsString()}";
   }
 }

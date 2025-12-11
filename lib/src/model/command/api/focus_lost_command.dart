@@ -28,12 +28,4 @@ class FocusLostCommand extends ComponentCommand {
     super.showLoading,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "FocusLostCommand{${super.toString()}}";
-  }
 }

@@ -20,10 +20,15 @@ class InvalidServerResponseException implements Exception {
 
   InvalidServerResponseException(this.message, [this.statusCode]);
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   String toString() {
-    Object? message = this.message;
-    if (message == null) return "InvalidServerResponseException";
-    return "$message";
+    if (message == null) {
+      return "InvalidServerResponseException";
+    }
+    return "InvalidServerResponseException: $message";
   }
 }

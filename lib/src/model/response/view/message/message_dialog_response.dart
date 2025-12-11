@@ -100,12 +100,18 @@ class MessageDialogResponse extends MessageView {
         inputLabel = json[ApiObjectProperty.inputLabel],
         super.fromJson();
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return 'MessageDialogResponse{componentId: $componentId, closable: $closable, '
-        'buttonType: $buttonType, iconType: $iconType, okComponentId: $okComponentId, '
-        'notOkComponentId: $notOkComponentId, cancelComponentId: $cancelComponentId, '
-        'okText: $okText, notOkText: $notOkText, cancelText: $cancelText,'
-        'dataProvider: $dataProvider, columnName: $columnName, inputLabel: $inputLabel}';
+  String propertiesAsString() {
+    return "componentId: $componentId, closable: $closable, "
+           "buttonType: $buttonType, iconType: $iconType, okComponentId: $okComponentId, "
+           "notOkComponentId: $notOkComponentId, cancelComponentId: $cancelComponentId, "
+           "okText: $okText, notOkText: $notOkText, cancelText: $cancelText, "
+           "dataProvider: $dataProvider, columnName: $columnName, inputLabel: $inputLabel, "
+           "${super.propertiesAsString()}";
   }
+
 }

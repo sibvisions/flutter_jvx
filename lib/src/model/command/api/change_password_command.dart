@@ -48,8 +48,8 @@ class ChangePasswordCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "ChangePasswordCommand{username: $username, ${super.toString()}}";
+  String propertiesAsString() {
+    return "username: $username, ${super.propertiesAsString()}";
   }
 
 }

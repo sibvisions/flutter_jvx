@@ -227,7 +227,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       commands.add(await locateDevice());
     }
 
-    commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Button clicked Focus"));
+    commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Button clicked focus"));
 
     return commands;
   }

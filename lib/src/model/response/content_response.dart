@@ -42,4 +42,14 @@ class ContentResponse extends ApiResponse {
       : changedComponents = json[ApiObjectProperty.changedComponents],
         update = json[ApiObjectProperty.update],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "changedComponents: $changedComponents, update: $update, ${super.propertiesAsString()}";
+  }
+
 }

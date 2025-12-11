@@ -37,4 +37,14 @@ class UploadActionResponse extends ApiResponse {
   UploadActionResponse.fromJson(super.json)
       : fileId = json[ApiObjectProperty.fileId],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "fileId: $fileId, ${super.propertiesAsString()}";
+  }
+
 }

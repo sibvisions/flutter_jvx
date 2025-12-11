@@ -33,4 +33,14 @@ class DownloadStyleResponse extends ApiResponse {
     required this.bodyBytes,
     required super.name,
   });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "bodyBytes: $bodyBytes, ${super.propertiesAsString()}";
+  }
+
 }

@@ -51,8 +51,10 @@ class UpdateComponentsCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "UpdateComponentsCommand{changedComponents: $changedComponents, deletedComponents: $deletedComponents, "
-           "affectedComponents: $affectedComponents, notifyDesktopPanel: $notifyDesktopPanel, ${super.toString()}}";
+  String propertiesAsString() {
+    return "changedComponents: $changedComponents, deletedComponents: $deletedComponents, "
+           "affectedComponents: $affectedComponents, notifyDesktopPanel: $notifyDesktopPanel, "
+           "${super.propertiesAsString()}";
   }
+
 }

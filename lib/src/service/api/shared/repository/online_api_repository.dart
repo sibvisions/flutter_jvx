@@ -35,6 +35,7 @@ import '../../../../model/command/api/alive_command.dart';
 import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/command/api/open_screen_command.dart';
 import '../../../../model/command/api/reload_menu_command.dart';
+import '../../../../model/request/api_action_request.dart';
 import '../../../../model/request/api_activate_screen_request.dart';
 import '../../../../model/request/api_alive_request.dart';
 import '../../../../model/request/api_cancel_login_request.dart';
@@ -158,6 +159,7 @@ class OnlineApiRepository extends IRepository {
     ApiOpenTabRequest: (_) => APIRoute.POST_SELECT_TAB,
     ApiPressButtonRequest: (_) => APIRoute.POST_PRESS_BUTTON,
     ApiSetValueRequest: (_) => APIRoute.POST_SET_VALUE,
+    ApiActionRequest: (_) => APIRoute.POST_ACTION,
     ApiSetValuesRequest: (_) => APIRoute.POST_SET_VALUES,
     ApiChangePasswordRequest: (_) => APIRoute.POST_CHANGE_PASSWORD,
     ApiResetPasswordRequest: (_) => APIRoute.POST_RESET_PASSWORD,

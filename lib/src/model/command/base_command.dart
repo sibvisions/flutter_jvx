@@ -14,6 +14,8 @@
  * the License.
  */
 
+import '../../util/extensions/object_extensions.dart';
+
 ///
 /// Base Class for communication between services, every [BaseCommand] should always be directed at a specific Service.
 ///
@@ -45,19 +47,25 @@ abstract class BaseCommand {
     this.delayUILocking = false,
   }) : id = DateTime.now().millisecondsSinceEpoch;
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   String toString() {
-    return "id: $id, reason: $reason, showLoading: $showLoading, delayUILocking: $delayUILocking, loadingDelay: $loadingDelay";
+    return "$className{${propertiesAsString()}}";
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns the delay until the loading progress gets shown.
   Duration get loadingDelay => const Duration(milliseconds: 300);
+
+  /// Gets a string with all properties
+  String propertiesAsString() {
+    return "id: $id, reason: $reason, showLoading: $showLoading, delayUILocking: $delayUILocking, loadingDelay: $loadingDelay";
+  }
+
 }

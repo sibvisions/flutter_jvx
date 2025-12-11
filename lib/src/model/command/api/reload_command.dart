@@ -26,12 +26,4 @@ class ReloadCommand extends ApplicationCommand {
     required super.reason,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "ReloadCommand{${super.toString()}}";
-  }
 }

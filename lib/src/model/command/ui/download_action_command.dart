@@ -51,8 +51,8 @@ class DownloadActionCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "DownloadActionCommand{fileId: $fileId, fileName: $fileName, url: $url, showFile: $showFile, ${super.toString()}}";
+  String propertiesAsString() {
+    return "fileId: $fileId, fileName: $fileName, url: $url, showFile: $showFile, ${super.propertiesAsString()}";
   }
 
 }

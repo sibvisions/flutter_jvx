@@ -40,7 +40,8 @@ class RouteToMenuCommand extends RouteCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "RouteToMenuCommand{replaceRoute: $replaceRoute, ${super.toString()}}";
+  String propertiesAsString() {
+    return "replaceRoute: $replaceRoute, ${super.propertiesAsString()}";
   }
+
 }

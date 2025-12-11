@@ -26,12 +26,4 @@ class SaveCommand extends ApplicationCommand {
     required super.reason,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "SaveCommand{${super.toString()}}";
-  }
 }

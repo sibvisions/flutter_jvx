@@ -36,6 +36,7 @@ class APIRoute {
   static const APIRoute POST_DEVICE_STATUS = APIRoute(Method.POST, "api/deviceStatus");
   static const APIRoute POST_PRESS_BUTTON = APIRoute(Method.POST, "api/v2/pressButton");
   static const APIRoute POST_SET_VALUE = APIRoute(Method.POST, "api/comp/setValue");
+  static const APIRoute POST_ACTION = APIRoute(Method.POST, "api/comp/action");
   static const APIRoute POST_SET_VALUES = APIRoute(Method.POST, "api/dal/setValues");
   static const APIRoute POST_CLOSE_TAB = APIRoute(Method.POST, "api/comp/closeTab");
   static const APIRoute POST_SELECT_TAB = APIRoute(Method.POST, "api/comp/selectTab");

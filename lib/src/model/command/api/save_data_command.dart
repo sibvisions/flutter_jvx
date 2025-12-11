@@ -41,7 +41,8 @@ class SaveDataCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SaveDataCommand{onlySelected: $onlySelected  ${super.toString()}}";
+  String propertiesAsString() {
+    return "onlySelected: $onlySelected  ${super.propertiesAsString()}";
   }
+
 }

@@ -37,4 +37,14 @@ class AuthenticationDataResponse extends ApiResponse {
   AuthenticationDataResponse.fromJson(super.json)
       : authKey = json[ApiObjectProperty.authKey],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "authKey: $authKey, ${super.propertiesAsString()}";
+  }
+
 }

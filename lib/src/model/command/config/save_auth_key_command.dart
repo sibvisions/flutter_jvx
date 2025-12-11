@@ -34,8 +34,4 @@ class SaveAuthKeyCommand extends ConfigCommand {
     required super.reason,
   });
 
-  @override
-  String toString() {
-    return "SaveAuthKeyCommand{${super.toString()}}";
-  }
 }

@@ -40,8 +40,8 @@ class SaveApplicationParametersCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SaveApplicationParametersCommand{parameters: $parameters, ${super.toString()}}";
+  String propertiesAsString() {
+    return "parameters: $parameters, ${super.propertiesAsString()}";
   }
 
 }

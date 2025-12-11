@@ -66,4 +66,16 @@ class ApplicationParametersResponse extends ApiResponse {
 
     return copy;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "applicationTitleName: $applicationTitleName, applicationTitleWeb: $applicationTitleWeb, "
+        "authenticated: $authenticated, openScreen: $openScreen, "
+        "designModeAllowed: $designModeAllowed, timeZoneCode: $parameters, ${super.propertiesAsString()}";
+  }
+
 }

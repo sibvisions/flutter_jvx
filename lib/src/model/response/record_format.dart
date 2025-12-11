@@ -49,6 +49,16 @@ class RecordFormat {
 
     return rowFormats[row]!.getCellFormat(column);
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "RecordFormat{rowFormats: $rowFormats}";
+  }
+
 }
 
 class RowFormat {
@@ -77,6 +87,16 @@ class RowFormat {
 
     return formats[formatIndex];
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "RowFormat{columnIndexToFormatIndex: $columnIndexToFormatIndex, formats: $formats}";
+  }
+
 }
 
 class CellFormat {
@@ -127,4 +147,15 @@ class CellFormat {
       }
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "CellFormat{background: $background, foreground: $foreground, font: $font, imageString: $imageString, "
+           "style: $style, leftIndent: $leftIndent}";
+  }
+
 }

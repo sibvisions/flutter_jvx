@@ -36,4 +36,14 @@ class BadClientResponse extends ApiResponse {
   BadClientResponse.fromJson(super.json)
       : info = json[ApiObjectProperty.info],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "info: $info, ${super.propertiesAsString()}";
+  }
+
 }

@@ -26,12 +26,4 @@ class ExitCommand extends ApplicationCommand {
     required super.reason,
   }) : super(showLoading: false);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return 'ExitCommand{${super.toString()}}';
-  }
 }

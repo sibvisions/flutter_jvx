@@ -46,8 +46,8 @@ class SetFocusCommand extends UiCommand {
   Duration get loadingDelay => Duration.zero;
 
   @override
-  String toString() {
-    return "SetFocusCommand{componentId: $componentId, loadingDelay: $loadingDelay, ${super.toString()}}";
+  String propertiesAsString() {
+    return "componentId: $componentId, loadingDelay: $loadingDelay, ${super.propertiesAsString()}";
   }
 
 }

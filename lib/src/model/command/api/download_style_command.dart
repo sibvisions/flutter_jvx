@@ -26,12 +26,4 @@ class DownloadStyleCommand extends ApplicationCommand {
     required super.reason,
   }) : super(showLoading: false);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "DownloadStyleCommand{${super.toString()}}";
-  }
 }

@@ -28,12 +28,4 @@ class CloseFrameCommand extends ComponentCommand {
     super.showLoading,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Interface implementation
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "CloseFrameCommand{${super.toString()}}";
-  }
 }

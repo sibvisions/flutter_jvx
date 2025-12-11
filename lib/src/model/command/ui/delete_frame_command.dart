@@ -39,7 +39,8 @@ class DeleteFrameCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SetFocusCommand{componentName: $componentName, loadingDelay: $loadingDelay, ${super.toString()}}";
+  String propertiesAsString() {
+    return "componentName: $componentName, loadingDelay: $loadingDelay, ${super.propertiesAsString()}";
   }
+
 }

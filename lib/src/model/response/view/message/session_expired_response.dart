@@ -33,4 +33,5 @@ class SessionExpiredResponse extends MessageView {
   });
 
   SessionExpiredResponse.fromJson(super.json) : super.fromJson();
+
 }

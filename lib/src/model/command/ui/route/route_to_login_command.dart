@@ -44,7 +44,8 @@ class RouteToLoginCommand extends RouteCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "RouteToLoginCommand{mode: $mode, loginData: $loginData, ${super.toString()}}";
+  String propertiesAsString() {
+    return "mode: $mode, loginData: $loginData, ${super.propertiesAsString()}";
   }
+
 }

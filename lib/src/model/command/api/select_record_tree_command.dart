@@ -45,8 +45,8 @@ class SelectRecordTreeCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SelectTreeCommand{dataProvider: $dataProviders, filter: $filters, ${super.toString()}}";
+  String propertiesAsString() {
+    return "dataProvider: $dataProviders, filter: $filters, ${super.propertiesAsString()}";
   }
 
 }

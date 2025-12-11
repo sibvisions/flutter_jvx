@@ -39,6 +39,16 @@ class MenuViewResponse extends ApiResponse {
             (json[ApiObjectProperty.entries] as List<dynamic>?)?.map((e) => MenuEntryResponse.fromJson(e)).toList() ??
                 [],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "componentId: $componentId, responseMenuItems: $responseMenuItems, ${super.propertiesAsString()}";
+  }
+
 }
 
 class MenuEntryResponse {
@@ -103,4 +113,14 @@ class MenuEntryResponse {
         quickBarText = json[ApiObjectProperty.quickBarText],
         image = json[ApiObjectProperty.image],
         group = json[ApiObjectProperty.group];
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "MenuEntryResponse{componentId: $componentId, className: $className, navigationName: $navigationName, "
+           "text: $text, sideBarText: $sideBarText, quickBarText: $quickBarText, image: $image, group: $group}";
+  }
 }

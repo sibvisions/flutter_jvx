@@ -14,6 +14,8 @@
  * the License.
  */
 
+import '../../util/extensions/object_extensions.dart';
+
 /// Base class for all outgoing api requests
 abstract class ApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,4 +29,14 @@ abstract class ApiRequest {
   bool ignoreError() {
     return false;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "$className{${toJson()}}";
+  }
+
 }

@@ -40,8 +40,8 @@ class LayoutModeCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "LayoutModeCommand{layoutMode: $layoutMode, ${super.toString()}}";
+  String propertiesAsString() {
+    return "layoutMode: $layoutMode, ${super.propertiesAsString()}";
   }
 
 }

@@ -27,12 +27,4 @@ class CancelLoginCommand extends ApplicationCommand {
     super.showLoading,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overriden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "CancelLoginCommand{${super.toString()}}";
-  }
 }

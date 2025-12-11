@@ -52,8 +52,8 @@ abstract class DataProviderDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "dataProvider: $dataProvider, subId: $subId, from: $from, to: $to, ${super.toString()}";
+  String propertiesAsString() {
+    return "dataProvider: $dataProvider, subId: $subId, from: $from, to: $to, ${super.propertiesAsString()}";
   }
 
 }

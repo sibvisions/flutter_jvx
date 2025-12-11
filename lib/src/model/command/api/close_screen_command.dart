@@ -36,8 +36,12 @@ class CloseScreenCommand extends ComponentCommand {
     super.showLoading,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "CloseScreenCommand{parameter: $parameter, ${super.toString()}}";
+  String propertiesAsString() {
+    return "parameter: $parameter, ${super.propertiesAsString()}";
   }
 }

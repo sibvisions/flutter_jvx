@@ -42,7 +42,7 @@ class GetSelectedDataCommand extends DataProviderDataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "GetSelectedDataCommand{columnNames: $columnNames, ${super.toString()}}";
+  String propertiesAsString() {
+    return "columnNames: $columnNames, ${super.propertiesAsString()}";
   }
 }

@@ -66,10 +66,16 @@ class ErrorViewResponse extends MessageView {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "ErrorViewResponse{messageView: ${super.toString()}, componentId: $componentId, silentAbort: $silentAbort, exceptions: $exceptions}";
+  String propertiesAsString() {
+    return "componentId: $componentId, silentAbort: $silentAbort, details: $details, exceptions: $exceptions, "
+           "${super.propertiesAsString()}";
   }
+
 }
 
 class ServerException {
@@ -87,8 +93,13 @@ class ServerException {
   ServerException.fromJson(Map<String, dynamic> json)
       : this(json[ApiObjectProperty.message], json[ApiObjectProperty.exception]);
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   String toString() {
     return "ServerException{message: $message, exception: $exception}";
   }
+
 }

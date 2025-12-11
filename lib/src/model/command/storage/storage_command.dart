@@ -35,9 +35,13 @@ abstract class StorageCommand extends BaseCommand {
     super.showLoading,
   }) : componentName = componentName ?? "";
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "componentName: $componentName, ${super.toString()}}";
+  String propertiesAsString() {
+    return "componentName: $componentName, ${super.propertiesAsString()}}";
   }
 
 }

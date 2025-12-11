@@ -112,4 +112,18 @@ class DalFetchResponse extends ApiResponse {
         sortDefinitions = SortList.fromList((json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList()),
         treePath = json[ApiObjectProperty.treePath]?.cast<int>(),
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "records: $records, masterRow: $masterRow, from: $from, to: $to, "
+           "columnNames: $columnNames, isAllFetched: $isAllFetched, selectedRow: $selectedRow, "
+           "selectedColumn: $selectedColumn, dataProvider: $dataProvider, clear: $clear, "
+           "recordFormats: $recordFormats, recordReadOnly: $recordReadOnly, sortDefinitions: $sortDefinitions, "
+           "treePath: $treePath, ${super.propertiesAsString()}";
+  }
+
 }

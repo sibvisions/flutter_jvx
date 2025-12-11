@@ -41,7 +41,7 @@ class SaveApplicationTemplatesCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "SaveApplicationTemplatesCommand{templates: $templates, ${super.toString()}}";
+  String propertiesAsString() {
+    return "templates: $templates, ${super.propertiesAsString()}}";
   }
 }

@@ -36,8 +36,13 @@ abstract class TabCommand extends ComponentCommand {
     super.showLoading,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  String toString() {
-    return "index: $index, ${super.toString()}";
+  String propertiesAsString() {
+    return "index: $index, ${super.propertiesAsString()}";
   }
+
 }

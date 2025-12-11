@@ -47,9 +47,10 @@ class FunctionCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "FunctionCommand{commandCallback: $commandCallback, ${super.toString()}}";
+  String propertiesAsString() {
+    return "commandCallback: $commandCallback, ${super.propertiesAsString()}";
   }
+
 }
 
 /// This command will execute a custom function as queued command.
@@ -64,4 +65,5 @@ class QueuedFunctionCommand extends FunctionCommand implements IQueueCommand {
     required super.reason,
     super.showLoading = true,
   });
+
 }

@@ -40,7 +40,8 @@ class ResetPasswordCommand extends ApplicationCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "ResetPasswordCommand{identifier: $identifier, ${super.toString()}}";
+  String propertiesAsString() {
+    return "identifier: $identifier, ${super.propertiesAsString()}";
   }
+
 }

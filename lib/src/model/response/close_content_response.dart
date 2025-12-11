@@ -37,4 +37,14 @@ class CloseContentResponse extends ApiResponse {
   CloseContentResponse.fromJson(super.json)
       : componentName = json[ApiObjectProperty.componentId],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "componentName: $componentName, ${super.propertiesAsString()}";
+  }
+
 }

@@ -28,12 +28,4 @@ class CloseContentCommand extends ComponentCommand {
     super.showLoading,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overwritten methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "CloseContentCommand{${super.toString()}}";
-  }
 }

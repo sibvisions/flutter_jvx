@@ -63,6 +63,18 @@ class LoginViewResponse extends ApiResponse {
         timeoutReset = json[ApiObjectProperty.timeoutReset],
         errorMessage = json[ApiObjectProperty.errorMessage],
         super.fromJson();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "mode: $mode, username: $username, confirmationCode: $confirmationCode, "
+           "link: $link, timeout: $timeout, timeoutReset: $timeoutReset, errorMessage: $errorMessage, "
+           "${super.propertiesAsString()}";
+  }
+
 }
 
 class Link {
@@ -83,4 +95,15 @@ class Link {
         target = json[ApiObjectProperty.target],
         width = json[ApiObjectProperty.width],
         height = json[ApiObjectProperty.height];
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overriden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "Link{url: $url, target: $target, "
+           "width: $width, height: $height}";
+  }
+
 }

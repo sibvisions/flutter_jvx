@@ -26,12 +26,4 @@ class RollbackCommand extends ApplicationCommand {
     required super.reason,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "RollbackCommand{${super.toString()}}";
-  }
 }

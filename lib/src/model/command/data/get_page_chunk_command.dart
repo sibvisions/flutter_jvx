@@ -44,8 +44,8 @@ class GetPageChunkCommand extends DataProviderDataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "GetPageChunkCommand{pageKey: $pageKey, ${super.toString()}}";
+  String propertiesAsString() {
+    return "pageKey: $pageKey, ${super.propertiesAsString()}";
   }
 
 }
