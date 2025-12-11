@@ -14,13 +14,17 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../model/command/api/action_command.dart';
 import '../../../model/command/api/set_value_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../service/command/i_command_service.dart';
+import '../../../service/storage/i_storage_service.dart';
 import '../../../util/parse_util.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
@@ -51,11 +55,48 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
   final FocusNode focusNode = FocusNode();
 
+  Timer? valueChangedTimer; // 300 Milliseconds
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   FlTextFieldWrapperState() : super();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void initState() {
+    super.initState();
+
+    updateText();
+
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        focus();
+      } else {
+        //don't send focus lost multiple times
+        if (!model.eventFocusLost) {
+          endEditing(textController.text, FlTextFieldModel.FOCUS_LOST);
+        }
+        else {
+          endEditing(textController.text);
+        }
+
+        unfocus();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    focusNode.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,27 +117,6 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    updateText();
-
-    focusNode.addListener(() {
-      if (!focusNode.hasFocus) {
-        setState(() {
-          endEditing(textController.text);
-        });
-      }
-
-      if (focusNode.hasFocus) {
-        focus();
-      } else {
-        unfocus();
-      }
-    });
-  }
-
-  @override
   Size calculateSize(BuildContext context) {
     double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.createTextStyle());
 
@@ -107,14 +127,6 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     return Size(width, FlTextFieldWidget.TEXT_FIELD_HEIGHT);
   }
 
-  @override
-  void dispose() {
-    textController.dispose();
-    focusNode.dispose();
-
-    super.dispose();
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,8 +135,8 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     FlTextFieldWidget textFieldWidget = FlTextFieldWidget(
       key: Key("${model.id}_Widget"),
       model: model,
-      endEditing: endEditing,
       valueChanged: valueChanged,
+      endEditing: endEditing,
       focusNode: focusNode,
       textController: textController,
       hideClearIcon: model.hideClearIcon,
@@ -132,21 +144,48 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     return textFieldWidget;
   }
 
-  void valueChanged(String pValue) {
+  void valueChanged(String pValue, [bool? pImmediate]) {
+    valueChangedTimer?.cancel();
+
+    if (pImmediate == true) {
+      endEditing(pValue);
+    }
+    else {
+      valueChangedTimer = Timer(const Duration(milliseconds: 300), () {
+        endEditing(textController.text);
+      },);
+    }
+
     setState(() {});
   }
 
-  void endEditing(String pValue) {
-    if (!model.isReadOnly && lastSentValue != pValue) {
-      ICommandService()
-          .sendCommand(
-        SetValueCommand(
-          componentName: model.name,
-          value: pValue,
-          reason: "Editing has ended on ${model.id}",
-        ),
-      )
-          .then((success) {
+  void endEditing(String pValue, [String? pAction]) {
+    valueChangedTimer?.cancel();
+
+    if (!model.isReadOnly
+        && (lastSentValue != pValue || pAction != null)) {
+
+      //this could happen if screen will be closed
+      FlComponentModel? comp = IStorageService().getComponentModel(pComponentId: model.id);
+
+      if (comp == null) {
+        return;
+      }
+
+      ICommandService().sendCommand(
+        pAction != null ?
+          ActionCommand(
+            componentName: model.name,
+            value: pValue,
+            action: pAction,
+            reason: "Editing has ended on ${model.id}",
+          ) :
+          SetValueCommand(
+            componentName: model.name,
+            value: pValue,
+            reason: "Editing has ended on ${model.name}",
+          )
+      ).then((success) {
         if (success) {
           lastSentValue = pValue;
         }

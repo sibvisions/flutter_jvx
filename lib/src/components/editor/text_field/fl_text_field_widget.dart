@@ -171,7 +171,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       readOnly: model.isReadOnly,
       style: model.createTextStyle(),
       onChanged: valueChanged,
-      onEditingComplete: focusNode.unfocus,
+      onEditingComplete: () => endEditing(textController.text, FlTextFieldModel.ENTER_KEY),
       expands: isExpanded,
       minLines: minLines,
       maxLines: maxLines,
@@ -231,10 +231,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       onTap: () {
         if (!model.isReadOnly) {
           if (focusNode.hasFocus) {
-            valueChanged("");
+            valueChanged("", true);
             textController.clear();
           } else {
-            endEditing("");
+            endEditing("", FlTextFieldModel.FOCUS_LOST);
           }
         }
       },
@@ -259,26 +259,26 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     );
   }
 
-  Widget createEmbeddableIcon(BuildContext? context, IconData icon) {
-    Widget ico;
-
+  Icon _getIcon(BuildContext? context, IconData icon) {
     if (icon.fontFamily == FontAwesomeIcons.plus.fontFamily) {
-      ico = FaIcon(
-          icon,
-          size: iconSize,
-          color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
+      return FaIcon(
+        icon,
+        size: iconSize,
+        color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
       );
     }
     else {
       //should work with any icon data
-      ico = Icon(
-          icon,
-          size: iconSize,
-          color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
+      return Icon(
+        icon,
+        size: iconSize,
+        color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
       );
     }
+  }
 
-    return _wrapIcon(ico);
+  Widget createEmbeddableIcon(BuildContext? context, IconData icon) {
+    return _wrapIcon(_getIcon(context, icon));
   }
 
   /// Wraps the suf/pre-fix icon items with a container.

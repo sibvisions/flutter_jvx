@@ -126,12 +126,12 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
                 focusNode: focusNode,
                 inputFormatters: widget.inputFormatters,
                 isMandatory: widget.isMandatory,
-                valueChanged: (value) {
+                valueChanged: (value, [immediate]) {
                   // Set state to update the Text area widget.
                   setState(() {});
                 },
                 canShowDialog: false,
-                endEditing: (value) {
+                endEditing: (value, [action]) {
                   Navigator.of(context).pop();
                 },
               ),

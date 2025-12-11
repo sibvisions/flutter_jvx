@@ -97,7 +97,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
     model.applyFromJson(cellEditorJson);
   }
 
-  static void _noop(dynamic object) {}
+  static void _noop(dynamic object, [String? action]) {}
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions

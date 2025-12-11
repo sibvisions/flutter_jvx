@@ -14,29 +14,35 @@
  * the License.
  */
 
-import '../../model/component/fl_component_model.dart';
-import 'fl_stateless_widget.dart';
+import '../../service/api/shared/api_object_property.dart';
+import 'api_set_value_request.dart';
 
-/// The base class for all Flutter JVx components which change and/or set a value.
-abstract class FlStatelessDataWidget<T extends FlComponentModel, C> extends FlStatelessWidget<T> {
+/// Request to send an action to a component
+class ApiActionRequest extends ApiSetValueRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The callback notifying that the editor value has changed.
-  final Function(C, [bool?]) valueChanged;
-
-  /// The callback notifying that the editor value has changed and the editing was completed.
-  final Function(C, [String?]) endEditing;
+  /// The action
+  final String action;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlStatelessDataWidget({
-    super.key,
-    required super.model,
-    required this.valueChanged,
-    required this.endEditing,
+  ApiActionRequest({
+    required super.componentName,
+    required super.value,
+    required this.action
   });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        ApiObjectProperty.action: action,
+      };
 }

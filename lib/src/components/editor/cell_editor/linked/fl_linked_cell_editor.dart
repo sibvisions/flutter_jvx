@@ -118,8 +118,8 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     return FlLinkedEditorWidget(
       link: _layerLink,
       model: widgetModel,
-      endEditing: (_) => receiveNull(),
-      valueChanged: onValueChange,
+      endEditing: (value, [action]) => receiveNull(),
+      valueChanged: (value, [immediate]) => onValueChange(value),
       textController: textController,
       focusNode: focusNode,
       hideClearIcon: model.hideClearIcon,

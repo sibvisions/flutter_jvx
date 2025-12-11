@@ -107,8 +107,8 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
       model: widgetModel,
       textController: textController,
       focusNode: focusNode,
-      endEditing: onEndEditing,
-      valueChanged: onValueChange,
+      valueChanged: (value, [immediate]) => onValueChange(value),
+      endEditing: (value, [action]) => onEndEditing(value),
       hideClearIcon: model.hideClearIcon,
     );
   }

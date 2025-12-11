@@ -148,8 +148,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
       case (TEXT_PLAIN_MULTILINE):
         return FlTextAreaWidget(
           model: widgetModel as FlTextAreaModel,
-          valueChanged: onValueChange,
-          endEditing: onEndEditing,
+          valueChanged: (value, [immediate]) => onValueChange(value),
+          endEditing: (value, [action]) => onEndEditing(value),
           focusNode: focusNode,
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
@@ -159,8 +159,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
       case (TEXT_HTML):
         return FlHtmlTextFieldWidget(
           model: widgetModel,
-          valueChanged: onValueChange,
-          endEditing: onEndEditing,
+          valueChanged: (value, [immediate]) => onValueChange(value),
+          endEditing: (value, [action]) => onEndEditing(value),
           htmlController: htmlController,
           onFocusChanged: focusChanged,
           onInit: () {
@@ -183,8 +183,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
       case (TEXT_PLAIN_PASSWORD):
         return FlPasswordWidget(
           model: widgetModel,
-          valueChanged: onValueChange,
-          endEditing: onEndEditing,
+          valueChanged: (value, [immediate]) => onValueChange(value),
+          endEditing: (value, [action]) => onEndEditing(value),
           focusNode: focusNode,
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
@@ -195,8 +195,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
       default:
         return FlTextFieldWidget(
           model: widgetModel,
-          valueChanged: onValueChange,
-          endEditing: onEndEditing,
+          valueChanged: (value, [immediate]) => onValueChange(value),
+          endEditing: (value, [action]) => onEndEditing(value),
           focusNode: focusNode,
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,

@@ -227,8 +227,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
   void onChange(dynamic pValue) {
+    onChangeTimer?.cancel();
+
     if (model.savingImmediate) {
-      onChangeTimer?.cancel();
       onChangeTimer = Timer(const Duration(milliseconds: 300), () => _onValueChanged(pValue));
 
       // TextField wont update immediately, so we need to force it to update.
@@ -280,7 +281,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Sets the state of the widget and sends a set value command.
-  Future<void> onEndEditing(dynamic pValue) async {
+  Future<void> onEndEditing(dynamic pValue, [String? pAction]) async {
     onChangeTimer?.cancel();
     if (_isSameValue(pValue) || !model.isEnabled) {
       setState(() {});
@@ -298,17 +299,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       List<BaseCommand> commands = [];
 
       var oldFocus = IUiService().getFocus();
-      commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+      commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit focus"));
 
       commands.add(_sendValueToServer(pValue));
 
       if (cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) {
-        SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus");
+        SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit unfocus");
       }
       if (oldFocus != null) {
-        commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Value edit Focus"));
+        commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Value edit focus"));
       } else {
-        commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus"));
+        commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit unfocus"));
       }
       return ICommandService().sendCommands(commands);
     });

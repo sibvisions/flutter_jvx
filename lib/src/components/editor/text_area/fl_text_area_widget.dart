@@ -78,10 +78,25 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onDoubleTap: !model.isReadOnly && canShowDialog ? _openDialogEditor : null,
-      child: super.build(context),
-    );
+    if (!model.isReadOnly && canShowDialog) {
+      //Stack instead of full GestureDetector, to avoid delay between tap and double tap
+      return Stack(
+        children: [
+          super.build(context),
+          Positioned.fill(
+            right: FlTextFieldWidget.iconAreaSize + iconsPadding.left + iconsPadding.right,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onDoubleTap: _openDialogEditor,
+              child: Container(), // hidden
+            ),
+          ),
+        ],
+      );
+    }
+    else {
+      return super.build(context);
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,8 +124,10 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
         if (hadFocus) {
           focusNode.requestFocus();
           textController.text = value;
+          valueChanged(value);
         } else {
           endEditing(value);
+          focusNode.requestFocus();
         }
       }
     });

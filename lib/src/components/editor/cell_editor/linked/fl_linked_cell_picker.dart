@@ -17,10 +17,10 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_ui.dart';
-import '../../../../model/command/api/fetch_command.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/reload_data_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
@@ -93,7 +93,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   int scrollingPage = 1;
 
-  Timer? filterTimer; // 200-300 Milliseconds
+  Timer? filterTimer; // 300 Milliseconds
 
   String? lastChangedFilter;
 
@@ -152,6 +152,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     tableModel.columnLabels = [];
     tableModel.tableHeaderVisible = model.tableHeaderVisible && !isConcatMask;
+    tableModel.name = linkedCellEditor.name ?? "";
 
     if (model.disabledAlternatingRowColor) {
       tableModel.styles.add(FlTableModel.STYLE_NO_ALTERNATING_ROW_COLOR);
@@ -160,6 +161,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     tableModel.dataProvider = linkedCellEditor.dataProvider;
 
     _subscribe();
+
+    if (kIsWeb) {
+      focusNode.requestFocus();
+    }
   }
 
   @override
@@ -170,6 +175,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     if (linkedCellEditor != oldWidget.linkedCellEditor) {
       tableModel.dataProvider = linkedCellEditor.dataProvider;
+      tableModel.name = linkedCellEditor.name ?? "";
     }
   }
 
@@ -232,8 +238,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                 model: FlTextFieldModel()..placeholder = FlutterUI.translate("Search"),
                 textController: _controller,
                 keyboardType: TextInputType.text,
-                valueChanged: _startTimerValueChanged,
-                endEditing: _startTimerValueChanged,
+                valueChanged: (value, [immediate]) => _startTimerValueChanged(value),
+                endEditing: _onSearchValueChanged,
                 focusNode: focusNode,
               ),
             if (showSearch)
@@ -525,21 +531,24 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       lastChangedFilter = null;
     }
 
-    if (filterTimer != null) {
-      filterTimer!.cancel();
-    }
-    filterTimer = Timer(const Duration(milliseconds: 300), _onTextFieldValueChanged);
+    filterTimer?.cancel();
+    filterTimer = Timer(const Duration(milliseconds: 300), _applySearch);
 
     // Text field wont update immediately, so we need to force it to update.
     setState(() {});
   }
 
-  void _onTextFieldValueChanged() {
+  void _applySearch() {
+    _onSearchValueChanged(lastChangedFilter);
+  }
+
+  void _onSearchValueChanged(String? value, [String? action]) {
+    filterTimer?.cancel();
     ICommandService()
         .sendCommand(
           FilterCommand.byValue(
             editorComponentId: widget.name,
-            value: lastChangedFilter,
+            value: value,
             columnNames: [linkedCellEditor.columnName],
             dataProvider: widget.model.linkReference.referencedDataBook,
             reason: "Filtered the linked cell picker",

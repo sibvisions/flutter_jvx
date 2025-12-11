@@ -14,29 +14,36 @@
  * the License.
  */
 
-import '../../model/component/fl_component_model.dart';
-import 'fl_stateless_widget.dart';
+import 'set_value_command.dart';
 
-/// The base class for all Flutter JVx components which change and/or set a value.
-abstract class FlStatelessDataWidget<T extends FlComponentModel, C> extends FlStatelessWidget<T> {
+/// The command for setting an action of a component.
+class ActionCommand extends SetValueCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The callback notifying that the editor value has changed.
-  final Function(C, [bool?]) valueChanged;
-
-  /// The callback notifying that the editor value has changed and the editing was completed.
-  final Function(C, [String?]) endEditing;
+  /// The action.
+  final String action;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlStatelessDataWidget({
-    super.key,
-    required super.model,
-    required this.valueChanged,
-    required this.endEditing,
+  ActionCommand({
+    required super.componentName,
+    required super.value,
+    required super.reason,
+    required this.action,
+    super.showLoading,
   });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String propertiesAsString() {
+    return "action: $action, ${super.propertiesAsString()}";
+  }
+
 }

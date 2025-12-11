@@ -69,5 +69,5 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dyna
     return null;
   }
 
-  static void _doNothing(dynamic ignore) {}
+  static void _doNothing(dynamic ignore, [String? action]) {}
 }

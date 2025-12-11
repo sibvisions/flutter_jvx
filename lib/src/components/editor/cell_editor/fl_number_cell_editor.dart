@@ -87,8 +87,8 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
 
     return FlTextFieldWidget(
       model: widgetModel,
-      valueChanged: onValueChange,
-      endEditing: onEndEditing,
+      valueChanged: (value, [immediate]) => onValueChange(value),
+      endEditing: (value, [action]) => onEndEditing(value),
       focusNode: focusNode,
       textController: textController,
       inputFormatters: [numberFormatter],
