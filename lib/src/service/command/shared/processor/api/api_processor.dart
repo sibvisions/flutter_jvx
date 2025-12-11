@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../../../../model/command/api/action_command.dart';
 import '../../../../../model/command/api/activate_screen_command.dart';
 import '../../../../../model/command/api/alive_command.dart';
 import '../../../../../model/command/api/api_command.dart';
@@ -65,6 +66,7 @@ import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/api/upload_command.dart';
 import '../../i_command_processor.dart';
 import '../../i_command_processor_handler.dart';
+import 'action_command_processor.dart';
 import 'activate_screen_command_processor.dart';
 import 'alive_command_processor.dart';
 import 'cancel_login_command_processor.dart';
@@ -146,6 +148,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final SetScreenParameterCommandProcessor _setScreenParameterProcessor = SetScreenParameterCommandProcessor();
   final PressButtonCommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
   final SetValueCommandProcessor _setValueProcessor = SetValueCommandProcessor();
+  final ActionCommandProcessor _actionProcessor = ActionCommandProcessor();
   final OpenTabCommandProcessor _tabOpenProcessor = OpenTabCommandProcessor();
   final CloseTabCommandProcessor _tabCloseProcessor = CloseTabCommandProcessor();
   final CloseFrameCommandProcessor _closeFrameProcessor = CloseFrameCommandProcessor();
@@ -192,6 +195,9 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _deviceStatusProcessor;
     } else if (command is PressButtonCommand) {
       return _pressButtonProcessor;
+    //ActionCommand before SetValueCommand, because it extends SetValueCommand
+    } else if (command is ActionCommand) {
+      return _actionProcessor;
     } else if (command is SetValueCommand) {
       return _setValueProcessor;
     } else if (command is SetValuesCommand) {
