@@ -173,7 +173,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       onEndEditing: setValueOnEndEditing,
       onValueChanged: _setValueChanged,
       onRefresh: refresh,
-      onEndScroll: _loadMore,
+      onLoadMore: _loadMore,
       onLongPress: _onLongPress,
       onTap: _onTimedCellTap,
       onHeaderTap: _sortColumn,
