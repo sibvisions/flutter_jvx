@@ -124,6 +124,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   bool scrollToSelected = true;
 
+  /// whether show search was initialized already
+  bool showSearchInit = false;
+  /// whether to show the search field
+  bool showSearch = true;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Getters
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,12 +209,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     );
 
     ThemeData theme = Theme.of(context);
-
-    bool showSearch = widget.showSearch;
-
-    if (showSearch && _chunkData != null && _chunkData!.isAllFetched && _chunkData!.data.length <= FlLinkedCellPicker.MIN_ROWS_FOR_SEARCH) {
-      showSearch = false;
-    }
 
     return _wrapAsDialog(Container(
         clipBehavior: Clip.hardEdge,
@@ -380,6 +379,20 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
     else {
       selectedRow = -1;
+    }
+
+    if (!showSearchInit) {
+      showSearch = widget.showSearch || _controller.text.isNotEmpty;
+
+      if (showSearch
+          && _chunkData != null
+          && _chunkData!.isAllFetched
+          && _chunkData!.data.length <= FlLinkedCellPicker.MIN_ROWS_FOR_SEARCH
+          && _controller.text.isEmpty) {
+        showSearch = false;
+      }
+
+      showSearchInit = true;
     }
 
     if (mounted) {
@@ -562,6 +575,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   /// Refreshes this data provider
   Future<void> _refresh() {
     IUiService().notifySubscriptionsOfReload(model.linkReference.referencedDataBook);
+
+    showSearchInit = false;
 
     return ICommandService().sendCommand(
       FetchCommand(

@@ -19,7 +19,7 @@ import 'base_condition.dart';
 
 class CompareCondition extends BaseCondition {
   /// The data row to use for the compare.
-  final String dataRow;
+  final String? dataRow;
 
   /// The column name in the [dataRow] to use for the compare.
   final String dataRowColumnName;
