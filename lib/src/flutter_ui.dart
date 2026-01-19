@@ -95,6 +95,8 @@ T? cast<T>(dynamic x) => x is T ? x : null;
 
 /// Builder function for dynamic color creation
 typedef ColorBuilder = Color? Function(BuildContext context);
+/// Builder function for dynamic theme creation
+typedef ThemeBuilder = ThemeData Function(ThemeData themeData, Color? seedColor, Brightness brightness, bool useFixedPrimary);
 
 late BeamerDelegate routerDelegate;
 
@@ -239,6 +241,8 @@ class FlutterUI extends StatefulWidget {
   /// Builder function for custom menu implementation.
   final MenuBuilder? menuBuilder;
 
+  final ThemeBuilder? themeBuilder;
+
   final List<Widget> debugOverlayEntries;
 
   /// show or hide the debug banner in dev mode
@@ -273,6 +277,7 @@ class FlutterUI extends StatefulWidget {
     this.backgroundBuilder,
     this.loginHandler,
     this.menuBuilder,
+    this.themeBuilder,
     this.debugOverlayEntries = const [],
     this.debugBanner = true
   });
@@ -1479,9 +1484,21 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (pColor != null) {
       themeData = JVxColors.createTheme(pColor, Brightness.light, useFixedPrimary: true);
       darkThemeData = JVxColors.createTheme(pColor, Brightness.dark, useFixedPrimary: true);
+
+      if (widget.themeBuilder != null) {
+        themeData = widget.themeBuilder!(themeData, pColor, Brightness.light, true);
+        darkThemeData = widget.themeBuilder!(darkThemeData, pColor, Brightness.dark, true);
+      }
     } else {
-      themeData = JVxColors.createTheme(Colors.blue, Brightness.light);
-      darkThemeData = JVxColors.createTheme(Colors.blue, Brightness.dark);
+      Color color = Colors.blue;
+
+      themeData = JVxColors.createTheme(color, Brightness.light);
+      darkThemeData = JVxColors.createTheme(color, Brightness.dark);
+
+      if (widget.themeBuilder != null) {
+        themeData = widget.themeBuilder!(themeData, color, Brightness.light, false);
+        darkThemeData = widget.themeBuilder!(darkThemeData, color, Brightness.dark, false);
+      }
     }
 
     refresh();
