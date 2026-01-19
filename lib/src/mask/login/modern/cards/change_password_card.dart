@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../components.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
@@ -175,6 +176,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                                       _passwordHidden ? Icons.visibility : Icons.visibility_off,
                                     ),
                                     onPressed: () => setState(() => _passwordHidden = !_passwordHidden),
+                                    color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                                    iconSize: FlTextFieldWidget.iconSize,
                                   ),
                                 ),
                               ),
