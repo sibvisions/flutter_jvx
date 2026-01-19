@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../custom/custom_screen.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/activate_screen_command.dart';
@@ -41,8 +42,10 @@ import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
+import '../../util/parse_util.dart';
 import '../frame/frame.dart';
 import '../frame/open_drawer_action.dart';
+import '../state/app_style.dart';
 import '../state/loading_bar.dart';
 import 'error_screen.dart';
 import 'skeleton_screen.dart';
@@ -269,14 +272,35 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             }
 
             Widget? leading = _buildLeading();
-            title ??=
-                Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading..."));
+
+            title ??= Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading..."));
+
+            Color? headerColor;
+
+            if (customScreen != null) {
+              if (customScreen!.headerColorBuilder != null) {
+                headerColor = customScreen!.headerColorBuilder!(context);
+              }
+            }
+            else if (model != null) {
+              if (model!.useScreenBackgroundInMenu) {
+                headerColor = model!.background ?? Theme.of(context).colorScheme.surface;
+              }
+            }
+
+            if (headerColor == null) {
+              AppStyle appStyle = AppStyle.of(context);
+
+              headerColor = ParseUtil.parseHexColor(appStyle.style(context, 'screenMenuTop.color'));
+            }
+
             PreferredSizeWidget? appBar = frame?.getAppBar(
               context: context,
               leading: leading,
               titleSpacing: leading != null ? 0 : 8,
               title: title,
               actions: actions,
+              backgroundColor: headerColor
             );
 
             // Dummy body shown while loading/error.

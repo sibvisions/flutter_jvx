@@ -43,6 +43,9 @@ class FlPanelModel extends FlComponentModel {
   /// If a work-screen should have a simple menu.
   static const String STYLE_SIMPLE_MENU = "f_simple_menu";
 
+  /// If menu should use same background as screen
+  static const String STYLE_MENU_SCREENBACKGROUND = "f_menu_screenBackground";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,6 +103,8 @@ class FlPanelModel extends FlComponentModel {
 
   /// If the screen has a simple menu.
   bool get hasSimpleMenu => styles.contains(STYLE_SIMPLE_MENU);
+
+  bool get useScreenBackgroundInMenu => styles.contains(STYLE_MENU_SCREENBACKGROUND);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
