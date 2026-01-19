@@ -10,7 +10,7 @@
   },
   "serverConfigs": [
     {
-      "baseUrl": "http://localhost:8888/JVx.mobile/services/mobile",
+      "baseUrl": "http://localhost:8081/JVx.mobile/services/mobile",
       "appName": "demo",
       "username": "features",
       "password": "features",
