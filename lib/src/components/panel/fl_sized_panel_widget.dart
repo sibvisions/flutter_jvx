@@ -21,12 +21,16 @@ import 'package:flutter/widgets.dart';
 import 'fl_panel_widget.dart';
 
 class FlSizedPanelWidget extends FlPanelWidget {
+
+  final Decoration? decoration;
+
   const FlSizedPanelWidget({
     super.key,
     required super.model,
     required super.children,
     this.width,
     this.height,
+    this.decoration
   });
 
   final double? width;
@@ -39,7 +43,8 @@ class FlSizedPanelWidget extends FlPanelWidget {
         IgnorePointer(
           ignoring: true,
           child: Container(
-            color: model.background,
+            decoration: decoration,
+            color: decoration == null ? model.background : null,
             width: max((width ?? 0), 0),
             height: max((height ?? 0), 0),
           ),

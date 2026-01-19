@@ -44,6 +44,7 @@ class ListMenuItem extends StatelessWidget {
   final bool decreasedDensity;
   final bool useAlternativeLabel;
   final bool embedded;
+  final bool smallBadge;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -58,6 +59,7 @@ class ListMenuItem extends StatelessWidget {
     this.decreasedDensity = false,
     this.useAlternativeLabel = false,
     this.embedded = false,
+    this.smallBadge = false
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,14 +80,25 @@ class ListMenuItem extends StatelessWidget {
     BadgeConfig badgeConfig = BadgeConfig.fromApplicationParameter(menuItemModel.className);
     //set defaults if not set
     badgeConfig.alignment ??= Alignment.bottomRight;
-    badgeConfig.offset ??= Offset(-5, -8);
 
-    leading = BadgeUtil.wrapWithBadge(context, leading, badgeConfig);
+    if (smallBadge) {
+      badgeConfig.offset ??= Offset(-10, -13);
+      badgeConfig.fontSize ??= 9;
+      badgeConfig.paddingGap ??= 3;
+    }
+    else {
+      badgeConfig.offset ??= Offset(-5, -8);
+    }
 
     onTap() => onClick(context, item: menuItemModel);
 
     return LayoutBuilder(
       builder: (context, constraints) {
+
+        if (smallBadge && constraints.maxWidth <= 50) {
+          badgeConfig.offset = Offset(badgeConfig.offset!.dx - 3, badgeConfig.offset!.dy);
+        }
+
         if (constraints.maxWidth <= 50) {
           var tileThemeData = ListTileTheme.of(context);
           return Material(
@@ -94,7 +107,11 @@ class ListMenuItem extends StatelessWidget {
               onTap: onTap,
               child: IconTheme.merge(
                 data: IconThemeData(color: selected ? tileThemeData.selectedColor : tileThemeData.iconColor),
-                child: leading,
+                //SizedBox is important to avoid padding because badge adds Stack
+                child: BadgeUtil.wrapWithBadge(
+                  context,
+                  badgeConfig.text != null ? SizedBox(width: constraints.maxWidth, child: leading) : leading,
+                  badgeConfig),
               ),
             ),
           );
@@ -107,7 +124,7 @@ class ListMenuItem extends StatelessWidget {
           selected: selected,
           visualDensity:
               decreasedDensity ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity) : null,
-          leading: leading,
+          leading: BadgeUtil.wrapWithBadge(context, leading, badgeConfig),
           title: Text(
             (useAlternativeLabel ? menuItemModel.alternativeLabel : null) ?? menuItemModel.label,
             overflow: TextOverflow.ellipsis,

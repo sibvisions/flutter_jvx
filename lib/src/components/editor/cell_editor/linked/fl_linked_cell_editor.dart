@@ -58,8 +58,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
   ReferencedCellEditor? referencedCellEditor;
 
-  double _keyboardHeight = 0;
-
   bool isOpen = false;
 
   dynamic get _value => _record?.$1;
@@ -138,13 +136,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     referencedCellEditor?.dispose();
     textController.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-
-    _keyboardHeight = WidgetsBinding.instance.window.viewInsets.bottom;
   }
 
   @override

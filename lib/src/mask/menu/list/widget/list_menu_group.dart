@@ -45,6 +45,7 @@ class ListMenuGroup extends StatelessWidget {
 
   final bool sticky;
   final bool embedded;
+  final bool smallBadge;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -61,7 +62,8 @@ class ListMenuGroup extends StatelessWidget {
     this.headerColor,
     this.decreasedDensity = false,
     this.useAlternativeLabel = false,
-    this.embedded = false
+    this.embedded = false,
+    this.smallBadge = false
   });
 
   @override
@@ -84,6 +86,7 @@ class ListMenuGroup extends StatelessWidget {
         decreasedDensity: decreasedDensity,
         useAlternativeLabel: useAlternativeLabel,
         embedded: embedded,
+        smallBadge: smallBadge,
       ));
     }
 

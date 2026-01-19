@@ -139,6 +139,10 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
       ];
     }
 
+    //because of elevation in header, we need spacing, otherwise we don't see the bottom elevation
+    // (only if background color is set)
+    int offset = model.background != null ? 4 : 0;
+
     return wrapWidget(
       context,
       Padding(
@@ -153,11 +157,15 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
             verticalDirection: verticalDirection,
             children: [
               Container(
-                height: groupHeaderHeight / 2,
+                height: (groupHeaderHeight + offset) / 2,
                 clipBehavior: Clip.none,
+                decoration: BoxDecoration(
+                  color: model.background,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+                ),
                 child: OverflowBox(
-                  maxHeight: groupHeaderHeight,
-                  minHeight: groupHeaderHeight,
+                  maxHeight: groupHeaderHeight + offset,
+                  minHeight: groupHeaderHeight + offset,
                   alignment: model.verticalAlignment == VerticalAlignment.BOTTOM
                       ? Alignment.topCenter
                       : Alignment.bottomCenter,
@@ -170,7 +178,11 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
               FlSizedPanelWidget(
                 model: model,
                 width: widthOfGroupPanel,
-                height: heightOfGroupPanel,
+                height: heightOfGroupPanel - offset / 2,
+                decoration: BoxDecoration(
+                  color: model.background,
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(4), bottomRight: Radius.circular(4)),
+                ),
                 children: children.values.toList(),
               ),
             ],

@@ -254,8 +254,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                             constraints.maxHeight > (2 * tableSize!.rowHeight + tableSize!.tableHeaderHeight);
                         tableModel.editable = false;
 
-print("Repaint $scrollToSelected");
-
                         return FlTableWidget(
                           selectedRowIndex: selectedRow,
                           autoScrollEnabled: scrollToSelected,

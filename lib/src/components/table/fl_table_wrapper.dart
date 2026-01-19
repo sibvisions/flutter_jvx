@@ -740,65 +740,119 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     );
   }
 
-  List<SlidableAction> createSlideActions(BuildContext context, int row) {
-    List<SlidableAction> slideActions = [];
+  List<Widget> createSlideActions(BuildContext context, int row) {
+    List<Widget> slideActions = [];
 
+    IUiService uis = IUiService();
+
+    bool bSmall = kIsWeb && (uis.webOnly.value || !uis.mobileOnly.value);
     bool isLight = JVxColors.isLightTheme(context);
 
     if (isAnyCellInRowEditable(row)) {
-      slideActions.add(
-        SlidableAction(
-          onPressed: (context) {
-            _editRow(row);
-          },
-          autoClose: true,
-          backgroundColor: isLight ? Colors.green : const Color(0xFF2c662f),
-          foregroundColor: isLight ? Colors.white : Theme
-              .of(context)
-              .textTheme
-              .labelSmall!
-              .color,
-          label: FlutterUI.translate("Edit"),
-          icon: FontAwesomeIcons.penToSquare,
-          padding: const EdgeInsets.only(left: 8, right: 8),
-        ),
-      );
+
+      void pressed(BuildContext context) => _editRow(row);
+
+      if (bSmall) {
+        slideActions.add(
+          CustomSlidableAction(
+            onPressed: pressed,
+            autoClose: true,
+            backgroundColor: isLight ? Colors.green : const Color(0xFF2c662f),
+            foregroundColor: isLight ? Colors.white : Theme
+                .of(context)
+                .textTheme
+                .labelSmall!
+                .color,
+            padding: const EdgeInsets.only(left: 8, right: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(child: Icon(FontAwesomeIcons.penToSquare, size: 14)),
+                Flexible(child: Text(FlutterUI.translate("Edit"), style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis)),
+              ]
+            )
+          )
+        );
+      }
+      else {
+        slideActions.add(
+          SlidableAction(
+            onPressed: pressed,
+            autoClose: true,
+            backgroundColor: isLight ? Colors.green : const Color(0xFF2c662f),
+            foregroundColor: isLight ? Colors.white : Theme
+                .of(context)
+                .textTheme
+                .labelSmall!
+                .color,
+            label: FlutterUI.translate("Edit"),
+            icon: FontAwesomeIcons.penToSquare,
+            padding: const EdgeInsets.only(left: 8, right: 8),
+          ),
+        );
+      }
     }
 
     if (isRowDeletable(row)) {
-      slideActions.add(
-        SlidableAction(
-          onPressed: (context) {
-            String? status = dataChunk.getRecordStatusRaw(row);
+      void pressed(BuildContext context) {
+        String? status = dataChunk.getRecordStatusRaw(row);
 
-            //sometimes this event is triggered more than once, so don't delete again
-            if (status != null && !status.contains("SLIDE_DELETE")) {
-              if (status.isNotEmpty) {
-                dataChunk.setStatusRaw(row, "$status,SLIDE_DELETE");
-              }
-              else {
-                dataChunk.setStatusRaw(row, "SLIDE_DELETE");
-              }
+        //sometimes this event is triggered more than once, so don't delete again
+        if (status != null && !status.contains("SLIDE_DELETE")) {
+          if (status.isNotEmpty) {
+            dataChunk.setStatusRaw(row, "$status,SLIDE_DELETE");
+          }
+          else {
+            dataChunk.setStatusRaw(row, "SLIDE_DELETE");
+          }
 
-              BaseCommand? deleteCommand = createDeleteCommand(row);
+          BaseCommand? deleteCommand = createDeleteCommand(row);
 
-              if (deleteCommand != null) {
-                ICommandService().sendCommand(deleteCommand);
-              }
-            }
-          },
-          autoClose: true,
-          backgroundColor: isLight ? Colors.red : const Color(0xFF932821),
-          foregroundColor: isLight ? Colors.white : Theme
-              .of(context)
-              .textTheme
-              .labelSmall!
-              .color,
-          label: FlutterUI.translate("Delete"),
-          icon: FontAwesomeIcons.trash,
-          padding: const EdgeInsets.only(left: 8, right: 8),
-        ),
-      );
+          if (deleteCommand != null) {
+            ICommandService().sendCommand(deleteCommand);
+          }
+        }
+      }
+
+      if (bSmall) {
+        slideActions.add(
+            CustomSlidableAction(
+                onPressed: pressed,
+                autoClose: true,
+                backgroundColor: isLight ? Colors.red : const Color(0xFF932821),
+                foregroundColor: isLight ? Colors.white : Theme
+                    .of(context)
+                    .textTheme
+                    .labelSmall!
+                    .color,
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(child: Icon(FontAwesomeIcons.trash, size: 14)),
+                      Flexible(child: Text(FlutterUI.translate("Delete"), style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis)),
+                    ]
+                )
+            )
+        );
+      }
+      else {
+        slideActions.add(
+          SlidableAction(
+            onPressed: pressed,
+            autoClose: true,
+            backgroundColor: isLight ? Colors.red : const Color(0xFF932821),
+            foregroundColor: isLight ? Colors.white : Theme
+                .of(context)
+                .textTheme
+                .labelSmall!
+                .color,
+            label: FlutterUI.translate("Delete"),
+            icon: FontAwesomeIcons.trash,
+            padding: const EdgeInsets.only(left: 8, right: 8),
+          ),
+        );
+      }
     }
 
     return slideActions;
