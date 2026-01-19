@@ -61,6 +61,8 @@ class FlLinkedCellPicker extends StatefulWidget {
 
   final bool showSearch;
 
+  final bool scrollToSelected;
+
   const FlLinkedCellPicker({
     super.key,
     required this.linkedCellEditor,
@@ -69,7 +71,8 @@ class FlLinkedCellPicker extends StatefulWidget {
     this.editorColumnDefinition,
     this.embeddable,
     this.showTitle = true,
-    this.showSearch = true
+    this.showSearch = true,
+    this.scrollToSelected = true
   });
 
   @override
@@ -119,6 +122,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   /// The last known table constraints.
   BoxConstraints? lastTableConstraints;
 
+  bool scrollToSelected = true;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Getters
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,6 +142,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   void initState() {
     super.initState();
 
+    scrollToSelected = widget.scrollToSelected;
+
     tableModel.columnLabels = [];
     tableModel.tableHeaderVisible = model.tableHeaderVisible && !isConcatMask;
 
@@ -152,6 +159,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   @override
   void didUpdateWidget(covariant FlLinkedCellPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    scrollToSelected = widget.scrollToSelected;
+
     if (linkedCellEditor != oldWidget.linkedCellEditor) {
       tableModel.dataProvider = linkedCellEditor.dataProvider;
     }
@@ -244,8 +254,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                             constraints.maxHeight > (2 * tableSize!.rowHeight + tableSize!.tableHeaderHeight);
                         tableModel.editable = false;
 
+print("Repaint $scrollToSelected");
+
                         return FlTableWidget(
                           selectedRowIndex: selectedRow,
+                          autoScrollEnabled: scrollToSelected,
                           metaData: _metaData,
                           chunkData: isConcatMask ? _chunkDataConcatMask! : _chunkData!,
                           onLoadMore: _loadMore,
@@ -352,7 +365,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
           // loop through the chunk data and find the index of the record for which the value equals the linked cell editor get value
           for (int i = 0; i < _chunkData!.data.length; i++) {
-            if (_chunkData!.data[i]![colIndex] == value) {
+            if (_chunkData!.data[i]![colIndex] == value
+                //type independent (e.g. int == String)
+                || _chunkData!.data[i]![colIndex].toString() == value.toString()) {
               selectedRow = i;
               break;
             }
@@ -525,6 +540,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   void _loadMore() {
     if (_chunkData != null && !_chunkData!.isAllFetched) {
+      //don't scroll to selected row if we load more records
+      scrollToSelected = false;
       scrollingPage++;
       _subscribe();
     }

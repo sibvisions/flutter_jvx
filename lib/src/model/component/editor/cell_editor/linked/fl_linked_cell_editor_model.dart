@@ -41,9 +41,13 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   /// The style if an editor should be shown as popup
   static const String STYLE_AS_POPUP = "f_as_popup";
 
+  /// The optional popup style to show the popup with "jump" animation
   static const String STYLE_POPUP_JUMP = "f_popup_jump";
+  /// The optional popup style to show the popup with "fade-in and bounce" animation (default)
   static const String STYLE_POPUP_FADE_IN_BOUNCE = "f_popup_fade_in_bounce";
+  /// The optional popup style to show the popup with "fade-in and move down" animation
   static const String STYLE_POPUP_FADE_IN_DOWN = "f_popup_fade_in_down";
+  /// The optional popup style to show the popup with "fade-in and roll down" animation
   static const String STYLE_POPUP_FADE_IN_ROLL_DOWN = "f_popup_fade_in_roll_down";
 
   ReferenceDefinition linkReference = ReferenceDefinition(referencedDataBook: "");
