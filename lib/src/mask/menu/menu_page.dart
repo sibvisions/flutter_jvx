@@ -197,6 +197,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 );
               }
 
+              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, 'menuTop.color'));
+
               return Scaffold(
                 drawerEnableOpenDragGesture: false,
                 endDrawerEnableOpenDragGesture: false,
@@ -209,7 +211,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
                   titleSpacing: leading != null ? 0.0 : 8,
-                  backgroundColor: isOffline ? Colors.grey.shade500 : null,
+                  backgroundColor: isOffline ? Theme.of(context).colorScheme.surface : headerColor,
                   actions: actions,
                 ),
                 body: frameState?.wrapBody(body) ?? body,
