@@ -16,6 +16,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ import '../../util/extensions/double_extensions.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
+import '../util/ScrollMixin.dart';
 import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
 
@@ -146,7 +148,8 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   State<FlTableWidget> createState() => _FlTableWidgetState();
 }
 
-class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateMixin {
+class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateMixin,
+                                                            ScrollMixin {
   /// The current sliver context
   BuildContext? _sliverContext;
 
@@ -303,11 +306,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     Widget table = _createRecordList(canScrollHorizontally, maxWidth);
 
     if (widget.onRefresh != null && widget.model.isEnabled) {
-      table = RefreshIndicator(
+      table = wrapWithScrollConfiguration(context, RefreshIndicator(
         onRefresh: widget.onRefresh!,
         child: table,
         notificationPredicate: (notification) => notification.depth == 1,
-      );
+      ));
     }
 
     table = SlidableAutoCloseBehavior(
@@ -339,7 +342,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
             // Let it bubble upwards
             return false;
           },
-          child: table,
+          child: table
         ),
       ),
     );
