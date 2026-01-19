@@ -16,11 +16,14 @@
 
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:math';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../../components.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -32,6 +35,7 @@ import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../../../../service/command/i_command_service.dart';
 import '../../../../service/data/i_data_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
+import '../../../../util/jvx_colors.dart';
 import '../../../../util/parse_util.dart';
 import '../../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../i_cell_editor.dart';
@@ -40,6 +44,8 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final LayerLink _layerLink = LayerLink();
 
   (dynamic, List<dynamic>?)? _record;
 
@@ -105,6 +111,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     lastWidgetModel = widgetModel;
 
     return FlLinkedEditorWidget(
+      link: _layerLink,
       model: widgetModel,
       endEditing: (_) => receiveNull(),
       valueChanged: onValueChange,
@@ -238,7 +245,344 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
         if (!success) {
           return null;
         }
-        return IUiService().openDialog(
+
+        double defPopupHeight = 400;
+
+        final screenHeight = MediaQuery.of(FlutterUI.getCurrentContext()!).size.height;
+        final keyboardHeight = MediaQuery.of(FlutterUI.getCurrentContext()!).viewInsets.bottom;
+        final fieldBottom = focusNode.offset.dy + focusNode.size.height;
+        final padding = 10.0;
+
+        // Berechne den verfügbaren Platz unterhalb des Feldes
+        final spaceBelow = screenHeight - fieldBottom - keyboardHeight - padding;
+        // Berechne den verfügbaren Platz oberhalb des Feldes
+        final spaceAbove = focusNode.offset.dy - padding;
+
+        // Wähle die Position und Höhe basierend auf dem verfügbaren Platz
+        bool showBelow = spaceBelow > 250; // Mindesthöhe für komfortable Anzeige
+        double popupHeight = min(defPopupHeight, showBelow ? spaceBelow : spaceAbove);
+        double topPosition = showBelow
+            ? fieldBottom + padding
+            : focusNode.offset.dy - popupHeight - padding;
+
+
+
+        int iMode = 3;
+
+if (iMode == -2) {
+  return Navigator.push(
+    FlutterUI.getCurrentContext()!,
+    PageRouteBuilder(
+      opaque: false,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.1),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            Positioned(
+                left: _layerLink.leader!.offset.dx,
+                top: focusNode.offset.dy - focusNode.size.height + _layerLink.leaderSize!.height + 5,
+                width: max(_layerLink.leaderSize!.width, 250),
+                height: 400,
+                child:
+                ScaleTransition(
+                  scale: CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutBack,
+                  ),
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: Material(
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(8),
+                        child: FlLinkedCellPicker(
+                          linkedCellEditor: this,
+                          model: model,
+                          name: name!,
+                          editorColumnDefinition: columnDefinition,
+                          embeddable: true,
+                        )
+                    ),
+                  ),
+                )
+            )
+          ],
+        );
+      },
+    ),
+  ).then((value) {
+    if (value != null) {
+      if (value == FlLinkedCellPicker.NULL_OBJECT) {
+        receiveNull();
+      } else {
+        onEndEditing(value);
+      }
+    }
+  });
+}
+
+if (iMode == -1) {
+  return Navigator.push(
+    FlutterUI.getCurrentContext()!,
+    PageRouteBuilder(
+      opaque: false,
+      barrierDismissible: true,
+      barrierColor: Colors.black26.withAlpha(25),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        final slide = Tween<Offset>(
+          begin: Offset(0, -0.05),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack, //Bounce-Effect
+        ));
+
+        final fade = Tween<double>(
+          begin: 0,
+          end: 1,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeIn,
+        ));
+
+        final expand = Tween<double>(
+          begin: 0,
+          end: 1,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+        ));
+
+        return Stack(
+          children: [
+            Positioned(
+              top: topPosition, //focusNode.offset.dy - focusNode.size.height + _layerLink.leaderSize!.height - 5,
+              left: _layerLink.leader!.offset.dx,
+              child: SlideTransition(
+                position: slide,
+                child: FadeTransition(
+                  opacity: fade,
+                  child: Align(
+                      alignment: Alignment.topCenter,
+                      heightFactor: expand.value,
+                      child: Container(
+                        width: max(_layerLink.leaderSize!.width, 250),
+                        height: popupHeight, // 400
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black26)],
+                        ),
+                        child: Material(
+                          elevation: 4,
+                          clipBehavior: Clip.antiAlias,
+                          borderRadius: BorderRadius.circular(8),
+                          child: FlLinkedCellPicker(
+                            linkedCellEditor: this,
+                            model: model,
+                            name: name!,
+                            editorColumnDefinition: columnDefinition,
+                            embeddable: true,
+                            showTitle: false
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    ),
+  ).then((value) {
+    if (value != null) {
+      if (value == FlLinkedCellPicker.NULL_OBJECT) {
+        receiveNull();
+      } else {
+        onEndEditing(value);
+      }
+    }
+  });
+}
+
+if (iMode == 0) {
+  return Navigator.push(
+    FlutterUI.getCurrentContext()!,
+    PageRouteBuilder(
+      opaque: false,
+      barrierDismissible: true,
+      barrierColor: Colors.black26.withAlpha(25),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        final slide = Tween<Offset>(
+          begin: Offset(0, -0.1), // leicht von oben
+          end: Offset.zero,
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+
+        final fade = Tween<double>(
+          begin: 0,
+          end: 1,
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+
+        final expand = Tween<double>(
+          begin: 0,
+          end: 1,
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+
+        return Stack(
+          children: [
+            Positioned(
+              top: focusNode.offset.dy - focusNode.size.height + _layerLink.leaderSize!.height - 5,
+              left: _layerLink.leader!.offset.dx,
+              child: SlideTransition(
+                position: slide,
+                child: FadeTransition(
+                  opacity: fade,
+                  child: Align(
+                      alignment: Alignment.topCenter,
+                      heightFactor: expand.value,
+                      child: Container(
+                        width: max(_layerLink.leaderSize!.width, 250),
+                        height: 400,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black26)],
+                        ),
+                        child: Material(
+                          elevation: 4,
+                          borderRadius: BorderRadius.circular(8),
+                          child: FlLinkedCellPicker(
+                            linkedCellEditor: this,
+                            model: model,
+                            name: name!,
+                            editorColumnDefinition: columnDefinition,
+                            embeddable: true,
+                            showTitle: false
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    ),
+  ).then((value) {
+    if (value != null) {
+      if (value == FlLinkedCellPicker.NULL_OBJECT) {
+        receiveNull();
+      } else {
+        onEndEditing(value);
+      }
+    }
+  });
+}
+
+if (iMode == 1) {
+  return Navigator.push(
+    FlutterUI.getCurrentContext()!,
+    PageRouteBuilder(
+      opaque: false,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.1),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            Positioned(
+              top: focusNode.offset.dy - focusNode.size.height + _layerLink.leaderSize!.height - 5,
+              left: _layerLink.leader!.offset.dx,
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: 1),
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+                builder: (context, value, _) {
+                  return Material(
+                    elevation: 4,
+                    borderRadius: BorderRadius.circular(8),
+                    clipBehavior: Clip.antiAlias,
+                    child: Container(
+                      width: max(_layerLink.leaderSize!.width, 250),
+                      height: 400 * value,
+                      child: Opacity(
+                          opacity: value.clamp(0.0, 1.0),
+                          child: OverflowBox(
+                            maxHeight: 400,
+                            child: FlLinkedCellPicker(
+                              linkedCellEditor: this,
+                              model: model,
+                              name: name!,
+                              editorColumnDefinition: columnDefinition,
+                              embeddable: true,
+                              showTitle: false,
+                            ),
+                          )
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  ).then((value) {
+    if (value != null) {
+      if (value == FlLinkedCellPicker.NULL_OBJECT) {
+        receiveNull();
+      } else {
+        onEndEditing(value);
+      }
+    }
+  });
+}
+
+if (iMode == 2) {
+        return showBarModalBottomSheet(
+          context: FlutterUI.getCurrentContext()!,
+          backgroundColor: Theme.of(FlutterUI.getCurrentContext()!).dialogTheme.backgroundColor,
+          barrierColor: JVxColors.LIGHTER_BLACK.withAlpha(Color.getAlphaFromOpacity(0.75)),
+          topControl: Container(
+            height: 20,
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 6,
+              width: 40,
+              decoration: BoxDecoration(color: Colors.white.withAlpha(Color.getAlphaFromOpacity(0.5)), borderRadius: BorderRadius.circular(6)),
+            ),
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          shape: const RoundedRectangleBorder(
+            side: BorderSide.none,
+            borderRadius: BorderRadius.only(topLeft: kDefaultBarTopRadius, topRight: kDefaultBarTopRadius),
+          ),
+          enableDrag: true,
+          //otherwise the full height will be used - independent of the ContentBottomSheet
+          expand: false,
+          bounce: false,
+          builder: (context) => SizedBox(height: 500, child: FlLinkedCellPicker(
+            linkedCellEditor: this,
+            model: model,
+            name: name!,
+            editorColumnDefinition: columnDefinition,
+            embeddable: true,
+          )),
+        ).then((value) {
+          if (value != null) {
+            if (value == FlLinkedCellPicker.NULL_OBJECT) {
+              receiveNull();
+            } else {
+              onEndEditing(value);
+            }
+          }
+        });
+}
+
+if (iMode == 3) {
+      return IUiService().openDialog(
           pBuilder: (_) => FlLinkedCellPicker(
             linkedCellEditor: this,
             model: model,
@@ -255,6 +599,9 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
             }
           }
         });
+}
+
+
       }).whenComplete(() {
         isOpen = false;
         // The "onEndEditing" of the FlEditorWrapper handles the focus for the linked cell picker and date cell editor.

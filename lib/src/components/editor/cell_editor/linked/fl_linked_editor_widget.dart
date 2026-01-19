@@ -21,6 +21,9 @@ import '../../../../model/component/fl_component_model.dart';
 import '../../text_field/fl_text_field_widget.dart';
 
 class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWidget<T> {
+
+  final LayerLink? link;
+
   const FlLinkedEditorWidget({
     super.key,
     required super.model,
@@ -29,6 +32,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
     required super.valueChanged,
     required super.endEditing,
     super.hideClearIcon,
+    this.link
   }) : super(keyboardType: TextInputType.none);
 
   @override
@@ -38,5 +42,18 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
     items.add(createEmbeddableIcon(context, FontAwesomeIcons.caretDown));
 
     return items;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (link != null) {
+      return CompositedTransformTarget(
+        link: link!,
+        child: super.build(context)
+      );
+    }
+    else{
+      return super.build(context);
+    }
   }
 }
