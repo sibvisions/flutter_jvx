@@ -1205,15 +1205,30 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                   future: IAppService().startupFuture.value!,
                   context: contextD,
                   returnToApps: returnToApps,
-                  childrenBuilder: (snapshot) => [
-                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                      _getStartupErrorDialog(
-                        contextD,
-                        snapshot,
-                        retry: () => IAppService().startApp(),
-                        returnToApps: returnToApps,
-                      ),
-                  ],
+                  childrenBuilder: (snapshot) {
+
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
+                      //automatic back only if started automatically
+                      //usually this only happens in case of single-app-mode without predefined application
+                      if (!IAppService().wasStartedManually() && returnToApps != null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          returnToApps();
+                        });
+                      }
+                      else {
+                        return [
+                          _getStartupErrorDialog(
+                            contextD,
+                            snapshot,
+                            retry: () => IAppService().startApp(),
+                            returnToApps: returnToApps,
+                          )
+                        ];
+                      }
+                    }
+
+                    return [];
+                  }
                 );
               }
 
@@ -1264,6 +1279,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     return FutureNestedNavigator(
       theme: _splashTheme(context),
       future: future,
+
       transitionDelegate: transitionDelegate,
       navigatorKey: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
       builder: (contextA, snapshot) => Stack(
@@ -1517,29 +1533,43 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     OpenServerErrorDialogCommand? serverError =
         snapshot.error is OpenServerErrorDialogCommand ? snapshot.error as OpenServerErrorDialogCommand : null;
 
+    List<Widget>? actions = [];
+
     Object? error = snapshot.error!;
+
     if (error is ErrorCommand) {
       error = error.error;
     }
 
-    List<Widget>? actions = [
-      if (returnToApps != null)
-        TextButton(
+    if (error is ArgumentError) {
+      actions.add(TextButton(
+        onPressed: IUiService().routeToAppOverview,
+        child: Text(
+          FlutterUI.translateLocal("Back"),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ));
+    } else {
+      if (returnToApps != null) {
+        actions.add(TextButton(
           onPressed: returnToApps,
           child: Text(
             FlutterUI.translateLocal("Back"),
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
-      if (serverError?.invalidApp != true)
-        TextButton(
+        ));
+      }
+
+      if (serverError?.invalidApp != true) {
+        actions.add(TextButton(
           onPressed: retry,
           child: Text(
             FlutterUI.translateLocal("Retry"),
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
-    ];
+        ));
+      }
+    }
 
     if (actions.isEmpty) {
       //avoid padding, doesn't work with an empty list!

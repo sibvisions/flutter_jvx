@@ -42,6 +42,7 @@ import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/main_location.dart';
 import '../../../util/jvx_colors.dart';
+import '../../apps/app.dart';
 import '../../apps/i_app_service.dart';
 import '../../command/i_command_service.dart';
 import '../../config/i_config_service.dart';
@@ -252,16 +253,28 @@ class UiService implements IUiService {
 
   @override
   bool canRouteToAppOverview() {
-    if (IConfigService().getAppConfig()!.customAppsAllowed!) {
+    IConfigService serv = IConfigService();
+
+    if (serv.getAppConfig()!.customAppsAllowed!) {
       return true;
     }
 
-    if (IConfigService().isSingleAppMode()) {
+    if (serv.isSingleAppMode()) {
+      App? app = IAppService().getCurrentApp();
+      if (app?.predefined == false) {
+        //If app is manually defined -> route back possible
+        return true;
+      }
+      else if (serv.getAppConfig()?.predefinedConfigsLocked == false) {
+        //If app is predefined but if config is not locked -> route back possible
+        return true;
+      }
+
       return false;
     } else if (IAppService().getAppIds().length > 1) {
       return true;
-    } else if (IConfigService().getAppConfig()?.predefinedConfigsLocked == true ||
-        IConfigService().getAppConfig()?.predefinedConfigsParametersHidden == true) {
+    } else if (serv.getAppConfig()?.predefinedConfigsLocked == true ||
+        serv.getAppConfig()?.predefinedConfigsParametersHidden == true) {
       return false;
     }
 
