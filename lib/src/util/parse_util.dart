@@ -32,16 +32,22 @@ abstract class ParseUtil {
   }
 
   static Uri appendMobileServicePath(Uri uri) {
-    if (!uri.path.endsWith(mobileServicePath)
+    String pathLower = uri.path.toLowerCase();
+
+    if ((pathLower.startsWith("http:") || pathLower.startsWith("https:"))
+        && !uri.path.endsWith(mobileServicePath)
         && !uri.path.endsWith("$mobileServicePath/")
         //maybe another service is configured
         && !uri.path.contains(servicePath)) {
       String appendingSuffix = mobileServicePath;
+
       if (uri.path.endsWith("/")) {
         appendingSuffix = appendingSuffix.substring(1);
       }
+
       uri = uri.replace(path: uri.path + appendingSuffix);
     }
+
     return uri;
   }
 
