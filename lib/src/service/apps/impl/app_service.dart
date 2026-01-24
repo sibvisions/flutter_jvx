@@ -169,21 +169,35 @@ class AppService implements IAppService {
   App? getStartupApp() {
     AppConfig appConfig = IConfigService().getAppConfig()!;
 
-    List<App> apps = _apps;
+    if (appConfig.forceSingleAppMode == true && appConfig.customAppsAllowed == false) {
 
-    if (!appConfig.customAppsAllowed!) {
-      apps = apps.where((e) => e.predefined).toList();
+      //first: use startable predefined app (no matter if default or not because predefined always overrules manually defined app)
+      App? appStart = _apps.firstWhereOrNull((app) => app.predefined && app.isStartable);
+      //second: use startable manually defined default app
+      appStart ??= _apps.firstWhereOrNull((app) => !app.predefined && app.isStartable && app.isDefault);
+      //third: use startable manually defined app
+      appStart ??= _apps.firstWhereOrNull((app) => !app.predefined && app.isStartable);
+      //fourth: use startable app
+      appStart ??= _apps.firstWhereOrNull((app) => app.isStartable);
+
+      return appStart;
     }
+    else {
+      List<App> apps = _apps;
 
-    App? defaultApp = _apps.firstWhereOrNull((e) => e.isDefault && e.isStartable);
+      if (appConfig.customAppsAllowed == false) {
+        apps.retainWhere((app) => app.predefined);
+      }
 
-    if (defaultApp != null) {
-      return defaultApp;
-      // If custom apps are not allowed, we aren't really allowed to add another app, so just start the first possible app.
-    } else if (appConfig.forceSingleAppMode! && !appConfig.customAppsAllowed!) {
-      return apps.firstWhereOrNull((app) => app.isStartable);
-    } else if (apps.length == 1 && apps.first.isStartable && !appConfig.showAppOverviewWithoutDefault!) {
-      return apps.first;
+      App? defaultApp = apps.firstWhereOrNull((e) => e.isDefault && e.isStartable);
+
+      if (defaultApp != null) {
+        return defaultApp;
+      }
+
+      if (apps.length == 1 && apps[0].isStartable && appConfig.showAppOverviewWithoutDefault == false) {
+        return apps[0];
+      }
     }
 
     return null;

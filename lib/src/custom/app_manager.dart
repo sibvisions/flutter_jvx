@@ -108,10 +108,10 @@ abstract class AppManager {
   List<Widget> getAdditionalActions() => [];
 
   /// Can be used to modify the headers for each request
-  void modifyHeaders(Map<String, dynamic> headers) {}
+  void modifyHeaders(ApiRequest request, Map<String, dynamic> headers) {}
 
   /// Can be used to modify the cookie list for each request
-  void modifyCookies(List<Cookie> cookies) {}
+  void modifyCookies(ApiRequest request, List<Cookie> cookies) {}
 
   /// Can be used to modify the application parameters before they get updated via [IUiService.updateApplicationParameters]
   void modifyApplicationParameters(ApplicationParameters pApplicationParameters) {}
@@ -134,6 +134,9 @@ abstract class AppManager {
 
   /// Can be used to modify the responses list after each request
   void modifyResponses(ApiInteraction responses) {}
+
+  /// Can be used to change the request or log request uri
+  void beforeRequest(ApiRequest request, Uri uri) {}
 
   /// Is called when a response is returned, use the [resendRequest] function to resend the original request.
   /// Useful for 2FA or retry.

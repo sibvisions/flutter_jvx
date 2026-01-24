@@ -245,8 +245,8 @@ class OnlineApiRepository extends IRepository {
   /// Fixed header fields
   final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
 
-  /// Cookies used for sessionId
-  final Set<Cookie> _cookies = {};
+  /// External cookies
+  final Map<String, Cookie> _cookies = {};
 
   /// Maps response names with a corresponding factory
   final Map<String, ResponseFactory> responseFactoryMap = maps;
@@ -602,22 +602,21 @@ class OnlineApiRepository extends IRepository {
 
   @override
   Set<Cookie> getCookies() {
-    var cookies = List.of(_cookies);
-    IUiService().getAppManager()?.modifyCookies(cookies);
-    return cookies.toSet();
+    return _cookies.values.toSet();
   }
 
   @override
   void setCookies(Set<Cookie> pCookies) {
     _cookies.clear();
-    _cookies.addAll(pCookies);
+
+    for (final cookie in pCookies) {
+      _cookies[cookie.name] = cookie;
+    }
   }
 
   @override
   Map<String, String> getHeaders() {
-    var headers = Map.of(_headers);
-    IUiService().getAppManager()?.modifyHeaders(headers);
-    return headers;
+    return Map.of(_headers);
   }
 
   @override
@@ -820,7 +819,7 @@ class OnlineApiRepository extends IRepository {
   Future<Response> _sendRequest(
     ApiRequest pRequest, {
     required Dio client,
-    required Set<Cookie> cookies,
+    required Map<String, Cookie> cookies,
     required Map<String, dynamic> headers,
     required String? clientId,
   }) async {
@@ -842,19 +841,25 @@ class OnlineApiRepository extends IRepository {
 
     List<Cookie>? requestCookies;
     if (!kIsWeb) {
-      requestCookies = List.of(cookies);
-      IUiService().getAppManager()?.modifyCookies(requestCookies);
+      requestCookies = cookies.values.toList();
+      IUiService().getAppManager()?.modifyCookies(pRequest, requestCookies);
     }
 
     Map<String, dynamic> requestHeaders = Map.of(headers);
-    IUiService().getAppManager()?.modifyHeaders(requestHeaders);
+    IUiService().getAppManager()?.modifyHeaders(pRequest, requestHeaders);
 
     if (compress) {
       requestHeaders['content-type'] = ContentType.binary.mimeType;
     }
 
+    Uri uri = Uri(path: "/${route.route}");
+
+    if (IUiService().getAppManager() != null) {
+      IUiService().getAppManager()!.beforeRequest(pRequest, uri);
+    }
+
     Response response = await client.requestUri(
-      Uri(path: "/${route.route}"),
+      uri,
       data: route.method != Method.GET ? data : null,
       options: Options(
         method: route.method.name,
@@ -868,17 +873,24 @@ class OnlineApiRepository extends IRepository {
     );
 
     if (!kIsWeb) {
-      // Extract the session-id cookie to be sent in future
-      final List<String>? responseCookies = response.headers[HttpHeaders.setCookieHeader];
-      if (responseCookies != null) {
-        cookies.addAll(
-          responseCookies
-              .map((str) => str.split(_setCookieReg))
-              .expand((cookie) => cookie)
-              .where((cookie) => cookie.isNotEmpty)
-              .map((str) => Cookie.fromSetCookieValue(str))
-              .toList(),
-        );
+      // Extract the cookies for future calls -> especially JSESSIONID is important
+      final List<String>? headerValues = response.headers[HttpHeaders.setCookieHeader];
+      if (headerValues != null) {
+        for (final header in headerValues) {
+          // only, if more than one cookie is available in one header line -> split
+          List<String> parts = header.split(_setCookieReg);
+
+          for (final part in parts) {
+            String partTrim = part.trim();
+
+            if (partTrim.isNotEmpty) {
+              Cookie cookie = Cookie.fromSetCookieValue(partTrim);
+
+              //Replace or add cookies
+              _cookies[cookie.name] = cookie;
+            }
+          }
+        }
       }
     }
 

@@ -188,7 +188,8 @@ class ConfigService implements IConfigService {
     if (!pOverride && defaultApp.value != null) {
       app = await App.getApp(defaultApp.value!);
 
-      if (app?.predefined == false && !_appConfig!.customAppsAllowed!) {
+      //in case of forceSingleAppMode, the app is always NOT predefined - if there is no predefined app available
+      if (app?.predefined == false && _appConfig?.customAppsAllowed == false && _appConfig?.forceSingleAppMode == false) {
         app = null;
       }
     }

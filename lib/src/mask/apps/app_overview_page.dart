@@ -154,7 +154,9 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   Future<void> _refreshApps() async {
     try {
       await IAppService().refreshStoredApps();
+
       apps = [...IAppService().getApps().sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase())];
+
       currentConfig = _getSingleConfig();
       setState(() {});
     } catch (e, stack) {
@@ -290,7 +292,22 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
               context,
               config.merge(const ServerConfig(isDefault: true)),
             );
+
             if (editedApp != null && mounted) {
+              //we only save 1 manually defined application and 1 predefined application, why?
+              //it should be possible to test forceSingleAppMode with predefined config and without. In case,
+              //no predefined config is available, we try to use the available config. If we remove the
+              //predefined config -> it will be automatically removed from cache as well.
+              //So we can test forceSingleAppMode perfectly
+
+              List<App> apps = IAppService().getApps();
+
+              for (App app in apps) {
+                if (app.id != editedApp.id && !app.predefined) {
+                  await app.delete();
+                }
+              }
+
               unawaited(IAppService().startApp(appId: editedApp.id, autostart: false));
             }
           },
@@ -367,12 +384,37 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
 
   /// Returns either the last started app, the default app or the first app that is not hidden.
   App? _getSingleConfig() {
-    Iterable<String?> appIds = [
-      IConfigService().lastApp.value,
-      IConfigService().defaultApp.value,
-    ].nonNulls;
+    IConfigService serv = IConfigService();
 
-    return apps?.firstWhereOrNull((app) => appIds.contains(app.id) && !app.parametersHidden);
+    List<String> appIds = [];
+
+    if (serv.lastApp.value != null) {
+      appIds.add(serv.lastApp.value!);
+    }
+
+    if (serv.defaultApp.value != null) {
+      appIds.add(serv.defaultApp.value!);
+    }
+
+    App? app;
+
+    if (apps != null) {
+      if (appIds.isNotEmpty) {
+        app = apps?.firstWhereOrNull((app) => appIds.contains(app.id) && !app.parametersHidden);
+      }
+
+      //hm... we didn't find an application, maybe because no app was started before. In this case,
+      //it's still possible that an application is available (with invalid configuration)
+      if (app == null) {
+        if (apps!.length == 1) {
+          app = apps!.first;
+        }
+      }
+
+      return app;
+    }
+
+    return null;
   }
 
   Material _buildMenuButton(BuildContext context, bool showAddOnFront) {
