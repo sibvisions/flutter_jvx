@@ -94,7 +94,7 @@ class _ManualCardState extends State<ManualCard> {
         data: Theme.of(context).copyWith(
           inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
                 labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                hintStyle: const TextStyle(fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(fontWeight: FontWeight.w200),
               ),
           textTheme: Theme.of(context).textTheme.copyWith(
                 titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),

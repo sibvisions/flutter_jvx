@@ -214,6 +214,7 @@ class _ManualCardState extends State<ManualCard> {
 
   Widget _createBottomRow() {
     bool replaceSettingsWithApps = IUiService().canRouteToAppOverview();
+
     Widget textButton = TextButton.icon(
       onPressed: () => replaceSettingsWithApps ? IUiService().routeToAppOverview() : IUiService().routeToSettings(),
       icon: replaceSettingsWithApps ? const Icon(AppOverviewPage.appsIcon) : const FaIcon(FontAwesomeIcons.gear),

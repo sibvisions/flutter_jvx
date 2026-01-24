@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../custom/custom_screen.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/activate_screen_command.dart';
