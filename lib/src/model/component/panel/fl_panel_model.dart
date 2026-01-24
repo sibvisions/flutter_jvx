@@ -104,6 +104,7 @@ class FlPanelModel extends FlComponentModel {
   /// If the screen has a simple menu.
   bool get hasSimpleMenu => styles.contains(STYLE_SIMPLE_MENU);
 
+  /// If the screen menu should use the same background as the screen itself
   bool get useScreenBackgroundInMenu => styles.contains(STYLE_MENU_SCREENBACKGROUND);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

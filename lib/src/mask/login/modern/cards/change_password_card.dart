@@ -85,7 +85,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
         data: Theme.of(context).copyWith(
           inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
                 labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                hintStyle: const TextStyle(fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(fontWeight: FontWeight.w200),
               ),
           textTheme: Theme.of(context).textTheme.copyWith(
                 titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -229,6 +229,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                                     _newPasswordHidden ? Icons.visibility : Icons.visibility_off,
                                   ),
                                   onPressed: () => setState(() => _newPasswordHidden = !_newPasswordHidden),
+                                  color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                                  iconSize: FlTextFieldWidget.iconSize,
                                 ),
                               ),
                             ),
@@ -261,6 +263,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                                     _confirmPasswordHidden ? Icons.visibility : Icons.visibility_off,
                                   ),
                                   onPressed: () => setState(() => _confirmPasswordHidden = !_confirmPasswordHidden),
+                                  color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                                  iconSize: FlTextFieldWidget.iconSize,
                                 ),
                               ),
                             ),

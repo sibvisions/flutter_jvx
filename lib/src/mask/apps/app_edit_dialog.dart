@@ -20,6 +20,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
+import '../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
@@ -104,7 +105,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
         data: parentTheme.copyWith(
           inputDecorationTheme: parentTheme.inputDecorationTheme.copyWith(
             labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-            hintStyle: const TextStyle(fontWeight: FontWeight.bold),
+            hintStyle: const TextStyle(fontWeight: FontWeight.w200),
           ),
           textTheme: parentTheme.textTheme.copyWith(
             titleMedium: parentTheme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -173,9 +174,11 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                     suffixIcon: !widget.locked && appNameController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
-                                              tooltip: FlutterUI.translate("Clear"),
                                               icon: const Icon(Icons.clear),
+                                              tooltip: FlutterUI.translate("Clear"),
                                               onPressed: () => setState(() => appNameController.clear()),
+                                              color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                                              iconSize: FlTextFieldWidget.iconSize,
                                             ),
                                           )
                                         : null,
@@ -211,9 +214,11 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                     suffixIcon: !widget.locked && titleController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
-                                              tooltip: FlutterUI.translate("Clear"),
                                               icon: const Icon(Icons.clear),
+                                              tooltip: FlutterUI.translate("Clear"),
                                               onPressed: () => setState(() => titleController.clear()),
+                                              color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                                              iconSize: FlTextFieldWidget.iconSize,
                                             ),
                                           )
                                         : null,
@@ -250,13 +255,15 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                     ),
                                     labelText: "${FlutterUI.translateLocal("URL")} *",
                                     border: InputBorder.none,
-                                    hintText: "http://host:port${ParseUtil.mobileServicePath}",
+                                    hintText: "https://server${ParseUtil.mobileServicePath}",
                                     suffixIcon: !widget.locked && baseUrlController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
-                                              tooltip: FlutterUI.translate("Clear"),
                                               icon: const Icon(Icons.clear),
+                                              tooltip: FlutterUI.translate("Clear"),
                                               onPressed: () => setState(() => baseUrlController.clear()),
+                                              color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                                              iconSize: FlTextFieldWidget.iconSize,
                                             ),
                                           )
                                         : null,

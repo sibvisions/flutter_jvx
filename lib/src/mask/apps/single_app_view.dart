@@ -17,9 +17,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../service/apps/app.dart';
+import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import 'app_image.dart';
 import 'app_overview_page.dart';
@@ -72,7 +74,7 @@ class _SingleAppViewState extends State<SingleAppView> {
         data: Theme.of(context).copyWith(
           inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
                 labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                hintStyle: const TextStyle(fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(fontWeight: FontWeight.w200),
               ),
           textTheme: Theme.of(context).textTheme.copyWith(
                 titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -121,9 +123,11 @@ class _SingleAppViewState extends State<SingleAppView> {
                           suffixIcon: appNameController.text.isNotEmpty
                               ? ExcludeFocus(
                                   child: IconButton(
-                                    tooltip: FlutterUI.translate("Clear"),
                                     icon: const Icon(Icons.clear),
+                                    tooltip: FlutterUI.translate("Clear"),
                                     onPressed: () => setState(() => appNameController.clear()),
+                                    color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                                    iconSize: FlTextFieldWidget.iconSize,
                                   ),
                                 )
                               : null,
@@ -149,13 +153,15 @@ class _SingleAppViewState extends State<SingleAppView> {
                           icon: const FaIcon(FontAwesomeIcons.globe),
                           labelText: FlutterUI.translateLocal("URL"),
                           border: InputBorder.none,
-                          hintText: "http://host:port${ParseUtil.mobileServicePath}" ,
+                          hintText: "https://server${ParseUtil.mobileServicePath}",
                           suffixIcon: baseUrlController.text.isNotEmpty
                               ? ExcludeFocus(
                                   child: IconButton(
-                                    tooltip: FlutterUI.translate("Clear"),
                                     icon: const Icon(Icons.clear),
+                                    tooltip: FlutterUI.translate("Clear"),
                                     onPressed: () => setState(() => baseUrlController.clear()),
+                                    color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                                    iconSize: FlTextFieldWidget.iconSize,
                                   ),
                                 )
                               : null,
