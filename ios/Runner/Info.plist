@@ -79,6 +79,8 @@
 		<string>We would like to use the speech recognition on your device to be able to add data to your personal records.</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>We would like to access your microphone in order to use speech recognition.</string>
+		<key>NSFaceIDUsageDescription</key>
+    <string>We would like to access your face id in order to secure personal records?</string>
 		<key>FlutterDeepLinkingEnabled</key>
 		<false/>
     <key>UIBackgroundModes</key>

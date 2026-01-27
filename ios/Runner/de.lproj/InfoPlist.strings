@@ -4,4 +4,5 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Wir benötigen dauerhaft Zugriff auf Ihren Standort, um Daten zu Ihren persönlichen Unterlagen hinzuzufügen.";
 "NSSpeechRecognitionUsageDescription" = "Wir möchten die Spracherkennung Ihres Geräts nutzen, um Daten zu Ihren persönlichen Unterlagen hinzuzufügen.";
 "NSMicrophoneUsageDescription" = "Wir benötigen Zugriff auf Ihr Mikrofon, um die Spracherkennung zu verwenden.";
+"NSFaceIDUsageDescription" = "Wir möchten die Gesichts ID Ihres Geräts nutzen, um persönliche Daten zu schützen.";
 

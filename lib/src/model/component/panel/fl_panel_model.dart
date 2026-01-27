@@ -46,6 +46,9 @@ class FlPanelModel extends FlComponentModel {
   /// If menu should use same background as screen
   static const String STYLE_MENU_SCREENBACKGROUND = "f_menu_screenBackground";
 
+  /// If a work-screen should be secured.
+  static const String STYLE_SECURE = "f_secure";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,6 +103,9 @@ class FlPanelModel extends FlComponentModel {
 
   /// If the screen has no safe are.
   bool get fullSize => styles.contains(STYLE_FULL_SIZE);
+
+  /// If the screen should be secured.
+  bool get secure => styles.contains(STYLE_SECURE);
 
   /// If the screen has a simple menu.
   bool get hasSimpleMenu => styles.contains(STYLE_SIMPLE_MENU);

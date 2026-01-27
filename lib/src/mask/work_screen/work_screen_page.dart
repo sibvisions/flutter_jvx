@@ -46,6 +46,7 @@ import '../frame/frame.dart';
 import '../frame/open_drawer_action.dart';
 import '../state/app_style.dart';
 import '../state/loading_bar.dart';
+import 'biometric_authentication.dart';
 import 'error_screen.dart';
 import 'skeleton_screen.dart';
 import 'util/screen_wrapper.dart';
@@ -241,7 +242,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Frame.wrapWithFrame(
+    Widget wFrame = Frame.wrapWithFrame(
       builder: (context, isOffline) {
         return FutureBuilder(
           future: future,
@@ -294,12 +295,12 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             }
 
             PreferredSizeWidget? appBar = frame?.getAppBar(
-              context: context,
-              leading: leading,
-              titleSpacing: leading != null ? 0 : 8,
-              title: title,
-              actions: actions,
-              backgroundColor: headerColor
+                context: context,
+                leading: leading,
+                titleSpacing: leading != null ? 0 : 8,
+                title: title,
+                actions: actions,
+                backgroundColor: headerColor
             );
 
             // Dummy body shown while loading/error.
@@ -308,7 +309,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             // _onWillPop needs to access Scaffold.
             Widget content = Builder(
               builder: (context) => WillPopScope(
-                onWillPop: () => _onWillPop(context),
+                  onWillPop: () => _onWillPop(context),
                   child: _wrapBody(body!)
               ),
             );
@@ -326,11 +327,16 @@ class WorkScreenPageState extends State<WorkScreenPage> {
         );
       },
     );
+
+    if (model?.secure == true) {
+      return BiometricAuthentication(child: wFrame);
+    } else {
+      return wFrame;
+    }
   }
 
   ///Wraps the body (= screen) with a SafeArea or without if noSafeArea property is set
   Widget _wrapBody(Widget body) {
-    safeAreaColor = null;
     Widget wrappedBody;
 
     if (model?.fullSize == true) {
@@ -341,7 +347,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           color: safeAreaColor,
           child: SafeArea(
             child: Container(
-              color: safeAreaColor != null ? Theme.of(context).colorScheme.surface : null,
+              color: Theme.of(context).colorScheme.surface,
               child: body,
             )
           )
@@ -504,6 +510,9 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   /// Pop will close the whole location and not just "beam back" a page in the history.
   /// Pop is still needed to close down scaffold drawer.
   Future<bool> _onWillPop(BuildContext context) async {
+
+    print("ON will pop");
+
     if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
       return false;
     }
