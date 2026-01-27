@@ -6,7 +6,7 @@ issue_tracker: https://github.com/sibvisions/flutter_jvx/issues
 
 publish_to: 'none'
 
-version: 3.3.4+1
+version: 3.3.5+1
 
 environment:
   sdk: ">=3.0.2 <4.0.0"
@@ -63,7 +63,7 @@ dependencies:
 
   cross_file: ^0.3.0
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
-  file_picker: ^10.0.0
+  file_picker: 10.3.8
   file_saver: ^0.3.0
 
 # SVG Support
