@@ -170,7 +170,7 @@ abstract class FilePickerDialog {
 
           return pickedFile;
         case UploadType.FILE_SYSTEM:
-          FilePickerResult? result = await FilePicker.pickFiles();
+          FilePickerResult? result = await FilePicker.platform.pickFiles();
 
           // https://github.com/miguelpruivo/flutter_file_picker/issues/875
           PlatformFile? pickedFile = result?.files.single;

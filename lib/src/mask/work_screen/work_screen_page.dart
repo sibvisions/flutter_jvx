@@ -510,9 +510,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   /// Pop will close the whole location and not just "beam back" a page in the history.
   /// Pop is still needed to close down scaffold drawer.
   Future<bool> _onWillPop(BuildContext context) async {
-
-    print("ON will pop");
-
     if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
       return false;
     }
