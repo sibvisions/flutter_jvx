@@ -177,9 +177,9 @@ class _BiometricAuthenticationState extends State<BiometricAuthentication> with 
       }
 
       authenticated = await auth.authenticate(
-        localizedReason: 'Scan your fingerprint (or face or whatever) to authenticate',
+        localizedReason: FlutterUI.translate('Scan your fingerprint or face to authenticate'),
         persistAcrossBackgrounding: true,
-       // biometricOnly: true,
+        //biometricOnly: true,
       );
 
       if (_useChannel && authenticated) {
