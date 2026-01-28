@@ -29,44 +29,68 @@ class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponent
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command, BaseCommand? origin) async {
 
-    final stopwatch = Stopwatch()..start();
-    await ILayoutService().setValid(isValid: false);
+    if (command.affectedComponents.isEmpty
+        && command.changedComponents.isEmpty
+        && command.deletedComponents.isEmpty
+        && !command.notifyDesktopPanel) {
+      return [];
+    }
 
     // Wait as long as layout is busy
-    bool isBusy = true;
-    while (isBusy) {
-      isBusy = await ILayoutService().layoutInProcess();
+    bool isBusy = await ILayoutService().layoutInProcess();
 
-      if (isBusy) {
+    if (isBusy) {
+      final stopwatch = Stopwatch()..start();
+
+      bool wasValid = await ILayoutService().isValid();
+
+      if (wasValid) {
+        await ILayoutService().setValid(isValid: false);
+      }
+
+      while (isBusy) {
         await Future.delayed(const Duration(milliseconds: 10));
+
+        isBusy = await ILayoutService().layoutInProcess();
+      }
+
+      if (wasValid) {
+        // Update components when current layout run is finished
+        await ILayoutService().setValid(isValid: true);
+      }
+      stopwatch.stop();
+
+      if (stopwatch.elapsedMilliseconds > 50) {
+        if (FlutterUI.logUI.cl(Lvl.w)) {
+          FlutterUI.logUI.w("Layout was busy for ${stopwatch.elapsedMilliseconds}ms");
+        }
       }
     }
 
-    // Update components when current layout run is finished
-    await ILayoutService().setValid(isValid: true);
-    stopwatch.stop();
+    if (command.affectedComponents.isEmpty
+        && command.changedComponents.isEmpty
+        && command.deletedComponents.isEmpty
+        && command.notifyDesktopPanel) {
+      IStorageService().getDesktopPanelNotifier().notify();
+    } else {
+      List<Future> futureList = [];
+      futureList.addAll(command.affectedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
+      futureList.addAll(command.changedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
+      futureList.addAll(command.deletedComponents.map((e) => ILayoutService().removeLayout(pComponentId: e)));
 
-    if (stopwatch.elapsedMilliseconds > 50) {
-      if (FlutterUI.logUI.cl(Lvl.w)) {
-        FlutterUI.logUI.w("Layout was busy for ${stopwatch.elapsedMilliseconds}ms");
-      }
+      // Update Components in UI after all are marked as dirty
+      await Future.wait(futureList).then((value) {
+        if (value.isNotEmpty) {
+          IUiService().notifyModelUpdated(command.changedComponents);
+          IUiService().notifyAffectedComponents(command.affectedComponents);
+          IUiService().notifyModels();
+
+          if (command.notifyDesktopPanel) {
+            IStorageService().getDesktopPanelNotifier().notify();
+          }
+        }
+      });
     }
-
-    List<Future> futureList = [];
-    futureList.addAll(command.affectedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
-    futureList.addAll(command.changedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
-    futureList.addAll(command.deletedComponents.map((e) => ILayoutService().removeLayout(pComponentId: e)));
-
-    // Update Components in UI after all are marked as dirty
-    await Future.wait(futureList).then((value) {
-      IUiService().notifyModelUpdated(command.changedComponents);
-      IUiService().notifyAffectedComponents(command.affectedComponents);
-      IUiService().notifyModels();
-
-      if (command.notifyDesktopPanel) {
-        IStorageService().getDesktopPanelNotifier().notify();
-      }
-    });
 
     return [];
   }
