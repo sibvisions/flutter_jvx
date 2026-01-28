@@ -16,10 +16,16 @@
 
 import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
+
 /// Base class for all messages to the API isolate.
 /// [T] indicates what return value is expected
 /// from the execution of the message.
 abstract class IsolateMessage<T> {
+
+  ///current stack to know the call point
+  final String? stackTrace = kDebugMode ? StackTrace.current.toString() : null;
+
   // TODO remove every wrapper message and co&kg
   void sendResponse({required T? pResponse, required SendPort pSendPort}) {
     pSendPort.send(pResponse);

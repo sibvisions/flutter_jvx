@@ -70,8 +70,7 @@ void layoutCallback(Map<String, dynamic> message) {
     } else if (isolateMessage is ReportPreferredSizeMessage) {
       response = await layoutStorage.reportPreferredSize(pLayoutData: isolateMessage.layoutData);
     } else if (isolateMessage is SetScreenSizeMessage) {
-      response =
-          await layoutStorage.setScreenSize(pScreenComponentId: isolateMessage.componentId, pSize: isolateMessage.size);
+      response = await layoutStorage.setScreenSize(pScreenComponentId: isolateMessage.componentId, pSize: isolateMessage.size);
     } else if (isolateMessage is LayoutInProcessMessage) {
       response = await layoutStorage.layoutInProcess();
     } else if (isolateMessage is LayoutValidMessage) {
