@@ -27,11 +27,17 @@ import 'skeleton_screen.dart';
 
 class BiometricAuthentication extends StatefulWidget {
 
-  final Widget? child;
+  final Widget child;
+
+  final bool childHandlesOnPop;
+
+  final String? name;
 
   const BiometricAuthentication({
     super.key,
-    this.child
+    required this.child,
+    this.childHandlesOnPop = false,
+    this.name
   });
 
   @override
@@ -43,6 +49,9 @@ class _BiometricAuthenticationState extends State<BiometricAuthentication> with 
   static const platformChannel = MethodChannel('com.sibvisions.flutter_jvx/security');
   /// Whether to use native channel communication
   static final bool _useChannel = Platform.isIOS || Platform.isAndroid;
+
+  /// the global "last" auth-time cache
+  static Map<String, DateTime> globalAuthTime = {};
 
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -60,6 +69,15 @@ class _BiometricAuthenticationState extends State<BiometricAuthentication> with 
   @override
   void initState() {
     super.initState();
+
+    //init last auth-time with global time - if name is set
+    if (widget.name != null) {
+      _lastAuthTime = globalAuthTime[widget.name];
+
+      if (_lastAuthTime != null && _isLastAuthStillValid()) {
+        _isAuthenticated = true;
+      }
+    }
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -153,7 +171,8 @@ class _BiometricAuthenticationState extends State<BiometricAuthentication> with 
 
   Future<void> _authenticateWithBiometrics() async {
     if (_isLastAuthStillValid()) {
-      _isAuthenticated = true;
+      setState(() {_isAuthenticated = true;});
+
       return;
     }
 
@@ -164,6 +183,10 @@ class _BiometricAuthenticationState extends State<BiometricAuthentication> with 
     _isAuthenticated = false;
     _isBack = false;
     _lastAuthTime = null;
+
+    if (widget.name != null) {
+      globalAuthTime.remove(widget.name!);
+    }
 
     bool authenticated = false;
 
@@ -190,6 +213,10 @@ class _BiometricAuthenticationState extends State<BiometricAuthentication> with 
         _isAuthenticated = authenticated;
         _isAuthenticating = false;
         _lastAuthTime = DateTime.now();
+
+        if (widget.name != null) {
+          globalAuthTime[widget.name!] = _lastAuthTime!;
+        }
       });
     } on LocalAuthException catch (e) {
       FlutterUI.log.e("$e");
@@ -226,13 +253,13 @@ class _BiometricAuthenticationState extends State<BiometricAuthentication> with 
   @override
   Widget build(BuildContext context) {
     if (_isAuthenticated && !_isPaused) {
-      return widget.child!;
+      return widget.child;
     }
 
     return Stack(
       children: [
-        //add the original child to support onWillPop (close screen)
-        widget.child!,
+        //add the original child to support onWillPop (e.g. close screen command)
+        if (widget.childHandlesOnPop) widget.child,
         Scaffold(
             appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.surface,
               title: Text("Authenticate"),

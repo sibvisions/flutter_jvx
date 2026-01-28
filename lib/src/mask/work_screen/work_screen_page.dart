@@ -329,7 +329,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     );
 
     if (model?.secure == true) {
-      return BiometricAuthentication(child: wFrame);
+      return BiometricAuthentication(
+        name: model!.name,
+        childHandlesOnPop: true,
+        child: wFrame);
     } else {
       return wFrame;
     }
