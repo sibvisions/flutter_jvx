@@ -80,6 +80,8 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
       phoneSize = MediaQuery.maybeSizeOf(context);
     }
 
+    //MARK: STARTUP APPLICATION
+
     ApiStartupRequest startupRequest = ApiStartupRequest(
       baseUrl: servConf.baseUrl.value!.toString(),
       requestUri: kIsWeb ? Uri.base.toString() : null,

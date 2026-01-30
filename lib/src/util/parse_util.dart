@@ -60,10 +60,8 @@ abstract class ParseUtil {
     if (pBool != null) {
       if (pBool is bool) {
         return pBool;
-      } else if (pBool.toString().toLowerCase() == "true") {
-        return true;
-      } else if (pBool.toString().toLowerCase() == "false") {
-        return false;
+      } else {
+        return bool.tryParse(pBool.toString(), caseSensitive: false);
       }
     }
     return null;
