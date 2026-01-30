@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../components.dart';
+import '../../../../config/app_config.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/config/i_config_service.dart';
@@ -28,6 +29,8 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../apps/app_overview_page.dart';
+import '../../../state/app_style.dart';
+import '../../../state/app_style_direct.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
 import '../modern_login.dart';
@@ -59,25 +62,43 @@ class _ManualCardState extends State<ManualCard> {
 
   late bool showRememberMe;
   late bool rememberMeChecked;
-  bool _passwordHidden = true;
+  late bool useBiometric;
 
+  bool _passwordHidden = true;
   bool _isAuthenticating = false;
 
   @override
   void initState() {
     super.initState();
 
-    usernameController = TextEditingController(text: IConfigService().username.value);
+    IConfigService servConf = IConfigService();
+
+    usernameController = TextEditingController(text: servConf.username.value);
     passwordController = TextEditingController();
 
-    showRememberMe = IUiService().applicationMetaData.value?.rememberMeEnabled ?? false;
+    AppStyleDirect appStyle = AppStyle.direct();
+    useBiometric = appStyle.styleAsBool(AppStyle.loginBiometric);
+
+    //if we use biometric login -> we don't show remember me because it's implicit
+    showRememberMe = !useBiometric
+                     && (IUiService().applicationMetaData.value?.rememberMeEnabled ?? false);
+
+    AppConfig? appConf = servConf.getAppConfig();
 
     //this option is server controlled, but we can disable it
-    if (showRememberMe && IConfigService().getAppConfig()?.uiConfig!.showRememberMe == false) {
+    if (showRememberMe && appConf?.uiConfig!.showRememberMe == false) {
       showRememberMe = false;
     }
 
-    rememberMeChecked = IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
+    rememberMeChecked = showRememberMe && (appConf?.uiConfig!.rememberMeChecked ?? false);
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -307,14 +328,6 @@ class _ManualCardState extends State<ManualCard> {
     );
   }
 
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-
-    super.dispose();
-  }
-
   void resetButton() {
     _timerReset?.cancel();
 
@@ -366,7 +379,7 @@ class _ManualCardState extends State<ManualCard> {
     LoginPage.doLogin(
       username: usernameController.text,
       password: passwordController.text,
-      createAuthKey: showRememberMe && rememberMeChecked,
+      createAuthKey: useBiometric || (showRememberMe && rememberMeChecked),
     ).then((success) {
       if (success) {
         setState(() {

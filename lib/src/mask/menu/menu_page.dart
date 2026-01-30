@@ -28,6 +28,7 @@ import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
 import '../work_screen/work_screen_page.dart';
+import 'skeleton_menu.dart';
 
 /// Menu Page
 ///
@@ -143,8 +144,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               }
 
               AppStyle appStyle = AppStyle.of(context);
-              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, 'desktop.color'));
-              String? backgroundImage = appStyle.style(context, 'desktop.icon');
+              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.desktopColor));
+              String? backgroundImage = appStyle.style(context, AppStyle.desktopIcon);
 
               FrameState? frameState = Frame.maybeOf(context);
               if (frameState != null) {
@@ -197,9 +198,12 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 );
               }
 
-              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, 'menuTop.color'));
+              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.menuTopColor));
 
-              return Scaffold(
+              bool biometricLogin = appStyle.styleAsBool(context, AppStyle.loginBiometric);
+              bool biometricSecure = appStyle.styleAsBool(context, AppStyle.loginBiometricSecure, true);
+
+              Widget menu = Scaffold(
                 drawerEnableOpenDragGesture: false,
                 endDrawerEnableOpenDragGesture: false,
                 drawer: frameState?.getDrawer(context),
@@ -216,6 +220,17 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 ),
                 body: frameState?.wrapBody(body) ?? body,
               );
+
+              if (biometricLogin) {
+                menu = BiometricAuthentication(
+                  name: "login",
+                  secureApp: biometricSecure,
+                  onAuthentication: _saveBiometricCredentials,
+                  skeletonBuilder: (context) => SkeletonMenu(),
+                  child: menu,);
+              }
+
+              return menu;
             },
           ),
         ),
@@ -431,5 +446,11 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
         ),
       ),
     );
+  }
+
+  Future<void> _saveBiometricCredentials(bool? success) async {
+    if (success == false) {
+      unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout")));
+    }
   }
 }

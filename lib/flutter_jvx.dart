@@ -137,6 +137,7 @@ export 'src/service/storage/impl/default/storage_service.dart';
 export 'src/service/ui/i_ui_service.dart';
 export 'src/service/ui/impl/ui_service.dart';
 // Util
+export 'src/util/auth/biometric_authentication.dart';
 export 'src/util/config_util.dart';
 export 'src/util/debug/jvx_debug.dart';
 export 'src/util/extensions/list_extensions.dart';
