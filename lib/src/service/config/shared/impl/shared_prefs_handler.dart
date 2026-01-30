@@ -36,9 +36,13 @@ class SharedPrefsHandler implements ConfigHandler {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SharedPrefsHandler.create({
-    required SharedPreferences sharedPrefs,
-  }) : _sharedPrefs = sharedPrefs;
+  SharedPrefsHandler._(this._sharedPrefs);
+
+  static Future<SharedPrefsHandler> create() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return SharedPrefsHandler._(prefs);
+  }
 
   SharedPreferences getSharedPreferences() {
     return _sharedPrefs;
@@ -449,5 +453,10 @@ class SharedPrefsHandler implements ConfigHandler {
     }
 
     return installId;
+  }
+
+  @override
+  Future<void> clear() async {
+    await _sharedPrefs.clear();
   }
 }

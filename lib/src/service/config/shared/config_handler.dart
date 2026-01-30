@@ -195,4 +195,7 @@ abstract class ConfigHandler {
 
   /// Gets the install id. This is a unique id for each installation.
   Future<String> installId();
+
+  /// Clears all application specific settings
+  Future<void> clear();
 }

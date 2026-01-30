@@ -32,7 +32,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart' hide LogEvent;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:push/push.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:universal_io/io.dart';
 
@@ -500,7 +499,7 @@ class FlutterUI extends StatefulWidget {
             unawaited(IAppService().setParameter(params));
           }
           else {
-            bool startedManually = bool.tryParse(params.remove("startedManually") ?? "") ?? false;
+            bool startedManually = ParseUtil.parseBoolOrFalse(params.remove("startedManually"));
             IConfigService().getTemporaryStartupParameters().addAll(params);
 
             unawaited(IAppService().startCustomApp(app: app, appTitle: IConfigService().title.value ?? app.effectiveTitle, autostart: !startedManually));
@@ -559,11 +558,9 @@ class FlutterUI extends StatefulWidget {
     IAppService appService = AppService.create();
     services.registerSingleton(appService);
 
-    SharedPreferences shPrefs = await SharedPreferences.getInstance();
-
     // Config
     IConfigService configService = ConfigService.create(
-      configHandler: SharedPrefsHandler.create(sharedPrefs: shPrefs),
+      configHandler: await SharedPrefsHandler.create(),
       fileManager: await IFileManager.getFileManager(),
     );
     services.registerSingleton(configService);
@@ -598,7 +595,7 @@ class FlutterUI extends StatefulWidget {
     if (appConfig.clearLocalStorage == true)
     {
       await appService.removeAllApps();
-      await shPrefs.clear();
+      await configService.getConfigHandler().clear();
     }
 
     //the unchanged list for later use
