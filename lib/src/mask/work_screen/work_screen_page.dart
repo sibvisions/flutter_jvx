@@ -46,7 +46,7 @@ import '../frame/frame.dart';
 import '../frame/open_drawer_action.dart';
 import '../state/app_style.dart';
 import '../state/loading_bar.dart';
-import 'biometric_authentication.dart';
+import '../../util/auth/biometric_authentication.dart';
 import 'error_screen.dart';
 import 'skeleton_screen.dart';
 import 'util/screen_wrapper.dart';
@@ -291,7 +291,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             if (headerColor == null) {
               AppStyle appStyle = AppStyle.of(context);
 
-              headerColor = ParseUtil.parseHexColor(appStyle.style(context, 'screenMenuTop.color'));
+              headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.screenMenuTopColor));
             }
 
             PreferredSizeWidget? appBar = frame?.getAppBar(
