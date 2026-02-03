@@ -84,6 +84,7 @@ class MainLocation extends BeamLocation<BeamState> {
 
     if (state.pathPatternSegments.contains("home") || state.pathPatternSegments.contains("screens")) {
       final String? workScreenName = state.pathParameters[screenNameKey];
+
       pages.addAll([
         BeamPage(
           title: FlutterUI.translate("Menu"),
