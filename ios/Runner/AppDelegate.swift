@@ -69,7 +69,9 @@ import Flutter
   }
 
   override func applicationDidBecomeActive(_ application: UIApplication) {
-    hideBlurScreen()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+      self.hideBlurScreen()
+    }
   }
 
   private func showBlurScreen() {

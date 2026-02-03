@@ -295,6 +295,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
     }
 
     bool authenticated = false;
+    bool currentAuthStatus = true;
 
     try {
       setState(() {
@@ -302,7 +303,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
       });
 
       if (_useChannel) {
-        await platformChannel.invokeMethod('setAuthStatus', true);
+        await platformChannel.invokeMethod('setAuthStatus', currentAuthStatus);
       }
 
       authenticated = await auth.authenticate(
@@ -313,6 +314,9 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
 
       if (_useChannel && authenticated) {
         await platformChannel.invokeMethod('hideBlur');
+
+        await platformChannel.invokeMethod('setAuthStatus', false);
+        currentAuthStatus = false;
       }
 
       setState(() {
@@ -367,7 +371,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
       return;
     }
     finally {
-      if (_useChannel) {
+      if (_useChannel && currentAuthStatus) {
         await platformChannel.invokeMethod('setAuthStatus', false);
       }
     }
