@@ -46,7 +46,6 @@ import '../frame/frame.dart';
 import '../frame/open_drawer_action.dart';
 import '../state/app_style.dart';
 import '../state/loading_bar.dart';
-import '../../util/auth/biometric_authentication.dart';
 import 'error_screen.dart';
 import 'skeleton_screen.dart';
 import 'util/screen_wrapper.dart';
@@ -122,11 +121,16 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   FlPanelModel? model;
 
-  /// Title displayed on the top
-  String? screenTitle;
-
   /// The color of the safe area
   Color? safeAreaColor;
+
+  MenuItemModel? item;
+  Future<bool>? future;
+
+  CustomScreen? customScreen;
+
+  /// Title displayed on the top
+  String? screenTitle;
 
   /// Navigating booleans.
   bool isNavigating = false;
@@ -134,29 +138,28 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   bool sentScreenSizeForLayout = false;
 
-  MenuItemModel? item;
-  Future<bool>? future;
-
-  CustomScreen? customScreen;
-
   @override
   void initState() {
     super.initState();
 
-    IUiService().getAppManager()?.onScreenPage(widget.screenName);
+    IUiService servUi = IUiService();
+
+    servUi.getAppManager()?.onScreenPage(widget.screenName);
     subscription =
         subject.throttleTime(const Duration(milliseconds: 16), leading: false, trailing: true).listen(_setScreenSize);
 
-    item = IUiService().getMenuItem(widget.screenName);
+    item = servUi.getMenuItem(widget.screenName);
     if (item != null) {
-      model = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
+      IStorageService servStorage = IStorageService();
 
-      customScreen = IUiService().getCustomScreen(item!.screenLongName);
+      model = servStorage.getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
 
-      String className = model?.screenClassName ?? IStorageService().convertLongScreenToClassName(item!.screenLongName);
+      customScreen = servUi.getCustomScreen(item!.screenLongName);
+
+      String className = model?.screenClassName ?? servStorage.convertLongScreenToClassName(item!.screenLongName);
 
       // Listen to new models with the same class names (needed for work screen reload, model id changes)
-      IUiService().registerModelSubscription(ModelSubscription(
+      servUi.registerModelSubscription(ModelSubscription(
         subbedObj: this,
         check: (newModel) => newModel is FlPanelModel && newModel.screenClassName == className,
         onNewModel: (newModel) {
@@ -173,6 +176,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       ));
 
       _init();
+
     } else {
       future = Future.error("No menu item model found for this workscreen!");
 
@@ -185,64 +189,30 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     }
   }
 
-  void _setScreenSize(Size size) {
-    ILayoutService()
-        .setScreenSize(
-          pScreenComponentId: model!.id,
-          pSize: size,
-        )
-        .then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
-  }
-
-  void _init() {
-    // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
-    final model = this.model;
-    if (model == null &&
-        (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
-      future = ICommandService().sendCommand(OpenScreenCommand(
-        longName: item!.screenLongName,
-        reason: "Screen was opened inside $runtimeType",
-      ));
-    } else if (model != null && kIsWeb) {
-      future = ICommandService().sendCommand(
-        ActivateScreenCommand(
-          componentName: model.name,
-          reason: "Screen was activated inside $runtimeType",
-        ),
-      );
-    }
-
-    future ??= Future.value(true);
-
-    future!.then((success) {
-      if (!success) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          Future.delayed(const Duration(milliseconds: 350)).then((_) => _onBack());
-        });
-      }
-
-      return null;
-    });
-  }
-
-  void rebuild() {
-    IUiService().closeJVxDialogs();
-
-    Navigator.of(FlutterUI.getCurrentContext()!).popUntil((route) => route is! PopupRoute);
-
-    sentScreenSizeForLayout = false;
-    setState(() {});
-  }
-
   @override
   void didUpdateWidget(covariant WorkScreenPage oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     sentScreenSizeForLayout = false;
+  }
+
+  @override
+  void dispose() {
+    WorkScreen.remove(model?.name);
+
+    subscription.cancel();
+    subject.close();
+
+    IUiService servUi = IUiService();
+
+    servUi.disposeSubscriptions(this);
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget wFrame = Frame.wrapWithFrame(
+    return Frame.wrapWithFrame(
       builder: (context, isOffline) {
         return FutureBuilder(
           future: future,
@@ -327,15 +297,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
         );
       },
     );
-
-    if (model?.secure == true) {
-      return BiometricAuthentication(
-        name: model!.name,
-        childHandlesOnPop: true,
-        child: wFrame);
-    } else {
-      return wFrame;
-    }
   }
 
   ///Wraps the body (= screen) with a SafeArea or without if noSafeArea property is set
@@ -425,6 +386,56 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
     return screen;
   }
+
+  void _setScreenSize(Size size) {
+    ILayoutService()
+        .setScreenSize(
+      pScreenComponentId: model!.id,
+      pSize: size,
+    )
+        .then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
+  }
+
+  void _init() {
+    // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
+    final model = this.model;
+    if (model == null &&
+        (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
+      future = ICommandService().sendCommand(OpenScreenCommand(
+        longName: item!.screenLongName,
+        reason: "Screen was opened inside $runtimeType",
+      ));
+    } else if (model != null && kIsWeb) {
+      future = ICommandService().sendCommand(
+        ActivateScreenCommand(
+          componentName: model.name,
+          reason: "Screen was activated inside $runtimeType",
+        ),
+      );
+    }
+
+    future ??= Future.value(true);
+
+    future!.then((success) {
+      if (!success) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Future.delayed(const Duration(milliseconds: 350)).then((_) => _onBack());
+        });
+      }
+
+      return null;
+    });
+  }
+
+  void rebuild() {
+    IUiService().closeJVxDialogs();
+
+    Navigator.of(FlutterUI.getCurrentContext()!).popUntil((route) => route is! PopupRoute);
+
+    sentScreenSizeForLayout = false;
+    setState(() {});
+  }
+
 /*
   void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
@@ -460,16 +471,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       padding: const EdgeInsets.all(16.0),
       child: body,
     );
-  }
-
-  @override
-  void dispose() {
-    WorkScreen.remove(model?.name);
-
-    subscription.cancel();
-    subject.close();
-    IUiService().disposeSubscriptions(this);
-    super.dispose();
   }
 
   Widget? _buildLeading() {
@@ -513,6 +514,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   /// Pop will close the whole location and not just "beam back" a page in the history.
   /// Pop is still needed to close down scaffold drawer.
   Future<bool> _onWillPop(BuildContext context) async {
+
     if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
       return false;
     }
@@ -529,13 +531,16 @@ class WorkScreenPageState extends State<WorkScreenPage> {
         return !context.beamBack();
       } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
         BaseCommand commandToCloseScreen = _closeScreen();
+
         unawaited(IUiService().saveAllEditors(pReason: "Closing screen").then((success) {
           if (success) {
             unawaited(ICommandService().sendCommand(commandToCloseScreen));
           }
         }));
+
         return false;
       }
+
       return !context.beamBack();
     } finally {
       isForced = false;

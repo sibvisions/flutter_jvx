@@ -17,6 +17,7 @@
 import 'package:flutter/widgets.dart';
 
 class JVxRoutesObserver extends NavigatorObserver {
+
   final List<Route> knownRoutes = [];
 
   @override
@@ -48,4 +49,5 @@ class JVxRoutesObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     knownRoutes.add(route);
   }
+
 }

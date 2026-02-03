@@ -75,7 +75,7 @@ class ApplicationParametersResponse extends ApiResponse {
   String propertiesAsString() {
     return "applicationTitleName: $applicationTitleName, applicationTitleWeb: $applicationTitleWeb, "
         "authenticated: $authenticated, openScreen: $openScreen, "
-        "designModeAllowed: $designModeAllowed, timeZoneCode: $parameters, ${super.propertiesAsString()}";
+        "designModeAllowed: $designModeAllowed, parameters: $parameters, ${super.propertiesAsString()}";
   }
 
 }

@@ -404,11 +404,15 @@ class UIDebug extends StatelessWidget {
                 ));
                 await Future.delayed(const Duration(seconds: 2));
 
-                for (int i = 0; i <= 100; i++) {
+                for (int i = 0; key.currentState != null && i <= 100; i++) {
                   key.currentState!.update(Config(
                     progress: i,
                   ));
                   await Future.delayed(const Duration(milliseconds: 50));
+                }
+
+                if (context.mounted) {
+                  ProgressDialogWidget.close(context);
                 }
               },
               child: const Text("Test"),

@@ -42,9 +42,13 @@ import 'custom/app_manager.dart';
 import 'mask/login/login_handler.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/menu/menu.dart';
+import 'mask/menu/skeleton_menu.dart';
 import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/jvx_splash.dart';
 import 'mask/splash/splash.dart';
+import 'mask/state/app_style.dart';
+import 'mask/state/app_style_direct.dart';
+import 'mask/work_screen/skeleton_screen.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
@@ -72,6 +76,7 @@ import 'service/storage/i_storage_service.dart';
 import 'service/storage/impl/default/storage_service.dart';
 import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
+import 'service/ui/protect_config.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
 import 'util/json_template_manager.dart';
@@ -1030,6 +1035,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   /// The last password that the user entered, used for offline switch.
   String? lastPassword;
 
+  /// the last route path
+  String? _lastRoutePath;
+
   late final VoidCallback newTokenSubscription;
   late final VoidCallback notificationTapSubscription;
   late final VoidCallback notificationSubscription;
@@ -1050,8 +1058,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       buildListener: (context, delegate) {
         _updateTitle(context);
       },
-      routeListener: (routeinfo, delegate) {
+      routeListener: (routeInfo, delegate) {
         _updateTitle(context);
+        _updateRouterDelegate(routeInfo);
       },
       transitionDelegate: transitionDelegate,
       beamBackTransitionDelegate: transitionDelegate,
@@ -1157,6 +1166,83 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       },
     );
   }
+
+  void _updateRouterDelegate(RouteInformation routeInfo) {
+    final path = routeInfo.uri.toString();
+
+    if (_lastRoutePath == path) {
+      return;
+    }
+
+    _lastRoutePath = path;
+
+    if (FlutterUI.log.cl(Lvl.d)) {
+      FlutterUI.log.d("Navigate to path $path");
+    }
+
+    if (path.endsWith("/home")
+        || (path.startsWith("/screens/") && !path.contains("?secure"))) {
+      AppStyleDirect appStyle = AppStyle.direct();
+
+      bool biometricLogin = appStyle.styleAsBool(AppStyle.loginBiometric);
+
+      if (biometricLogin) {
+        bool biometricSecure = appStyle.styleAsBool(AppStyle.loginBiometricSecure, true);
+
+        ProtectConfig cfg = ProtectConfig(
+            name: "login",
+            secureApp: biometricSecure,
+            reAuthOnlyAfterResume: true,
+            onAuthentication: _authBackToLogin,
+            skeletonBuilder: _skeletonMenu
+        );
+
+        IUiService().updateProtection(cfg);
+      }
+      else {
+        IUiService().updateProtection(null);
+      }
+    } else if (path.startsWith("/screens/") && path.contains("?secure")) {
+      ProtectConfig cfg = ProtectConfig(
+          name: path,
+          onAuthentication: _authBackToMenu,
+          skeletonBuilder: _skeletonScreen
+      );
+
+      IUiService().updateProtection(cfg);
+    }
+    else if (path == "/" || path.startsWith("/login")) {
+      IUiService().updateProtection(null);
+    }
+  }
+
+  Future<void> _authBackToMenu(bool? success) async {
+      if (success == false) {
+        BuildContext? cxt = FlutterUI.getCurrentContext();
+
+        if (cxt != null) {
+          final rootContext = Navigator.of(cxt).context;
+          final popped = await Navigator.of(cxt).maybePop();
+
+          if (popped && rootContext.mounted) {
+            Beamer.of(rootContext).update();
+          }
+        }
+        else {
+          //TODO try close screen also....
+         IUiService().routeToMenu();
+        }
+      }
+  }
+
+  Future<void> _authBackToLogin(bool? success) async {
+    if (success == false) {
+      unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout")));
+    }
+  }
+
+  Widget _skeletonMenu(BuildContext context) => SkeletonMenu();
+  Widget _skeletonScreen(BuildContext context) => SkeletonScreen();
 
   /// Updates the application title for the current application (if started)
   String _updateTitle(BuildContext context) {

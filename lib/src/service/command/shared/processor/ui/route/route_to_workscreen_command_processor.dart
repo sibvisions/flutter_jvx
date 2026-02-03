@@ -22,7 +22,7 @@ import '../../../i_command_processor.dart';
 class RouteToWorkScreenCommandProcessor extends ICommandProcessor<RouteToWorkScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(RouteToWorkScreenCommand command, BaseCommand? origin) async {
-    IUiService().routeToWorkScreen(pScreenName: command.screenName, pReplaceRoute: command.replaceRoute);
+    IUiService().routeToWorkScreen(pScreenName: command.screenName, pReplaceRoute: command.replaceRoute, pSecure: command.secure);
 
     return [];
   }

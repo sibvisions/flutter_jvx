@@ -51,6 +51,7 @@ import '../../layout/i_layout_service.dart';
 import '../../service.dart';
 import '../../storage/i_storage_service.dart';
 import '../i_ui_service.dart';
+import '../protect_config.dart';
 
 /// Manages all interactions with the UI.
 class UiService implements IUiService {
@@ -103,7 +104,7 @@ class UiService implements IUiService {
 
   /// JVx Application Settings.
   final ValueNotifier<ApplicationSettingsResponse> _applicationSettings =
-      ValueNotifier(ApplicationSettingsResponse.defaults());
+  ValueNotifier(ApplicationSettingsResponse.defaults());
 
   /// JVx Application Parameters.
   final ValueNotifier<ApplicationParameters> _applicationParameters = ValueNotifier(ApplicationParameters());
@@ -115,7 +116,9 @@ class UiService implements IUiService {
 
   final ValueNotifier<bool> _webOnly = ValueNotifier(false);
 
-  final ValueNotifier<bool> _designMode = ValueNotifier(true);
+  final ValueNotifier<bool> _designMode = ValueNotifier(false);
+
+  final ValueNotifier<ProtectConfig?> _protection = ValueNotifier(null);
 
   final ValueNotifier<String?> _designModeElement = ValueNotifier(null);
 
@@ -176,6 +179,16 @@ class UiService implements IUiService {
     _designModeElement.value = pId;
   }
 
+  @override
+  ValueListenable<ProtectConfig?> get protection {
+    return _protection;
+  }
+
+  @override
+  void updateProtection(ProtectConfig? config) {
+    _protection.value = config;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -196,8 +209,9 @@ class UiService implements IUiService {
   }
 
   @override
-  void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
+  void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false, bool pSecure = false}) {
     var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+
     // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
     if (lastBeamState.pathParameters[MainLocation.screenNameKey] == pScreenName) {
       return;
@@ -210,7 +224,10 @@ class UiService implements IUiService {
     if (!kIsWeb) {
       FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
         location.history.removeWhere((element) {
-          return element.routeInformation.uri.toString().endsWith(resolvedScreenName);});
+          String path = element.routeInformation.uri.toString();
+
+          return path.endsWith("/screens/$resolvedScreenName")
+                 || path.contains("/screens/$resolvedScreenName?");});
       });
     }
 
@@ -219,9 +236,9 @@ class UiService implements IUiService {
     if (pReplaceRoute ||
         lastBeamState.pathPatternSegments.contains("settings") ||
         lastBeamState.pathPatternSegments.contains("login")) {
-      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/screens/$resolvedScreenName");
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/screens/$resolvedScreenName${pSecure ? "?secure" : ""}");
     } else {
-      FlutterUI.getBeamerDelegate().beamToNamed("/screens/$resolvedScreenName");
+      FlutterUI.getBeamerDelegate().beamToNamed("/screens/$resolvedScreenName${pSecure ? "?secure" : ""}");
     }
   }
 

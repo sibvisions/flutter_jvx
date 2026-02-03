@@ -44,6 +44,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
 
     String? screenNavigationName;
     bool bActive = false;
+    bool bSecure = false;
 
     FlPanelModel? panel;
     // Handle New & Changed Components
@@ -77,6 +78,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
 
           if (model is FlPanelModel && model.isScreen) {
             screenNavigationName = model.screenNavigationName;
+            bSecure = model.secure;
           }
         }
       }
@@ -91,6 +93,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
         if (panel?.screenNavigationName != null) {
           nextCommand = RouteToWorkScreenCommand(
             screenName: panel!.screenNavigationName!,
+            secure: panel.secure,
             reason: "Server sent screen.generic response with update = 'false'",
           );
         } else {
@@ -102,6 +105,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
           //Just activate the screen
           nextCommand = RouteToWorkScreenCommand(
             screenName: screenNavigationName,
+            secure: bSecure,
             reason: "Route to screen from $runtimeType",
           );
         }

@@ -74,7 +74,7 @@ import Flutter
 
   private func showBlurScreen() {
     if privacyBlurView == nil {
-      // Definiere den Blur-Stil (light, dark oder extraLight)
+      // Defines blur style (light, dark or extraLight)
       let blurEffect = UIBlurEffect(style: .systemMaterial)
       privacyBlurView = UIVisualEffectView(effect: blurEffect)
       privacyBlurView?.frame = self.window?.bounds ?? UIScreen.main.bounds

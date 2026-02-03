@@ -24,8 +24,11 @@ class RouteToWorkScreenCommand extends RouteCommand {
 
   final String screenName;
 
-  /// 'True' if the route should replace the the current one in the stack
+  /// Whether the route should replace the the current one in the stack
   final bool replaceRoute;
+
+  /// Whether the navigation should be secure
+  final bool secure;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -34,6 +37,7 @@ class RouteToWorkScreenCommand extends RouteCommand {
   RouteToWorkScreenCommand({
     required this.screenName,
     this.replaceRoute = false,
+    this.secure = false,
     required super.reason,
   });
 

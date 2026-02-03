@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'package:collection/collection.dart';
-
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/api/navigation_command.dart';
 import '../../../../../model/command/base_command.dart';
@@ -38,19 +36,27 @@ class NavigationCommandProcessor extends ICommandProcessor<NavigationCommand> {
     // if commands is empty, close screen
     bool closeScreen = commands.isEmpty;
 
-    // if commands is not empty, check if there are only changes with ~remove and ~destroy
-    if (!closeScreen && commands.length == 1 && commands.first is SaveComponentsCommand) {
-      SaveComponentsCommand saveComponentsCommand = commands.first as SaveComponentsCommand;
-      if (saveComponentsCommand.isUpdate && saveComponentsCommand.newComponents == null) {
-        if (saveComponentsCommand.changedComponents == null) {
-          closeScreen = true;
-        } else {
-          closeScreen = saveComponentsCommand.changedComponents!.none((changedComponents) {
-            return !changedComponents.containsKey(ApiObjectProperty.remove) &&
-                !changedComponents.containsKey(ApiObjectProperty.destroy);
-          });
+    //As a rule: If response contains real UI changes (not only remove and destroy) -> don't close because the UI
+    //is changing
+    if (!closeScreen) {
+      //no SaveComponentsCommand -> close screen
+      bool hasOnlyRemoveAndDestroy = true;
+
+      for (int i = 0; i < commands.length; i++) {
+        if (commands[i] is SaveComponentsCommand) {
+          SaveComponentsCommand cmd = commands[i] as SaveComponentsCommand;
+
+          if (cmd.changedComponents != null) {
+            //if ALL changes contain ~remove or ~destroy -> no UI changes -> close Screen
+            hasOnlyRemoveAndDestroy = cmd.changedComponents!.every((change) {
+              return change.containsKey(ApiObjectProperty.remove) ||
+                change.containsKey(ApiObjectProperty.destroy);
+            });
+          }
         }
       }
+
+      closeScreen = hasOnlyRemoveAndDestroy;
     }
 
     if (closeScreen) {

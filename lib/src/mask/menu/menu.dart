@@ -156,7 +156,7 @@ abstract class Menu extends StatelessWidget {
       )
           .then((success) {
         if (success) {
-          IUiService().routeToWorkScreen(pScreenName: item.navigationName);
+          IUiService().routeToWorkScreen(pScreenName: item.navigationName, pSecure: model.secure);
         }
       });
     } else {

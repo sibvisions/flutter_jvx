@@ -25,6 +25,8 @@ import 'package:screenshot/screenshot.dart';
 import '../../flutter_jvx.dart';
 import '../model/command/api/alive_command.dart';
 import '../service/service.dart';
+import '../service/ui/protect_config.dart';
+import '../util/auth/biometric_overlay.dart';
 import 'apps/app_overview_page.dart';
 
 
@@ -228,6 +230,8 @@ class JVxOverlayState extends State<JVxOverlay> {
         }
       },
     );
+
+    IUiService().protection.addListener(_protectionChanged);
   }
 
   @override
@@ -239,39 +243,13 @@ class JVxOverlayState extends State<JVxOverlay> {
     }
   }
 
-  void _updateDeviceStatus() {
-
-    Size? size = _subject.valueOrNull ?? MediaQuery.maybeSizeOf(context);
-    bool darkMode = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-
-    if ((size != null && size != AppVariables.lastSize) || darkMode != AppVariables.lastDarkMode) {
-
-      Size? logSize = AppVariables.lastSize;
-      bool? logDarkMode = AppVariables.lastDarkMode;
-
-      AppVariables.lastSize = size;
-      AppVariables.lastDarkMode = darkMode;
-
-      ICommandService().sendCommand(
-        DeviceStatusCommand(
-          screenWidth: size?.width.toInt(),
-          screenHeight: size?.height.toInt(),
-          darkMode: darkMode,
-          reason: "Device status changed: $size != $logSize, $darkMode != $logDarkMode",
-        ),
-        showDialogOnError: false,
-      );
-    }
-  }
-
-  /// Returns true if this callback will handle the request;
-  /// otherwise, returns false.
-  Future<bool> _onBackPress() async {
-    if ((_isLocked || _showConnectedBarrier) && !_showExit) {
-      // Block request.
-      return true;
-    }
-    return false;
+  @override
+  void dispose() {
+    subscription.cancel();
+    _subject.close();
+    backButtonDispatcher.removeCallback(_onBackPress);
+    IUiService().protection.removeListener(_protectionChanged);
+    super.dispose();
   }
 
   @override
@@ -301,6 +279,8 @@ class JVxOverlayState extends State<JVxOverlay> {
                       const ModalBarrier(
                         dismissible: false,
                       ),
+                    if (IUiService().clientId.value != null)
+                      BiometricOverlay(config: IUiService().protection.value),
                     if (_showConnectedBarrier)
                       const ModalBarrier(
                         dismissible: false,
@@ -428,14 +408,6 @@ class JVxOverlayState extends State<JVxOverlay> {
     );
   }
 
-  @override
-  void dispose() {
-    subscription.cancel();
-    _subject.close();
-    backButtonDispatcher.removeCallback(_onBackPress);
-    super.dispose();
-  }
-
   /// Captures an image of current application and invokes given [callback].
   Future<void> capture(ImageCallback callback) async {
     Future<Uint8List?> future = _screenshotController.capture();
@@ -443,6 +415,49 @@ class JVxOverlayState extends State<JVxOverlay> {
     unawaited(
       future.then((value) { callback(value); })
             .catchError((error) { callback(null); }));
+  }
+
+  void _protectionChanged() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (mounted && IUiService().clientId.value != null) {
+        setState(() {});
+      }
+    });
+  }
+
+  void _updateDeviceStatus() {
+
+    Size? size = _subject.valueOrNull ?? MediaQuery.maybeSizeOf(context);
+    bool darkMode = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
+    if ((size != null && size != AppVariables.lastSize) || darkMode != AppVariables.lastDarkMode) {
+
+      Size? logSize = AppVariables.lastSize;
+      bool? logDarkMode = AppVariables.lastDarkMode;
+
+      AppVariables.lastSize = size;
+      AppVariables.lastDarkMode = darkMode;
+
+      ICommandService().sendCommand(
+        DeviceStatusCommand(
+          screenWidth: size?.width.toInt(),
+          screenHeight: size?.height.toInt(),
+          darkMode: darkMode,
+          reason: "Device status changed: $size != $logSize, $darkMode != $logDarkMode",
+        ),
+        showDialogOnError: false,
+      );
+    }
+  }
+
+  /// Returns true if this callback will handle the request;
+  /// otherwise, returns false.
+  Future<bool> _onBackPress() async {
+    if ((_isLocked || _showConnectedBarrier) && !_showExit) {
+      // Block request.
+      return true;
+    }
+    return false;
   }
 
 }

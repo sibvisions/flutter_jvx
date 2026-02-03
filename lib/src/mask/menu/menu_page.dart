@@ -28,7 +28,6 @@ import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
 import '../work_screen/work_screen_page.dart';
-import 'skeleton_menu.dart';
 
 /// Menu Page
 ///
@@ -47,7 +46,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   bool sentScreen = false;
 
   ApplicationParameterChangedListener appParamListener = (name, oldValue, newValue) {
-    //In case of screenbadge update -> update the menu as well
+    //In case of screen-badge update -> update the menu as well
     if (name.startsWith("screenbadge.")) {
       IUiService serv = IUiService();
 
@@ -200,9 +199,6 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
               Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.menuTopColor));
 
-              bool biometricLogin = appStyle.styleAsBool(context, AppStyle.loginBiometric);
-              bool biometricSecure = appStyle.styleAsBool(context, AppStyle.loginBiometricSecure, true);
-
               Widget menu = Scaffold(
                 drawerEnableOpenDragGesture: false,
                 endDrawerEnableOpenDragGesture: false,
@@ -220,15 +216,6 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 ),
                 body: frameState?.wrapBody(body) ?? body,
               );
-
-              if (biometricLogin) {
-                menu = BiometricAuthentication(
-                  name: "login",
-                  secureApp: biometricSecure,
-                  onAuthentication: _saveBiometricCredentials,
-                  skeletonBuilder: (context) => SkeletonMenu(),
-                  child: menu,);
-              }
 
               return menu;
             },
@@ -448,9 +435,4 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     );
   }
 
-  Future<void> _saveBiometricCredentials(bool? success) async {
-    if (success == false) {
-      unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout")));
-    }
-  }
 }

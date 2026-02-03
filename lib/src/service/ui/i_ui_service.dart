@@ -44,6 +44,7 @@ import '../../model/response/application_parameters_response.dart';
 import '../../model/response/application_settings_response.dart';
 import '../../model/response/device_status_response.dart';
 import '../service.dart';
+import 'protect_config.dart';
 
 typedef ApplicationParameterChangedListener = void Function(String name, dynamic oldValue, dynamic newValue);
 
@@ -105,6 +106,12 @@ abstract class IUiService implements Service {
   /// Updates the design mode element.
   void updateDesignModeElement(String? pId);
 
+  /// the protection handling
+  ValueListenable<ProtectConfig?> get protection;
+
+  /// Updates the protection.
+  void updateProtection(ProtectConfig? config);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,7 +122,7 @@ abstract class IUiService implements Service {
   void routeToMenu({bool pReplaceRoute = false});
 
   /// Route to work screen page
-  void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false});
+  void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false, bool pSecure = false});
 
   /// Route to settings page
   void routeToSettings({bool pReplaceRoute = false});

@@ -61,9 +61,9 @@ class SaveComponentsCommand extends StorageCommand {
 
   @override
   String propertiesAsString() {
-    String? changedComponentNames = changedComponents?.whereType<Map>().map((e) => e[ApiObjectProperty.name]).join(";");
+    String? changedComponentIds = changedComponents?.whereType<Map>().map((e) => e[ApiObjectProperty.id]).join(";");
 
-    return "newComponents: $newComponents, changedComponents: $changedComponentNames, "
+    return "newComponents: $newComponents, changedComponentIds: $changedComponentIds, "
            "isDesktopPanel: $isDesktopPanel, isContent: $isContent, isUpdate: $isUpdate, "
            "${super.propertiesAsString()}";
   }
