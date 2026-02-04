@@ -17,7 +17,8 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../custom/custom_component.dart';
+import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 

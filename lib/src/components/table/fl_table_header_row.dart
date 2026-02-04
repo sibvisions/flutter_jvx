@@ -16,14 +16,16 @@
 
 import 'package:flutter/material.dart';
 
-import '../../components.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/sort_definition.dart';
 import '../../util/column_list.dart';
 import '../../util/sort_list.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
 import 'fl_table_cell.dart';
 import 'fl_table_header_cell.dart';
+import 'fl_table_widget.dart';
+import 'table_size.dart';
 
 class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

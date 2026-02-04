@@ -14,7 +14,9 @@
  * the License.
  */
 
-import '../../../../commands.dart';
+import '../../../../model/command/api/fetch_command.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/data/delete_provider_data_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../data/i_data_service.dart';

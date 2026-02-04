@@ -16,7 +16,8 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../model/response/application_settings_response.dart';
+import '../../util/jvx_colors.dart';
 import 'app_style_direct.dart';
 
 class AppStyle extends InheritedWidget {
@@ -44,6 +45,9 @@ class AppStyle extends InheritedWidget {
   static const String webSideMenuGroupColor = "web.sidemenu.groupColor";
   static const String webSideMenuTextColor = "web.sidemenu.textColor";
   static const String webSideMenuSelectionColor = "web.sidemenu.selectionColor";
+  static const String opacityControls = "opacity.controls";
+  static const String opacitySideMenu = "opacity.sidemenu";
+  static const String opacityMenu = "opacity.menu";
 
   final Map<String, String>? applicationStyle;
 

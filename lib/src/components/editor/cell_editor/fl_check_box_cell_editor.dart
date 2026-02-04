@@ -16,9 +16,14 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
+import '../../../model/component/fl_component_model.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../../button/fl_button_widget.dart';
+import '../../button/radio/fl_radio_button_widget.dart';
+import '../../button/toggle/fl_toggle_button_widget.dart';
+import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
 
 class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheckBoxCellEditorModel, dynamic> {

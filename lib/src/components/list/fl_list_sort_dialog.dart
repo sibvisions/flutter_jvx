@@ -19,10 +19,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/sort_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/data/sort_definition.dart';
+import '../../service/command/i_command_service.dart';
 import '../../util/column_list.dart';
 import '../../util/sort_list.dart';
 

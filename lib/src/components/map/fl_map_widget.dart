@@ -18,8 +18,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import 'zoom_buttons_widget.dart';
 

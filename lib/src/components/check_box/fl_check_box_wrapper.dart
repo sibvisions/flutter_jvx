@@ -17,8 +17,10 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../util/image/image_loader.dart';
 import '../button/radio/fl_radio_button_wrapper.dart';
+import 'fl_check_box_widget.dart';
 
 class FlCheckBoxWrapper extends FlRadioButtonWrapper<FlCheckBoxModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

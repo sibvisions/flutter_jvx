@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../../flutter_jvx.dart';
+import '../../../../util/jvx_colors.dart';
 
 class GridMenuHeader extends SliverPersistentHeaderDelegate {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

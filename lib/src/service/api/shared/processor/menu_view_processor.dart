@@ -16,8 +16,12 @@
 
 import 'package:beamer/beamer.dart';
 
-import '../../../../commands.dart';
 import '../../../../flutter_ui.dart';
+import '../../../../model/command/api/close_screen_command.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/ui/route/route_to_command.dart';
+import '../../../../model/command/ui/route/route_to_menu_command.dart';
+import '../../../../model/command/ui/save_menu_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';

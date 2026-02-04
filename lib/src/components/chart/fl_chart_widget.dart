@@ -21,10 +21,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 
-import '../../components.dart';
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../util/jvx_colors.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   final List<Map<String, dynamic>> data;

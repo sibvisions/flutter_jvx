@@ -17,9 +17,13 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
+import '../../util/icon_util.dart';
+import '../../util/image/image_loader.dart';
+import '../../util/jvx_colors.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

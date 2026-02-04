@@ -17,7 +17,7 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../util/jvx_colors.dart';
 
 class SkeletonScreen extends StatelessWidget {
   const SkeletonScreen({super.key});

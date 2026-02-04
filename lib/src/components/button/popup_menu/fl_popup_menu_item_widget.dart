@@ -16,7 +16,9 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../model/component/fl_component_model.dart';
+import '../../../util/icon_util.dart';
+import '../../../util/image/image_loader.dart';
 
 class FlPopupMenuItemWidget extends PopupMenuItem<String> {
   final String id;

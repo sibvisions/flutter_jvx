@@ -26,13 +26,19 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/data/data_book.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
+import '../../util/extensions/double_extensions.dart';
+import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import '../util/scroll_mixin.dart';
 import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
+import 'table_size.dart';
 
 typedef TableLongPressCallback = void Function(int rowIndex, String column, ICellEditor cellEditor, Offset pGlobalPosition);
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);

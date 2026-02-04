@@ -17,11 +17,13 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
+import '../../util/image/image_loader.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import 'fl_icon_widget.dart';
 
 class FlIconWrapper extends BaseCompWrapperWidget<FlIconModel> {
   const FlIconWrapper({super.key, required super.model});

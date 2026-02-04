@@ -22,12 +22,19 @@ import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '../../flutter_jvx.dart';
+import '../flutter_ui.dart';
 import '../model/command/api/alive_command.dart';
+import '../model/command/api/device_status_command.dart';
+import '../service/command/i_command_service.dart';
+import '../service/config/i_config_service.dart';
 import '../service/service.dart';
-import '../service/ui/protect_config.dart';
+import '../service/ui/i_ui_service.dart';
 import '../util/auth/biometric_overlay.dart';
+import '../util/jvx_colors.dart';
+import '../util/widgets/status_banner.dart';
 import 'apps/app_overview_page.dart';
+import 'state/app_style.dart';
+import 'state/loading_bar.dart';
 
 
 typedef ImageCallback = void Function(Uint8List? imageData);

@@ -24,10 +24,10 @@ import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:push/push.dart';
 import 'package:universal_io/io.dart';
 
-import '../../commands.dart';
 import '../../flutter_ui.dart';
 import '../../mask/jvx_overlay.dart';
 import '../../mask/login/login_page.dart';
+import '../../model/command/api/login_command.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';

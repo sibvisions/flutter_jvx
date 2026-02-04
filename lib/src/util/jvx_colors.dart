@@ -17,7 +17,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../flutter_jvx.dart';
+import '../flutter_ui.dart';
+import '../service/ui/i_ui_service.dart';
 
 abstract class JVxColors {
   static Color blue = ColorScheme.fromSeed(seedColor: Colors.blue).primary;

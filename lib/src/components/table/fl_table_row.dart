@@ -17,10 +17,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../mask/state/app_style.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/data/column_definition.dart';
+import '../../model/response/application_settings_response.dart';
 import '../../model/response/record_format.dart';
 import '../../util/column_list.dart';
+import '../../util/jvx_colors.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
 import 'fl_table_cell.dart';
+import 'fl_table_widget.dart';
+import 'table_size.dart';
 
 typedef DismissedCallback = void Function(int index);
 

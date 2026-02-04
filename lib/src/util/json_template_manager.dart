@@ -17,9 +17,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../flutter_jvx.dart';
+import '../config/api/api_route.dart';
+import '../flutter_ui.dart';
+import '../service/api/i_api_service.dart';
+import '../service/config/i_config_service.dart';
+import '../service/file/file_manager.dart';
 import 'jvx_logger.dart';
 
 abstract class JsonTemplateManager {
@@ -56,7 +61,9 @@ abstract class JsonTemplateManager {
 
   /// Gets the template for the given [templateName]
   static Future<dynamic> loadTemplate(String templateName) async {
-    String appName = IConfigService().currentApp.value!;
+    IConfigService servConf = IConfigService();
+
+    String appName = servConf.currentApp.value!;
 
     String cacheKey = "$appName:$templateName";
 
@@ -75,10 +82,10 @@ abstract class JsonTemplateManager {
     }
 
     if (kIsWeb) {
-      String? appVersion = IConfigService().version.value;
+      String? appVersion = servConf.version.value;
 
       if (appVersion != null) {
-        IFileManager fileManager = IConfigService().getFileManager();
+        IFileManager fileManager = servConf.getFileManager();
 
         String path = fileManager.getAppSpecificPath(
           "${IFileManager.TEMPLATES_PATH}/$url",
@@ -115,8 +122,8 @@ abstract class JsonTemplateManager {
 
       return null;
     } else {
-      Uri baseUrl = IConfigService().baseUrl.value!;
-      String appName = IConfigService().appName.value!;
+      Uri baseUrl = servConf.baseUrl.value!;
+      String appName = servConf.appName.value!;
 
       Response response = await _client.request(
         "$baseUrl/resource/$appName/$url",
@@ -149,10 +156,12 @@ abstract class JsonTemplateManager {
   }
 
   static Map<String, String> _getHeaders() {
-    Map<String, String> headers = IApiService().getRepository().getHeaders();
+    IApiService servApi = IApiService();
+
+    Map<String, String> headers = servApi.getRepository().getHeaders();
 
     if (!kIsWeb) {
-      Set<Cookie> cookies = IApiService().getRepository().getCookies();
+      Set<Cookie> cookies = servApi.getRepository().getCookies();
       if (cookies.isNotEmpty) {
         String cookieNew = cookies.map((e) => "${e.name}=${e.value}").join("; ");
 

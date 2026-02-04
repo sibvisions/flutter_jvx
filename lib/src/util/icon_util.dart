@@ -17,9 +17,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../flutter_jvx.dart';
 import 'font_awesome_util.dart';
 import 'material_icons_util.dart';
+import 'parse_util.dart';
 
 enum IconType { Material, FontAwesome }
 

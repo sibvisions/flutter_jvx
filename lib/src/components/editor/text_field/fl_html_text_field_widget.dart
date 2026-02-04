@@ -17,8 +17,8 @@
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
-import '../../../components.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../base_wrapper/fl_stateless_data_widget.dart';
 
 class FlHtmlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidget<T, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

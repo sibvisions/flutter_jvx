@@ -35,7 +35,6 @@ import 'package:push/push.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:universal_io/io.dart';
 
-import 'commands.dart';
 import 'config/app_config.dart';
 import 'config/server_config.dart';
 import 'custom/app_manager.dart';
@@ -50,6 +49,10 @@ import 'mask/state/app_style.dart';
 import 'mask/state/app_style_direct.dart';
 import 'mask/work_screen/skeleton_screen.dart';
 import 'model/command/api/alive_command.dart';
+import 'model/command/api/feedback_command.dart';
+import 'model/command/api/logout_command.dart';
+import 'model/command/ui/view/message/ierror_command.dart';
+import 'model/command/ui/view/message/open_server_error_dialog_command.dart';
 import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
 import 'routing/locations/main_location.dart';

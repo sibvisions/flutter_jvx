@@ -23,13 +23,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:graphic/graphic.dart' show Selected;
 
-import '../../../flutter_jvx.dart';
 import '../../model/command/api/mouse_clicked_command.dart';
 import '../../model/command/api/mouse_pressed_command.dart';
 import '../../model/command/api/mouse_released_command.dart';
+import '../../model/command/api/select_record_command.dart';
+import '../../model/command/base_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/data/column_definition.dart';
+import '../../model/data/data_book.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/data/subscriptions/data_record.dart';
+import '../../model/data/subscriptions/data_subscription.dart';
+import '../../model/request/filter.dart';
+import '../../service/api/shared/api_object_property.dart';
+import '../../service/command/i_command_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import 'fl_chart_widget.dart';
 
 class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
   const FlChartWrapper({super.key, required super.model});

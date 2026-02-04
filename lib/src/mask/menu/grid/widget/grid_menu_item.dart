@@ -17,8 +17,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../flutter_jvx.dart';
+import '../../../../model/menu/menu_item_model.dart';
 import '../../../../util/badge_util.dart';
+import '../../../../util/jvx_colors.dart';
+import '../../../state/app_style.dart';
+import '../../menu.dart';
 
 class GridMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,7 +71,7 @@ class GridMenuItem extends StatelessWidget {
     var theme = Theme.of(context);
     return Material(
       color: (JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.canvasColor)
-          .withAlpha(Color.getAlphaFromOpacity(double.parse(AppStyle.of(context).style(context, 'opacity.menu') ?? "1"))),
+          .withAlpha(Color.getAlphaFromOpacity(double.parse(AppStyle.of(context).style(context, AppStyle.opacityMenu) ?? "1"))),
       child: InkWell(
         onTap: () => onClick(context, item: menuItemModel),
         child: Column(

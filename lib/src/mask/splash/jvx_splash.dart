@@ -19,7 +19,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../service/apps/i_app_service.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_colors.dart';
 
 class JVxSplash extends StatefulWidget {
   final String? appName;
@@ -65,8 +69,7 @@ class _JVxSplashState extends State<JVxSplash> {
     while (mounted && (start / 66) <= max) {
       await Future.delayed(const Duration(milliseconds: 16));
       start++;
-      // yield log(start) / log(max);
-      yield round(atan(start / 66) / (pi / 2) * 100, decimals: 2);
+      yield _round(atan(start / 66) / (pi / 2) * 100, decimals: 2);
     }
   }
 
@@ -208,4 +211,8 @@ class _JVxSplashState extends State<JVxSplash> {
     }
     return widgets;
   }
+
+  double _round(final double value, {final int decimals = 6}) =>
+    (value * pow(10, decimals)).round() / pow(10, decimals);
+
 }

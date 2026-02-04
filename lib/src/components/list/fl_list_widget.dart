@@ -22,8 +22,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../mask/state/app_style.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/data/data_book.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/response/application_settings_response.dart';
 import '../../util/json_template_manager.dart';
+import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';

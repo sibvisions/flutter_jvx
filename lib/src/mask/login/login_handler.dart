@@ -16,7 +16,8 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import 'login.dart';
 
 /// Used for customization of login
 class LoginHandler {

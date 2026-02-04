@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:action_slider/action_slider.dart';
+import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -27,12 +28,27 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../model/command/api/press_button_command.dart';
+import '../../model/command/api/set_values_command.dart';
+import '../../model/command/base_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/data/subscriptions/data_record.dart';
+import '../../model/data/subscriptions/data_subscription.dart';
+import '../../routing/locations/main_location.dart';
+import '../../service/api/shared/api_object_property.dart';
+import '../../service/command/i_command_service.dart';
+import '../../service/storage/i_storage_service.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
+import '../../util/parse_util.dart';
+import '../../util/widgets/jvx_scanner.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import 'fl_button_widget.dart';
 import 'fl_slide_button_widget.dart';
 
 class FlButtonWrapper<T extends FlButtonModel> extends BaseCompWrapperWidget<T> {

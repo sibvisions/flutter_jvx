@@ -16,8 +16,16 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../model/command/api/close_frame_command.dart';
+import '../../model/command/api/press_button_command.dart';
+import '../../model/command/api/set_values_command.dart';
+import '../../model/command/base_command.dart';
+import '../../model/command/ui/view/message/open_message_dialog_command.dart';
+import '../../service/command/i_command_service.dart';
+import '../../util/jvx_colors.dart';
 import '../../util/measure_util.dart';
+import '../../util/parse_util.dart';
 import '../jvx_dialog.dart';
 
 /// This is a standard template for a server side message.

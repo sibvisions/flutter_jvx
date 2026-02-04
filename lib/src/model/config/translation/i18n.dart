@@ -21,7 +21,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
+import '../../../service/config/i_config_service.dart';
+import '../../../service/file/file_manager.dart';
+import '../../../service/ui/i_ui_service.dart';
 import '../../../util/jvx_logger.dart';
 
 class I18n {

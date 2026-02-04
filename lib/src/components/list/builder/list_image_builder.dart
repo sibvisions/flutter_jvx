@@ -15,8 +15,8 @@
  */
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
-import '../../../../flutter_jvx.dart';
 import '../../../model/response/record_format.dart';
+import '../../../util/image/image_loader.dart';
 
 part 'list_image_builder.g.dart';
 

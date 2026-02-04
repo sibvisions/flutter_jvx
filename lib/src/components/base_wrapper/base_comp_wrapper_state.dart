@@ -18,11 +18,19 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../mask/state/app_style.dart';
+import '../../model/command/base_command.dart';
+import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/component_subscription.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
+import '../../service/api/shared/api_object_property.dart';
+import '../../service/command/i_command_service.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../../util/badge_util.dart';
 import '../../util/jvx_logger.dart';
 import 'base_comp_wrapper_widget.dart';
@@ -164,7 +172,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       valueListenable: IConfigService().applicationStyle,
       builder: (context, value, builderChild) {
         return Opacity(
-          opacity: double.parse(value?['opacity.controls'] ?? "1"),
+          opacity: double.parse(value?[AppStyle.opacityControls] ?? "1"),
           child: builderChild,
         );
       },

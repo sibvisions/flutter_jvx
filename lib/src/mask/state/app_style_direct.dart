@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../../../flutter_jvx.dart';
+import '../../service/config/i_config_service.dart';
 
 /// This class should be used for accessing simple "theme independent" style options.
 /// Don't use it for e.g. coloring app which could depend on light/dark mode

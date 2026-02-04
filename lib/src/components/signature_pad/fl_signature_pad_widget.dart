@@ -19,7 +19,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../mask/state/app_style.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/data/subscriptions/data_record.dart';
+import '../../util/image/image_loader.dart';
+import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 
 class FlSignaturePadWidget extends FlStatefulWidget<FlCustomContainerModel> {

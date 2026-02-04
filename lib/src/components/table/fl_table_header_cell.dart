@@ -19,10 +19,17 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/data/column_definition.dart';
 import '../../model/data/sort_definition.dart';
 import '../../model/layout/alignments.dart';
+import '../../model/response/application_meta_data_response.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_colors.dart';
+import '../../util/parse_util.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
+import 'fl_table_widget.dart';
 
 class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

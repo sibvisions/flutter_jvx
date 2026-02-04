@@ -19,10 +19,16 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-import '../../../flutter_jvx.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
+import '../../flutter_ui.dart';
+import '../../model/command/api/set_screen_parameter_command.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/menu/menu_item_model.dart';
+import '../../service/command/i_command_service.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
+import '../../util/parse_util.dart';
+import '../state/app_style.dart';
 import 'error_screen.dart';
 import 'util/screen_wrapper.dart';
 import 'work_screen_page.dart';

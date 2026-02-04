@@ -17,7 +17,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../util/jvx_colors.dart';
 import 'app_image.dart';
 
 class AppItem extends StatelessWidget {

@@ -17,8 +17,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
+import '../../../model/response/device_status_response.dart';
+import '../../../service/ui/i_ui_service.dart';
+import '../../../util/jvx_colors.dart';
+import '../../base_wrapper/fl_stateless_widget.dart';
+import '../../label/fl_label_widget.dart';
 
 class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessWidget<T> {
   final Function(BuildContext) postFrameCallback;
