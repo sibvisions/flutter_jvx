@@ -26,6 +26,7 @@ import '../../../config/app_config.dart';
 import '../../../config/predefined_server_config.dart';
 import '../../../flutter_ui.dart';
 import '../../../mask/frame/frame.dart';
+import '../../../mask/state/app_style.dart';
 import '../../../model/config/translation/i18n.dart';
 import '../../../model/config/user/user_info.dart';
 import '../../../util/jvx_logger.dart';
@@ -34,6 +35,7 @@ import '../../apps/i_app_service.dart';
 import '../../file/file_manager.dart';
 import '../../service.dart';
 import '../../ui/i_ui_service.dart';
+import '../../ui/protect_config.dart';
 import '../i_config_service.dart';
 import '../shared/config_handler.dart';
 import '../shared/impl/shared_prefs_handler.dart';
@@ -655,8 +657,30 @@ class ConfigService implements IConfigService {
   Future<void> updateApplicationStyle(Map<String, String>? pAppStyle) async {
     await _configHandler.updateApplicationStyle(pAppStyle);
 
+    Map<String, String>? appStyle = pAppStyle ?? await _configHandler.applicationStyle();
+
     // To retrieve default
-    _applicationStyle.value = pAppStyle ?? await _configHandler.applicationStyle();
+    _applicationStyle.value = appStyle;
+
+    //MARK: Set global timeout for biometric reAuth
+
+    // If application style contains setting of max reAuth timeout -> change the default
+    Duration? timeout;
+
+    if (appStyle != null) {
+      if (appStyle.containsKey(AppStyle.loginBiometricMaxTimeout)) {
+        String? value = appStyle[AppStyle.loginBiometricMaxTimeout];
+        if (value != null) {
+          int? hours = int.tryParse(value);
+
+          if (hours != null) {
+            timeout = Duration(hours: hours);
+          }
+        }
+      }
+    }
+
+    ProtectConfig.reAuthMaxTimeout = timeout;
   }
 
   @override

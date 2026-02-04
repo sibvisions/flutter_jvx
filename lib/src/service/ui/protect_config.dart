@@ -6,7 +6,23 @@ import '../config/i_config_service.dart';
 typedef AuthenticationCallback = void Function(bool? success);
 
 class ProtectConfig {
-    static final Duration reAuthMaxTimeout = const Duration(days: 1);
+
+    /// the default value for reAuth max timeout
+    static final Duration _reAuthMaxTimeoutDefault = const Duration(hours: 24);
+
+    /// the current reAuth max timeout
+    static Duration _reAuthMaxTimeout = _reAuthMaxTimeoutDefault;
+
+    static Duration get reAuthMaxTimeout => _reAuthMaxTimeout;
+
+    static set reAuthMaxTimeout(Duration? duration) {
+      if (duration == null) {
+        _reAuthMaxTimeout = _reAuthMaxTimeoutDefault;
+      }
+      else {
+        _reAuthMaxTimeout = duration;
+      }
+    }
 
     /// the skeleton builder
     final WidgetBuilder? skeletonBuilder;
