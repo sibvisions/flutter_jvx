@@ -116,8 +116,8 @@ class GridLayout extends ILayout {
       final int totalGapsWidth = (targetColumns - 1) * gaps.horizontalGap;
       final int totalGapsHeight = (targetRows - 1) * gaps.verticalGap;
 
-      final num totalWidth = sizeWidth - margins.right - totalGapsWidth;
-      final num totalHeight = sizeHeight - margins.bottom - totalGapsHeight;
+      final num totalWidth = sizeWidth - margins.horizontal - totalGapsWidth;
+      final num totalHeight = sizeHeight - margins.vertical - totalGapsHeight;
 
       columnWidth = (totalWidth / targetColumns).floor();
       rowHeight = (totalHeight / targetRows).floor();
@@ -143,7 +143,7 @@ class GridLayout extends ILayout {
         }
       }
 
-      yPositions.add(margins.left);
+      yPositions.add(margins.top);
       int corrY = 0;
       for (int i = 0; i < targetRows; i++) {
         yPositions.add(yPositions[i] + rowHeight + gaps.verticalGap);
