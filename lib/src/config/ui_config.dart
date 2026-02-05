@@ -61,7 +61,7 @@ class UiConfig {
           hideLanguageSetting: false,
           hidePictureSizeSetting: false,
           hideThemeSetting: false,
-          showRememberMe: false,
+          showRememberMe: true,
           rememberMeChecked: false,
         );
 
