@@ -17,7 +17,7 @@ class ProgressDialogService {
 
         ProgressDialogState? state = dialogKey.currentState;
         if (state != null) {
-          dismissible = state.isDismissible() ?? false;
+          dismissible = state.isDismissible();
         }
 
         Widget barrier = Container(color: Colors.black54);
