@@ -546,6 +546,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
       return false;
     }
+
     return true;
   }
 
@@ -554,7 +555,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
     isNavigating = true;
 
-    try{
+    try {
       if (item?.screenLongName == null || (model == null && customScreen == null)) {
         context.beamBack();
       } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
@@ -566,8 +567,9 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           }
         }));
       }
-
-      context.beamBack();
+      else {
+        context.beamBack();
+      }
     }
     finally {
       isForced = false;
