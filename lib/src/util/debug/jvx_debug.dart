@@ -24,15 +24,16 @@ import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:push/push.dart';
 import 'package:universal_io/io.dart';
 
-import '../../commands.dart';
 import '../../flutter_ui.dart';
 import '../../mask/jvx_overlay.dart';
 import '../../mask/login/login_page.dart';
+import '../../model/command/api/login_command.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../widgets/progress/progress_dialog_service.dart';
 import '../widgets/progress/progress_dialog_widget.dart';
 import '../widgets/status_banner.dart';
 
@@ -390,26 +391,25 @@ class UIDebug extends StatelessWidget {
             ),
             trailing: OutlinedButton(
               onPressed: () async {
-                var key = GlobalKey<ProgressDialogState>();
-                unawaited(showDialog(
-                  context: context,
-                  builder: (context) => ProgressDialogWidget(
-                      key: key,
-                      config: Config(
-                        progress: 0,
-                        maxProgress: 100,
-                        message: "Loading...",
-                        barrierDismissible: true,
-                      )),
+
+                ProgressDialogService.show(Config(
+                  progress: 0,
+                  maxProgress: 100,
+                  message: "Loading...",
+                  barrierDismissible: true,
                 ));
+
                 await Future.delayed(const Duration(seconds: 2));
 
                 for (int i = 0; i <= 100; i++) {
-                  key.currentState!.update(Config(
+                  ProgressDialogService.update(Config(
                     progress: i,
                   ));
+
                   await Future.delayed(const Duration(milliseconds: 50));
                 }
+
+                await ProgressDialogService.hide();
               },
               child: const Text("Test"),
             ),

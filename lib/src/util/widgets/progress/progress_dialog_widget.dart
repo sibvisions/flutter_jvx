@@ -17,8 +17,6 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
-import '../../../flutter_ui.dart';
-
 class ProgressDialogWidget extends StatefulWidget {
   final Config config;
 
@@ -29,40 +27,49 @@ class ProgressDialogWidget extends StatefulWidget {
 
   @override
   State<ProgressDialogWidget> createState() => ProgressDialogState();
-
-  /// Can be used to pop the dialog
-  static void close(BuildContext context) {
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context);
-    }
-  }
-
-  /// Can be used to safely pop the dialog
-  static void safeClose(GlobalKey<ProgressDialogState> globalKey) {
-    if (globalKey.currentWidget != null && globalKey.currentContext != null) {
-      try {
-        ProgressDialogWidget.close(globalKey.currentContext!);
-      } catch (e, stackTrace) {
-        FlutterUI.logUI.e("Error while safely closing progress dialog", error: e, stackTrace: stackTrace);
-      }
-    }
-  }
 }
 
-class ProgressDialogState extends State<ProgressDialogWidget> {
+class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerProviderStateMixin {
   late Config _config;
+
+  // Animation Controller
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
-
     _config = widget.config.withDefaults();
     if (_config.message == null) {
       throw Exception("Message has to be set during initialization");
     }
+
+    // Animation Setup
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+
+    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    _controller.forward(); // Startet Einblenden
   }
 
-  /// Pass a new (partly filled) config to update the state.
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// Diese Methode rufen wir vom Service auf, um sanft auszublenden
+  Future<void> reverse() async {
+    await _controller.reverse();
+  }
+
   void update(Config config) {
     _config = _config.merge(config);
     setState(() {});
@@ -70,88 +77,90 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double? progress =
-        _config.progress == 0 || _config.maxProgress == 0 ? null : _config.progress! / _config.maxProgress!;
+    double? progress = _config.progress == 0 || _config.maxProgress == 0
+        ? null
+        : _config.progress! / _config.maxProgress!;
+
     Color effectiveBackgroundColor = _config.backgroundColor ?? Theme.of(context).colorScheme.surface;
     Color effectiveValueColor = _config.progressValueColor ?? Theme.of(context).colorScheme.primary;
     Color effectiveProgressBgColor = _config.progressBgColor ?? Theme.of(context).colorScheme.surface;
 
-    return PopScope(
-        canPop: _config.barrierDismissible ?? false,
-        child: AlertDialog(
-        backgroundColor: effectiveBackgroundColor,
-        elevation: _config.elevation,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(_config.borderRadius!),
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 30,
-              child: progress == null
-                  ? Container(
-                      decoration: BoxDecoration(
-                        color: effectiveValueColor,
-                        borderRadius: BorderRadius.circular(15.0),
-                        border: Border.all(
-                          width: 2.0,
-                          color: effectiveValueColor,
-                        ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(13.0),
-                        child: LinearProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation(effectiveValueColor),
-                          backgroundColor: effectiveProgressBgColor,
-                        ),
-                      ),
-                    )
-                  : LiquidLinearProgressIndicator(
-                      value: progress,
-                      valueColor: AlwaysStoppedAnimation(effectiveValueColor),
-                      // Workaround to disable wave on 100%
-                      backgroundColor: progress >= 1 ? effectiveValueColor : effectiveProgressBgColor,
-                      borderRadius: 15.0,
-                      borderWidth: 2.0,
-                      borderColor: effectiveValueColor,
-                      direction: Axis.horizontal,
-                      center: Text(
-                        "${"${((progress) * 100).round()}"}%",
-                        style: TextStyle(
-                          color: progress > 0.6
-                              ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.onSurface,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: PopScope(
+          canPop: _config.barrierDismissible ?? false,
+          child: AlertDialog(
+            backgroundColor: effectiveBackgroundColor,
+            elevation: _config.elevation,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(_config.borderRadius!)),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 30,
+                  child: progress == null
+                      ? Container(
+                    decoration: BoxDecoration(
+                      color: effectiveValueColor,
+                      borderRadius: BorderRadius.circular(15.0),
+                      border: Border.all(width: 2.0, color: effectiveValueColor),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(13.0),
+                      child: LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(effectiveValueColor),
+                        backgroundColor: effectiveProgressBgColor,
                       ),
                     ),
+                  )
+                      : LiquidLinearProgressIndicator(
+                    value: progress,
+                    valueColor: AlwaysStoppedAnimation(effectiveValueColor),
+                    backgroundColor: progress >= 1 ? effectiveValueColor : effectiveProgressBgColor,
+                    borderRadius: 15.0,
+                    borderWidth: 2.0,
+                    borderColor: effectiveValueColor,
+                    direction: Axis.horizontal,
+                    center: Text(
+                      "${"${((progress) * 100).round()}"}%",
+                      style: TextStyle(
+                        color: progress > 0.6
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSurface,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+                Center(
+                  child: Text(
+                    _config.progress == _config.maxProgress!
+                        ? _config.completedMessage ?? _config.message!
+                        : _config.message!,
+                    textAlign: _config.messageTextAlign,
+                    style: TextStyle(
+                      fontSize: 17.0,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ).merge(_config.messageTextStyle),
+                  ),
+                ),
+              ],
             ),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-            Center(
-              child: Text(
-                _config.progress == _config.maxProgress!
-                    ? _config.completedMessage ?? _config.message!
-                    : _config.message!,
-                textAlign: _config.messageTextAlign,
-                style: TextStyle(
-                  fontSize: 17.0,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.bold,
-                ).merge(_config.messageTextStyle),
-              ),
-            ),
-          ],
+            contentPadding: _config.contentPadding!,
+            buttonPadding: _config.buttonPadding,
+            actions: _config.actions,
+            actionsPadding: _config.actionsPadding!,
+            actionsAlignment: _config.actionsAlignment,
+          ),
         ),
-        contentPadding: _config.contentPadding!,
-        buttonPadding: _config.buttonPadding,
-        actions: _config.actions,
-        actionsPadding: _config.actionsPadding!,
-        actionsAlignment: _config.actionsAlignment,
-      )
+      ),
     );
   }
 }
