@@ -21,6 +21,10 @@ import 'package:flutter/material.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../flutter_ui.dart';
+import '../mask/error/error_dialog.dart';
+import '../mask/error/server_error_dialog.dart';
+import '../mask/jvx_dialog.dart';
+import '../mask/jvx_overlay.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';
 import '../model/command/api/exit_command.dart';
@@ -31,6 +35,7 @@ import '../model/command/api/set_values_command.dart';
 import '../model/command/api/startup_command.dart';
 import '../model/component/fl_component_model.dart';
 import '../model/data/data_book.dart';
+import '../model/request/api_exit_request.dart';
 import '../model/request/filter.dart';
 import '../service/api/i_api_service.dart';
 import '../service/api/shared/repository/offline/offline_database.dart';
@@ -38,15 +43,22 @@ import '../service/api/shared/repository/offline_api_repository.dart';
 import '../service/api/shared/repository/online_api_repository.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
+import '../service/config/shared/config_handler.dart';
 import '../service/data/i_data_service.dart';
+import '../service/layout/i_layout_service.dart';
 import '../service/service.dart';
 import '../service/storage/i_storage_service.dart';
 import '../service/ui/i_ui_service.dart';
 import 'jvx_logger.dart';
 import 'misc/dialog_result.dart';
+import 'widgets/progress/progress_dialog_service.dart';
 import 'widgets/progress/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
+
+  /// offline background color
+  static Color backgroundColor = Colors.grey.shade500;
+
   /// whether initOffline is running
   static bool isGoingOffline = false;
 
@@ -55,14 +67,14 @@ abstract class OfflineUtil {
 
   static Widget getOfflineBar(BuildContext context, {bool useElevation = false}) {
     return Material(
-      color: Colors.grey.shade500,
+      color: backgroundColor,
       elevation: useElevation ? Theme.of(context).appBarTheme.elevation ?? 4.0 : 0.0,
       child: Container(
         height: 20,
         alignment: Alignment.center,
-        child: const Text(
+        child: Text(
           "OFFLINE",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Theme.of(context).appBarTheme.foregroundColor ?? Colors.white)
         ),
       ),
     );
@@ -71,56 +83,89 @@ abstract class OfflineUtil {
   static Future<void> initOnline([bool pDiscardChanges = false]) async {
     isGoingOnline = true;
 
+    bool? oldLoadingEnabled;
+
     try {
-      var dialogKey = GlobalKey<ProgressDialogState>();
       OnlineApiRepository onlineApiRepository = OnlineApiRepository();
       OfflineApiRepository offlineApiRepository = IApiService().getRepository() as OfflineApiRepository;
+
+      IConfigService servCfg = IConfigService();
+
       String failedStep = "Initializing";
-      String offlineWorkScreenClassName = IConfigService().offlineScreen.value!;
+      String offlineWorkScreenClassName = servCfg.offlineScreen.value!;
+
+      IUiService servUi = IUiService();
+      IApiService servApi = IApiService();
 
       try {
         await WakelockPlus.enable();
-        String? offlineUsername = IConfigService().username.value;
-        String? offlinePassword = IConfigService().password.value;
 
-        var futureDialog = IUiService().openDialog(
-          pIsDismissible: false,
-          pBuilder: (context) =>
-              ProgressDialogWidget(
-                key: dialogKey,
-                config: Config(
-                  message: FlutterUI.translate(pDiscardChanges ? "Discarding changes" : "Synchronizing data"),
-                  barrierDismissible: false,
-                ),
-              ),
-        );
+        ConfigHandler cfgHandler = servCfg.getConfigHandler();
+
+        String? appId = await cfgHandler.currentApp();
+
+        if (appId == null) {
+          throw "Application missing";
+        }
+
+        // Save credentials for re-sync (appId is important otherwise values would be global)
+        String? offlineUsername = await cfgHandler.getValueSecure("$appId.offlineUserName");
+        String? offlinePassword = await cfgHandler.getValueSecure("$appId.offlinePassword");
+
+        ProgressDialogService.show(Config(
+          message: FlutterUI.translate(pDiscardChanges ? "Discarding changes" : "Synchronizing data"),
+          barrierDismissible: false,
+        ));
+
+        JVxOverlayState? ols = JVxOverlay.maybeOf(FlutterUI.getCurrentContext());
+
+        oldLoadingEnabled = ols?.isLoadingEnabled();
+        ols?.setLoadingEnabled(false);
 
         // Set online api repository to handle commands
         await onlineApiRepository.start();
-        IApiService().setRepository(onlineApiRepository);
+        servApi.setRepository(onlineApiRepository);
 
-        failedStep = "Connecting to server";
-        await ICommandService().sendCommand(
-          StartupCommand(
-            reason: "Going online",
-            username: offlineUsername,
-            password: offlinePassword,
-          ),
-        );
+        String? sLastMessage;
 
-        failedStep = "Preparing synchronization";
-        await ICommandService().sendCommand(
-          OpenScreenCommand(
-            className: offlineWorkScreenClassName,
-            reason: "We are back online",
-            parameter: {"mobile.onlineSync": true},
-          ),
-        );
-
-        int successfulSyncedRows = 0;
-        int failedSyncedRows = 0;
+        bool startUpForUserInteraction = false;
 
         if (!pDiscardChanges) {
+          if ((offlineUsername == null || offlinePassword == null) && servCfg.authKey.value == null) {
+            throw "Switching to online mode not possible because of missing credentials!";
+          }
+
+          int successfulSyncedRows = 0;
+          int failedSyncedRows = 0;
+
+          ICommandService servCmd = ICommandService();
+
+          failedStep = "Connecting to server";
+          await servCmd.sendCommand(
+            StartupCommand(
+              reason: "Going online, for sync",
+              username: offlineUsername,
+              password: offlinePassword,
+            ),
+          );
+
+          if (servUi.clientId.value == null) {
+            throw "ClientID is missing";
+          }
+
+          failedStep = "Preparing synchronization";
+          await servCmd.sendCommand(
+            OpenScreenCommand(
+              className: offlineWorkScreenClassName,
+              reason: "We are back online, for sync",
+              parameter: {"mobile.onlineSync": true},
+            ),
+          );
+
+          if (!servUi.loggedIn()) {
+            throw "Not authenticated!";
+          }
+
           // To keep foreign key relations intact. First execute inserts, then updates.
           // Deletes should be executed when traversing the list in reverse
           var dataBooks = IDataService().getDataBooks();
@@ -185,7 +230,7 @@ abstract class OfflineUtil {
 
             List<Map<String, Object?>> rowsToInsert = insertsByDataBook[dataBook.dataProvider]!;
 
-            dialogKey.currentState?.update(Config(
+            ProgressDialogService.update(Config(
               message:
               "${FlutterUI.translate("Inserting rows")} ($dataBookCounter / ${sortedListInserts.length} ${FlutterUI.translate("Tables")})",
               progress: 0,
@@ -199,7 +244,7 @@ abstract class OfflineUtil {
               } else {
                 failedSyncedRows++;
               }
-              dialogKey.currentState?.update(Config(
+              ProgressDialogService.update(Config(
                 progress: localCounter,
               ));
               localCounter++;
@@ -215,7 +260,7 @@ abstract class OfflineUtil {
 
             List<Map<String, Object?>> rowsToUpdate = updatesByDataBook[dataBook.dataProvider]!;
 
-            dialogKey.currentState?.update(Config(
+            ProgressDialogService.update(Config(
               message:
               "${FlutterUI.translate("Updating rows")} ($dataBookCounter / ${sortedListUpdates.length} ${FlutterUI.translate("Tables")})",
               progress: 0,
@@ -229,7 +274,7 @@ abstract class OfflineUtil {
               } else {
                 failedSyncedRows++;
               }
-              dialogKey.currentState?.update(Config(
+              ProgressDialogService.update(Config(
                 progress: localCounter,
               ));
               localCounter++;
@@ -245,7 +290,7 @@ abstract class OfflineUtil {
 
             List<Map<String, Object?>> rowsToDelete = deletesByDataBook[dataBook.dataProvider]!;
 
-            dialogKey.currentState?.update(Config(
+            ProgressDialogService.update(Config(
               message:
               "${FlutterUI.translate("Deleting rows")} ($dataBookCounter / ${sortedListDeletes.length} ${FlutterUI.translate("Tables")}",
               progress: 0,
@@ -259,7 +304,7 @@ abstract class OfflineUtil {
               } else {
                 failedSyncedRows++;
               }
-              dialogKey.currentState?.update(Config(
+              ProgressDialogService.update(Config(
                 progress: localCounter,
               ));
               localCounter++;
@@ -267,26 +312,66 @@ abstract class OfflineUtil {
 
             dataBookCounter++;
           }
+
+          bool successfulSync = failedSyncedRows == 0;
+
+          FlutterUI.logAPI.i("Sync ${successfulSync ? "successful" : "failed"}: Synced $successfulSyncedRows rows, $failedSyncedRows rows failed");
+
+          if (successfulSync) {
+            failedStep = "Closing sync connection";
+            FlPanelModel? workScreenModel = IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkScreenClassName);
+
+            if (workScreenModel != null) {
+              await servCmd.sendCommand(CloseScreenCommand(
+                componentName: workScreenModel.name,
+                reason: "We have finished synchronizing the data",
+              ));
+            }
+
+            unawaited(_exitApp(onlineApiRepository));
+
+            startUpForUserInteraction = true;
+          } else {
+            //Not successful means that the user should get the chance to change records again in offline mode before going online
+
+            failedStep = "Returning to offline state";
+
+            unawaited(_exitApp(onlineApiRepository));
+
+            await onlineApiRepository.stop();
+            servApi.setRepository(offlineApiRepository);
+          }
+
+          if (successfulSyncedRows > 0 || failedSyncedRows > 0) {
+            sLastMessage = "${FlutterUI.translate("Successfully synced")} $successfulSyncedRows ${FlutterUI.translate("rows")}"
+                "${failedSyncedRows > 0 ? ".\n$failedSyncedRows ${FlutterUI.translate("rows failed to sync")}." : ""}";
+          } else {
+            sLastMessage = FlutterUI.translate("No changes detected");
+          }
+        }
+        else {
+          startUpForUserInteraction = true;
+          sLastMessage = FlutterUI.translate("Successfully discarded");
         }
 
-        bool successfulSync = failedSyncedRows == 0;
+        // Clear caches (if online sync fails and we try to discard changes in next step
+        // -> sync screen is still in memory on client-sied
+        IStorageService().clear(ClearReason.DEFAULT);
+        IDataService().clearDataBooks();
+        ILayoutService().clear(ClearReason.DEFAULT);
 
-        FlutterUI.logAPI.i(
-            "Sync ${successfulSync ? "successful" : "failed"}: Synced $successfulSyncedRows rows, $failedSyncedRows rows failed");
+        if (startUpForUserInteraction) {
+          failedStep = "Resetting offline state";
+          await offlineApiRepository.deleteDatabase();
+          await offlineApiRepository.stop();
 
-        failedStep =
-        "${FlutterUI.translate(successfulSync ? "Success" : "Failure")} - ${FlutterUI.translate("Synced")} $successfulSyncedRows/$failedSyncedRows";
+          await servCfg.updatePassword(null);
+          await servCfg.updateOffline(false);
 
-        if (successfulSync) {
-          failedStep = "Closing sync connection to server";
-          FlPanelModel? workScreenModel =
-          IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkScreenClassName)!;
-          await ICommandService().sendCommand(CloseScreenCommand(
-            componentName: workScreenModel.name,
-            reason: "We have synced",
-          ));
+          isGoingOnline = false;
 
           failedStep = "Connecting to server for user interaction";
+
           await ICommandService().sendCommand(
             StartupCommand(
               reason: "Going online",
@@ -295,60 +380,70 @@ abstract class OfflineUtil {
             ),
           );
 
-          failedStep = "Resetting offline state";
-          IDataService().clearDataBooks();
-          await offlineApiRepository.deleteDatabase();
-          await offlineApiRepository.stop();
-
-          await IConfigService().updatePassword(null);
-          await IConfigService().updateOffline(false);
-        } else {
-          failedStep = "Returning to offline state";
-          await onlineApiRepository.stop();
-          IApiService().setRepository(offlineApiRepository);
+          //successful started application
+          if (servUi.clientId.value != null) {
+            await cfgHandler.setValueSecure("$appId.offlineUserName", null);
+            await cfgHandler.setValueSecure("$appId.offlinePassword", null);
+          }
+          else {
+            throw "Client ID missing";
+          }
         }
 
-        String sMessage;
-        if (successfulSyncedRows > 0 || failedSyncedRows > 0) {
-          sMessage = "${FlutterUI.translate("Successfully synced")} $successfulSyncedRows ${FlutterUI.translate("rows")}"
-              "${failedSyncedRows > 0 ? ".\n$failedSyncedRows ${FlutterUI.translate("rows failed to sync")}." : ""}";
-        } else {
-          sMessage = FlutterUI.translate(!pDiscardChanges ? "No changes detected" : "Successfully discarded");
-        }
+        failedStep = "Update dialog";
 
-        dialogKey.currentState!.update(Config(
-          message: sMessage,
+        ProgressDialogService.update(Config(
+          message: sLastMessage,
           progress: 100,
           maxProgress: 100,
           contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(dialogKey.currentContext!).pop(),
+              onPressed: () async => await ProgressDialogService.hide(),
               child: Text(FlutterUI.translate("OK")),
             ),
           ],
         ));
-        await futureDialog;
+
+        //before setting menu -> updates menu page
+        isGoingOnline = false;
+
+        servUi.setMenuModel(servUi.getMenuModel());
       } catch (e, stack) {
         FlutterUI.logAPI.e("Error while switching to online", error: e, stackTrace: stack);
 
-        // Revert all changes in case we have an in-tact offline state
-        await onlineApiRepository.stop();
-        IApiService().setRepository(offlineApiRepository);
-        IUiService().setMenuModel(null);
+        String sIntro;
+
+        if (isGoingOnline) {
+          unawaited(_exitApp(onlineApiRepository));
+
+          // Revert all changes in case we have an in-tact offline state
+          await onlineApiRepository.stop();
+          servApi.setRepository(offlineApiRepository);
+
+          sIntro = "There was a problem while switching from offline to online mode.";
+        }
+        else {
+          sIntro = "There was a problem while switching from offline to online mode. Data remains untouched."
+                   "\nPlease check your connection and try again!";
+        }
+
+        isGoingOnline = false;
+
+        servUi.setMenuModel(null);
         IStorageService().deleteScreen(screenName: offlineWorkScreenClassName);
 
-        ProgressDialogWidget.safeClose(dialogKey);
-        DialogResult? result = await IUiService().openDialog(
+        await ProgressDialogService.hide();
+
+        DialogResult? result = await servUi.openDialog(
           pIsDismissible: false,
           pBuilder: (context) =>
               AlertDialog(
                 title: Text(FlutterUI.translate("Offline Sync Error")),
                 content: Text(
-                    "${FlutterUI.translate("There was a problem while switching from offline to online mode. Data remains untouched."
-                        "\nPlease check your connection and try again!")}"
+                    "${FlutterUI.translate(sIntro)}"
                         "\n\n${FlutterUI.translate("Failed step")}: ${FlutterUI.translate(failedStep)}."
-                        "\n${FlutterUI.translate("Error")}: ${e.toString()}"),
+                        "\n\n${FlutterUI.translate("Error")}: ${e.toString()}"),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -363,14 +458,20 @@ abstract class OfflineUtil {
                 ],
               ),
         );
+
         if (result == DialogResult.RETRY) {
           await initOnline();
         }
+
       } finally {
         await WakelockPlus.disable();
       }
     } finally {
       isGoingOnline = false;
+
+      if (oldLoadingEnabled != null) {
+        JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.setLoadingEnabled(oldLoadingEnabled);
+      }
     }
   }
 
@@ -378,6 +479,9 @@ abstract class OfflineUtil {
       OfflineApiRepository offlineApiRepository, Map<String, Object?> insertedRow, DataBook dataBook) async {
     try {
       await _insertOfflineRecord(dataBook, insertedRow);
+
+      _checkErrorDialog();
+
       await offlineApiRepository.resetState(dataBook.dataProvider, insertedRow);
     } catch (e, stack) {
       if (FlutterUI.logAPI.cl(Lvl.e)) {
@@ -392,6 +496,9 @@ abstract class OfflineUtil {
       OfflineApiRepository offlineApiRepository, Map<String, Object?> updatedRow, DataBook dataBook) async {
     try {
       await _updateOfflineRecord(updatedRow, dataBook);
+
+      _checkErrorDialog();
+
       await offlineApiRepository.resetState(dataBook.dataProvider, updatedRow);
     } catch (e, stack) {
       if (FlutterUI.logAPI.cl(Lvl.e)) {
@@ -406,6 +513,9 @@ abstract class OfflineUtil {
       OfflineApiRepository offlineApiRepository, Map<String, Object?> deletedRow, DataBook dataBook) async {
     try {
       await _deleteOfflineRecord(dataBook, deletedRow);
+
+      _checkErrorDialog();
+
       await offlineApiRepository.resetState(dataBook.dataProvider, deletedRow);
     } catch (e, stack) {
       if (FlutterUI.logAPI.cl(Lvl.e)) {
@@ -417,6 +527,31 @@ abstract class OfflineUtil {
       return false;
     }
     return true;
+  }
+
+  /// Checks if there's an error view
+  static void _checkErrorDialog() {
+    IUiService serv = IUiService();
+    List<JVxDialog> dialogs = serv.getJVxDialogs();
+
+    String? errorMessage;
+
+    for (JVxDialog dialog in dialogs) {
+      if (dialog is ErrorDialog) {
+        errorMessage = dialog.message;
+
+        serv.closeJVxDialog(dialog);
+      }
+      else if (dialog is ServerErrorDialog) {
+        errorMessage = dialog.command.message;
+
+        serv.closeJVxDialog(dialog);
+      }
+    }
+
+    if (errorMessage != null) {
+      throw errorMessage;
+    }
   }
 
   static Future<void> _insertOfflineRecord(DataBook dataBook, Map<String, Object?> row) async {
@@ -524,8 +659,9 @@ abstract class OfflineUtil {
     IApiService servApi = IApiService();
     IConfigService servCfg = IConfigService();
 
+    bool? oldLoadingEnabled;
+
     try {
-      var dialogKey = GlobalKey<ProgressDialogState>();
       OnlineApiRepository onlineApiRepository = servApi.getRepository() as OnlineApiRepository;
       OfflineApiRepository offlineApiRepository = OfflineApiRepository();
 
@@ -533,10 +669,18 @@ abstract class OfflineUtil {
         await WakelockPlus.enable();
         // Set already here to receive errors from api responses
         await servCfg.updateOffline(true);
-        // Save password for re-sync
-        await servCfg.updatePassword(FlutterUI
-            .of(FlutterUI.getCurrentContext()!)
-            .lastPassword);
+
+        ConfigHandler cfgHandler = servCfg.getConfigHandler();
+
+        String? appId = await cfgHandler.currentApp();
+
+        if (appId == null) {
+          throw "Application missing";
+        }
+
+        // Save credentials for re-sync (appId is important otherwise values would be global)
+        await cfgHandler.setValueSecure("$appId.offlineUserName", servCfg.username.value);
+        await cfgHandler.setValueSecure("$appId.offlinePassword", FlutterUI.of(FlutterUI.getCurrentContext()!).lastPassword);
 
         IStorageService servStorage = IStorageService();
 
@@ -546,31 +690,29 @@ abstract class OfflineUtil {
 
         IUiService servUi = IUiService();
 
-        unawaited(servUi.openDialog(
-          pIsDismissible: false,
-          pBuilder: (context) {
-            return ProgressDialogWidget(
-              key: dialogKey,
-              config: Config(
-                message: FlutterUI.translate("Fetching offline data"),
-                barrierDismissible: false,
-              ),
-            );
-          },
-        ));
+        ProgressDialogService.show(Config(
+            message: FlutterUI.translate("Fetching offline data"),
+            barrierDismissible: false,
+          ),
+        );
+
+        JVxOverlayState? ols = JVxOverlay.maybeOf(FlutterUI.getCurrentContext());
+
+        oldLoadingEnabled = ols?.isLoadingEnabled();
+        ols?.setLoadingEnabled(false);
 
         Set<String> activeDataProviders = getActiveDataProviders(pScreenName);
         await fetchDataProvider(
           activeDataProviders,
           progressUpdate: (value, max) {
-            dialogKey.currentState?.update(Config(
+            ProgressDialogService.update(Config(
               progress: value,
               maxProgress: max,
             ));
           },
         );
 
-        dialogKey.currentState?.update(Config(
+        ProgressDialogService.update(Config(
           message: FlutterUI.translate("Processing data"),
           progress: 0,
           maxProgress: 100,
@@ -588,16 +730,14 @@ abstract class OfflineUtil {
         await offlineApiRepository.initDatabase(
           dataBooks,
               (value, max, {progress}) {
-            dialogKey.currentState?.update(Config(
+                ProgressDialogService.update(Config(
               message: "${FlutterUI.translate("Processing Tables")} ($value / $max)",
               progress: progress ?? 0,
             ));
           },
         );
 
-        // Currently kinda unnecessary as the CloseScreenCommand triggers
-        // a DeleteScreenCommand which in turn triggers routing that kills the dialog.
-        ProgressDialogWidget.safeClose(dialogKey);
+        await ProgressDialogService.hide();
 
         ICommandService servCmd = ICommandService();
 
@@ -608,22 +748,24 @@ abstract class OfflineUtil {
         ));
         await servCmd.sendCommand(ExitCommand(reason: "Going offline"));
 
-        // Clear screen storage
+        // Clear caches
         servStorage.clear(ClearReason.DEFAULT);
-
-        // Clear data books for offline usage
         servData.clearDataBooks();
+
+        await onlineApiRepository.stop();
+
         await offlineApiRepository.initDataBooks();
         servApi.setRepository(offlineApiRepository);
 
-        // Clear menu
+        //before setting menu -> updates menu page
+        isGoingOffline = false;
+
+        // Triggers building menu
         servUi.setMenuModel(null);
         servUi.routeToMenu(pReplaceRoute: true);
-
-        await onlineApiRepository.stop();
       }
       catch (e, stack) {
-        FlutterUI.logAPI.e("Error while downloading offline data", error: e, stackTrace: stack);
+        FlutterUI.logAPI.e("Error while going offline", error: e, stackTrace: stack);
 
         // Revert all changes
         if (!offlineApiRepository.isStopped()) {
@@ -632,9 +774,15 @@ abstract class OfflineUtil {
 
         await offlineApiRepository.stop();
         await servCfg.updateOffline(false);
+
+        if (onlineApiRepository.isStopped()) {
+          await onlineApiRepository.start();
+        }
+
         servApi.setRepository(onlineApiRepository);
 
-        ProgressDialogWidget.safeClose(dialogKey);
+        await ProgressDialogService.hide();
+
         await IUiService().openDialog(
           pIsDismissible: false,
           pBuilder: (context) =>
@@ -655,7 +803,27 @@ abstract class OfflineUtil {
       }
     } finally {
       isGoingOffline = false;
-    }
 
+      if (oldLoadingEnabled != null) {
+        JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.setLoadingEnabled(oldLoadingEnabled);
+      }
+    }
   }
+
+  static Future<void> _exitApp(OnlineApiRepository repository) async
+  {
+    String? id = IUiService().clientId.value;
+
+    if (id != null) {
+      //We have to set the clientId here because we clear it before sending the request
+      ApiExitRequest exit = ApiExitRequest();
+      exit.clientId = id;
+
+      IUiService().updateClientId(null);
+
+      unawaited(repository.sendRequestAndForget(exit)
+        .catchError((e, stack) => FlutterUI.log.e("Exit request failed", error: e, stackTrace: stack)));
+    }
+  }
+
 }
