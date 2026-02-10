@@ -146,6 +146,7 @@ abstract class OfflineUtil {
               reason: "Going online, for sync",
               username: offlineUsername,
               password: offlinePassword,
+              minimal: true
             ),
           );
 
@@ -377,6 +378,7 @@ abstract class OfflineUtil {
               reason: "Going online",
               username: offlineUsername,
               password: offlinePassword,
+              minimal: true
             ),
           );
 

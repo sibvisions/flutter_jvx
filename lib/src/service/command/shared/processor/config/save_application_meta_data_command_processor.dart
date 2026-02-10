@@ -24,6 +24,7 @@ import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_templates_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
+import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_meta_data_command.dart';
 import '../../../../api/i_api_service.dart';
@@ -68,24 +69,29 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
     Directory? imagesDir = fileManager.getDirectory(imagesPath);
     Directory? templatesDir = fileManager.getDirectory(templatesPath);
 
-    // Start WebSocket
-    unawaited((servApi.getRepository() as OnlineApiRepository?)?.startWebSocket().catchError(
-        (e, stack) => FlutterUI.logAPI.w("Initial WebSocket connection failed", error: e, stackTrace: stack)));
+    bool fullStartup = origin is StartupCommand && !origin.minimal;
 
+    if (fullStartup) {
+      // Start WebSocket
+      unawaited((servApi.getRepository() as OnlineApiRepository?)?.startWebSocket().catchError(
+              (e, stack) => FlutterUI.logAPI.w("Initial WebSocket connection failed", error: e, stackTrace: stack)));
+    }
     List<BaseCommand> commands = [];
 
-    if (kDebugMode || !(languagesDir?.existsSync() ?? false)) {
+    bool loadResources = kIsWeb || fullStartup;
+
+    if (loadResources && (kDebugMode || !(languagesDir?.existsSync() ?? false))) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
     } else {
       await servConf.reloadSupportedLanguages();
       await servUi.i18n().setLanguage(servConf.getLanguage());
     }
 
-    if (!kIsWeb && (kDebugMode || !(imagesDir?.existsSync() ?? false))) {
+    if (loadResources && (!kIsWeb && (kDebugMode || !(imagesDir?.existsSync() ?? false)))) {
       commands.add(DownloadImagesCommand(reason: "Images should be downloaded"));
     }
 
-    if (!kIsWeb && (kDebugMode || !(templatesDir?.existsSync() ?? false))) {
+    if (loadResources && (!kIsWeb && (kDebugMode || !(templatesDir?.existsSync() ?? false)))) {
       commands.add(DownloadTemplatesCommand(reason: "Templates should be downloaded"));
     }
 

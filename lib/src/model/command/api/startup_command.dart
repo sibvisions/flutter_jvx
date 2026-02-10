@@ -31,6 +31,9 @@ class StartupCommand extends ApiCommand {
   /// This can be used to override the default values from the config.
   final String? password;
 
+  /// Whether to load/init only base resources
+  final bool minimal;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +41,7 @@ class StartupCommand extends ApiCommand {
   StartupCommand({
     this.username,
     this.password,
+    this.minimal = false,
     required super.reason,
     super.showLoading,
   });
@@ -47,7 +51,8 @@ class StartupCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "StartupCommand{username: $username, password: ${password != null ? '<set>' : 'null'}, ${super.toString()}}";
+  String propertiesAsString() {
+    return "username: $username, password: ${password != null ? '<set>' : 'null'}, minimal: $minimal, ${super.propertiesAsString()}";
   }
+
 }
