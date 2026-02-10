@@ -22,12 +22,27 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:rxdart/transformers.dart';
 
-import '../../../flutter_jvx.dart';
 import '../../components/components_factory.dart';
+import '../../custom/app_manager.dart';
+import '../../flutter_ui.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/menu/menu_model.dart';
+import '../../service/apps/i_app_service.dart';
+import '../../service/command/i_command_service.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/layout/i_layout_service.dart';
+import '../../service/storage/i_storage_service.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_colors.dart';
+import '../../util/misc/dialog_result.dart';
 import '../../util/offline_util.dart';
+import '../../util/parse_util.dart';
+import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
+import '../state/app_style.dart';
 import '../work_screen/work_screen_page.dart';
+import 'menu.dart';
 
 /// Menu Page
 ///
@@ -46,7 +61,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   bool sentScreen = false;
 
   ApplicationParameterChangedListener appParamListener = (name, oldValue, newValue) {
-    //In case of screenbadge update -> update the menu as well
+    //In case of screen-badge update -> update the menu as well
     if (name.startsWith("screenbadge.")) {
       IUiService serv = IUiService();
 
@@ -87,13 +102,13 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
         }
       },
       child: Frame.wrapWithFrame(
-        builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
+        builder: (context, isOffline) {
+          return ValueListenableBuilder<MenuModel>(
           valueListenable: IUiService().getMenuNotifier(),
           builder: (context, _, child) => ValueListenableBuilder<FlComponentModel?>(
             valueListenable: IStorageService().getDesktopPanelNotifier(),
             builder: (context, desktopPanel, child) {
               List<Widget> actions = [];
-
               var menuModel = IUiService().getMenuModel();
 
               if (!isMenuSearchEnabled) {
@@ -120,8 +135,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                     IconButton(
                       tooltip: FlutterUI.translate("Go Online"),
                       splashRadius: kToolbarHeight / 2,
-                      onPressed: () {
-                        showSyncDialog().then(
+                      onPressed: () async {
+                        await showSyncDialog().then(
                           (value) async {
                             switch (value) {
                               case DialogResult.YES:
@@ -136,15 +151,14 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         );
                       },
                       icon: const Icon(Icons.cloud_sync_outlined),
-                      color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
                     ),
                   );
                 }
               }
 
               AppStyle appStyle = AppStyle.of(context);
-              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, 'desktop.color'));
-              String? backgroundImage = appStyle.style(context, 'desktop.icon');
+              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.desktopColor));
+              String? backgroundImage = appStyle.style(context, AppStyle.desktopIcon);
 
               FrameState? frameState = Frame.maybeOf(context);
               if (frameState != null) {
@@ -197,9 +211,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 );
               }
 
-              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, 'menuTop.color'));
+              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.menuTopColor));
 
-              return Scaffold(
+              Widget menu = Scaffold(
                 drawerEnableOpenDragGesture: false,
                 endDrawerEnableOpenDragGesture: false,
                 drawer: frameState?.getDrawer(context),
@@ -211,14 +225,16 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
                   titleSpacing: leading != null ? 0.0 : 8,
-                  backgroundColor: isOffline ? Theme.of(context).colorScheme.surface : headerColor,
+                  backgroundColor: isOffline && !OfflineUtil.isGoingOffline ? OfflineUtil.backgroundColor : headerColor,
                   actions: actions,
                 ),
                 body: frameState?.wrapBody(body) ?? body,
               );
+
+              return menu;
             },
           ),
-        ),
+        ); }
       ),
     );
   }
@@ -432,4 +448,5 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
       ),
     );
   }
+
 }
