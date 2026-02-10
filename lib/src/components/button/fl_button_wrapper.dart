@@ -279,6 +279,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workScreenName = state.pathParameters[MainLocation.screenNameKey]!;
     FlPanelModel? screenModel = IStorageService().getComponentByNavigationName(workScreenName);
+
     OfflineUtil.initOffline(screenModel!.name);
   }
 

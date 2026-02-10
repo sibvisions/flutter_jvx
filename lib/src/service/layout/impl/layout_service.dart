@@ -31,6 +31,8 @@ import '../../../util/jvx_logger.dart';
 import '../../service.dart';
 import '../i_layout_service.dart';
 
+// DON'T use other services from this service, because it's an isolate on mobile devices
+
 class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
