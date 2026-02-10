@@ -21,24 +21,72 @@ import 'menu_item_model.dart';
 
 class MenuModel {
   final List<MenuGroupModel> menuGroups;
+  final List<MenuItemModel> items;
 
-  const MenuModel({this.menuGroups = const []});
+  final Map<String, MenuItemModel> _navigationMap;
+  final Map<String, MenuItemModel> _screenMap;
+  final Map<String, MenuGroupModel> _menuMap;
 
   /// Returns the number of items in this menu
-  int get count => menuGroups.expand((element) => element.items).length;
+  int get count => items.length;
 
-  bool containsScreen(String pScreenLongName) {
-    return menuGroups.any((group) => group.items.any((item) => item.screenLongName == pScreenLongName));
+
+  // intern initialization
+  const MenuModel._internal({
+    required this.menuGroups,
+    required this.items,
+    required Map<String, MenuItemModel> navigationMap,
+    required Map<String, MenuItemModel> screenMap,
+    required Map<String, MenuGroupModel> menuMap,
+  })  : _navigationMap = navigationMap,
+        _screenMap = screenMap,
+        _menuMap = menuMap;
+
+  factory MenuModel({List<MenuGroupModel> menuGroups = const []}) {
+    final allItems = menuGroups.expand((g) => g.items).toList(growable: false);
+
+    final navMap = {for (var item in allItems) item.navigationName: item};
+    final scrMap = {for (var item in allItems) item.screenLongName: item};
+    final menMap = {for (var item in menuGroups) item.name: item};
+
+    return MenuModel._internal(
+      menuGroups: menuGroups,
+      items: allItems,
+      navigationMap: navMap,
+      screenMap: scrMap,
+      menuMap: menMap
+    );
+  }
+
+  bool containsMenuItemWithLongName(String screenLongName) {
+    return _screenMap.containsKey(screenLongName);
+  }
+
+  bool containsMenuGroup(String name) {
+    return _menuMap.containsKey(name);
   }
 
   MenuItemModel? getMenuItemByClassName(String pClassName) {
-    return menuGroups
-        .expand((element) => element.items)
-        .firstWhereOrNull((element) => element.screenLongName.contains(pClassName));
+    return items.firstWhereOrNull((item) => item.screenLongName.contains(pClassName));
+  }
+
+  MenuItemModel? getMenuItemByLongName(String screenLongName) {
+    return _screenMap[screenLongName];
+  }
+
+  MenuItemModel? getMenuItemByNavigationName(String pNavName) {
+    return _navigationMap[pNavName];
+  }
+
+  MenuGroupModel? getMenuGroup(String name) {
+    return _menuMap[name];
   }
 
   /// Makes a deep copy of this object but keeps shallow copies of child objects
   MenuModel copy() {
-    return MenuModel(menuGroups: [...menuGroups.map((e) => e.copy())]);
+    return MenuModel(
+      menuGroups: menuGroups.map((e) => e.copy()).toList(),
+    );
   }
+
 }
