@@ -1242,9 +1242,6 @@ class UiService implements IUiService {
       menuGroupModels.removeWhere((group) => group.items.isEmpty);
     }
 
-    print("-> am Ende: count ${menuGroupModels.length}");
-
-
     MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
 
     appManager?.modifyMenuModel(menuModel);

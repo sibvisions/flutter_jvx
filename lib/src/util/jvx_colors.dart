@@ -134,10 +134,11 @@ abstract class JVxColors {
         cardTheme: CardThemeData(surfaceTintColor: isSelectedLight ? Colors.white : Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
         dividerTheme: DividerThemeData(color: dividerColor(themeData)),
         dialogTheme: DialogThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
-            surfaceTintColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
-            shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(BORDER_RADIUS))),
-//        dialogBackgroundColor: isSelectedLight ? Colors.white : Colors.grey[850],
+          surfaceTintColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(BORDER_RADIUS)
+          )
+        ),
         textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
             foregroundColor:
