@@ -105,6 +105,8 @@ TransitionDelegate get transitionDelegate =>
 
 GlobalKey<NavigatorState>? splashNavigatorKey;
 
+final GlobalKey<OverlayState> rootNavigatorKey = GlobalKey<OverlayState>();
+
 final RouteObserver<ModalRoute> routeObserver = RouteObserver();
 
 
@@ -536,7 +538,7 @@ class FlutterUI extends StatefulWidget {
     BrowserHttpClientException.verbose = !kReleaseMode;
 
     await PushUtil.localNotificationsPlugin.initialize(
-      const InitializationSettings(
+      settings: const InitializationSettings(
         android: AndroidInitializationSettings("@mipmap/ic_launcher"),
         iOS: DarwinInitializationSettings(
           requestAlertPermission: false,
@@ -554,6 +556,9 @@ class FlutterUI extends StatefulWidget {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Service init
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    packageInfo = await PackageInfo.fromPlatform();
+
 
     // Apps
     IAppService appService = AppService.create();
@@ -654,8 +659,6 @@ class FlutterUI extends StatefulWidget {
     IApiService apiService = ApiService.create(OnlineApiRepository());
     apiService.setController(ApiController());
     services.registerSingleton(apiService);
-
-    packageInfo = await PackageInfo.fromPlatform();
 
     fixUrlStrategy();
 
@@ -1184,7 +1187,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   Widget _routeBuilder(BuildContext contextA, Widget? child) {
-    return ListenableBuilder(
+
+
+    Widget wRoot = ListenableBuilder(
       listenable: Listenable.merge([
         IAppService().startupFuture,
         IAppService().exitFuture,
@@ -1266,6 +1271,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         );
       },
     );
+
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Overlay(
+        key: rootNavigatorKey,
+        initialEntries: [
+          OverlayEntry(builder: (context) => wRoot),
+        ],
+      ),
+    );
+
   }
 
   /// Builds a widget to show when starting an app.
