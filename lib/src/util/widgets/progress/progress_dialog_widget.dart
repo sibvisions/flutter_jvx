@@ -70,6 +70,11 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
     await _controller.reverse();
   }
 
+  /// Whether barrier is dismissible
+  bool isDismissible() {
+    return _config.barrierDismissible ?? false;
+  }
+
   void update(Config config) {
     _config = _config.merge(config);
     setState(() {});
