@@ -72,9 +72,9 @@ class ApiService implements IApiService {
   @override
   FutureOr<void> clear(ClearReason reason) async {
     if (reason.isFull()) {
-      // (Re-)start repository
+      //Stop is enough because a restart will set a new repository
+      //and simple stopp will also trigger a new repository "later"
       await repository.stop();
-      await repository.start();
     }
   }
 }
