@@ -89,6 +89,8 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   PageStorageBucket _storageBucket = PageStorageBucket();
 
+  bool _loadingEnabled = true;
+
   bool _loading = false;
   Future? _loadingDelayFuture;
 
@@ -123,9 +125,17 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   bool get loading => _loading;
 
+  void setLoadingEnabled(bool enabled) {
+    _loadingEnabled = enabled;
+  }
+
+  bool isLoadingEnabled() {
+    return _loadingEnabled;
+  }
+
   /// Shows the [LoadingBar] after a specified [delay], and continues to show it until [hideLoading] is called.
   void showLoading(Duration delay, [bool lockDelayed = false]) {
-    if (!_loading) {
+    if (!_loading && _loadingEnabled) {
       _loadingDelayFuture = Future.delayed(delay);
       _loading = true;
       _lockDelayed = lockDelayed;
