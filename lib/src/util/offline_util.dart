@@ -398,6 +398,7 @@ abstract class OfflineUtil {
           message: sLastMessage,
           progress: 100,
           maxProgress: 100,
+          barrierDismissible: true,
           contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
           actions: [
             TextButton(

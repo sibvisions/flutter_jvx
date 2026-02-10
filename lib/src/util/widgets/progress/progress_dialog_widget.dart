@@ -94,9 +94,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
       opacity: _fadeAnimation,
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: PopScope(
-          canPop: _config.barrierDismissible ?? false,
-          child: AlertDialog(
+        child: AlertDialog(
             backgroundColor: effectiveBackgroundColor,
             elevation: _config.elevation,
             shape: RoundedRectangleBorder(
@@ -164,7 +162,6 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
             actionsPadding: _config.actionsPadding!,
             actionsAlignment: _config.actionsAlignment,
           ),
-        ),
       ),
     );
   }

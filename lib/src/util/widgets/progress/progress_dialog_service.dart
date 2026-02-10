@@ -17,7 +17,7 @@ class ProgressDialogService {
 
         ProgressDialogState? state = dialogKey.currentState;
         if (state != null) {
-          dismissible = state.isDismissible() ?? false;
+          dismissible = state.isDismissible();
         }
 
         Widget barrier = Container(color: Colors.black54);
@@ -32,10 +32,11 @@ class ProgressDialogService {
         }
 
         return PopScope(
-          canPop: false, // don't allow navigation "behind"
+          canPop: dismissible, // don't allow navigation "behind"
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
-            //we don't hide the overlay
+
+            hide();
           },
           child: Stack(
             children: [
