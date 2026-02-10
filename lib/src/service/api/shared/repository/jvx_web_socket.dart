@@ -20,6 +20,8 @@ import '../../../ui/i_ui_service.dart';
 class JVxWebSocket {
   Duration? _pingInterval;
 
+  Duration? connectTimeout;
+
   Duration? get pingInterval => _pingInterval;
 
   set pingInterval(Duration? interval) {
@@ -34,6 +36,7 @@ class JVxWebSocket {
     this.headersSupplier,
     this.onConnectedChange,
     Duration? pingInterval,
+    this.connectTimeout
   }) : _pingInterval = pingInterval;
 
   /// Name of this WebSocket handler instance (used for logging).
@@ -134,6 +137,7 @@ class JVxWebSocket {
     var webSocket = createWebSocket(
       uri,
       headersSupplier?.call(),
+      connectTimeout
     );
 
     await webSocket.ready.then((value) {
