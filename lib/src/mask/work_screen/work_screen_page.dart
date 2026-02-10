@@ -138,11 +138,15 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   bool sentScreenSizeForLayout = false;
 
+  bool _useOwnNavigation = true;
+
   @override
   void initState() {
     super.initState();
 
     IUiService servUi = IUiService();
+
+    _useOwnNavigation = !IConfigService().offline.value || (customScreen != null && customScreen!.sendOpenScreenRequests);
 
     servUi.getAppManager()?.onScreenPage(widget.screenName);
     subscription =
@@ -270,19 +274,34 @@ class WorkScreenPageState extends State<WorkScreenPage> {
                 titleSpacing: leading != null ? 0 : 8,
                 title: title,
                 actions: actions,
-                backgroundColor: headerColor
+                backgroundColor: isOffline && !OfflineUtil.isGoingOffline ? OfflineUtil.backgroundColor : headerColor
             );
 
             // Dummy body shown while loading/error.
             body ??= _buildDummyScreen(snapshot);
 
-            // _onWillPop needs to access Scaffold.
-            Widget content = Builder(
-              builder: (context) => WillPopScope(
-                  onWillPop: () => _onWillPop(context),
-                  child: _wrapBody(body!)
-              ),
-            );
+            Widget content;
+
+            //In offline mode -> we don't use our pop handling to support custom pop handling (in custom screen)
+            //otherwise this implementation would prevent custom pop handling because it fires before custom implementation
+            if (_useOwnNavigation)
+            {
+              //If we replace WillPopScope with PopScope - maybe use !IUiService().usesNativeRouting(item!.screenLongName)
+
+              // _onWillPop needs to access Scaffold.
+              content = Builder(
+                builder: (context) =>
+                  PopScope(
+                    canPop: _canPop(),
+                    onPopInvokedWithResult: _onPopInvoked,
+                    child: _wrapBody(body!))
+              );
+            }
+            else {
+              content = Builder(
+                builder: (context) => _wrapBody(body!)
+              );
+            }
 
             return Scaffold(
               resizeToAvoidBottomInset: false,
@@ -502,33 +521,42 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
     // Calls _onWillPop -> call server, beam back or pop.
     if (mounted) {
+      if (pForced && !_useOwnNavigation) {
+        IUiService().routeToMenu();
+        return;
+      }
+
       await Navigator.maybePop(context);
     }
   }
 
-  /// This will intercept any "maybePop" and allows sending relevant server requests.
-  ///
-  /// Additionally will try to beam back before allowing a pop to go through.
-  ///
-  /// Returning true will allow the pop to go through.
-  /// Pop will close the whole location and not just "beam back" a page in the history.
-  /// Pop is still needed to close down scaffold drawer.
-  Future<bool> _onWillPop(BuildContext context) async {
-
+  bool _canPop() {
     if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
       return false;
     }
 
     ScaffoldState? scaffoldState = Scaffold.maybeOf(context);
+
     if (scaffoldState != null && (scaffoldState.isDrawerOpen || scaffoldState.isEndDrawerOpen)) {
       return true; // Must pop drawer.
     }
 
+    if (item?.screenLongName == null || (model == null && customScreen == null)) {
+      return true;
+    } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
+      return false;
+    }
+    return true;
+  }
+
+  void _onPopInvoked(bool didPop, dynamic result) {
+    if (didPop) return;
+
     isNavigating = true;
 
-    try {
+    try{
       if (item?.screenLongName == null || (model == null && customScreen == null)) {
-        return !context.beamBack();
+        context.beamBack();
       } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
         BaseCommand commandToCloseScreen = _closeScreen();
 
@@ -537,12 +565,11 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             unawaited(ICommandService().sendCommand(commandToCloseScreen));
           }
         }));
-
-        return false;
       }
 
-      return !context.beamBack();
-    } finally {
+      context.beamBack();
+    }
+    finally {
       isForced = false;
       isNavigating = false;
     }
