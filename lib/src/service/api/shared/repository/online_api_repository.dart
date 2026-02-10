@@ -475,11 +475,26 @@ class OnlineApiRepository extends IRepository {
 
   Future<void> startWebSocket() async {
     await stopWebSocket();
+
     return (jvxWebSocket = JVxWebSocket(
       uriSupplier: _getWebSocketUri,
-      headersSupplier: () => {
-        "Cookie": getCookies().map((e) => "${e.name}=${e.value}").join(";"),
+      headersSupplier: () {
+        List<Cookie>? requestCookies;
+
+        if (!kIsWeb) {
+          requestCookies = getCookies().toList();
+          IUiService().getAppManager()?.modifyCookies(null, requestCookies);
+        }
+
+        Map<String, dynamic> requestHeaders = getHeaders();
+        IUiService().getAppManager()?.modifyHeaders(null, requestHeaders);
+
+        return {
+          if (requestCookies != null) HttpHeaders.cookieHeader: requestCookies.map((e) => e.toString()).join("; "),
+          ...requestHeaders
+        };
       },
+      connectTimeout: ParseUtil.validateDuration(IConfigService().getAppConfig()?.connectTimeout),
       onData: (data) {
         if (data is Uint8List) {
           try {
@@ -823,7 +838,7 @@ class OnlineApiRepository extends IRepository {
     required Map<String, dynamic> headers,
     required String? clientId,
   }) async {
-    if (pRequest is ApplicationRequest) {
+    if (pRequest is ApplicationRequest && pRequest.clientId == null) {
       if (clientId?.isNotEmpty == true) {
         pRequest.clientId = clientId!;
       } else {

@@ -23,6 +23,6 @@ class ImportHandler {
     // No-op.
   }
 
-  static WebSocketChannel getWebSocketChannel(Uri uri, Map<String, dynamic>? headers) =>
-      IOWebSocketChannel.connect(uri, headers: headers);
+  static WebSocketChannel getWebSocketChannel(Uri uri, Map<String, dynamic>? headers, Duration? connectTimeout) =>
+      IOWebSocketChannel.connect(uri, headers: headers, connectTimeout: connectTimeout);
 }
