@@ -45,11 +45,13 @@ class CustomMenuItem {
     required this.group,
     required this.label,
     this.alternativeLabel,
-
-    /// Font Awesome Icon to be used when creating a custom menu item.
-    IconData? faIcon,
+    //use iconBuilder (1st)
     WidgetBuilder? imageBuilder,
-  })  : imageBuilder = (imageBuilder ?? (faIcon != null ? (_) => FaIcon(faIcon) : null)),
+    //or FaIcon (2nd)
+    IconData? faIcon,
+    //or Icon (3rd)
+    IconData? icon
+  })  : imageBuilder = (imageBuilder ?? (faIcon != null ? (_) => FaIcon(faIcon) : (icon != null ? (_) => Icon(icon) : null))),
         assert(group.isNotEmpty, "Group name must not be empty"),
         assert(label.isNotEmpty, "Label must not be empty");
 }
