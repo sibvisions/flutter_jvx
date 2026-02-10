@@ -148,9 +148,6 @@ class App {
   }
 
   Future<void> updateFromConfig(ServerConfig config) async {
-
-    print(StackTrace.current);
-
     await updateName(config.appName);
     await updateBaseUrl(config.baseUrl);
     await updateTitle(config.title, true);
