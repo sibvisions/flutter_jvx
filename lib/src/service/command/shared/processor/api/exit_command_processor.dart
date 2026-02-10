@@ -20,11 +20,18 @@ import '../../../../../model/command/api/exit_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_exit_request.dart';
 import '../../../../api/i_api_service.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class ExitCommandProcessor extends ICommandProcessor<ExitCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ExitCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiExitRequest());
+  }
+
+  @override
+  Future<void> afterProcessing(ExitCommand command, BaseCommand? origin) async {
+    //nothing to use!
+    IUiService().updateClientId(null);
   }
 }

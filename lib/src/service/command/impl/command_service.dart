@@ -294,15 +294,15 @@ class CommandService implements ICommandService {
 
       commands = await processor.processCommand(pCommand, origin);
 
-      // Don't process ExitCommands
-      if (pCommand is ExitCommand) {
-        return null;
-      }
-
       if (FlutterUI.logCommand.cl(Lvl.d)) {
         FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");
       }
       await processor.afterProcessing(pCommand, origin);
+
+      // Exit doesn't require additional handling -> just done
+      if (pCommand is ExitCommand) {
+        return null;
+      }
 
       modifyCommands(commands, pCommand);
       IUiService().getAppManager()?.modifyFollowUpCommands(pCommand, commands);
