@@ -5,9 +5,13 @@ import android.view.WindowManager
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.embedding.android.FlutterFragmentActivity
+
 class MainActivity : FlutterFragmentActivity() {
+
     private val CHANNEL = "com.sibvisions.flutter_jvx/security"
+
     private var secureCount: Int = 0
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
