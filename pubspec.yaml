@@ -36,6 +36,7 @@ dependencies:
 
   # Config
   shared_preferences: ^2.5.0
+  flutter_secure_storage: ^10.0.0
 
   # Device Identification
   package_info_plus: ^9.0.0
@@ -141,7 +142,7 @@ dependencies:
 #      path: speech_to_text
 
   push: ^3.0.0
-  flutter_local_notifications: ^19.0.0
+  flutter_local_notifications: ^20.0.0
   open_filex: ^4.7.0
 
   json_dynamic_widget: ^10.0.0
@@ -154,6 +155,8 @@ dependencies:
   uuid: ^4.0.0
 
   local_auth: ^3.0.0
+
+  cryptography: ^2.0.0
 
 dev_dependencies:
   flutter_test:

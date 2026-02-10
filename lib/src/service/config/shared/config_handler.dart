@@ -63,10 +63,18 @@ abstract class ConfigHandler {
   /// Retrieves a global value.
   Future<T?> getValue<T>(String name);
 
+  /// Retrieves a global secure value.
+  Future<String?> getValueSecure(String name);
+
   /// Sets a global value.
   ///
   /// `null` removes the value.
   Future<bool> setValue<T>(String name, T? value);
+
+  /// Sets a global secure value.
+  ///
+  /// `null` removes the value.
+  Future<bool> setValueSecure<T>(String name, String? value);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods used to manage preferences that are saved under the app key

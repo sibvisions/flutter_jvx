@@ -506,8 +506,8 @@ class ConfigService implements IConfigService {
   Future<void> updateUsername(String? username) async {
     PredefinedServerConfig? config = App.getPredefinedConfig(_appId.value);
 
-    //it's not allowed to update a locked config
-    if (config?.locked == true) {
+    //it's not allowed to update a locked config (if username is set)
+    if (config?.locked == true && config?.username != null) {
       return;
     }
 
@@ -521,7 +521,14 @@ class ConfigService implements IConfigService {
 
   @override
   Future<void> updatePassword(String? password) async {
-    String? fallback = App.getPredefinedConfig(_appId.value)?.password;
+    PredefinedServerConfig? config = App.getPredefinedConfig(_appId.value);
+
+    //it's not allowed to update a locked config (if password is set)
+    if (config?.locked == true && config?.password != null) {
+      return;
+    }
+
+    String? fallback = config?.password;
     await _configHandler.updatePassword(password == fallback ? null : password);
     _password.value = password ?? fallback;
   }
@@ -581,11 +588,10 @@ class ConfigService implements IConfigService {
 
   @override
   String getLanguage() {
-    String? language;
-    if (!offline.value || (customLanguage.value ?? false)) {
-      language = applicationLanguage.value;
-    }
-    return language ?? userLanguage.value ?? getPlatformLocale();
+    //not possible to use a user language if language is a server-side custom language
+    String? userLang = customLanguage.value == true ? null : userLanguage.value;
+
+    return userLang ?? applicationLanguage.value ?? userLanguage.value ?? getPlatformLocale();
   }
 
   @override
