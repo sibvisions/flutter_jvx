@@ -64,8 +64,11 @@ class UiService implements IUiService {
   /// Unmodified menu model sent from server
   MenuModel? _originalMenuModel;
 
+  /// Modified menu model
+  MenuModel? _menuModel;
+
   /// Current menu model
-  final ValueNotifier<MenuModel> _menuNotifier = ValueNotifier(const MenuModel());
+  final ValueNotifier<MenuModel> _menuNotifier = ValueNotifier(MenuModel());
 
   /// All component subscriptions
   final List<ComponentSubscription> _componentSubscriptions = [];
@@ -129,7 +132,7 @@ class UiService implements IUiService {
   FutureOr<void> clear(ClearReason reason) async {
     await JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.clear(reason);
 
-    setMenuModel(null);
+    clearMenuModel();
     _componentSubscriptions.clear();
     _modelSubscriptions.clear();
     _dataSubscriptions.clear();
@@ -317,7 +320,9 @@ class UiService implements IUiService {
 
   @override
   MenuModel getMenuModel() {
-    return _updateMenuModel(_originalMenuModel);
+    _menuModel ??= MenuModel();
+
+    return _menuModel!;
   }
 
   @override
@@ -328,7 +333,19 @@ class UiService implements IUiService {
   @override
   void setMenuModel(MenuModel? pMenuModel) {
     _originalMenuModel = pMenuModel;
-    _menuNotifier.value = _originalMenuModel ?? const MenuModel();
+
+    //modify only once
+    _menuModel = _updateMenuModel(_originalMenuModel);
+
+    _menuNotifier.value = _menuModel!;
+  }
+
+  @override
+  void clearMenuModel() {
+    _originalMenuModel = null;
+
+    _menuModel = MenuModel();
+    _menuNotifier.value = _menuModel!;
   }
 
   @override
@@ -831,11 +848,13 @@ class UiService implements IUiService {
     CustomScreen? customScreen = getCustomScreen(pScreenLongName);
 
     if (customScreen == null) {
-      // Full VisionX-Screen => Send
+      // No replacement -> send
       return false;
     }
 
-    if (_hasReplaced(pScreenLongName)) {
+    bool hasReplaced = _originalMenuModel?.containsMenuItemWithLongName(pScreenLongName) ?? false;
+
+    if (hasReplaced) {
       if (IConfigService().offline.value) {
         // Offline + Replace => Beam
         return true;
@@ -847,10 +866,6 @@ class UiService implements IUiService {
       // No Replace => Beam
       return true;
     }
-  }
-
-  bool _hasReplaced(String pScreenLongName) {
-    return _originalMenuModel?.containsScreen(pScreenLongName) ?? false;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1149,7 +1164,9 @@ class UiService implements IUiService {
   MenuModel _updateMenuModel(MenuModel? pMenuModel) {
     List<MenuGroupModel> menuGroupModels = [];
 
-    if (!IConfigService().offline.value && pMenuModel != null) {
+    bool offlineMode = IConfigService().offline.value;
+
+    if (!offlineMode && pMenuModel != null) {
       menuGroupModels.addAll(pMenuModel.copy().menuGroups);
     }
 
@@ -1157,55 +1174,76 @@ class UiService implements IUiService {
       appManager!.customScreens.forEach((key, screen) {
         CustomMenuItem? customMenuItem = appManager!.customMenuItems[key];
 
-        MenuItemModel? originalItem = menuGroupModels
-            .expand((element) => element.items)
-            .where((menuItem) => [menuItem.navigationName, menuItem.screenLongName].contains(key))
-            .firstOrNull;
+        MenuItemModel? oldMenuItem;
 
-        if (originalItem == null && customMenuItem == null && screen.screenBuilder != null) {
-          // We have no menu item, therefore, create one on best-effort basis.
-          customMenuItem = CustomMenuItem(
-            group: "Custom",
-            label: screen.screenTitle ?? "Custom Screen",
-            faIcon: FontAwesomeIcons.notdef,
-          );
+        if (pMenuModel != null) {
+          oldMenuItem = pMenuModel.getMenuItemByLongName(key) ?? pMenuModel.getMenuItemByNavigationName(key);
         }
 
-        // Whether we should show the item in the current setting.
-        if (customMenuItem != null &&
-            ((screen.showOnline && !IConfigService().offline.value) ||
-                (screen.showOffline && IConfigService().offline.value))) {
-          MenuItemModel overrideMenuItem = MenuItemModel(
-            screenLongName: originalItem?.screenLongName ?? screen.key,
-            className: originalItem?.className,
-            navigationName: originalItem?.navigationName ?? screen.keyNavigationName,
-            label: customMenuItem.label,
-            alternativeLabel: customMenuItem.alternativeLabel ?? originalItem?.alternativeLabel,
-            imageBuilder: customMenuItem.imageBuilder,
-            // Only override image if there is no image builder.
-            image: customMenuItem.imageBuilder == null ? originalItem?.image : null,
-          );
-
-          // Check if group already exists.
-          MenuGroupModel? menuGroupModel =
-          menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem!.group);
-
-          if (menuGroupModel == null) {
-            // Make new group if it didn't exist.
-            menuGroupModel = MenuGroupModel(
-              name: customMenuItem.group,
-              items: [],
+        //existing item configured for online only but we're offline -> remove item
+        //existing item configured for offline only but we're online -> remove item
+        if ((oldMenuItem != null) &&
+            ((screen.showOnline && !screen.showOffline && offlineMode) ||
+             (screen.showOffline && !screen.showOnline && !offlineMode))) {
+          menuGroupModels.forEach((menuGroup) => menuGroup.items.remove(oldMenuItem));
+        }
+        else {
+          //if registered screen is a new screen -> it requires at least one builder to be added to the menu
+          if (oldMenuItem == null && customMenuItem == null &&
+              (screen.screenBuilder != null || screen.headerBuilder != null ||screen.footerBuilder != null)) {
+            // We have no menu item, therefore, create one on best-effort basis.
+            customMenuItem = CustomMenuItem(
+              group: "Custom",
+              label: screen.screenTitle ?? "Custom Screen",
+              faIcon: FontAwesomeIcons.notdef,
             );
-            menuGroupModels.add(menuGroupModel);
           }
 
-          menuGroupModel.items.add(overrideMenuItem);
+          // Check if we should show the menu item in the current mode
+          if (customMenuItem != null &&
+              ((screen.showOnline && !offlineMode) ||
+               (screen.showOffline && offlineMode))) {
+            MenuItemModel newMenuItem = MenuItemModel(
+              screenLongName: oldMenuItem?.screenLongName ?? key,
+              className: oldMenuItem?.className,
+              navigationName: oldMenuItem?.navigationName ?? screen.keyNavigationName,
+              label: customMenuItem.label,
+              alternativeLabel: customMenuItem.alternativeLabel ?? oldMenuItem?.alternativeLabel,
+              imageBuilder: customMenuItem.imageBuilder,
+              // Only override image if there is no image builder.
+              image: customMenuItem.imageBuilder == null ? oldMenuItem?.image : null,
+            );
 
-          // Finally remove menu items that we replaced.
-          menuGroupModels.forEach((menuGroup) => menuGroup.items.remove(originalItem));
+            // Check group (exists or changed)
+            MenuGroupModel? menuGroupModel = menuGroupModels.firstWhereOrNull((group) => group.name == customMenuItem!.group);
+
+            if (menuGroupModel == null) {
+              // Make new group if it didn't exist.
+              menuGroupModel = MenuGroupModel(
+                name: customMenuItem.group,
+                items: [newMenuItem],
+              );
+
+              menuGroupModels.add(menuGroupModel);
+            }
+            else {
+              menuGroupModel.items.add(newMenuItem);
+            }
+
+            if (oldMenuItem != null) {
+              // Finally remove menu items that we replaced.
+              menuGroupModels.forEach((group) => group.items.remove(oldMenuItem));
+            }
+          }
         }
       });
+
+      //remove empty groups
+      menuGroupModels.removeWhere((group) => group.items.isEmpty);
     }
+
+    print("-> am Ende: count ${menuGroupModels.length}");
+
 
     MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
 
@@ -1213,6 +1251,7 @@ class UiService implements IUiService {
 
     return menuModel;
   }
+
 
   void _disposeModelSubscription(Object pSubscriber) {
     List<ModelSubscription> copy = _modelSubscriptions.toList(growable: false);
