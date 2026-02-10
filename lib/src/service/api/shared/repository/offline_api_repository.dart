@@ -104,7 +104,9 @@ class OfflineApiRepository extends IRepository {
     await offlineDatabase!.dropTables(IConfigService().currentApp.value!);
     await offlineDatabase!.createTables(IConfigService().currentApp.value!, dalMetaData);
 
-    if (FlutterUI.logAPI.cl(Lvl.d)) {
+    bool bLogDebug = FlutterUI.logAPI.cl(Lvl.d);
+
+    if (bLogDebug) {
       FlutterUI.logAPI.d(
           "Sum of all dataBook entries: ${dataBooks.isNotEmpty ? dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element) : 0}");
     }
@@ -112,6 +114,11 @@ class OfflineApiRepository extends IRepository {
     await offlineDatabase!.db.transaction((txn) async {
       Batch batch = txn.batch();
       for (var dataBook in dataBooks) {
+
+        if (bLogDebug) {
+          FlutterUI.logAPI.d("Fill offline table for dataProvider: ${dataBook.dataProvider}");
+        }
+
         progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length);
 
         for (var entry in dataBook.records.entries) {
