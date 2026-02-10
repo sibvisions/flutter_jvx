@@ -48,7 +48,7 @@ class App {
   static PredefinedServerConfig? getPredefinedConfig(String? id) => id == null
       ? null
       : _appConfig?.serverConfigs!
-          .firstWhereOrNull((e) => computeId(e.appName!, e.baseUrl!.toString(), predefined: true) == id);
+      .firstWhereOrNull((e) => computeId(e.appName!, e.baseUrl!.toString(), predefined: true) == id);
 
   static String? computeId(String? name, String? url, {required bool predefined}) {
     if (name == null || url == null) {
@@ -132,8 +132,8 @@ class App {
   Future<void> loadValues() async {
     _name = await _getString("name");
     _baseUrl = await _getString("baseUrl");
-    _username = await _getString("username");
-    _password = await _getString("password");
+    _username = await _getString("username", secure: true);
+    _password = await _getString("password", secure: true);
     _title = await _getString("title");
     _icon = await _getString("icon");
     _version = await _getString("version", respectUserBlock: false);
@@ -150,9 +150,9 @@ class App {
   Future<void> updateFromConfig(ServerConfig config) async {
     await updateName(config.appName);
     await updateBaseUrl(config.baseUrl);
-    await updateTitle(config.title);
-    await updateIcon(config.icon);
-    await updateUsername(config.username);
+    await updateTitle(config.title, true);
+    await updateIcon(config.icon, true);
+    await updateUsername(config.username, true);
     await updatePassword(config.password);
     await updateDefault(config.isDefault ?? false);
   }
@@ -198,10 +198,18 @@ class App {
   String? get username => _username ?? getPredefinedConfig(_id)?.username;
 
   /// Sets the username of this app.
-  Future<void> updateUsername(String? username) {
+  Future<void> updateUsername(String? username, [bool configValue = false]) {
     String? fallback = getPredefinedConfig(_id)?.username;
     var value = username == fallback ? null : username?.toString();
-    return _setString("username", value).then((_) => _username = value);
+
+    if (configValue) {
+      //if we have an username but config value is null -> don't change it
+      if (_username != null && value == null) {
+        return Future.value();
+      }
+    }
+
+    return _setString("username", value, true).then((_) => _username = value);
   }
 
   /// {@template app.password}
@@ -211,11 +219,14 @@ class App {
   /// {@endtemplate}
   String? get password => _password ?? getPredefinedConfig(_id)?.password;
 
-  /// Sets the name of this app.
+  /// Sets the password of this app.
   Future<void> updatePassword(String? password) {
     String? fallback = getPredefinedConfig(_id)?.password;
     var value = password == fallback ? null : password?.toString();
-    return _setString("password", value).then((_) => _password = value);
+
+    //We override password in any case
+
+    return _setString("password", value, true).then((_) => _password = value);
   }
 
   /// {@template app.title}
@@ -225,11 +236,19 @@ class App {
   /// {@endtemplate}
   String? get title => _title ?? getPredefinedConfig(_id)?.title;
 
-  /// Sets the name of this app.
-  Future<void> updateTitle(String? title) {
+  /// Sets the title of this app.
+  Future<void> updateTitle(String? title, [bool configValue = false]) {
     assert(!locked, "Locked apps cannot be updated.");
     String? fallback = getPredefinedConfig(_id)?.title;
     var value = title == fallback ? null : title?.toString();
+
+    if (configValue) {
+      //if we have a title but config value is null -> don't change it
+      if (_title != null && value == null) {
+        return Future.value();
+      }
+    }
+
     return _setString("title", value).then((_) => _title = value);
   }
 
@@ -242,11 +261,19 @@ class App {
   /// {@endtemplate}
   String? get icon => _icon ?? getPredefinedConfig(_id)?.icon;
 
-  /// Sets the name of this app.
-  Future<void> updateIcon(String? icon) {
+  /// Sets the icon of this app.
+  Future<void> updateIcon(String? icon, [bool configValue = false]) {
     assert(!locked, "Locked apps cannot be updated.");
     String? fallback = getPredefinedConfig(_id)?.icon;
     var value = icon == fallback ? null : icon?.toString();
+
+    if (configValue) {
+      //if we have an icon but config value is null -> don't change it
+      if (_icon != null && value == null) {
+        return Future.value();
+      }
+    }
+
     return _setString("icon", value).then((_) => _icon = value);
   }
 
@@ -282,8 +309,8 @@ class App {
   bool get locked {
     var prConfig = getPredefinedConfig(_id);
     return (predefined &&
-            (_isPredefinedLocked ||
-                (prConfig != null && ((prConfig.locked ?? true) || (prConfig.parametersHidden ?? true))))) ||
+        (_isPredefinedLocked ||
+            (prConfig != null && ((prConfig.locked ?? true) || (prConfig.parametersHidden ?? true))))) ||
         (!predefined && !customAppsAllowed && !forceSingleAppMode);
   }
 
@@ -330,10 +357,18 @@ class App {
   /// If [_id] is null or [usesUserParameter] is false, this returns null.
   ///
   /// {@macro app.key}
-  Future<String?> _getString(String key, {bool respectUserBlock = true}) async {
-    return !usesUserParameter && respectUserBlock
-        ? null
-        : (_id != null ? IConfigService().getConfigHandler().getValue("$_id.$key") : null);
+  Future<String?> _getString(String key, {bool respectUserBlock = true, bool secure = false}) async {
+    if ((!usesUserParameter && respectUserBlock) || _id == null) {
+      return null;
+    }
+    else {
+      if (secure) {
+        return IConfigService().getConfigHandler().getValueSecure("$_id.$key");
+      }
+      else {
+        return IConfigService().getConfigHandler().getValue("$_id.$key");
+      }
+    }
   }
 
   /// Persists a string value by its key in connection to the app id.
@@ -346,10 +381,15 @@ class App {
   /// {@endtemplate}
   ///
   /// `null` removes the value from the storage.
-  Future<bool> _setString(String key, String? value) async {
+  Future<bool> _setString(String key, String? value, [bool secure = false]) async {
     _checkId();
-    String prefix = _id!;
-    return IConfigService().getConfigHandler().setValue("$prefix.$key", value);
+
+    if (secure) {
+      return IConfigService().getConfigHandler().setValueSecure("$_id.$key", value);
+    }
+    else {
+      return IConfigService().getConfigHandler().setValue("$_id.$key", value);
+    }
   }
 
   void _checkId() {
@@ -364,10 +404,10 @@ class App {
   /// If this is not a predefined app ([predefined] == false) this always returns true.
   bool get usesUserParameter =>
       !predefined ||
-      (predefined &&
-          !(_appConfig!.predefinedConfigsParametersHidden! || _appConfig!.predefinedConfigsLocked!) &&
-          !locked &&
-          !parametersHidden);
+          (predefined &&
+              !(_appConfig!.predefinedConfigsParametersHidden! || _appConfig!.predefinedConfigsLocked!) &&
+              !locked &&
+              !parametersHidden);
 
   bool get predefined {
     return _id == null ? false : isPredefined(_id!);
@@ -403,7 +443,7 @@ class App {
     }
 
     await IConfigService().getFileManager().renameIndependentDirectory([oldAppId], newAppId).catchError(
-        (e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", error: e, stackTrace: stack));
+            (e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", error: e, stackTrace: stack));
 
     await IAppService().refreshStoredApps();
 
@@ -429,7 +469,7 @@ class App {
     }
 
     await IConfigService().getFileManager().deleteIndependentDirectory([id], recursive: true).catchError(
-        (e, stack) => FlutterUI.log.w("Failed to delete app directory ($id)", error: e, stackTrace: stack));
+            (e, stack) => FlutterUI.log.w("Failed to delete app directory ($id)", error: e, stackTrace: stack));
 
     await IAppService().refreshStoredApps();
   }
@@ -445,7 +485,7 @@ class App {
         .removeAppKeys(appId, filter: (subKey) => !subKey.endsWith("name") && !subKey.endsWith("baseUrl"));
 
     await IConfigService().getFileManager().deleteIndependentDirectory([appId], recursive: true).catchError(
-        (e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", error: e, stackTrace: stack));
+            (e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", error: e, stackTrace: stack));
   }
 
   @override

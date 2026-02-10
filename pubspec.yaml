@@ -6,7 +6,7 @@ issue_tracker: https://github.com/sibvisions/flutter_jvx/issues
 
 publish_to: 'none'
 
-version: 3.3.5+1
+version: 3.4.0+1
 
 environment:
   sdk: ">=3.0.2 <4.0.0"
@@ -36,6 +36,7 @@ dependencies:
 
   # Config
   shared_preferences: ^2.5.0
+  flutter_secure_storage: ^10.0.0
 
   # Device Identification
   package_info_plus: ^9.0.0
@@ -63,10 +64,10 @@ dependencies:
 
   cross_file: ^0.3.0
   image_picker: '>=0.8.9 <2.0.0' # Recommended range
-  file_picker: 10.3.8
+  file_picker: ^10.0.0
   file_saver: ^0.3.0
 
-# SVG Support
+  # SVG Support
   flutter_svg: ^2.0.0
   # Icons
   font_awesome_flutter: ^10.0.0
@@ -135,13 +136,13 @@ dependencies:
   # see https://github.com/csdcorp/speech_to_text/issues/627
   speech_to_text: 7.2.0
 
-#  speech_to_text:
-#    git:
-#      url: https://github.com/csdcorp/speech_to_text
-#      path: speech_to_text
+  #  speech_to_text:
+  #    git:
+  #      url: https://github.com/csdcorp/speech_to_text
+  #      path: speech_to_text
 
   push: ^3.0.0
-  flutter_local_notifications: ^19.0.0
+  flutter_local_notifications: ^20.0.0
   open_filex: ^4.7.0
 
   json_dynamic_widget: ^10.0.0
@@ -152,6 +153,10 @@ dependencies:
   badges: ^3.1.0
 
   uuid: ^4.0.0
+
+  local_auth: ^3.0.0
+
+  cryptography: ^2.0.0
 
 dev_dependencies:
   flutter_test:

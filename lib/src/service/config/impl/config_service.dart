@@ -26,6 +26,7 @@ import '../../../config/app_config.dart';
 import '../../../config/predefined_server_config.dart';
 import '../../../flutter_ui.dart';
 import '../../../mask/frame/frame.dart';
+import '../../../mask/state/app_style.dart';
 import '../../../model/config/translation/i18n.dart';
 import '../../../model/config/user/user_info.dart';
 import '../../../util/jvx_logger.dart';
@@ -34,6 +35,7 @@ import '../../apps/i_app_service.dart';
 import '../../file/file_manager.dart';
 import '../../service.dart';
 import '../../ui/i_ui_service.dart';
+import '../../ui/protect_config.dart';
 import '../i_config_service.dart';
 import '../shared/config_handler.dart';
 import '../shared/impl/shared_prefs_handler.dart';
@@ -150,7 +152,7 @@ class ConfigService implements IConfigService {
           _appConfig!.serverConfigs!
               .map((e) => App.computeId(e.appName, e.baseUrl.toString(), predefined: true))
               .nonNulls,
-          (e) => App.getApp(e).then((app) => app?.delete()),
+              (e) => App.getApp(e).then((app) => app?.delete()),
         );
       }
     }
@@ -241,7 +243,7 @@ class ConfigService implements IConfigService {
       Future<void> migrateApp(String id) async {
         await sharedPrefs.setString("$id.name", id);
         String newAppId =
-            App.computeId(sharedPrefs.getString("$id.name"), sharedPrefs.getString("$id.baseUrl"), predefined: false)!;
+        App.computeId(sharedPrefs.getString("$id.name"), sharedPrefs.getString("$id.baseUrl"), predefined: false)!;
 
         await Future.wait(
           sharedPrefs.getKeys().where((e) => e.startsWith("$id.")).map((e) async {
@@ -318,7 +320,7 @@ class ConfigService implements IConfigService {
       }
 
       var iterable = IAppService().getStoredAppIds().value.where((id) =>
-          !id.contains(App.idSplitSequence) &&
+      !id.contains(App.idSplitSequence) &&
           !id.startsWith(App.predefinedPrefix) &&
           !sharedPrefs.containsKey("$id.name"));
       for (var id in iterable) {
@@ -504,8 +506,8 @@ class ConfigService implements IConfigService {
   Future<void> updateUsername(String? username) async {
     PredefinedServerConfig? config = App.getPredefinedConfig(_appId.value);
 
-    //it's not allowed to update a locked config
-    if (config?.locked == true) {
+    //it's not allowed to update a locked config (if username is set)
+    if (config?.locked == true && config?.username != null) {
       return;
     }
 
@@ -519,7 +521,14 @@ class ConfigService implements IConfigService {
 
   @override
   Future<void> updatePassword(String? password) async {
-    String? fallback = App.getPredefinedConfig(_appId.value)?.password;
+    PredefinedServerConfig? config = App.getPredefinedConfig(_appId.value);
+
+    //it's not allowed to update a locked config (if password is set)
+    if (config?.locked == true && config?.password != null) {
+      return;
+    }
+
+    String? fallback = config?.password;
     await _configHandler.updatePassword(password == fallback ? null : password);
     _password.value = password ?? fallback;
   }
@@ -579,11 +588,10 @@ class ConfigService implements IConfigService {
 
   @override
   String getLanguage() {
-    String? language;
-    if (!offline.value || (customLanguage.value ?? false)) {
-      language = applicationLanguage.value;
-    }
-    return language ?? userLanguage.value ?? getPlatformLocale();
+    //not possible to use a user language if language is a server-side custom language
+    String? userLang = customLanguage.value == true ? null : userLanguage.value;
+
+    return userLang ?? applicationLanguage.value ?? userLanguage.value ?? getPlatformLocale();
   }
 
   @override
@@ -655,15 +663,37 @@ class ConfigService implements IConfigService {
   Future<void> updateApplicationStyle(Map<String, String>? pAppStyle) async {
     await _configHandler.updateApplicationStyle(pAppStyle);
 
+    Map<String, String>? appStyle = pAppStyle ?? await _configHandler.applicationStyle();
+
     // To retrieve default
-    _applicationStyle.value = pAppStyle ?? await _configHandler.applicationStyle();
+    _applicationStyle.value = appStyle;
+
+    //MARK: Set global timeout for biometric reAuth
+
+    // If application style contains setting of max reAuth timeout -> change the default
+    Duration? timeout;
+
+    if (appStyle != null) {
+      if (appStyle.containsKey(AppStyle.loginBiometricMaxTimeout)) {
+        String? value = appStyle[AppStyle.loginBiometricMaxTimeout];
+        if (value != null) {
+          int? hours = int.tryParse(value);
+
+          if (hours != null) {
+            timeout = Duration(hours: hours);
+          }
+        }
+      }
+    }
+
+    ProtectConfig.reAuthMaxTimeout = timeout;
   }
 
   @override
   ThemeMode getThemeMode() {
     String? serverThemeMode = IConfigService().applicationStyle.value?["theme.mode"]?.toLowerCase();
     ThemeMode? themeMode =
-        serverThemeMode == null ? null : ThemeMode.values.firstWhereOrNull((e) => e.name == serverThemeMode);
+    serverThemeMode == null ? null : ThemeMode.values.firstWhereOrNull((e) => e.name == serverThemeMode);
     return themeMode ?? IConfigService().themePreference.value;
   }
 
