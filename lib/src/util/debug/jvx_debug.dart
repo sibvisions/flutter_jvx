@@ -33,6 +33,7 @@ import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../widgets/progress/progress_dialog_service.dart';
 import '../widgets/progress/progress_dialog_widget.dart';
 import '../widgets/status_banner.dart';
 
@@ -390,30 +391,25 @@ class UIDebug extends StatelessWidget {
             ),
             trailing: OutlinedButton(
               onPressed: () async {
-                var key = GlobalKey<ProgressDialogState>();
-                unawaited(showDialog(
-                  context: context,
-                  builder: (context) => ProgressDialogWidget(
-                      key: key,
-                      config: Config(
-                        progress: 0,
-                        maxProgress: 100,
-                        message: "Loading...",
-                        barrierDismissible: true,
-                      )),
+
+                ProgressDialogService.show(Config(
+                  progress: 0,
+                  maxProgress: 100,
+                  message: "Loading...",
+                  barrierDismissible: true,
                 ));
+
                 await Future.delayed(const Duration(seconds: 2));
 
-                for (int i = 0; key.currentState != null && i <= 100; i++) {
-                  key.currentState!.update(Config(
+                for (int i = 0; i <= 100; i++) {
+                  ProgressDialogService.update(Config(
                     progress: i,
                   ));
+
                   await Future.delayed(const Duration(milliseconds: 50));
                 }
 
-                if (context.mounted) {
-                  ProgressDialogWidget.close(context);
-                }
+                await ProgressDialogService.hide();
               },
               child: const Text("Test"),
             ),
