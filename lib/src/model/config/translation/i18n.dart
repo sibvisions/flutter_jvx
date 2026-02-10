@@ -24,7 +24,6 @@ import 'package:flutter/services.dart';
 import '../../../flutter_ui.dart';
 import '../../../service/config/i_config_service.dart';
 import '../../../service/file/file_manager.dart';
-import '../../../service/ui/i_ui_service.dart';
 import '../../../util/jvx_logger.dart';
 
 class I18n {
@@ -119,20 +118,19 @@ class I18n {
     // Load the default translation.
     String defaultTransFilePath = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/translation.json");
     File? defaultTransFile = fileManager.getFileSync(defaultTransFilePath);
+
     addFromFile(defaultTransFile);
 
-    //don't load translation of files if no clientid is available
-    if (IUiService().clientId.value != null) {
-      if (lang != "en") {
-        String transFilePath = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/translation_$lang.json");
-        File? transFile = fileManager.getFileSync(transFilePath);
-        if (transFile == null) {
-          if (FlutterUI.logUI.cl(Lvl.w)) {
-            FlutterUI.logUI.w("Translation file for code $lang could not be found.");
-          }
-        } else {
-          addFromFile(transFile);
+    if (lang != "en") {
+      String transFilePath = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/translation_$lang.json");
+      File? transFile = fileManager.getFileSync(transFilePath);
+
+      if (transFile == null) {
+        if (FlutterUI.logUI.cl(Lvl.w)) {
+          FlutterUI.logUI.w("Translation file for code $lang could not be found.");
         }
+      } else {
+        addFromFile(transFile);
       }
     }
   }
