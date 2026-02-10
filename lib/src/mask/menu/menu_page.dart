@@ -29,6 +29,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
+import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -101,13 +102,13 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
         }
       },
       child: Frame.wrapWithFrame(
-        builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
+        builder: (context, isOffline) {
+          return ValueListenableBuilder<MenuModel>(
           valueListenable: IUiService().getMenuNotifier(),
           builder: (context, _, child) => ValueListenableBuilder<FlComponentModel?>(
             valueListenable: IStorageService().getDesktopPanelNotifier(),
             builder: (context, desktopPanel, child) {
               List<Widget> actions = [];
-
               var menuModel = IUiService().getMenuModel();
 
               if (!isMenuSearchEnabled) {
@@ -134,8 +135,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                     IconButton(
                       tooltip: FlutterUI.translate("Go Online"),
                       splashRadius: kToolbarHeight / 2,
-                      onPressed: () {
-                        showSyncDialog().then(
+                      onPressed: () async {
+                        await showSyncDialog().then(
                           (value) async {
                             switch (value) {
                               case DialogResult.YES:
@@ -150,7 +151,6 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         );
                       },
                       icon: const Icon(Icons.cloud_sync_outlined),
-                      color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
                     ),
                   );
                 }
@@ -225,7 +225,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
                   titleSpacing: leading != null ? 0.0 : 8,
-                  backgroundColor: isOffline ? Theme.of(context).colorScheme.surface : headerColor,
+                  backgroundColor: isOffline && !OfflineUtil.isGoingOffline ? OfflineUtil.backgroundColor : headerColor,
                   actions: actions,
                 ),
                 body: frameState?.wrapBody(body) ?? body,
@@ -234,7 +234,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               return menu;
             },
           ),
-        ),
+        ); }
       ),
     );
   }

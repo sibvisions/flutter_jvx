@@ -30,6 +30,7 @@ import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
+import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
 import '../apps/app_overview_page.dart';
 import '../drawer/web_menu.dart';
@@ -275,7 +276,7 @@ class WebFrameState extends FrameState {
           ),
         ),
       ],
-      backgroundColor: IConfigService().offline.value ? Colors.grey.shade500 : topMenuColor,
+      backgroundColor: IConfigService().offline.value && !OfflineUtil.isGoingOffline? OfflineUtil.backgroundColor : topMenuColor,
       elevation: IConfigService().offline.value ? 0 : null,
       automaticallyImplyLeading: false,
     );
