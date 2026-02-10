@@ -1,6 +1,5 @@
 package com.sibvisions.flutter_jvx
 
-import android.os.Bundle
 import android.view.WindowManager
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel

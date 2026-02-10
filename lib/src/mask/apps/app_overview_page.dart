@@ -158,7 +158,10 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       apps = [...IAppService().getApps().sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase())];
 
       currentConfig = _getSingleConfig();
-      setState(() {});
+
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e, stack) {
       FlutterUI.createErrorHandler("Failed to init app list").call(e, stack);
     }

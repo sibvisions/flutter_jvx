@@ -98,10 +98,12 @@ class CustomScreen {
     this.footerBuilder,
     this.showOnline = true,
     this.showOffline = true,
-    this.sendOpenScreenRequests = false,
+    bool sendOpenScreenRequests = false,
     this.safeAreaColorBuilder,
     this.headerColorBuilder
-  }) : assert(showOnline || !sendOpenScreenRequests, "Cannot send open screen requests for offline-only screens.");
+  }) : sendOpenScreenRequests = showOnline && sendOpenScreenRequests,
+       assert(showOnline || showOffline, "A custom screen must be shown online or offline."),
+       assert(showOnline || !sendOpenScreenRequests, "Cannot send open screen requests for offline-only custom screens.");
 
   /// Creates an online-only custom screen.
   ///

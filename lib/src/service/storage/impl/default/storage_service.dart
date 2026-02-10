@@ -411,6 +411,7 @@ class StorageService implements IStorageService {
   @override
   FlPanelModel? getComponentByScreenClassName({required String pScreenClassName}) {
     String className = convertLongScreenToClassName(pScreenClassName);
+    
     return _componentMap.values
         .whereType<FlPanelModel>()
         .firstWhereOrNull((element) => element.screenClassName == className);
