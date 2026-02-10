@@ -568,7 +568,7 @@ class FlutterUI extends StatefulWidget {
 
     // Config
     IConfigService configService = ConfigService.create(
-      configHandler: SharedPrefsHandler.create(sharedPrefs: shPrefs),
+      configHandler: await SharedPrefsHandler.create(),
       fileManager: await IFileManager.getFileManager(),
     );
     services.registerSingleton(configService);

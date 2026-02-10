@@ -51,8 +51,8 @@ class StartupCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String propertiesAsString() {
-    return "username: $username, password: ${password != null ? '<set>' : 'null'}, minimal: $minimal, ${super.propertiesAsString()}";
+  String toString() {
+    return "username: $username, password: ${password != null ? '<set>' : 'null'}, minimal: $minimal, ${super.toString()}}";
   }
 
 }

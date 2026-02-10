@@ -6,8 +6,8 @@ issue_tracker: https://github.com/sibvisions/flutter_jvx/issues
 
 publish_to: 'none'
 
-version: 3.4.0+1
-
+version: 3.3.6+1
+ 
 environment:
   sdk: ">=3.0.2 <4.0.0"
 

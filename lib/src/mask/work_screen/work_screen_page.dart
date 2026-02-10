@@ -265,7 +265,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             if (headerColor == null) {
               AppStyle appStyle = AppStyle.of(context);
 
-              headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.screenMenuTopColor));
+              headerColor = ParseUtil.parseHexColor(appStyle.style(context, "screenMenuTop.color"));
             }
 
             PreferredSizeWidget? appBar = frame?.getAppBar(

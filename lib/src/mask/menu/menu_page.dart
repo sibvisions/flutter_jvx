@@ -157,8 +157,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               }
 
               AppStyle appStyle = AppStyle.of(context);
-              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.desktopColor));
-              String? backgroundImage = appStyle.style(context, AppStyle.desktopIcon);
+              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, "desktop.color"));
+              String? backgroundImage = appStyle.style(context, "desktop.icon");
 
               FrameState? frameState = Frame.maybeOf(context);
               if (frameState != null) {
@@ -211,7 +211,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 );
               }
 
-              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.menuTopColor));
+              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, "menuTop.color"));
 
               Widget menu = Scaffold(
                 drawerEnableOpenDragGesture: false,
