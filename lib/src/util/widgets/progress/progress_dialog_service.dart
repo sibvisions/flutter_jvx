@@ -11,26 +11,55 @@ class ProgressDialogService {
     _entry?.remove(); //to be sure
 
     _entry = OverlayEntry(
-      builder: (context) => PopScope(
-        canPop: false, // don't allow navigation "behind"
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) return;
-          //we don't hide the overlay
-        },
-        child: Container(
-          color: Colors.black54, // Background layer
-          child: ProgressDialogWidget(
-            key: dialogKey,
-            config: config,
+      builder: (context) {
+
+        bool dismissible = config.barrierDismissible ?? false;
+
+        ProgressDialogState? state = dialogKey.currentState;
+        if (state != null) {
+          dismissible = state.isDismissible() ?? false;
+        }
+
+        Widget barrier = Container(color: Colors.black54);
+
+        if (dismissible) {
+          barrier = GestureDetector(
+              onTap: () async {
+                await hide();
+              },
+              child: barrier
+          );
+        }
+
+        return PopScope(
+          canPop: false, // don't allow navigation "behind"
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            //we don't hide the overlay
+          },
+          child: Stack(
+            children: [
+              barrier,
+              ProgressDialogWidget(
+                key: dialogKey,
+                config: config,
+              )
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
 
     rootNavigatorKey.currentState?.insert(_entry!);
   }
 
   static void update(Config config) {
+    if (_entry != null) {
+      if ((dialogKey.currentState?.isDismissible() ?? false) != (config.barrierDismissible ?? false)) {
+        _entry!.markNeedsBuild();
+      }
+    }
+
     dialogKey.currentState?.update(config);
   }
 
