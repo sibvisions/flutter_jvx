@@ -20,7 +20,7 @@ import 'api_request.dart';
 /// Base class for all outgoing requests which require a client identifier
 abstract class ApplicationRequest extends ApiRequest {
   /// Session id
-  late String clientId;
+  String? clientId;
 
   @override
   Map<String, dynamic> toJson() => {ApiObjectProperty.clientId: clientId};

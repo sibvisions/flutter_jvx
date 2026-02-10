@@ -91,7 +91,7 @@ abstract class PushUtil {
           if (fallbackChannel.id == list[i].id) {
             if (list[i].importance != fallbackChannel.importance) {
               FlutterUI.log.d("Delete fallback notification channel!");
-              await platform.deleteNotificationChannel(list[i].id);
+              await platform.deleteNotificationChannel(channelId: list[i].id);
             }
           }
         }
@@ -239,10 +239,10 @@ abstract class PushUtil {
     if (data != null) {
       if (message.notification != null) {
         await localNotificationsPlugin.show(
-          message.hashCode,
-          message.notification!.title,
-          message.notification!.body,
-          NotificationDetails(
+          id: message.hashCode,
+          title: message.notification!.title,
+          body: message.notification!.body,
+          notificationDetails: NotificationDetails(
             android: const AndroidNotificationDetails(
               // FCM channel
               "fcm_fallback_notification_channel",

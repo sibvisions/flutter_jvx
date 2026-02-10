@@ -164,6 +164,9 @@ abstract class IUiService implements Service {
   /// Set menu model to be used when opening the menu
   void setMenuModel(MenuModel? pMenuModel);
 
+  /// Clears the menu model (this is not the same as setting menu model to null)
+  void clearMenuModel();
+
   /// Whether the user is currently logged in.
   ///
   /// **This method can only approximate the current status, so use this with caution!**
