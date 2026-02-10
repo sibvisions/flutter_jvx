@@ -101,7 +101,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
-                  height: 30,
+                  height: 20,
                   child: progress == null
                       ? Container(
                     decoration: BoxDecoration(
@@ -128,10 +128,10 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
                     center: Text(
                       "${"${((progress) * 100).round()}"}%",
                       style: TextStyle(
-                        color: progress > 0.6
+                        color: progress > 0.58
                             ? Theme.of(context).colorScheme.onPrimary
                             : Theme.of(context).colorScheme.onSurface,
-                        fontSize: 16.0,
+                        fontSize: 13.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -145,7 +145,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
                         : _config.message!,
                     textAlign: _config.messageTextAlign,
                     style: TextStyle(
-                      fontSize: 17.0,
+                      fontSize: 16.0,
                       color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                     ).merge(_config.messageTextStyle),
