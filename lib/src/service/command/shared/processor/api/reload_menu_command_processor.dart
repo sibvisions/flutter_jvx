@@ -34,7 +34,7 @@ class ReloadMenuCommandProcessor extends ICommandProcessor<ReloadMenuCommand> {
   @override
   Future<void> onFinish(ReloadMenuCommand command) async {
     if (command.screenLongName != null) {
-      if (IUiService().getMenuModel().containsScreen(command.screenLongName!)) {
+      if (IUiService().getMenuModel().containsMenuItemWithLongName(command.screenLongName!)) {
         unawaited(ICommandService().sendCommand(OpenScreenCommand(
           longName: command.screenLongName!,
           reason: command.reason,
