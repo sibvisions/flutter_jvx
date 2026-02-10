@@ -48,7 +48,9 @@ class LoadingProgressHandler implements ICommandProgressHandler {
       if (_loadingCommandAmount > 0) {
         _loadingCommandAmount--;
       }
-      if (_loadingCommandAmount == 0) {
+      if (_loadingCommandAmount <= 0) {
+        _loadingCommandAmount = 0;
+
         JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.hideLoading();
       }
     }
