@@ -30,6 +30,7 @@ import '../../../model/response/menu_view_response.dart';
 import '../../../routing/locations/main_location.dart';
 import '../../../util/jvx_logger.dart';
 import '../../api/i_api_service.dart';
+import '../../api/shared/repository/no_op_repository.dart';
 import '../../api/shared/repository/offline_api_repository.dart';
 import '../../api/shared/repository/online_api_repository.dart';
 import '../../command/i_command_service.dart';
@@ -265,16 +266,20 @@ class AppService implements IAppService {
   }
 
   Future<void> _startApp({String? appId, String? appTitle, bool? autostart}) async {
-    if (appId == null && IConfigService().currentApp.value == null) {
+    IConfigService servCfg = IConfigService();
+
+    IUiService servUi = IUiService();
+
+    if (appId == null && servCfg.currentApp.value == null) {
       FlutterUI.log.e("Called 'startApp' without an appId or a currentApp");
-      await IUiService().routeToAppOverview();
+      await servUi.routeToAppOverview();
       return;
     }
 
     await _stopApp(restart: appId == null);
 
     if (appId != null) {
-      await IConfigService().updateCurrentApp(appId);
+      await servCfg.updateCurrentApp(appId);
     }
 
     if (autostart != null) {
@@ -284,18 +289,18 @@ class AppService implements IAppService {
     _tempTitle = appTitle;
 
     await IApiService().getRepository().stop();
-    var repository = IConfigService().offline.value ? OfflineApiRepository() : OnlineApiRepository();
+    var repository = servCfg.offline.value ? OfflineApiRepository() : OnlineApiRepository();
     await repository.start();
     IApiService().setRepository(repository);
 
-    if (IConfigService().getFileManager().isSatisfied()) {
+    if (servCfg.getFileManager().isSatisfied()) {
       // Only try to load if FileManager is available
-      await IConfigService().reloadSupportedLanguages();
+      await servCfg.reloadSupportedLanguages();
       // Update language to application language, if applicable.
-      await IUiService().i18n().setLanguage(IConfigService().getLanguage());
+      await servUi.i18n().setLanguage(servCfg.getLanguage());
     }
 
-    if (!IConfigService().offline.value) {
+    if (!servCfg.offline.value) {
       // Send startup to server
       await ICommandService().sendCommand(
         StartupCommand(
@@ -304,7 +309,9 @@ class AppService implements IAppService {
         throwFirstErrorCommand: true,
       );
     } else {
-      IUiService().routeToMenu(pReplaceRoute: true);
+      //in offline mode, we don't send anything to the server, but we should trigger menu
+      servUi.setMenuModel(null);
+      servUi.routeToMenu(pReplaceRoute: true);
     }
   }
 
@@ -329,14 +336,8 @@ class AppService implements IAppService {
     if (!restart) {
       await IConfigService().updateCurrentApp(null);
       await IUiService().i18n().setLanguage(IConfigService().getLanguage());
-    }
 
-    // Switch back to "default" repository.
-    if (IApiService().getRepository() is! OnlineApiRepository) {
-      await IApiService().getRepository().stop();
-      var repository = OnlineApiRepository();
-      await repository.start();
-      IApiService().setRepository(repository);
+      IApiService().setRepository(NoOpRepository());
     }
   }
 
