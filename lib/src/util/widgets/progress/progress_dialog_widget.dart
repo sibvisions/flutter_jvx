@@ -94,76 +94,73 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
       opacity: _fadeAnimation,
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: PopScope(
-          canPop: _config.barrierDismissible ?? false,
-          child: AlertDialog(
-            backgroundColor: effectiveBackgroundColor,
-            elevation: _config.elevation,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(_config.borderRadius!)),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 20,
-                  child: progress == null
-                      ? Container(
-                    decoration: BoxDecoration(
-                      color: effectiveValueColor,
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(width: 2.0, color: effectiveValueColor),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(13.0),
-                      child: LinearProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(effectiveValueColor),
-                        backgroundColor: effectiveProgressBgColor,
-                      ),
-                    ),
-                  )
-                      : LiquidLinearProgressIndicator(
-                    value: progress,
-                    valueColor: AlwaysStoppedAnimation(effectiveValueColor),
-                    backgroundColor: progress >= 1 ? effectiveValueColor : effectiveProgressBgColor,
-                    borderRadius: 15.0,
-                    borderWidth: 2.0,
-                    borderColor: effectiveValueColor,
-                    direction: Axis.horizontal,
-                    center: Text(
-                      "${"${((progress) * 100).round()}"}%",
-                      style: TextStyle(
-                        color: progress > 0.58
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.onSurface,
-                        fontSize: 13.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                Center(
-                  child: Text(
-                    _config.progress == _config.maxProgress!
-                        ? _config.completedMessage ?? _config.message!
-                        : _config.message!,
-                    textAlign: _config.messageTextAlign,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.bold,
-                    ).merge(_config.messageTextStyle),
-                  ),
-                ),
-              ],
-            ),
-            contentPadding: _config.contentPadding!,
-            buttonPadding: _config.buttonPadding,
-            actions: _config.actions,
-            actionsPadding: _config.actionsPadding!,
-            actionsAlignment: _config.actionsAlignment,
+        child: AlertDialog(
+          backgroundColor: effectiveBackgroundColor,
+          elevation: _config.elevation,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(_config.borderRadius!)),
           ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 20,
+                child: progress == null
+                    ? Container(
+                  decoration: BoxDecoration(
+                    color: effectiveValueColor,
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(width: 2.0, color: effectiveValueColor),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(13.0),
+                    child: LinearProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(effectiveValueColor),
+                      backgroundColor: effectiveProgressBgColor,
+                    ),
+                  ),
+                )
+                    : LiquidLinearProgressIndicator(
+                  value: progress,
+                  valueColor: AlwaysStoppedAnimation(effectiveValueColor),
+                  backgroundColor: progress >= 1 ? effectiveValueColor : effectiveProgressBgColor,
+                  borderRadius: 15.0,
+                  borderWidth: 2.0,
+                  borderColor: effectiveValueColor,
+                  direction: Axis.horizontal,
+                  center: Text(
+                    "${"${((progress) * 100).round()}"}%",
+                    style: TextStyle(
+                      color: progress > 0.58
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Theme.of(context).colorScheme.onSurface,
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+              Center(
+                child: Text(
+                  _config.progress == _config.maxProgress!
+                      ? _config.completedMessage ?? _config.message!
+                      : _config.message!,
+                  textAlign: _config.messageTextAlign,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ).merge(_config.messageTextStyle),
+                ),
+              ),
+            ],
+          ),
+          contentPadding: _config.contentPadding!,
+          buttonPadding: _config.buttonPadding,
+          actions: _config.actions,
+          actionsPadding: _config.actionsPadding!,
+          actionsAlignment: _config.actionsAlignment,
         ),
       ),
     );

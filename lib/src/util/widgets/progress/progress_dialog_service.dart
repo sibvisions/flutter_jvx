@@ -6,7 +6,7 @@ import 'progress_dialog_widget.dart';
 class ProgressDialogService {
   static OverlayEntry? _entry;
   static final GlobalKey<ProgressDialogState> dialogKey = GlobalKey<ProgressDialogState>();
-
+  
   static void show(Config config) {
     _entry?.remove(); //to be sure
 
@@ -32,10 +32,11 @@ class ProgressDialogService {
         }
 
         return PopScope(
-          canPop: false, // don't allow navigation "behind"
+          canPop: dismissible, // don't allow navigation "behind"
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
-            //we don't hide the overlay
+
+            hide();
           },
           child: Stack(
             children: [
