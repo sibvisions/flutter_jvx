@@ -45,7 +45,6 @@ import 'fl_linked_cell_picker.dart';
 import 'fl_linked_editor_widget.dart';
 
 class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLinkedCellEditorModel, dynamic>
-                         with WidgetsBindingObserver
 {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -95,8 +94,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     focusNode.skipTraversal = true;
 
     _subscribe();
-
-    WidgetsBinding.instance.addObserver(this);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,7 +131,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: dataProvider);
     referencedCellEditor?.dispose();
     textController.dispose();
