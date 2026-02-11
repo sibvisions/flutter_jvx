@@ -307,7 +307,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               onPressed: () async {
                 DialogResult? result = await IUiService().openDialog(
                   pBuilder: (subContext) => AlertDialog(
-                    title: Text(FlutterUI.translate("Discard offline changes")),
+                    title: Text(FlutterUI.translate("Discard changes")),
                     content: Text(FlutterUI.translate(
                         "Are you sure you want to discard all the changes you made in offline mode?")),
                     actions: [
