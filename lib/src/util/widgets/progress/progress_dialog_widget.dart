@@ -65,21 +65,6 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
     super.dispose();
   }
 
-  /// Diese Methode rufen wir vom Service auf, um sanft auszublenden
-  Future<void> reverse() async {
-    await _controller.reverse();
-  }
-
-  /// Whether barrier is dismissible
-  bool isDismissible() {
-    return _config.barrierDismissible ?? false;
-  }
-
-  void update(Config config) {
-    _config = _config.merge(config);
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     double? progress = _config.progress == 0 || _config.maxProgress == 0
@@ -165,6 +150,22 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
       ),
     );
   }
+
+  /// Smooth hide
+  Future<void> reverse() async {
+    await _controller.reverse();
+  }
+
+  /// Whether barrier is dismissible
+  bool isDismissible() {
+    return _config.barrierDismissible ?? false;
+  }
+
+  void update(Config config) {
+    _config = _config.merge(config);
+    setState(() {});
+  }
+
 }
 
 class Config {
@@ -228,8 +229,8 @@ class Config {
       messageTextAlign: TextAlign.center,
       borderRadius: 15.0,
       barrierDismissible: false,
-      contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
-      actionsPadding: EdgeInsets.zero,
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 24.0),
+      actionsPadding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
     ).merge(this);
   }
 
