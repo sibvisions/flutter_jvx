@@ -48,7 +48,7 @@ class ProtectConfig {
     ProtectConfig({
         this.secureApp = true,
         this.name,
-        this.reAuthTimeout = const Duration(seconds: 8),
+        this.reAuthTimeout = const Duration(seconds: 30),
         this.reAuthOnlyAfterResume = false,
         this.onAuthentication,
         this.skeletonBuilder
