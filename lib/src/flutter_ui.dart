@@ -90,6 +90,7 @@ import 'util/widgets/future_nested_navigator.dart';
 
 import 'util/web/browser_tab_title_util_non_web.dart'
 if (dart.library.js_interop) 'util/web/browser_tab_title_util_web.dart' as browser_tab_title_util;
+import 'util/widgets/progress/progress_dialog_service.dart';
 
 T? cast<T>(dynamic x) => x is T ? x : null;
 
@@ -1431,6 +1432,18 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
 
     _checkAlive(state);
+  }
+
+  @override
+  Future<bool> didPopRoute() async {
+    if (ProgressDialogService.isShown()) {
+      if (ProgressDialogService.isDismissible()) {
+        await ProgressDialogService.hide();
+      }
+      return true;
+    }
+
+    return false;
   }
 
   /// If the app is resumed, resumes alive interval and triggers an [AliveCommand] to check server session.
