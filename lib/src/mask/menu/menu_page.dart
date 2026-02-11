@@ -293,10 +293,11 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
         ),
         content: Text(
           FlutterUI.translate(
-            "Do you want to switch back online and synchronize all the data?",
+            "Do you want to switch back online and synchronize all changes?",
           ),
         ),
         actionsOverflowAlignment: OverflowBarAlignment.center,
+        actionsPadding: EdgeInsets.fromLTRB(14, 10, 14, 10),
         actions: [
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),

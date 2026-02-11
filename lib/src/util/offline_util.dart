@@ -151,7 +151,7 @@ abstract class OfflineUtil {
           );
 
           if (servUi.clientId.value == null) {
-            throw "ClientID is missing";
+            throw "Client ID is missing!";
           }
 
           failedStep = "Preparing synchronization";
@@ -256,7 +256,7 @@ abstract class OfflineUtil {
 
           dataBookCounter = 1;
           for (DataBook dataBook in sortedListUpdates) {
-            failedStep = "${FlutterUI.translate("Updating of")} ${dataBook.dataProvider}";
+            failedStep = "${FlutterUI.translate("Update of")} ${dataBook.dataProvider}";
             FlutterUI.logAPI.i("Updating: ${dataBook.dataProvider} | ${dataBook.records.length}");
 
             List<Map<String, Object?>> rowsToUpdate = updatesByDataBook[dataBook.dataProvider]!;
@@ -344,8 +344,8 @@ abstract class OfflineUtil {
           }
 
           if (successfulSyncedRows > 0 || failedSyncedRows > 0) {
-            sLastMessage = "${FlutterUI.translate("Successfully synced")} $successfulSyncedRows ${FlutterUI.translate("rows")}"
-                "${failedSyncedRows > 0 ? ".\n$failedSyncedRows ${FlutterUI.translate("rows failed to sync")}." : ""}";
+            sLastMessage = "${FlutterUI.translate("Successfully synced")}\n$successfulSyncedRows ${FlutterUI.translate(successfulSyncedRows > 1 ? "rows" : "row")}"
+                "${failedSyncedRows > 0 ? ".\n\n$failedSyncedRows ${FlutterUI.translate(failedSyncedRows > 1 ? "rows failed to sync" : "row failed to sync")}." : ""}";
           } else {
             sLastMessage = FlutterUI.translate("No changes detected");
           }
@@ -388,7 +388,7 @@ abstract class OfflineUtil {
             await cfgHandler.setValueSecure("$appId.offlinePassword", null);
           }
           else {
-            throw "Client ID missing";
+            throw "Client ID is missing!";
           }
         }
 
@@ -398,7 +398,8 @@ abstract class OfflineUtil {
           message: sLastMessage,
           progress: 100,
           maxProgress: 100,
-          contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
+          barrierDismissible: true,
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 10.0),
           actions: [
             TextButton(
               onPressed: () async => await ProgressDialogService.hide(),
