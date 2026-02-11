@@ -442,7 +442,7 @@ abstract class OfflineUtil {
           pIsDismissible: false,
           pBuilder: (context) =>
               AlertDialog(
-                title: Text(FlutterUI.translate("Offline Sync Error")),
+                title: Text(FlutterUI.translate("Sync error")),
                 content: Text(
                     "${FlutterUI.translate(sIntro)}"
                         "\n\n${FlutterUI.translate("Failed step")}: ${FlutterUI.translate(failedStep)}."
@@ -681,9 +681,14 @@ abstract class OfflineUtil {
           throw "Application missing";
         }
 
+        String? sCurrentPassword = FlutterUI.of(FlutterUI.getCurrentContext()!).lastPassword;
+
+        if (sCurrentPassword == null) {
+          FlutterUI.logAPI.e("Going offline: current password ist null for user ${servCfg.username.value}");
+        }
         // Save credentials for re-sync (appId is important otherwise values would be global)
         await cfgHandler.setValueSecure("$appId.offlineUserName", servCfg.username.value);
-        await cfgHandler.setValueSecure("$appId.offlinePassword", FlutterUI.of(FlutterUI.getCurrentContext()!).lastPassword);
+        await cfgHandler.setValueSecure("$appId.offlinePassword", sCurrentPassword);
 
         IStorageService servStorage = IStorageService();
 
