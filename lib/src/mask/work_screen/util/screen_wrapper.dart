@@ -69,7 +69,7 @@ class ScreenWrapper {
       header: customScreen.headerBuilder?.call(context),
       footer: customScreen.footerBuilder?.call(context),
       screen: replaceScreen ?? screen?.screen,
-      screenTitle: customScreen.screenTitle ?? screen?.screenTitle,
+      screenTitle: (customScreen.screenTitle != null ? FlutterUI.translate(customScreen.screenTitle) : null) ?? screen?.screenTitle,
       customScreen: replaceScreen != null,
     );
   }

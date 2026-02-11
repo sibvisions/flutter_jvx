@@ -1215,8 +1215,8 @@ class UiService implements IUiService {
               (screen.screenBuilder != null || screen.headerBuilder != null ||screen.footerBuilder != null)) {
             // We have no menu item, therefore, create one on best-effort basis.
             customMenuItem = CustomMenuItem(
-              group: "Custom",
-              label: screen.screenTitle ?? "Custom Screen",
+              group: FlutterUI.translate("Custom"),
+              label: FlutterUI.translate(screen.screenTitle ?? "Custom Screen"),
               faIcon: FontAwesomeIcons.notdef,
             );
           }
@@ -1229,8 +1229,8 @@ class UiService implements IUiService {
               screenLongName: oldMenuItem?.screenLongName ?? key,
               className: oldMenuItem?.className,
               navigationName: oldMenuItem?.navigationName ?? screen.keyNavigationName,
-              label: customMenuItem.label,
-              alternativeLabel: customMenuItem.alternativeLabel ?? oldMenuItem?.alternativeLabel,
+              label: FlutterUI.translate(customMenuItem.label),
+              alternativeLabel: customMenuItem.alternativeLabel != null ? FlutterUI.translate(customMenuItem.alternativeLabel) : oldMenuItem?.alternativeLabel,
               imageBuilder: customMenuItem.imageBuilder,
               // Only override image if there is no image builder.
               image: customMenuItem.imageBuilder == null ? oldMenuItem?.image : null,
@@ -1242,7 +1242,7 @@ class UiService implements IUiService {
             if (menuGroupModel == null) {
               // Make new group if it didn't exist.
               menuGroupModel = MenuGroupModel(
-                name: customMenuItem.group,
+                name: FlutterUI.translate(customMenuItem.group),
                 items: [newMenuItem],
               );
 
