@@ -31,8 +31,11 @@ class ProgressDialogService {
           );
         }
 
+        //PopScope is useless in normal usage because the navigator is behind, so
+        //we handle the pop in FlutterUI.didPopRoute.
+        //This code here is only for completeness
         return PopScope(
-          canPop: dismissible, // don't allow navigation "behind"
+          canPop: !dismissible,
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
 
@@ -69,5 +72,13 @@ class ProgressDialogService {
 
     _entry?.remove();
     _entry = null;
+  }
+
+  static bool isShown() {
+    return _entry != null;
+  }
+
+  static bool isDismissible() {
+    return dialogKey.currentState?.isDismissible() ?? false;
   }
 }
