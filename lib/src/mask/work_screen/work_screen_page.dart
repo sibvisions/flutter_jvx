@@ -247,7 +247,13 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
             Widget? leading = _buildLeading();
 
-            title ??= Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading..."));
+            String? customScreenTitle = customScreen?.screenTitle;
+
+            if (customScreenTitle != null) {
+              customScreenTitle = FlutterUI.translate(customScreenTitle);
+            }
+
+            title ??= Text(customScreenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading..."));
 
             Color? headerColor;
 
