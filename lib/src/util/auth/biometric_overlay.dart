@@ -47,9 +47,23 @@ class BiometricOverlay extends StatefulWidget {
   static void clearCacheForAllApps() {
     _BiometricOverlayState.globalAuthTime.clear();
   }
+
+  /// Finds the [JVxOverlayState] from the closest instance of this class that
+  /// encloses the given context.
+  ///
+  /// If no instance of this class encloses the given context, will return null.
+  /// To throw an exception instead, use [of] instead of this function.
+  static bool isVisible(BuildContext? context) {
+    return context?.findAncestorStateOfType<_BiometricOverlayState>()?._isVisible ?? false;
+  }
+
 }
 
 class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBindingObserver{
+
+  /// whether we use only biometric auth
+  final bool _biometricOnly = false;
+
   /// The method channel for platform/native communication
   static const platformChannel = MethodChannel('com.sibvisions.flutter_jvx/security');
   /// Whether to use native channel communication
@@ -68,12 +82,16 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
   /// The current config (required in case of delayed hide)
   ProtectConfig? _protectConfig;
 
+  /// whether authentication is supported
+  bool _isAuthSupported = true;
+
   /// whether biometric authentication is possible
   bool _isBiometricAuthPossible = false;
 
   bool _isAuthenticating = false;
   bool _isAuthenticated = false;
   bool _isPaused = false;
+  bool _isVisible = false;
 
   bool _didAuthOnResume = true;
 
@@ -96,7 +114,13 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
     WidgetsBinding.instance.addObserver(this);
 
     auth.isDeviceSupported().then((bool isSupported) {
-      if (isSupported) {
+      _isAuthSupported = isSupported;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {});
+      });
+
+      if (_isAuthSupported) {
         _initBiometric();
       }
     });
@@ -123,12 +147,12 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
       _initAuthState();
 
       if (widget.config != null) {
-        if (_isBiometricAuthPossible && _useChannel && !setSecure) {
+        if ((_isBiometricAuthPossible || !_biometricOnly) && _useChannel && !setSecure) {
           setSecure = true;
           platformChannel.invokeMethod('setSecure', true);
         }
 
-        if (_isBiometricAuthPossible && mounted) {
+        if ((_isBiometricAuthPossible || !_biometricOnly) && mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             //not authenticated with "old" config -> cancel
             if (!_isAuthenticated) {
@@ -137,7 +161,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
               _waitForHide = false;
               _protectConfig = widget.config;
 
-              if (_isBiometricAuthPossible && _isAuthenticating) {
+              if ((_isBiometricAuthPossible || !_biometricOnly) && _isAuthenticating) {
                 unawaited(auth.stopAuthentication());
               }
             }
@@ -151,7 +175,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
           _delayedHide();
         }
 
-        if (_isBiometricAuthPossible && _useChannel && setSecure) {
+        if ((_isBiometricAuthPossible || !_biometricOnly) && _useChannel && setSecure) {
           setSecure = false;
           platformChannel.invokeMethod('setSecure', false);
         }
@@ -224,8 +248,10 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
   }
 
   Future<void> _initBiometric() async {
+
     try {
       if (await auth.canCheckBiometrics) {
+
         late List<BiometricType> biometricTypes;
 
         try {
@@ -242,7 +268,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
 
         setState(() {});
 
-        if (_isBiometricAuthPossible) {
+        if (_isBiometricAuthPossible || !_biometricOnly) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _authenticateWithBiometrics();
           });
@@ -281,7 +307,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
       return;
     }
 
-    if (!_isBiometricAuthPossible || _isAuthenticated || _isAuthenticating) {
+    if ((!_isBiometricAuthPossible && _biometricOnly) || _isAuthenticated || _isAuthenticating) {
       return;
     }
 
@@ -308,7 +334,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
       authenticated = await auth.authenticate(
         localizedReason: FlutterUI.translate('Scan your fingerprint or face to authenticate'),
         persistAcrossBackgrounding: true,
-        //biometricOnly: true,
+        biometricOnly: _biometricOnly,
       );
 
       if (_useChannel && authenticated) {
@@ -339,6 +365,7 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
       FlutterUI.log.e("$e");
 
       if (e.code == LocalAuthExceptionCode.userCanceled
+          || e.code == LocalAuthExceptionCode.timeout
           || e.code == LocalAuthExceptionCode.systemCanceled) {
 
         setState(() {
@@ -443,11 +470,15 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
   @override
   Widget build(BuildContext context) {
     if (_protectConfig == null) {
+      _isVisible = false;
+
       return Offstage();
     }
 
     if (!_waitForHide) {
       if (_isAuthenticated && !_isPaused) {
+        _isVisible = false;
+
         return Offstage();
       }
     }
@@ -456,6 +487,8 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
       return Offstage();
     }
 */
+    _isVisible = true;
+
     return Stack(
       children: [
         Scaffold(
@@ -478,6 +511,39 @@ class _BiometricOverlayState extends State<BiometricOverlay> with WidgetsBinding
             decoration: BoxDecoration(color: Colors.grey[200]?.withAlpha(10)),
           ),
         ),
+        if (!_isAuthSupported)
+          Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(10),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4), // Schatten nach unten verschoben
+                ),
+              ],
+              border: Border.all(color: Colors.red.shade100, width: 1),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.lock_person_rounded, color: Colors.red.shade400, size: 32),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Text(
+                    'This application requires the use of biometrics or a PIN to proceed.',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
       ],
     );
   }

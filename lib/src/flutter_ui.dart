@@ -80,6 +80,7 @@ import 'service/storage/impl/default/storage_service.dart';
 import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
 import 'service/ui/protect_config.dart';
+import 'util/auth/biometric_overlay.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
 import 'util/json_template_manager.dart';
@@ -1533,10 +1534,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   @override
   Future<bool> didPopRoute() async {
-    if (ProgressDialogService.isShown()) {
+    if (ProgressDialogService.isVisible()) {
       if (ProgressDialogService.isDismissible()) {
         await ProgressDialogService.hide();
       }
+      return true;
+    }
+
+    if (BiometricOverlay.isVisible(context)) {
       return true;
     }
 

@@ -74,7 +74,7 @@ class ProgressDialogService {
     _entry = null;
   }
 
-  static bool isShown() {
+  static bool isVisible() {
     return _entry != null;
   }
 
