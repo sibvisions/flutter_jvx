@@ -286,6 +286,9 @@ class JVxOverlayState extends State<JVxOverlay> {
           child: FutureBuilder(
             future: _loadingDelayFuture,
             builder: (context, snapshot) {
+              EdgeInsets insView = MediaQuery.viewPaddingOf(context);
+
+
               return LoadingBar(
                 show: _loading && snapshot.connectionState == ConnectionState.done,
                 child: Stack(
@@ -305,9 +308,9 @@ class JVxOverlayState extends State<JVxOverlay> {
                       ),
                     if (_showExit)
                       Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 25,
+                        left: insView.left,
+                        right: insView.right,
+                        bottom: 15 + insView.bottom,
                         child: Align(
                           alignment: Alignment.center,
                           child: Padding(
