@@ -57,8 +57,10 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
 
     if (!IConfigService().offline.value && pRequest is! ApiReloadMenuRequest) {
       var returnUri = IAppService().getApplicableReturnUri(response.responseMenuItems);
+
       if (returnUri != null) {
         var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+
         commands.add(
           RouteToCommand(
             replaceRoute: lastBeamState.pathPatternSegments.contains("login"),
