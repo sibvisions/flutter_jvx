@@ -175,7 +175,7 @@ class StorageService implements IStorageService {
 
     List<FlComponentModel> currentScreenComps = _getComponents(isDesktopPanel, isContent, screenName);
 
-    List<FlComponentModel> newUiComponents = [];
+    List<String> newUiComponents = [];
     List<String> changedUiComponents = [];
     Set<String> deletedUiComponents = {...destroyedOrRemovedModels.map((e) => e.id)};
     Set<String> affectedUiComponents = {};
@@ -190,7 +190,7 @@ class StorageService implements IStorageService {
 
       // If component has not been rendered before it is new.
       if (!existsInScreen) {
-        newUiComponents.add(currentModel);
+        newUiComponents.add(currentModel.id);
       } else {
         // If component has been rendered, check if it has been changed.
         bool hasChanged = changedModels.any((changedModels) => changedModels == currentModel.id);
@@ -216,7 +216,8 @@ class StorageService implements IStorageService {
       for (String affectedModel in affectedModels) {
         bool existsInNewScreen = currentScreenComps.any((oldModel) => oldModel.id == affectedModel);
         bool isChanged = changedUiComponents.any((changedModel) => changedModel == affectedModel);
-        bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
+        bool isNew = newUiComponents.any((newModel) => newModel == affectedModel);
+
         if (!isChanged && !isNew && existsInNewScreen) {
           affectedUiComponents.add(affectedModel);
         }
@@ -227,8 +228,7 @@ class StorageService implements IStorageService {
       FlutterUI.logUI.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
       FlutterUI.logUI.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
       FlutterUI.logUI.d("Changed {${changedUiComponents.length}}:${changedUiComponents.toList()..sort()}");
-      FlutterUI.logUI
-          .d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.map((e) => e.id).toList()..sort()}");
+      FlutterUI.logUI.d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.toList()..sort()}");
     }
 
     // Enable to print "tree" of screen
@@ -240,6 +240,7 @@ class StorageService implements IStorageService {
     // );
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
+      newComponents: newUiComponents,
       affectedComponents: affectedUiComponents,
       changedComponents: changedUiComponents,
       deletedComponents: deletedUiComponents,
@@ -411,7 +412,7 @@ class StorageService implements IStorageService {
   @override
   FlPanelModel? getComponentByScreenClassName({required String pScreenClassName}) {
     String className = convertLongScreenToClassName(pScreenClassName);
-    
+
     return _componentMap.values
         .whereType<FlPanelModel>()
         .firstWhereOrNull((element) => element.screenClassName == className);
