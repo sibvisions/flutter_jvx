@@ -22,6 +22,9 @@ class UpdateComponentsCommand extends UiCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The new components
+  final List<String> newComponents;
+
   /// List of components whose model changed
   final List<String> changedComponents;
 
@@ -39,6 +42,7 @@ class UpdateComponentsCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   UpdateComponentsCommand({
+    this.newComponents = const [],
     this.affectedComponents = const {},
     this.changedComponents = const [],
     this.deletedComponents = const {},
@@ -52,9 +56,9 @@ class UpdateComponentsCommand extends UiCommand {
 
   @override
   String propertiesAsString() {
-    return "changedComponents: $changedComponents, deletedComponents: $deletedComponents, "
-           "affectedComponents: $affectedComponents, notifyDesktopPanel: $notifyDesktopPanel, "
-           "${super.propertiesAsString()}";
+    return "newComponents: $newComponents, changedComponents: $changedComponents, "
+           "deletedComponents: $deletedComponents, affectedComponents: $affectedComponents, "
+           "notifyDesktopPanel: $notifyDesktopPanel, ${super.propertiesAsString()}";
   }
 
 }

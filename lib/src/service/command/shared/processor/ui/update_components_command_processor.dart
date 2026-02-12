@@ -32,6 +32,7 @@ class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponent
     if (command.affectedComponents.isEmpty
         && command.changedComponents.isEmpty
         && command.deletedComponents.isEmpty
+        && command.newComponents.isEmpty
         && !command.notifyDesktopPanel) {
       return [];
     }
@@ -70,26 +71,47 @@ class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponent
     if (command.affectedComponents.isEmpty
         && command.changedComponents.isEmpty
         && command.deletedComponents.isEmpty
+        && command.newComponents.isEmpty
         && command.notifyDesktopPanel) {
       IStorageService().getDesktopPanelNotifier().notify();
     } else {
-      List<Future> futureList = [];
-      futureList.addAll(command.affectedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
-      futureList.addAll(command.changedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
-      futureList.addAll(command.deletedComponents.map((e) => ILayoutService().removeLayout(pComponentId: e)));
 
-      // Update Components in UI after all are marked as dirty
-      await Future.wait(futureList).then((value) {
-        if (value.isNotEmpty) {
-          IUiService().notifyModelUpdated(command.changedComponents);
-          IUiService().notifyAffectedComponents(command.affectedComponents);
+      List<Future> futureList = [];
+      if (command.affectedComponents.isNotEmpty) {
+        futureList.addAll(command.affectedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
+      }
+
+      if (command.changedComponents.isNotEmpty) {
+        futureList.addAll(command.changedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
+      }
+
+      if (command.deletedComponents.isNotEmpty) {
+        futureList.addAll(command.deletedComponents.map((e) => ILayoutService().removeLayout(pComponentId: e)));
+      }
+
+      if (futureList.isEmpty) {
+        if (command.newComponents.isNotEmpty) {
           IUiService().notifyModels();
 
           if (command.notifyDesktopPanel) {
             IStorageService().getDesktopPanelNotifier().notify();
           }
         }
-      });
+      }
+      else {
+        // Update Components in UI after all are marked as dirty
+        await Future.wait(futureList).then((value) {
+          if (value.isNotEmpty) {
+            IUiService().notifyModelUpdated(command.changedComponents);
+            IUiService().notifyAffectedComponents(command.affectedComponents);
+            IUiService().notifyModels();
+
+            if (command.notifyDesktopPanel) {
+              IStorageService().getDesktopPanelNotifier().notify();
+            }
+          }
+        });
+      }
     }
 
     return [];
