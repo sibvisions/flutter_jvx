@@ -240,10 +240,10 @@ class StorageService implements IStorageService {
     // );
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
-      newComponents: newUiComponents,
       affectedComponents: affectedUiComponents,
       changedComponents: changedUiComponents,
       deletedComponents: deletedUiComponents,
+      newComponents: newUiComponents,
       notifyDesktopPanel: isDesktopPanel,
       reason: "Server Changed Components",
     );
