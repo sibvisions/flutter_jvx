@@ -31,6 +31,7 @@ class RouteToCommandProcessor extends ICommandProcessor<RouteToCommand> {
     } else {
       FlutterUI.getBeamerDelegate().beamToNamed(command.uri);
     }
+
     return [];
   }
 }

@@ -39,6 +39,7 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
     } else {
       IAppService servApp = IAppService();
 
+      //MARK: Save last screen for reopen after restart
       servApp.saveLocationAsReturnUri();
 
       //use appTitle of last application. This is important if JVxSplash has a hardcoded appName
