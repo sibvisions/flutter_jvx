@@ -26,7 +26,6 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../service/command/i_command_service.dart';
 import '../../util/jvx_logger.dart';
-import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
 import '../state/app_style.dart';
 import 'error_screen.dart';
@@ -47,14 +46,12 @@ class WorkScreen extends StatelessWidget {
   final MenuItemModel item;
   final ScreenWrapper? screen;
   final FlComponentModel? model;
-  final bool isOffline;
   final void Function(Size size) updateSize;
 
   const WorkScreen({
     super.key,
     required this.item,
     required this.screen,
-    required this.isOffline,
     required this.updateSize,
     required this.model
   });
@@ -75,17 +72,7 @@ class WorkScreen extends StatelessWidget {
     }
 
     return FocusTraversalGroup(
-      child: Column(
-        children: [
-          if (isOffline) OfflineUtil.getOfflineBar(context),
-          Expanded(
-            child: _wrapJVxScreen(
-              context,
-              screen!,
-            ),
-          ),
-        ],
-      ),
+      child: _wrapJVxScreen(context, screen!)
     );
   }
 
@@ -95,7 +82,7 @@ class WorkScreen extends StatelessWidget {
   ) {
     AppStyle appStyle = AppStyle.of(context);
     Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.desktopColor));
-    String? backgroundImageString = appStyle.style(context, AppStyle.desktopIcon);
+    String? backgroundImage = appStyle.style(context, AppStyle.desktopIcon);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -149,11 +136,12 @@ class WorkScreen extends StatelessWidget {
               scrollDirection: Axis.vertical,
               child: Stack(
                 children: [
-                  SizedBox(
-                    height: screenHeight,
-                    width: constraints.maxWidth,
-                    child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
-                  ),
+                    SizedBox(
+                      height: screenHeight,
+                      width: constraints.maxWidth,
+                      child: backgroundColor != null || backgroundImage != null ?
+                        WorkScreenPage.buildBackground(backgroundColor, backgroundImage) : null,
+                    ),
                   screenWidget
                 ],
               ),

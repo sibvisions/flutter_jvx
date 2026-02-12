@@ -58,6 +58,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   /// Debounce re-layouts
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
+  late final BackgroundBuilder? backgroundBuilder;
+
   bool sentScreen = false;
 
   ApplicationParameterChangedListener appParamListener = (name, oldValue, newValue) {
@@ -72,6 +74,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   @override
   void initState() {
     super.initState();
+
+    backgroundBuilder = FlutterUI.of(context).widget.backgroundBuilder;
 
     IUiService().addApplicationParameterChangedListener(appParamListener);
 
@@ -173,12 +177,20 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 body = getScreen(screen);
               }
 
+              Widget? background;
+
+              if (backgroundBuilder != null) {
+                  background = backgroundBuilder!.call(context, BackgroundType.Menu);
+              }
+
               body ??= Column(
                 children: [
                   if (isOffline && !OfflineUtil.isGoingOffline) OfflineUtil.getOfflineBar(context),
                   Expanded(
                     child: Stack(
                       children: [
+                        if (background != null)
+                          _wrapWithSafeArea(context, background),
                         if (backgroundColor != null || backgroundImage != null)
                           WorkScreenPage.buildBackground(backgroundColor, backgroundImage),
                         _getMenu(
@@ -211,7 +223,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 );
               }
 
-              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.menuTopColor));
+              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.menuTitleColor));
 
               Widget menu = Scaffold(
                 drawerEnableOpenDragGesture: false,
@@ -344,6 +356,27 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
         ],
       ),
     );
+  }
+
+  Widget _wrapWithSafeArea(BuildContext context, Widget child) {
+    Color? color = FlutterUI.of(context).widget.safeAreaColorBuilder?.call(context);
+
+    if (color != null) {
+      return Container(
+          color: color,
+          child: SafeArea(
+              child: Container(
+                color: Theme.of(context).colorScheme.surface,
+                child: child,
+              )
+          )
+      );
+    }
+    else {
+      return SafeArea(
+        child: child
+      );
+    }
   }
 
   Widget _getMenu(

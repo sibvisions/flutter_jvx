@@ -115,11 +115,12 @@ class ContentState extends State<Content> {
             scrollDirection: Axis.vertical,
             child: Stack(
               children: [
-                SizedBox(
-                  height: screenHeight,
-                  width: constraints.maxWidth,
-                  child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
-                ),
+                  SizedBox(
+                    height: screenHeight,
+                    width: constraints.maxWidth,
+                    child: backgroundColor != null || backgroundImageString != null ?
+                      WorkScreenPage.buildBackground(backgroundColor, backgroundImageString) : null,
+                  ),
                 screenWidget
               ],
             ),
@@ -247,6 +248,7 @@ class ContentBottomSheet extends StatelessWidget {
         centerTitle: true,
         title: Text(model.contentTitle ?? model.name),
         automaticallyImplyLeading: false,
+        backgroundColor: model.useBackgroundInTitle ? model.background ?? Theme.of(context).colorScheme.surface : null,
       ),
       body: Listener(
         onPointerDown: (event) {

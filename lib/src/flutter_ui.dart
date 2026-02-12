@@ -105,6 +105,8 @@ T? cast<T>(dynamic x) => x is T ? x : null;
 typedef ColorBuilder = Color? Function(BuildContext context);
 /// Builder function for dynamic theme creation
 typedef ThemeBuilder = ThemeData Function(ThemeData themeData, Color? seedColor, Brightness brightness, bool useFixedPrimary);
+/// Builder function for dynamic background images
+typedef BackgroundBuilder = Widget? Function(BuildContext context, BackgroundType type);
 
 late BeamerDelegate routerDelegate;
 
@@ -117,6 +119,11 @@ final GlobalKey<OverlayState> rootNavigatorKey = GlobalKey<OverlayState>();
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver();
 
+enum BackgroundType {
+  AppOverview,
+  Menu,
+  WorkScreen
+}
 
 ///Simple static application variables
 class AppVariables {
@@ -243,7 +250,10 @@ class FlutterUI extends StatefulWidget {
   final SplashBuilder? splashBuilder;
 
   /// Builder function for custom background.
-  final WidgetBuilder? backgroundBuilder;
+  final BackgroundBuilder? backgroundBuilder;
+
+  /// Builder function for safe area color
+  final ColorBuilder? safeAreaColorBuilder;
 
   /// Handler for custom login
   final LoginHandler? loginHandler;
@@ -285,6 +295,7 @@ class FlutterUI extends StatefulWidget {
     this.appManager,
     this.splashBuilder,
     this.backgroundBuilder,
+    this.safeAreaColorBuilder,
     this.loginHandler,
     this.menuBuilder,
     this.themeBuilder,

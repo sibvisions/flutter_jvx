@@ -240,7 +240,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
             if (snapshot.connectionState == ConnectionState.done && snapshot.data == true) {
               // Has to called first as it initializes [screenTitle].
-              body = _buildWorkScreen(context, isOffline);
+              body = _buildWorkScreen(context);
 
               title = Text(screenTitle!);
             }
@@ -263,7 +263,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               }
             }
             else if (model != null) {
-              if (model!.useScreenBackgroundInMenu) {
+              if (model!.useBackgroundInTitle) {
                 headerColor = model!.background ?? Theme.of(context).colorScheme.surface;
               }
             }
@@ -271,8 +271,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             if (headerColor == null) {
               AppStyle appStyle = AppStyle.of(context);
 
-              headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.screenMenuTopColor));
+              headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.screenTitleColor));
             }
+
+            bool showOfflineBar = isOffline && !OfflineUtil.isGoingOffline;
 
             PreferredSizeWidget? appBar = frame?.getAppBar(
                 context: context,
@@ -280,11 +282,19 @@ class WorkScreenPageState extends State<WorkScreenPage> {
                 titleSpacing: leading != null ? 0 : 8,
                 title: title,
                 actions: actions,
-                backgroundColor: isOffline && !OfflineUtil.isGoingOffline ? OfflineUtil.backgroundColor : headerColor
+                backgroundColor: showOfflineBar ? OfflineUtil.backgroundColor : headerColor
             );
 
             // Dummy body shown while loading/error.
             body ??= _buildDummyScreen(snapshot);
+
+            Widget? background;
+
+            BackgroundBuilder? backBuild = FlutterUI.of(context).widget.backgroundBuilder;
+
+            if (backBuild != null) {
+              background = backBuild.call(context, BackgroundType.WorkScreen);
+            }
 
             Widget content;
 
@@ -300,14 +310,35 @@ class WorkScreenPageState extends State<WorkScreenPage> {
                   PopScope(
                     canPop: _canPop(),
                     onPopInvokedWithResult: _onPopInvoked,
-                    child: _wrapBody(body!))
+                    child: _wrapBody(context, body!, background != null))
               );
             }
             else {
               content = Builder(
-                builder: (context) => _wrapBody(body!)
+                builder: (context) => _wrapBody(context, body!, background != null)
               );
             }
+
+            Widget? wrappedBody = frame?.wrapBody(content) ?? content;
+
+            if (background != null) {
+              wrappedBody = Stack(
+                children: [
+                  _wrapWithSafeArea(context, background),
+                  wrappedBody
+                ],
+              );
+            }
+
+            //shows the offline bar full width and not in the SafeArea
+            wrappedBody = Column(
+              children: [
+                if (showOfflineBar) OfflineUtil.getOfflineBar(context),
+                Expanded(
+                  child: wrappedBody
+                ),
+              ],
+            );
 
             return Scaffold(
               resizeToAvoidBottomInset: false,
@@ -316,7 +347,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               endDrawerEnableOpenDragGesture: false,
               drawer: noMenu ? null : frame?.getDrawer(context),
               endDrawer: noMenu ? null : frame?.getEndDrawer(context),
-              body: frame?.wrapBody(content) ?? content,
+              body: wrappedBody,
             );
           },
         );
@@ -325,33 +356,13 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   ///Wraps the body (= screen) with a SafeArea or without if noSafeArea property is set
-  Widget _wrapBody(Widget body) {
+  Widget _wrapBody(BuildContext context, Widget body, bool transparent) {
     Widget wrappedBody;
 
     if (model?.fullSize == true) {
       wrappedBody = body;
     } else {
-      if (safeAreaColor != null) {
-        wrappedBody = Container(
-          color: safeAreaColor,
-          child: SafeArea(
-            child: Container(
-              color: Theme.of(context).colorScheme.surface,
-              child: body,
-            )
-          )
-        );
-      }
-      else {
-        //we need a container with BoxDecoration around, because without we don't receive
-        //events from [Listener]
-        wrappedBody = Container(
-          decoration: const BoxDecoration(),
-          child: SafeArea(
-            child: body
-          )
-        );
-      }
+      wrappedBody = _wrapWithSafeArea(context, body, transparent);
     }
 
     if (body is WorkScreen) {
@@ -371,7 +382,31 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     return wrappedBody;
   }
 
-  Widget _buildWorkScreen(BuildContext context, bool isOffline) {
+  Widget _wrapWithSafeArea(BuildContext context, Widget child, [bool transparent = false]) {
+    if (safeAreaColor != null) {
+      return Container(
+          color: transparent ? Colors.transparent : safeAreaColor,
+          child: SafeArea(
+              child: Container(
+                color: transparent ? Colors.transparent : Theme.of(context).colorScheme.surface,
+                child: child,
+              )
+          )
+      );
+    }
+    else {
+      //we need a container with BoxDecoration around, because without we don't receive
+      //events from [Listener]
+      return Container(
+          decoration: const BoxDecoration(),
+          child: SafeArea(
+              child: child
+          )
+      );
+    }
+  }
+
+  Widget _buildWorkScreen(BuildContext context) {
     ScreenWrapper? builtScreen;
 
     if (model != null) {
@@ -388,11 +423,12 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       safeAreaColor = customScreen.safeAreaColorBuilder?.call(context);
     }
 
+    safeAreaColor ??= FlutterUI.of(context).widget.safeAreaColorBuilder?.call(context);
+
     // Update screenTitle
     screenTitle = builtScreen.screenTitle;
 
     WorkScreen screen = WorkScreen(
-      isOffline: isOffline && !OfflineUtil.isGoingOffline,
       item: item!,
       model: model,
       screen: builtScreen,
@@ -422,22 +458,41 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   void _init() {
+/*
     // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
-    final model = this.model;
-    if (model == null &&
+    final String? modelName = model?.name;
+
+    if (modelName == null &&
         (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
       future = ICommandService().sendCommand(OpenScreenCommand(
         longName: item!.screenLongName,
         reason: "Screen was opened inside $runtimeType",
       ));
-    } else if (model != null && kIsWeb) {
+    } else if (modelName != null && kIsWeb) {
       future = ICommandService().sendCommand(
         ActivateScreenCommand(
-          componentName: model.name,
+          componentName: modelName,
           reason: "Screen was activated inside $runtimeType",
         ),
       );
     }
+*/
+      // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
+      final model = this.model;
+      if (model == null &&
+          (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
+        future = ICommandService().sendCommand(OpenScreenCommand(
+          longName: item!.screenLongName,
+          reason: "Screen was opened inside $runtimeType",
+        ));
+      } else if (model != null && kIsWeb) {
+        future = ICommandService().sendCommand(
+          ActivateScreenCommand(
+            componentName: model.name,
+            reason: "Screen was activated inside $runtimeType",
+          ),
+        );
+      }
 
     future ??= Future.value(true);
 

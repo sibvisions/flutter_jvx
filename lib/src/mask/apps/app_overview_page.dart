@@ -133,7 +133,7 @@ class AppOverviewPage extends StatefulWidget {
 }
 
 class _AppOverviewPageState extends State<AppOverviewPage> {
-  late final WidgetBuilder? backgroundBuilder;
+  late final BackgroundBuilder? backgroundBuilder;
   List<App>? apps;
   Future<void>? future;
 
@@ -174,6 +174,13 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     return ValueListenableBuilder(
       valueListenable: IConfigService().singleAppMode,
       builder: (context, value, child) {
+
+        Widget? background;
+
+        if (backgroundBuilder != null) {
+          background = backgroundBuilder!.call(context, BackgroundType.AppOverview);
+        }
+
         return PageStorage(
           bucket: FlutterUI.of(context).globalStorageBucket,
           child: Theme(
@@ -188,7 +195,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
               body: Stack(
                 fit: StackFit.expand,
                 children: [
-                  if (backgroundBuilder != null) backgroundBuilder!.call(context),
+                  if (background != null)
+                    background,
                   if (backgroundBuilder == null)
                     SvgPicture.asset(
                       ImageLoader.getAssetPath(
