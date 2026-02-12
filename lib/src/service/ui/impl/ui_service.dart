@@ -1087,16 +1087,39 @@ class UiService implements IUiService {
 
     _activeContents.remove(pContentName);
 
-    Route? route = FlutterUI.maybeOf(FlutterUI.getCurrentContext()!)
+    BuildContext? uicontext = FlutterUI.getCurrentContext();
+
+    Route? route = FlutterUI.maybeOf(uicontext!)
         ?.jvxRouteObserver
         .knownRoutes
         .firstWhereOrNull((element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName));
 
     if (route != null) {
       if (route.isCurrent) {
-        Navigator.pop(FlutterUI.getCurrentContext()!);
+        Navigator.pop(uicontext);
       } else {
-        Navigator.of(FlutterUI.getCurrentContext()!).removeRoute(route);
+        if (route.navigator == null) {
+          List<Route<dynamic>>? routes = FlutterUI.maybeOf(uicontext)?.jvxRouteObserver.knownRoutes;
+
+          if (routes?.isNotEmpty == true) {
+            List<Route<dynamic>>? copy = routes?.toList(growable: false);
+
+            if (copy != null) {
+              NavigatorState nav = Navigator.of(uicontext);
+
+              for (int i = 0; i < copy.length; i++) {
+                if (copy[i].settings.name?.startsWith(Content.ROUTE_SETTINGS_PREFIX) == true
+                    // different navigator state -> remove
+                    || copy[i].navigator != nav) {
+                  routes!.remove(copy[i]);
+                }
+              }
+            }
+          }
+      }
+        else {
+          route.navigator?.removeRoute(route);
+        }
       }
     }
 
