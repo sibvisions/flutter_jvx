@@ -345,6 +345,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
 
   @override
   void dispose() {
+    _timerReset?.cancel();
+
     usernameController.dispose();
     passwordController.dispose();
     newPasswordController.dispose();
@@ -357,10 +359,12 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
   void resetButton() {
     _timerReset?.cancel();
 
-    setState(() {
-      _isChanging = false;
-      progressButtonState = ButtonState.idle;
-    });
+    if (mounted) {
+      setState(() {
+        _isChanging = false;
+        progressButtonState = ButtonState.idle;
+      });
+    }
   }
 
   void _resetButtonByTimeout() {

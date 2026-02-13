@@ -95,6 +95,8 @@ class _ManualCardState extends State<ManualCard> {
 
   @override
   void dispose() {
+    _timerReset?.cancel();
+
     usernameController.dispose();
     passwordController.dispose();
 
@@ -331,10 +333,12 @@ class _ManualCardState extends State<ManualCard> {
   void resetButton() {
     _timerReset?.cancel();
 
-    setState(() {
-      _isAuthenticating = false;
-      progressButtonState = ButtonState.idle;
-    });
+    if (mounted) {
+      setState(() {
+        _isAuthenticating = false;
+        progressButtonState = ButtonState.idle;
+      });
+    }
   }
 
   void _resetButtonByTimeout() {

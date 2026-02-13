@@ -136,6 +136,8 @@ class _MFATextCardState extends State<MFATextCard> {
 
   @override
   void dispose() {
+    _timerReset?.cancel();
+
     codeController.dispose();
     super.dispose();
   }
@@ -154,10 +156,12 @@ class _MFATextCardState extends State<MFATextCard> {
   void resetButton() {
     _timerReset?.cancel();
 
-    setState(() {
-      _isAuthenticating = false;
-      progressButtonState = ButtonState.idle;
-    });
+    if (mounted) {
+      setState(() {
+        _isAuthenticating = false;
+        progressButtonState = ButtonState.idle;
+      });
+    }
   }
 
   void _resetButtonByTimeout() {

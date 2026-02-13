@@ -196,6 +196,8 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
 
   @override
   void dispose() {
+    _timerReset?.cancel();
+
     identifierController.dispose();
 
     super.dispose();
@@ -204,10 +206,12 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
   void resetButton() {
     _timerReset?.cancel();
 
-    setState(() {
-      _isResetting = false;
-      progressButtonState = ButtonState.idle;
-    });
+    if (mounted) {
+      setState(() {
+        _isResetting = false;
+        progressButtonState = ButtonState.idle;
+      });
+    }
   }
 
   void _resetButtonByTimeout() {
