@@ -91,8 +91,10 @@ class _JVxScannerState extends State<JVxScanner> {
       onPopInvokedWithResult: (didPop, result) async {
         if (!didPop) return;
 
-        var result = widget.callback(scannedBarcodes);
-        if (result is Future) await result;
+        if (multiScanEnabled && scannedBarcodes.isNotEmpty) {
+          var result = widget.callback(scannedBarcodes);
+          if (result is Future) await result;
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -160,6 +162,12 @@ class _JVxScannerState extends State<JVxScanner> {
 
   Future<void> _onDetect(BarcodeCapture capture) async {
     if (!calledCallback) {
+
+      print("##########################");
+      print(capture.barcodes.length);
+      print(capture.raw);
+      print("##########################");
+
       if (multiScanEnabled) {
         if (scannedBarcodes.map((e) => e.rawValue).none((e) => capture.barcodes.map((e) => e.rawValue).contains(e))) {
           scannedBarcodes.addAll(capture.barcodes);
