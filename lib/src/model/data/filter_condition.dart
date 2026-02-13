@@ -51,11 +51,13 @@ class FilterCondition {
     this.operatorType = OperatorType.And,
     this.compareType = CompareType.Equals,
     this.not = false,
-    FilterCondition? condition,
-    this.conditions = const [],
+    List<FilterCondition>? conditions,
   }) {
-    if (condition != null) {
-      conditions.insert(0, condition);
+    if (conditions != null) {
+      this.conditions = conditions;
+    }
+    else {
+      this.conditions = [];
     }
   }
 
