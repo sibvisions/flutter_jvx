@@ -55,6 +55,17 @@ abstract class ParseUtil {
   static Duration? validateDuration(Duration? duration) =>
       duration == null || duration == Duration.zero || duration.isNegative ? null : duration;
 
+  /// Will return the int, parse a string otherwise returns null.
+  static int? parseInt(dynamic pNumber) {
+    if (pNumber != null) {
+      if (pNumber is int) {
+        return pNumber;
+      } else {
+        return int.tryParse(pNumber.toString());
+      }
+    }
+    return null;
+  }
   /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
   /// otherwise returns null.
   static bool? parseBool(dynamic pBool) {

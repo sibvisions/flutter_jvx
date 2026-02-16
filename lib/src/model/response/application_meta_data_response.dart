@@ -52,6 +52,15 @@ class ApplicationMetaDataResponse extends ApiResponse {
   /// The mandatory mark
   final String? mandatoryMark;
 
+  /// Whether biometric login is possible
+  final bool biometricLogin;
+
+  /// Whether a secure layer should be used with biometric login
+  final bool biometricLoginSecure;
+
+  /// The max timeout for valid biometric logins
+  final int? biometricLoginMaxTimeout;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,8 +76,13 @@ class ApplicationMetaDataResponse extends ApiResponse {
     this.rememberMeEnabled,
     mandatoryMarkVisible,
     this.mandatoryMark,
+    bool? biometricLogin,
+    bool? biometricLoginSecure,
+    this.biometricLoginMaxTimeout,
     required super.name,
-  }) : mandatoryMarkVisible = mandatoryMarkVisible ?? true;
+  }) : mandatoryMarkVisible = mandatoryMarkVisible ?? true,
+       biometricLogin = biometricLogin ?? false,
+       biometricLoginSecure = biometricLoginSecure ?? true;
 
   ApplicationMetaDataResponse.fromJson(super.json)
       : clientId = json[ApiObjectProperty.clientId],
@@ -81,6 +95,9 @@ class ApplicationMetaDataResponse extends ApiResponse {
         rememberMeEnabled = json[ApiObjectProperty.rememberMe],
         mandatoryMarkVisible = json[ApiObjectProperty.mandatoryMarkVisible] ?? true,
         mandatoryMark = json[ApiObjectProperty.mandatoryMark],
+        biometricLogin = json[ApiObjectProperty.biometricLogin] ?? false,
+        biometricLoginSecure = json[ApiObjectProperty.biometricLoginSecure] ?? true,
+        biometricLoginMaxTimeout = json[ApiObjectProperty.biometricLoginMaxTimeout],
         super.fromJson();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,7 +110,9 @@ class ApplicationMetaDataResponse extends ApiResponse {
            "serverVersion: $serverVersion, customLanguage: $customLanguage, "
            "langCode: $langCode, timeZoneCode: $timeZoneCode, "
            "lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled, "
-           "mandatoryMarkVisible: $mandatoryMarkVisible, mandatoryMark: $mandatoryMark}, ${super.propertiesAsString()}";
+           "mandatoryMarkVisible: $mandatoryMarkVisible, mandatoryMark: $mandatoryMark}, "
+           "biometricLogin: $biometricLogin, biometricLoginSecure: $biometricLoginSecure, "
+           "biometricLoginMaxTimeout: $biometricLoginMaxTimeout, ${super.propertiesAsString()}";
   }
 
 }

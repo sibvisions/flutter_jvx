@@ -29,8 +29,6 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../apps/app_overview_page.dart';
-import '../../../state/app_style.dart';
-import '../../../state/app_style_direct.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
 import '../modern_login.dart';
@@ -76,12 +74,13 @@ class _ManualCardState extends State<ManualCard> {
     usernameController = TextEditingController(text: servConf.username.value);
     passwordController = TextEditingController();
 
-    AppStyleDirect appStyle = AppStyle.direct();
-    useBiometric = appStyle.styleAsBool(AppStyle.loginBiometric);
+    IUiService servUi = IUiService();
+
+    useBiometric = servUi.applicationMetaData.value?.biometricLogin ?? false;
 
     //if we use biometric login -> we don't show remember me because it's implicit
     showRememberMe = !useBiometric
-                     && (IUiService().applicationMetaData.value?.rememberMeEnabled ?? false);
+                     && (servUi.applicationMetaData.value?.rememberMeEnabled ?? false);
 
     AppConfig? appConf = servConf.getAppConfig();
 

@@ -411,6 +411,10 @@ abstract class ApiObjectProperty {
   static const String designMode = "designMode";
   static const String customLanguage = "customLanguage";
 
+  static const String biometricLogin = "biometricLogin";
+  static const String biometricLoginSecure = "biometricLoginSecure";
+  static const String biometricLoginMaxTimeout = "biometricLoginMaxTimeout";
+
   static const String mandatoryMarkVisible = "mandatoryMarkVisible";
   static const String mandatoryMark = "mandatoryMark";
 

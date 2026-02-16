@@ -45,8 +45,6 @@ import 'mask/menu/skeleton_menu.dart';
 import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/jvx_splash.dart';
 import 'mask/splash/splash.dart';
-import 'mask/state/app_style.dart';
-import 'mask/state/app_style_direct.dart';
 import 'mask/work_screen/skeleton_screen.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/command/api/feedback_command.dart';
@@ -55,6 +53,7 @@ import 'model/command/ui/view/message/ierror_command.dart';
 import 'model/command/ui/view/message/open_server_error_dialog_command.dart';
 import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
+import 'model/response/application_meta_data_response.dart';
 import 'routing/locations/main_location.dart';
 import 'service/api/i_api_service.dart';
 import 'service/api/impl/default/api_service.dart';
@@ -1201,12 +1200,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     if (path.endsWith("/home")
         || (path.startsWith("/screens/") && !path.contains("?secure"))) {
-      AppStyleDirect appStyle = AppStyle.direct();
 
-      bool biometricLogin = appStyle.styleAsBool(AppStyle.loginBiometric);
+      IUiService servUi = IUiService();
+
+      ApplicationMetaDataResponse? appMeta = servUi.applicationMetaData.value;
+
+      bool biometricLogin = appMeta?.biometricLogin ?? false;
 
       if (biometricLogin) {
-        bool biometricSecure = appStyle.styleAsBool(AppStyle.loginBiometricSecure, true);
+        bool biometricSecure = appMeta?.biometricLoginSecure ?? true;
 
         ProtectConfig cfg = ProtectConfig(
             name: "login",
@@ -1370,6 +1372,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         );
       },
     );
+
+    wRoot = AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        systemNavigationBarContrastEnforced: true
+      ),
+      child: wRoot);
 
     return Directionality(
       textDirection: TextDirection.ltr,

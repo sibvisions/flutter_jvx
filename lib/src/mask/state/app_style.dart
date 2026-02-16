@@ -31,9 +31,6 @@ class AppStyle extends InheritedWidget {
   static const String loginBottomColor = "login.bottomColor";
   static const String loginColorGradient = "login.colorGradient";
   static const String loginInverseColor = "login.inverseColor";
-  static const String loginBiometric = "login.biometric";
-  static const String loginBiometricSecure = "login.biometric.secure";
-  static const String loginBiometricMaxTimeout = "login.biometric.maxtimeout";
   static const String menuTitleColor = "menu.titleColor";
   static const String screenTitleColor = "screen.titleColor";
   static const String desktopIcon = "desktop.icon";
