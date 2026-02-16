@@ -249,10 +249,12 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   void openScanner() {
-    IUiService().openDialog(
+    IUiService().openDialogFullScreen(
+      transitionDuration: Duration.zero,
+      pIsDismissible: true,
       pBuilder: (_) => JVxScanner(
         formats: model.scanFormats ?? const [BarcodeFormat.all],
-        callback: sendScannerResult,
+        callback: sendScannerResult
       ),
     );
   }

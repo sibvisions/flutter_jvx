@@ -141,7 +141,15 @@ abstract class IUiService implements Service {
   Future<T?> openDialog<T>({
     required WidgetBuilder pBuilder,
     BuildContext? context,
+    bool pIsDismissible = true
+  });
+
+  /// Opens a [Dialog]
+  Future<T?> openDialogFullScreen<T>({
+    required WidgetBuilder pBuilder,
+    BuildContext? context,
     bool pIsDismissible = true,
+    Duration? transitionDuration
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -320,16 +320,36 @@ class UiService implements IUiService {
   Future<T?> openDialog<T>({
     required WidgetBuilder pBuilder,
     BuildContext? context,
-    bool pIsDismissible = true,
-  }) =>
-      showDialog(
-        context: context ?? FlutterUI.getCurrentContext()!,
-        barrierDismissible: pIsDismissible,
-        builder: (BuildContext context) => PopScope(
+    bool pIsDismissible = true
+  }) {
+    return showDialog(
+      context: context ?? FlutterUI.getCurrentContext()!,
+      barrierDismissible: pIsDismissible,
+      builder: (BuildContext context) =>
+        PopScope(
           canPop: pIsDismissible,
           child: pBuilder.call(context),
         ),
-      );
+    );
+  }
+
+  @override
+  Future<T?> openDialogFullScreen<T>({
+    required WidgetBuilder pBuilder,
+    BuildContext? context,
+    bool pIsDismissible = true,
+    Duration? transitionDuration
+  }) {
+    return showGeneralDialog(
+      transitionDuration: transitionDuration ?? const Duration(milliseconds: 200),
+      context: FlutterUI.getCurrentContext()!,
+      pageBuilder: (context, animation, secondaryAnimation) => PopScope(
+        canPop: pIsDismissible,
+        child: pBuilder.call(context)
+      )
+    );
+  }
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Meta data management
@@ -391,6 +411,20 @@ class UiService implements IUiService {
   @override
   void updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData) {
     _applicationMetaData.value = pApplicationMetaData;
+
+    //MARK: Set global timeout for biometric reAuth
+
+    // If application parameters contain biometric-login max timeout -> change the default
+    Duration? timeout;
+
+    int? hours = pApplicationMetaData?.biometricLoginMaxTimeout;
+
+    if (hours != null) {
+      timeout = Duration(hours: hours);
+
+      ProtectConfig.reAuthMaxTimeout = timeout;
+    }
+
   }
 
   @override
@@ -409,16 +443,16 @@ class UiService implements IUiService {
     var oldAppParam = _applicationParameters.value;
     var newAppParam = oldAppParam.copyWith()..applyResponse(pApplicationParameters);
 
+    getAppManager()?.modifyApplicationParameters(newAppParam);
+
     //Notify listeners about changed parameters
     List<ApplicationParameterChangedListener> copy = _appParameterListener.toList(growable: false);
 
     for (String key in pApplicationParameters.parameters.keys) {
       for (int i = 0; i < copy.length; i++) {
-          copy[i](key, oldAppParam.parameters[key], pApplicationParameters.parameters[key]);
+        copy[i](key, oldAppParam.parameters[key], pApplicationParameters.parameters[key]);
       }
     }
-
-    getAppManager()?.modifyApplicationParameters(newAppParam);
 
     _applicationParameters.value = newAppParam;
   }
