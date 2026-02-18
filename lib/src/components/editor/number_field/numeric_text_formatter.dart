@@ -34,13 +34,15 @@ class NumericTextFormatter extends TextInputFormatter {
       String newString = newValue.text;
 
       try {
-        RegExp regEndingZeros = RegExp(r"^.*" + numberFormatter.symbols.DECIMAL_SEP + r".*(?<!0)(0*)$");
+        RegExp regEndingZeros = RegExp(r"^.*" + RegExp.escape(numberFormatter.symbols.DECIMAL_SEP) + r".*(?<!0)(0*)$");
         String endingZeroes = regEndingZeros.firstMatch(newString)?.group(1) ?? "";
         num? number = convertToNumber(newString);
+
         if (number != null) {
           if (!number.toString().contains(".") && endingZeroes.isNotEmpty) {
             endingZeroes = ".$endingZeroes";
           }
+
           if (precision != null && precision! > 0 && scale != null) {
             int localPrecision = precision! - scale!;
             String allowedScale = scale! > 0 ? r"\d{0," + scale!.toString() + r"}" : "0";
