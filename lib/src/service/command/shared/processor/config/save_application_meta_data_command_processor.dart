@@ -27,7 +27,7 @@ import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_meta_data_command.dart';
-import '../../../../../util/auth/biometric_overlay.dart';
+import '../../../../../util/auth/auth_service.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../api/shared/repository/online_api_repository.dart';
 import '../../../../apps/i_app_service.dart';
@@ -49,7 +49,7 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
 
     String appId = servConf.currentApp.value!;
 
-    BiometricOverlay.clearCache(appId);
+    AuthService.clearCache(appId);
 
     await IAppService().removePreviousAppVersions(appId, version);
 

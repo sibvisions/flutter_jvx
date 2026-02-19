@@ -107,10 +107,10 @@ abstract class IUiService implements Service {
   void updateDesignModeElement(String? pId);
 
   /// the protection handling
-  ValueListenable<ProtectConfig?> get protection;
+  ValueListenable<List<ProtectConfig>?> get protection;
 
   /// Updates the protection.
-  void updateProtection(ProtectConfig? config);
+  void updateProtection(List<ProtectConfig>? config);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing

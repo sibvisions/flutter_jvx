@@ -79,7 +79,7 @@ import 'service/storage/impl/default/storage_service.dart';
 import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
 import 'service/ui/protect_config.dart';
-import 'util/auth/biometric_overlay.dart';
+import 'util/auth/auth_overlay.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
 import 'util/json_template_manager.dart';
@@ -577,7 +577,6 @@ class FlutterUI extends StatefulWidget {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     packageInfo = await PackageInfo.fromPlatform();
-
 
     // Apps
     IAppService appService = AppService.create();
@@ -1218,7 +1217,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             skeletonBuilder: _skeletonMenu
         );
 
-        IUiService().updateProtection(cfg);
+        IUiService().updateProtection([cfg]);
       }
       else {
         IUiService().updateProtection(null);
@@ -1230,7 +1229,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           skeletonBuilder: _skeletonScreen
       );
 
-      IUiService().updateProtection(cfg);
+      ProtectConfig? cfgMenu = IUiService().protection.value?.first;
+
+      //only add login config if available
+      if (cfgMenu != null && cfgMenu.name != "login") {
+        cfgMenu = null;
+      }
+
+      IUiService().updateProtection([
+        if (cfgMenu != null) cfgMenu,
+        cfg
+      ]);
     }
     else if (path == "/" || path.startsWith("/login")) {
       IUiService().updateProtection(null);
@@ -1549,7 +1558,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       return true;
     }
 
-    if (BiometricOverlay.isVisible(context)) {
+    if (AuthOverlay.isVisible(context)) {
       return true;
     }
 

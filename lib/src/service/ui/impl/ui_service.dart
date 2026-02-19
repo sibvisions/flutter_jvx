@@ -126,7 +126,7 @@ class UiService implements IUiService {
 
   final ValueNotifier<bool> _designMode = ValueNotifier(false);
 
-  final ValueNotifier<ProtectConfig?> _protection = ValueNotifier(null);
+  final ValueNotifier<List<ProtectConfig>?> _protection = ValueNotifier(null);
 
   final ValueNotifier<String?> _designModeElement = ValueNotifier(null);
 
@@ -188,12 +188,12 @@ class UiService implements IUiService {
   }
 
   @override
-  ValueListenable<ProtectConfig?> get protection {
+  ValueListenable<List<ProtectConfig>?> get protection {
     return _protection;
   }
 
   @override
-  void updateProtection(ProtectConfig? config) {
+  void updateProtection(List<ProtectConfig>? config) {
     _protection.value = config;
   }
 

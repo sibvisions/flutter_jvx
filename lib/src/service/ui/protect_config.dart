@@ -48,11 +48,12 @@ class ProtectConfig {
     ProtectConfig({
         this.secureApp = true,
         this.name,
-        this.reAuthTimeout = const Duration(seconds: 30),
+        reAuthTimeout,
         this.reAuthOnlyAfterResume = false,
         this.onAuthentication,
         this.skeletonBuilder
-    }) : cacheKey = "${IConfigService().currentApp.value ?? "<undefined>"}@$name";
+    }) : reAuthTimeout = reAuthTimeout ?? reAuthOnlyAfterResume ? reAuthMaxTimeout : const Duration(seconds: 8),
+         cacheKey = "${IConfigService().currentApp.value ?? "<undefined>"}@$name";
 
     @override
     String toString() {

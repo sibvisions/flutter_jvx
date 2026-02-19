@@ -29,7 +29,7 @@ import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
 import '../service/service.dart';
 import '../service/ui/i_ui_service.dart';
-import '../util/auth/biometric_overlay.dart';
+import '../util/auth/auth_overlay.dart';
 import '../util/jvx_colors.dart';
 import '../util/widgets/status_banner.dart';
 import 'apps/app_overview_page.dart';
@@ -299,8 +299,6 @@ class JVxOverlayState extends State<JVxOverlay> {
                       const ModalBarrier(
                         dismissible: false,
                       ),
-                    if (IUiService().clientId.value != null)
-                      BiometricOverlay(config: IUiService().protection.value),
                     if (_showConnectedBarrier)
                       const ModalBarrier(
                         dismissible: false,
@@ -418,6 +416,8 @@ class JVxOverlayState extends State<JVxOverlay> {
                           ),
                         ),
                       ),
+                    if (IUiService().clientId.value != null)
+                      AuthOverlay(config: IUiService().protection.value),
                   ],
                 ),
               );
