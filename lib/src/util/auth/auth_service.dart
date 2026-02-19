@@ -365,11 +365,7 @@ class AuthService extends ChangeNotifier {
       WidgetBuilder? builder = _config![_invalidConfigIndex].skeletonBuilder;
 
       if (builder != null) {
-        Widget w = builder(context);
-
-        return Container(
-          color: _invalidConfigIndex == 0 ? Colors.red : Colors.greenAccent,
-          child: w);
+        return builder(context);
       }
     }
 
