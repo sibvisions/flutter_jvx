@@ -24,11 +24,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../flutter_ui.dart';
+import '../../mask/error/error_dialog.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
@@ -41,6 +43,7 @@ import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/auth/auth_service.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
@@ -66,6 +69,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   FocusNode buttonFocusNode = FocusNode();
 
   ActionSliderController actionSliderController = ActionSliderController();
+
+  LocalAuthentication? _auth;
 
   @override
   void initState() {
@@ -108,8 +113,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
               })
               .whenComplete(() => Future.delayed(const Duration(milliseconds: 1500)))
               .whenComplete(() {
-                if (controller.value.mode == SliderMode.failure ||
-                    (model.isSliderResetable && model.isSliderAutoResetting)) {
+                if (controller.value.mode == SliderMode.failure || (model.isSliderResetable && model.isSliderAutoResetting)) {
                   controller.reset();
                 }
               });
@@ -198,6 +202,61 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   Future<bool> sendButtonPressed([String? overwrittenButtonPressId]) {
+    if (model.isSecure) {
+
+      return _authenticateUser().then((authenticated) {
+        if (authenticated == null) {
+          IUiService().showJVxDialog(ErrorDialog(title:
+            FlutterUI.translate("Error"),
+            message: FlutterUI.translate("Required security features not enabled!"),
+            dismissible: true));
+        }
+        else if (authenticated) {
+          return _sendButtonPressedImmediate(overwrittenButtonPressId);
+        }
+
+        return Future.value(false);
+      }).catchError((error, stack) {
+        FlutterUI.log.e(error, error:error, stackTrace: stack);
+
+        return Future.value(false);
+      });
+    } else {
+      return _sendButtonPressedImmediate(overwrittenButtonPressId);
+    }
+  }
+
+  Future<bool?> _authenticateUser() async {
+    _auth ??= LocalAuthentication();
+
+    try {
+      bool isSupported = await _auth!.isDeviceSupported();
+
+      if (isSupported) {
+        bool canCheck = await _auth!.canCheckBiometrics;
+
+        if (canCheck) {
+          List<BiometricType> biometricTypes = await _auth!.getAvailableBiometrics();
+
+          if (!AuthService.biometricOnly || biometricTypes.isNotEmpty) {
+            return await _auth!.authenticate(
+              localizedReason: FlutterUI.translate(AuthService.title),
+              persistAcrossBackgrounding: true,
+              biometricOnly: AuthService.biometricOnly,
+            );
+          }
+        }
+      }
+
+      return null;
+    } catch (e) {
+      FlutterUI.log.d(e);
+
+      return false;
+    }
+  }
+
+  Future<bool> _sendButtonPressedImmediate([String? overwrittenButtonPressId]) {
     return IUiService().saveAllEditors(pId: model.id, pReason: "Button [${model.id} pressed").then((success) async {
       if (!success) {
         return false;
@@ -214,8 +273,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       } else if (!kIsWeb) {
         if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
           goOffline();
-        } else if (model.classNameEventSourceRef == FlButtonWidget.SCANNER_BUTTON ||
-            model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
+        } else if (model.classNameEventSourceRef == FlButtonWidget.SCANNER_BUTTON || model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
           openScanner();
         } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
           callNumber();
@@ -252,10 +310,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     IUiService().openDialogFullScreen(
       transitionDuration: Duration.zero,
       pIsDismissible: true,
-      pBuilder: (_) => JVxScanner(
-        formats: model.scanFormats ?? const [BarcodeFormat.all],
-        callback: sendScannerResult
-      ),
+      pBuilder: (_) => JVxScanner(formats: model.scanFormats ?? const [BarcodeFormat.all], callback: sendScannerResult),
     );
   }
 

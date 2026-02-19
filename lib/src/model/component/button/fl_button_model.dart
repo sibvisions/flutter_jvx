@@ -28,6 +28,8 @@ class FlButtonModel extends FlComponentModel {
 
   static const String STYLE_TEXT = "f_text";
 
+  static const String STYLE_SECURE = "f_secure";
+
   static const String STYLE_SLIDE_RESETTABLE = "f_slide_reset";
 
   static const String STYLE_SLIDE_AUTO_RESET = "f_slide_auto_reset";
@@ -118,6 +120,9 @@ class FlButtonModel extends FlComponentModel {
 
   /// If the button is a text button
   bool get isTextButton => styles.contains(STYLE_TEXT);
+
+  /// If the button is a secure button
+  bool get isSecure => styles.contains(STYLE_SECURE);
 
   /// Whether the button invokes [HapticFeedback.lightImpact] on press.
   bool get isHapticLight => styles.contains(STYLE_HAPTIC_LIGHT);
