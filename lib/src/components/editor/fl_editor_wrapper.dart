@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
@@ -371,12 +372,16 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void recreateCellEditor([bool pSubscribe = true]) {
     cellEditor.dispose();
 
+    //try to use columnDefinition if available
+    ColumnDefinition? colDef = IDataService().getDataBook(model.dataProvider)?.metaData?.columnDefinitions.byName(model.columnName);
+
     Map<String, dynamic> jsonCellEditor = Map.of(model.json[ApiObjectProperty.cellEditor]);
     cellEditor = ICellEditor.getCellEditor(
       name: model.name,
       cellEditorJson: jsonCellEditor,
       columnName: model.columnName,
       dataProvider: model.dataProvider,
+      columnDefinition: colDef,
       onChange: onChange,
       onEndEditing: onEndEditing,
       onFocusChanged: _onFocusChange,
