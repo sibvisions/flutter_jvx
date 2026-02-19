@@ -10,11 +10,17 @@ import '../../service/ui/protect_config.dart';
 
 class AuthService extends ChangeNotifier {
 
+  /// The auth title
+  static final String title = 'Scan your fingerprint or face to authenticate';
+
   /// the global "last" auth-time cache
   static final Map<String, ({DateTime creation, Duration? expires, bool afterResume})> _globalAuthTime = {};
 
   /// the method channel for platform/native communication
   static const platformChannel = MethodChannel('com.sibvisions.flutter_jvx/security');
+
+  /// whether we use only biometric auth
+  static final bool biometricOnly = false;
 
   /// whether to use native channel communication
   static final bool _useChannel = Platform.isIOS || Platform.isAndroid;
@@ -27,9 +33,6 @@ class AuthService extends ChangeNotifier {
 
   /// the index of invalid configuration
   int _invalidConfigIndex = -1;
-
-  /// whether we use only biometric auth
-  final bool _biometricOnly = false;
 
   /// whether authentication is supported
   bool _isAuthSupported = true;
@@ -53,11 +56,13 @@ class AuthService extends ChangeNotifier {
 
           try {
             biometricTypes = await _auth.getAvailableBiometrics();
+
+            _isBiometricAuthPossible = biometricTypes.isNotEmpty;
           } on PlatformException catch (e) {
             FlutterUI.log.e(e);
           }
 
-          _isBiometricAuthPossible = biometricTypes.isNotEmpty;
+          _isBiometricAuthPossible = false;
 
           notifyListeners();
         }
@@ -241,7 +246,7 @@ class AuthService extends ChangeNotifier {
       }
     }
 
-    if (_isAuthenticated || (!_isBiometricAuthPossible && _biometricOnly)) {
+    if (_isAuthenticated || (!_isBiometricAuthPossible && biometricOnly)) {
       _invalidConfigIndex = -1;
 
       _isAuthenticated = true;
@@ -283,9 +288,9 @@ class AuthService extends ChangeNotifier {
       }
 
       authenticated = await _auth.authenticate(
-        localizedReason: FlutterUI.translate('Scan your fingerprint or face to authenticate'),
+        localizedReason: FlutterUI.translate(title),
         persistAcrossBackgrounding: true,
-        biometricOnly: _biometricOnly,
+        biometricOnly: biometricOnly,
       );
 
       if (_useChannel && authenticated) {
