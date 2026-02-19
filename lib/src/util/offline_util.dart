@@ -269,8 +269,8 @@ abstract class OfflineUtil {
             ));
 
             int localCounter = 1;
-            for (var insertedRow in rowsToUpdate) {
-              if (await _handleUpdatedRow(offlineApiRepository, insertedRow, dataBook)) {
+            for (var updatedRow in rowsToUpdate) {
+              if (await _handleUpdatedRow(offlineApiRepository, updatedRow, dataBook)) {
                 successfulSyncedRows++;
               } else {
                 failedSyncedRows++;
