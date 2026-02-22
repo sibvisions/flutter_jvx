@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 
 import '../../../../../model/command/api/fetch_command.dart';
@@ -102,7 +104,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand pCommand) async {
-    IDataService().updateFromFetch(pCommand: pCommand);
+    await IDataService().updateFromFetch(pCommand: pCommand);
 
     return [];
   }
