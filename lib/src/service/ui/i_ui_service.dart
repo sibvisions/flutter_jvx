@@ -112,6 +112,9 @@ abstract class IUiService implements Service {
   /// Updates the protection.
   void updateProtection(List<ProtectConfig>? config);
 
+  /// Gets UI input
+  Future<dynamic> getInput(String title, String fieldTitle, bool confirm);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

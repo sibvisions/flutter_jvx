@@ -15,16 +15,23 @@
  */
 
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../components/editor/cell_editor/referenced_cell_editor.dart';
+import '../../flutter_ui.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/config/shared/config_handler.dart';
 import '../../service/data/i_data_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/column_list.dart';
+import '../../util/crypto_util.dart';
+import '../../util/i_types.dart';
 import '../../util/parse_util.dart';
 import '../../util/sort_list.dart';
 import '../command/api/delete_record_command.dart';
@@ -81,7 +88,25 @@ class DataBook {
   int selectedRow;
 
   /// Contains all metadata
-  DalMetaData? metaData;
+  DalMetaData? _metaData;
+
+  /// Meta data access
+  DalMetaData? get metaData => _metaData;
+
+  /// Sets meta data
+  set metaData(DalMetaData? value) {
+    bool noMetaData  = _metaData == null;
+
+    _metaData = value;
+
+    //if we set metadata for first time -> update values
+    if (noMetaData && value != null) {
+      _decryptCachedValues();
+    }
+  }
+
+  /// The list of still decrypted records because of missing metadata
+  Map<String, List<int>>? _notDecryptedCache;
 
   /// Contains record formats. The key is the name of the component accessing the formats.
   Map<String, RecordFormat> recordFormats = HashMap();
@@ -97,6 +122,9 @@ class DataBook {
 
   /// Referenced linked cellEditors
   List<ReferencedCellEditor> referencedCellEditors = [];
+
+  /// current token for encryption
+  String? token;
 
   /// Has meta data set.
   bool hasMetaData = false;
@@ -129,7 +157,7 @@ class DataBook {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Updates all data from a fetch request
-  void updateFromFetch({required SaveFetchDataCommand pCommand}) {
+  Future<void> updateFromFetch({required SaveFetchDataCommand pCommand}) async {
     var pFetchResponse = pCommand.response;
 
     Map<int, List> dataMap;
@@ -137,15 +165,15 @@ class DataBook {
 
     bool newPageKey = false;
 
-    if (metaData?.masterReference == null) {
+    if (_metaData?.masterReference == null) {
       dataMap = records;
     } else {
       if (pFetchResponse.masterRow?.isEmpty ?? true) {
         pageKey = "noMasterRow";
       } else {
         pageKey = Filter(
-          columnNames: metaData!.masterReference!.columnNames,
-          values: metaData!.masterReference!.columnNames
+          columnNames: _metaData!.masterReference!.columnNames,
+          values: _metaData!.masterReference!.columnNames
               .mapIndexed((index, referencedColumn) => pFetchResponse.masterRow![index])
               .toList(),
         ).toPageKey();
@@ -167,16 +195,28 @@ class DataBook {
       rootKey = pageKey;
     }
 
+    List<int>? notEncrypted;
+
+    if (_metaData == null) {
+      notEncrypted = [];
+    }
+
     // Save records
     for (int i = 0; i < pFetchResponse.records.length; i++) {
-      dataMap[i + pFetchResponse.from] = pFetchResponse.records[i];
+      if (notEncrypted != null) {
+        notEncrypted.add(pFetchResponse.from + i);
+      }
+
+      dataMap[pFetchResponse.from + i] = await _decryptValues(pFetchResponse.records[i], _metaData!);
     }
 
     // Remove values with higher index if all records are fetched (clean old data)
     if (pCommand.response.isAllFetched) {
-      dataMap.removeWhere((key, value) => key > pFetchResponse.to);
       if (pFetchResponse.records.isEmpty) {
-        dataMap.remove(0);
+        dataMap.clear();
+      }
+      else {
+        dataMap.removeWhere((key, value) => key > pFetchResponse.to);
       }
     }
 
@@ -184,9 +224,22 @@ class DataBook {
       if (pCommand.response.isAllFetched) {
         pageRecords[pageKey] = dataMap;
       } else {
-        for (int i = 0; i < pFetchResponse.records.length; i++) {
-          pageRecords[pageKey]![i + pFetchResponse.from] = pFetchResponse.records[i];
+        if (notEncrypted != null) {
+          notEncrypted.clear();
         }
+
+        for (int i = 0; i < pFetchResponse.records.length; i++) {
+          if (notEncrypted != null) {
+            notEncrypted.add(pFetchResponse.from + i);
+          }
+
+          pageRecords[pageKey]![pFetchResponse.from + i] = await _decryptValues(pFetchResponse.records[i], _metaData);
+        }
+      }
+
+      if (notEncrypted != null) {
+        _notDecryptedCache ??= {};
+        _notDecryptedCache![pageKey] = notEncrypted;
       }
     }
 
@@ -296,9 +349,13 @@ class DataBook {
       String columnName = pChangedResponse.changedColumnNames![index];
       dynamic columnData = pChangedResponse.changedValues![index];
 
-      int intColIndex = metaData?.columnDefinitions.indexByName(columnName) ?? -1;
-      if (intColIndex >= 0) {
-        rowData[intColIndex] = columnData;
+      int colIndex = _metaData?.columnDefinitions.indexByName(columnName) ?? -1;
+      if (colIndex >= 0) {
+        if (_metaData?.columnDefinitions[colIndex].dataTypeIdentifier == Types.ENCODED_BINARY) {
+          columnData = decryptValue(columnData);
+        }
+
+        rowData[colIndex] = columnData;
         changed = true;
       }
     }
@@ -308,18 +365,18 @@ class DataBook {
 
   /// Sets the sort definition and returns if anything changed
   bool updateSortDefinitions(SortList? pSortDefinitions) {
-    if (metaData == null) {
+    if (_metaData == null) {
       return false;
     }
 
     bool changeDetected = false;
 
-    if (metaData!.sortDefinitions == null || pSortDefinitions == null) {
-      changeDetected = metaData!.sortDefinitions != pSortDefinitions;
+    if (_metaData!.sortDefinitions == null || pSortDefinitions == null) {
+      changeDetected = _metaData!.sortDefinitions != pSortDefinitions;
     }
 
     if (pSortDefinitions != null && !changeDetected) {
-      changeDetected = metaData!.sortDefinitions!.length != pSortDefinitions.length;
+      changeDetected = _metaData!.sortDefinitions!.length != pSortDefinitions.length;
 
       if (!changeDetected) {
 
@@ -328,14 +385,14 @@ class DataBook {
             break;
           }
 
-          var oldSortDefinition = metaData!.sortDefinitions!.byName(sortDefinition.columnName);
+          var oldSortDefinition = _metaData!.sortDefinitions!.byName(sortDefinition.columnName);
 
           changeDetected = oldSortDefinition == null || oldSortDefinition.mode != sortDefinition.mode;
         }
       }
     }
 
-    metaData!.sortDefinitions = pSortDefinitions;
+    _metaData!.sortDefinitions = pSortDefinitions;
 
     return changeDetected;
   }
@@ -350,7 +407,7 @@ class DataBook {
   /// Gets a record
   /// If row is not found returns null
   DataRecord? getRecord({required List<String>? pDataColumnNames, required int pRecordIndex}) {
-    if (!records.containsKey(pRecordIndex) || metaData == null) {
+    if (!records.containsKey(pRecordIndex) || _metaData == null) {
       return null;
     }
 
@@ -366,13 +423,13 @@ class DataBook {
       recordForColumnNames = [];
 
       for (String columnName in pDataColumnNames) {
-        var colDef = metaData!.columnDefinitions.byName(columnName);
+        var colDef = _metaData!.columnDefinitions.byName(columnName);
 
         if (colDef != null) {
           columnList.add(colDef);
 
           // We use only requested columns for our new record
-          recordForColumnNames.add(selectedRecord[metaData!.columnDefinitions.indexOf(colDef)]);
+          recordForColumnNames.add(selectedRecord[_metaData!.columnDefinitions.indexOf(colDef)]);
         }
       }
 
@@ -381,7 +438,7 @@ class DataBook {
     }
 
     return DataRecord(
-      columnDefinitions: columnList ?? metaData!.columnDefinitions,
+      columnDefinitions: columnList ?? _metaData!.columnDefinitions,
       index: pRecordIndex,
       values: recordForColumnNames ?? selectedRecord,
       selectedColumn: selectedColumn,
@@ -403,6 +460,8 @@ class DataBook {
 
   /// Deletes all current records
   void clearRecords() {
+    token = null;
+
     pageRecords.clear();
     records.clear();
     isAllFetched = false;
@@ -555,6 +614,120 @@ class DataBook {
     String? pDataProvider,
   }) {
     IUiService().disposeDataSubscription(pSubscriber: pSubObject, pDataProvider: pDataProvider);
+  }
+
+  dynamic encryptValue(dynamic value) async {
+    if (value == null) {
+      return value;
+    }
+
+    ConfigHandler cfgHandler = IConfigService().getConfigHandler();
+
+    if (token == null) {
+      token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.name");
+
+      if (token == null) {
+        try {
+          token ??= await IUiService().getInput("Security token", "Token", true);
+
+          if (token != null && token!.isNotEmpty) {
+            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.name", token);
+          }
+        }
+        catch (e) {
+          FlutterUI.logUI.e(e);
+        }
+      }
+    }
+
+    if (token != null && token!.isNotEmpty) {
+      return CryptoUtil.encrypt(value, token!);
+    }
+
+    return value;
+  }
+
+  Future<List<dynamic>> _decryptValues(List<dynamic> record, DalMetaData? metaData) async {
+    if (metaData == null) {
+      return record;
+    }
+
+    dynamic value;
+    ColumnDefinition colDef;
+
+    List<dynamic>? newRecord;
+
+    ColumnList colList = metaData.columnDefinitions;
+
+    String? token;
+
+    for (int i = 0; i < colList.length; i++) {
+      if (colList[i].dataTypeIdentifier == Types.ENCODED_BINARY) {
+        newRecord ??= List.from(record);
+        newRecord[i] = await decryptValue(newRecord[i]);
+      }
+    }
+
+    return newRecord ?? record;
+  }
+
+  dynamic decryptValue(dynamic value) async {
+    if (value == null) {
+      return value;
+    }
+
+    ConfigHandler cfgHandler = IConfigService().getConfigHandler();
+
+    if (token == null) {
+      token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.name");
+
+      if (token == null) {
+        try {
+          token ??= await IUiService().getInput("Security token", "Token", true);
+
+          if (token != null && token!.isNotEmpty) {
+            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.name", token);
+          }
+        }
+        catch (e) {
+          FlutterUI.logUI.e(e);
+        }
+      }
+    }
+
+    if (token != null && token!.isNotEmpty) {
+      dynamic encodedValue = value;
+
+      if (ImageLoader.isBase64(value)) {
+        encodedValue = utf8.decode(base64.decode(value));
+      }
+
+      return CryptoUtil.decrypt(encodedValue, token!);
+    }
+
+    return value;
+  }
+
+  Future<void> _decryptCachedValues() async {
+    if (_notDecryptedCache != null) {
+      for (final entry in _notDecryptedCache!.entries) {
+        Map<int, List<dynamic>>? records = pageRecords[entry.key];
+
+        if (records != null) {
+          List<dynamic>? record;
+
+          for (int i = 0; i < entry.value.length; i++) {
+            record = records[i];
+
+            if (record != null) {
+              records[i] = await _decryptValues(record, metaData);
+            }
+          }
+        }
+      }
+
+      _notDecryptedCache = null;
+    }
   }
 }
 

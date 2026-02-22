@@ -50,7 +50,7 @@ abstract class IDataService implements Service {
   bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Updates dataBook with fetched data,
-  List<BaseCommand> updateFromFetch({required SaveFetchDataCommand pCommand});
+  Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand pCommand});
 
   /// Updates parts of dataBook with changed data.
   bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse});

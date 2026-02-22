@@ -47,6 +47,7 @@ import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/main_location.dart';
 import '../../../util/jvx_colors.dart';
+import '../../../util/widget_util.dart';
 import '../../apps/app.dart';
 import '../../apps/i_app_service.dart';
 import '../../command/i_command_service.dart';
@@ -195,6 +196,11 @@ class UiService implements IUiService {
   @override
   void updateProtection(List<ProtectConfig>? config) {
     _protection.value = config;
+  }
+
+  @override
+  Future<dynamic> getInput(String title, String fieldTitle, bool confirm) async {
+    return WidgetUtil.showTokenDialog(title, fieldTitle, confirm);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

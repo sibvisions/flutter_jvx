@@ -91,6 +91,8 @@ abstract class Types {
 
   static const int SQLXML = 2009;
 
+  static const int ENCODED_BINARY = -999999;
+
   /// Transforms a server given [dataType] to an SQLite-conform datatype.
   static String convertToSQLite(int dataType, {int? scale}) {
     switch (dataType) {
@@ -115,6 +117,8 @@ abstract class Types {
         return "REAL";
       case BINARY:
       case VARBINARY:
+      case ENCODED_BINARY:
+        return "BINARY";
       case LONGVARBINARY:
       case JAVA_OBJECT:
       case BLOB:

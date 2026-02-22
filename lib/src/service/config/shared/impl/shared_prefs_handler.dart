@@ -16,7 +16,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'package:cryptography/cryptography.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +23,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../flutter_ui.dart';
 import '../../../../model/config/user/user_info.dart';
+import '../../../../util/crypto_util.dart';
 import '../config_handler.dart';
 
 /// Stores all config and session based data.
@@ -141,7 +140,7 @@ class SharedPrefsHandler implements ConfigHandler {
   Future<String?> getValueSecure(String name) async {
     if (kIsWeb) {
       return _securePrefs.read(key: name).then((value) {
-        return decrypt(value, name);
+        return CryptoUtil.decrypt(value, name);
       });
     }
     else {
@@ -183,7 +182,7 @@ class SharedPrefsHandler implements ConfigHandler {
       String encValue;
 
       if (kIsWeb) {
-        encValue = await encrypt(value, name);
+        encValue = await CryptoUtil.encrypt(value, name);
       }
       else {
         encValue = value;
@@ -317,66 +316,6 @@ class SharedPrefsHandler implements ConfigHandler {
       }
     }
     return false;
-  }
-
-  /// Derives a key from a key code (maybe an appId)
-  Future<SecretKey> deriveKey(String keyCode) async {
-    String packName = FlutterUI.packageInfo.packageName;
-
-    final pbkdf2 = Pbkdf2(
-      macAlgorithm: Hmac.sha256(),
-      iterations: 50000,
-      bits: 256,
-    );
-
-    return pbkdf2.deriveKey(
-      secretKey: SecretKey(utf8.encode(keyCode)),
-      nonce: utf8.encode(packName),
-    );
-  }
-
-  /// Encrypts a [text] with [keyCode]
-  Future<String> encrypt(String text, String keyCode) async {
-    final algorithm = AesGcm.with256bits();
-    final key = await deriveKey(keyCode);
-
-    final secretBox = await algorithm.encrypt(
-      utf8.encode(text),
-      secretKey: key,
-    );
-
-    final map = {
-      'nonce': base64Encode(secretBox.nonce),
-      'cipher': base64Encode(secretBox.cipherText),
-      'mac': base64Encode(secretBox.mac.bytes),
-    };
-
-    return jsonEncode(map);
-  }
-
-  /// Decrypts an [encrypted] text with [keyCode]
-  Future<String?> decrypt(String? encrypted, String keyCode) async {
-    if (encrypted == null) {
-      return null;
-    }
-
-    final algorithm = AesGcm.with256bits();
-    final key = await deriveKey(keyCode);
-
-    final map = jsonDecode(encrypted);
-
-    final secretBox = SecretBox(
-      base64Decode(map['cipher']),
-      nonce: base64Decode(map['nonce']),
-      mac: Mac(base64Decode(map['mac'])),
-    );
-
-    final decrypted = await algorithm.decrypt(
-      secretBox,
-      secretKey: key,
-    );
-
-    return utf8.decode(decrypted);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

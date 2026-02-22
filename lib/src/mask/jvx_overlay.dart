@@ -237,6 +237,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   @override
   void initState() {
     super.initState();
+
     backButtonDispatcher = RootBackButtonDispatcher();
     backButtonDispatcher.addCallback(_onBackPress);
 

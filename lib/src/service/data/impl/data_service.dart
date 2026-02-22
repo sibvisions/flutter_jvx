@@ -67,7 +67,7 @@ class DataService implements IDataService {
   }
 
   @override
-  List<BaseCommand> updateFromFetch({required SaveFetchDataCommand pCommand}) {
+  Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand pCommand}) async {
     DataBook dataBook =
         dataBooks[pCommand.response.dataProvider] ??= DataBook(dataProvider: pCommand.response.dataProvider);
 
@@ -76,7 +76,7 @@ class DataService implements IDataService {
       dataBook.selectedRow = -1;
     }
 
-    dataBook.updateFromFetch(pCommand: pCommand);
+    unawaited(dataBook.updateFromFetch(pCommand: pCommand));
 
     return [];
   }

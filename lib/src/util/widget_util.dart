@@ -1,0 +1,136 @@
+/*
+ * Copyright 2026 SIB Visions GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import '../flutter_ui.dart';
+
+abstract class WidgetUtil {
+  static OverlayEntry? _overlayEntry;
+  static Completer<dynamic>? _tokenCompleter;
+
+  static bool close() {
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
+      _overlayEntry = null;
+
+      return true;
+    }
+
+    return false;
+  }
+
+  static void _closeIntern(String? token) {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+
+    if (_tokenCompleter != null && !_tokenCompleter!.isCompleted) {
+      _tokenCompleter!.complete(token);
+    }
+  }
+
+  static Future<dynamic> showTokenDialog(String title, String fieldTitle, bool confirm) async {
+    if (_overlayEntry != null) {
+      return _tokenCompleter!.future;
+    }
+
+    _tokenCompleter = Completer<dynamic>();
+
+    final tokenController = TextEditingController();
+    final confirmController = TextEditingController();
+
+    String? errorText;
+
+    Widget w = StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          title: Text(FlutterUI.translate(title)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: tokenController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: FlutterUI.translate(fieldTitle),
+                ),
+              ),
+              if (confirm )const SizedBox(height: 12),
+              if (confirm ) TextField(
+                controller: confirmController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: FlutterUI.translate("Confirm"),
+                  errorText: errorText,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => _closeIntern(""),
+              child: Text(FlutterUI.translate("Cancel")),
+            ),
+            TextButton(
+              onPressed: () {
+                final token = tokenController.text.trim();
+
+                if (confirm) {
+                  final tokenConfirm = confirmController.text.trim();
+
+                  if (token.isEmpty || tokenConfirm.isEmpty) {
+                    setState(() => errorText = FlutterUI.translate("Please enter both fields"));
+                    return;
+                  }
+
+                  if (token != tokenConfirm) {
+                    setState(() => errorText = "Tokens do not match!");
+                    return;
+                  }
+                }
+                _closeIntern(token);
+              },
+              child: Text(FlutterUI.translate("OK")),
+            ),
+          ],
+        );
+      },
+    );
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Material(
+        type: MaterialType.transparency,
+        child: Stack(
+          children: [
+            ModalBarrier(
+              color: Colors.black54,
+              dismissible: true,
+              onDismiss: () => _closeIntern(""),
+            ),
+
+            Center(child: w),
+          ],
+        ),
+      )
+    );
+
+    rootNavigatorKey.currentState?.insert(_overlayEntry!);
+
+    return _tokenCompleter!.future;
+  }
+}

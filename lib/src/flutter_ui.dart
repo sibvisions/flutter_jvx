@@ -93,6 +93,7 @@ import 'util/jvx_routes_observer.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
 import 'util/push_util.dart';
+import 'util/widget_util.dart';
 import 'util/widgets/future_nested_navigator.dart';
 
 import 'util/web/browser_tab_title_util_non_web.dart'
@@ -117,7 +118,7 @@ GlobalKey<NavigatorState>? splashNavigatorKey;
 
 final GlobalKey<OverlayState> rootNavigatorKey = GlobalKey<OverlayState>();
 
-final RouteObserver<ModalRoute> routeObserver = RouteObserver();
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
 enum BackgroundType {
   AppOverview,
@@ -668,6 +669,7 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
+
     App? urlApp = await _configureAppWithParameters(queryParameters);
 
     // API
@@ -1117,18 +1119,20 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
 
     // Register callbacks
-    IConfigService().disposeImagesCallbacks();
-    IConfigService().registerImagesCallback(refresh);
+    IConfigService servCfg = IConfigService();
+    servCfg.disposeImagesCallbacks();
+    servCfg.registerImagesCallback(refresh);
 
+    IUiService servUi = IUiService();
     // Update style to reflect web colors for theme
     // Don't forget to remove them in [dispose]!
     // ignore: invalid_use_of_protected_member
-    assert(!IUiService().layoutMode.hasListeners);
-    IUiService().layoutMode.addListener(changedTheme);
-    IConfigService().themePreference.addListener(changedTheme);
-    IConfigService().applicationStyle.addListener(changedTheme);
-    IUiService().applicationSettings.addListener(refresh);
-    IUiService().i18n().currentLanguage.addListener(refresh);
+    assert(!servUi.layoutMode.hasListeners);
+    servUi.layoutMode.addListener(changedTheme);
+    servCfg.themePreference.addListener(changedTheme);
+    servCfg.applicationStyle.addListener(changedTheme);
+    servUi.applicationSettings.addListener(refresh);
+    servUi.i18n().currentLanguage.addListener(refresh);
 
     // Init default themes (if applicable)
     changeTheme(null);
@@ -1297,8 +1301,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   Widget _routeBuilder(BuildContext contextA, Widget? child) {
-
-
     Widget wRoot = ListenableBuilder(
       listenable: Listenable.merge([
         IAppService().startupFuture,
@@ -1397,7 +1399,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         ],
       ),
     );
-
   }
 
   /// Builds a widget to show when starting an app.
@@ -1559,6 +1560,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
 
     if (AuthOverlay.isVisible(context)) {
+      return true;
+    }
+
+    if (WidgetUtil.close()) {
       return true;
     }
 
