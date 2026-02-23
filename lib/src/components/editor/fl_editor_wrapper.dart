@@ -118,9 +118,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   modelUpdated() {
     // If a change of cell editors has occurred.
     if (model.changedCellEditor) {
-      recreateCellEditor();
 
-      model.applyComponentInformation(cellEditor.createWidgetModel());
+      _replaceCellEditor();
     }
 
     super.modelUpdated();
@@ -213,6 +212,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ///Replaces the cell editor with another instance but keep the value
+  Future<void> _replaceCellEditor() async {
+    dynamic oldValue = await cellEditor.getValue();
+
+    recreateCellEditor();
+
+    model.applyComponentInformation(cellEditor.createWidgetModel());
+
+    cellEditor.setValue(oldValue);
+  }
 
   /// Subscribes to the service and registers the set value call back.
   void _subscribe([bool pImmediatelyRetrieveData = true]) {
