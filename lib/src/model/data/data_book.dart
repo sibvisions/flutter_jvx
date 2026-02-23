@@ -20,7 +20,6 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
-import '../../../flutter_jvx.dart';
 import '../../components/editor/cell_editor/referenced_cell_editor.dart';
 import '../../flutter_ui.dart';
 import '../../service/api/shared/api_object_property.dart';
@@ -32,6 +31,7 @@ import '../../service/ui/i_ui_service.dart';
 import '../../util/column_list.dart';
 import '../../util/crypto_util.dart';
 import '../../util/i_types.dart';
+import '../../util/image/image_loader.dart';
 import '../../util/parse_util.dart';
 import '../../util/sort_list.dart';
 import '../command/api/delete_record_command.dart';
@@ -624,14 +624,14 @@ class DataBook {
     ConfigHandler cfgHandler = IConfigService().getConfigHandler();
 
     if (token == null) {
-      token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.name");
+      token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.encToken");
 
       if (token == null) {
         try {
           token ??= await IUiService().getInput("Security token", "Token", true);
 
           if (token != null && token!.isNotEmpty) {
-            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.name", token);
+            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", token);
           }
         }
         catch (e) {
@@ -652,14 +652,9 @@ class DataBook {
       return record;
     }
 
-    dynamic value;
-    ColumnDefinition colDef;
-
     List<dynamic>? newRecord;
 
     ColumnList colList = metaData.columnDefinitions;
-
-    String? token;
 
     for (int i = 0; i < colList.length; i++) {
       if (colList[i].dataTypeIdentifier == Types.ENCODED_BINARY) {
@@ -679,14 +674,14 @@ class DataBook {
     ConfigHandler cfgHandler = IConfigService().getConfigHandler();
 
     if (token == null) {
-      token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.name");
+      token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.encToken");
 
       if (token == null) {
         try {
           token ??= await IUiService().getInput("Security token", "Token", true);
 
           if (token != null && token!.isNotEmpty) {
-            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.name", token);
+            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", token);
           }
         }
         catch (e) {

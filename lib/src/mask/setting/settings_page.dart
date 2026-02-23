@@ -49,7 +49,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
   static const double linkIconSize = 18;
   static const double arrowIconSize = 20;
 
@@ -57,17 +56,20 @@ class _SettingsPageState extends State<SettingsPage> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static const double bottomBarHeight = 55;
+
   final List<int> resolutions = [1024, 640, 320];
 
   late final Future<String> appFuture;
   late final Future<String> versionFuture;
 
   late final String? appName;
+  late final String? appId;
   late final Uri? baseUrl;
   String? language;
   late bool singleAppMode;
 
-  static const double bottomBarHeight = 55;
+  bool? sectokenAvailable;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -79,18 +81,28 @@ class _SettingsPageState extends State<SettingsPage> {
 
     IUiService().getAppManager()?.onSettingPage();
 
+    IConfigService servCfg = IConfigService();
+
     // Load Version
     versionFuture = PackageInfo.fromPlatform().then((packageInfo) {
-      int? buildNumber = IConfigService().getAppConfig()?.versionConfig?.buildNumber;
-      String effectiveBuildNumber =
-          buildNumber != null && buildNumber >= 0 ? buildNumber.toString() : packageInfo.buildNumber;
+      int? buildNumber = servCfg.getAppConfig()?.versionConfig?.buildNumber;
+      String effectiveBuildNumber = buildNumber != null && buildNumber >= 0 ? buildNumber.toString() : packageInfo.buildNumber;
       return "${packageInfo.version}${effectiveBuildNumber == "" ? "" : "-$effectiveBuildNumber"}";
     });
 
-    appName = IConfigService().appName.value;
-    baseUrl = IConfigService().baseUrl.value;
-    language = IConfigService().userLanguage.value;
-    singleAppMode = IConfigService().singleAppMode.value;
+    appName = servCfg.appName.value;
+    appId = servCfg.currentApp.value;
+    baseUrl = servCfg.baseUrl.value;
+    language = servCfg.userLanguage.value;
+    singleAppMode = servCfg.singleAppMode.value;
+
+    servCfg.getConfigHandler().getValueSecure("$appId.encToken").then((value) {
+      if (value != null && value.isNotEmpty) {
+        setState(() {
+          sectokenAvailable = true;
+        });
+      }
+    });
   }
 
   @override
@@ -100,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Widget body = SingleChildScrollView(
           child: Column(
             children: [
-              _buildApplicationInfo(),
+              _buildInformation(),
               if (appName != null)
                 IconTheme.merge(
                   data: IconThemeData(color: Theme.of(contextB).colorScheme.primary),
@@ -136,26 +148,26 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           body: body,
           bottomNavigationBar: Material(
-              color: JVxColors.isLightTheme(contextA) ? (IConfigService().currentApp.value == null ? JVxColors.blue : Theme.of(contextA).colorScheme.primary) : Theme.of(contextA).colorScheme.surface,
-              textStyle: TextStyle(color: JVxColors.isLightTheme(contextA) ? Colors.white : Theme.of(contextA).textTheme.labelMedium!.color),
-              child: SafeArea(
-                child: SizedBox(
-                  height: bottomBarHeight,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      if (_changesPending()) Expanded(child: _createCancelButton(contextA)),
-                      if (_changesPending())
-                        VerticalDivider(
-                          color: JVxColors.dividerColor(Theme.of(contextA)),
-                          width: 1,
-                        ),
-                      Expanded(child: _createSaveButton(contextA)),
-                    ],
-                  ),
+            color: JVxColors.isLightTheme(contextA) ? (IConfigService().currentApp.value == null ? JVxColors.blue : Theme.of(contextA).colorScheme.primary) : Theme.of(contextA).colorScheme.surface,
+            textStyle: TextStyle(color: JVxColors.isLightTheme(contextA) ? Colors.white : Theme.of(contextA).textTheme.labelMedium!.color),
+            child: SafeArea(
+              child: SizedBox(
+                height: bottomBarHeight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    if (_changesPending()) Expanded(child: _createCancelButton(contextA)),
+                    if (_changesPending())
+                      VerticalDivider(
+                        color: JVxColors.dividerColor(Theme.of(contextA)),
+                        width: 1,
+                      ),
+                    Expanded(child: _createSaveButton(contextA)),
+                  ],
                 ),
               ),
             ),
+          ),
         );
       },
     );
@@ -172,8 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         child: widget,
       );
-    }
-    else{
+    } else {
       widget = Theme(
         data: Theme.of(contextA).copyWith(
           colorScheme: Theme.of(contextA).colorScheme.copyWith(primary: JVxColors.isLightTheme(contextA) ? Theme.of(context).colorScheme.primary : Colors.white),
@@ -222,7 +233,7 @@ class _SettingsPageState extends State<SettingsPage> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Widget _buildApplicationInfo() {
+  Widget _buildInformation() {
     if (IConfigService().privacyPolicy.value != null) {
       SettingItem privacyPolicy = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.link, size: 19),
@@ -260,8 +271,8 @@ class _SettingsPageState extends State<SettingsPage> {
       appNameSetting = SettingItem(
         enabled: false,
         frontIcon: const FaIcon(FontAwesomeIcons.cubes),
-        value: appName ?? "",
         title: FlutterUI.translateLocal("App name"),
+        value: appName ?? "",
       );
     }
 
@@ -271,14 +282,13 @@ class _SettingsPageState extends State<SettingsPage> {
       baseUrlSetting = SettingItem(
         enabled: false,
         frontIcon: const FaIcon(FontAwesomeIcons.globe),
-        value: baseUrl?.toString() ?? "",
         title: urlTitle,
+        value: baseUrl?.toString() ?? "",
       );
     }
 
     Widget? languageSetting;
-    if (!(IConfigService().customLanguage.value ?? false) &&
-        !(IConfigService().getAppConfig()?.uiConfig?.hideLanguageSetting ?? false)) {
+    if (!(IConfigService().customLanguage.value ?? false) && !(IConfigService().getAppConfig()?.uiConfig?.hideLanguageSetting ?? false)) {
       var supportedLanguages = IConfigService().supportedLanguages.value.toList();
       supportedLanguages.insertAll(0, [
         "${FlutterUI.translateLocal("System")} (${IConfigService().getPlatformLocale()})",
@@ -290,9 +300,7 @@ class _SettingsPageState extends State<SettingsPage> {
       languageSetting = _buildPickerItem<String>(
         context,
         frontIcon: FontAwesomeIcons.language,
-        endIcons: (userLanguage ?? IConfigService().getPlatformLocale()) != IConfigService().getLanguage()
-            ? [_buildOverrideIcon()]
-            : null,
+        endIcons: (userLanguage ?? IConfigService().getPlatformLocale()) != IConfigService().getLanguage() ? [_buildOverrideIcon()] : null,
         title: "Language",
         // "System" is default
         value: language ?? supportedLanguages[0],
@@ -318,8 +326,7 @@ class _SettingsPageState extends State<SettingsPage> {
         frontIcon: FontAwesomeIcons.image,
         title: "Picture Size",
         value: resolution,
-        itemBuilder: (BuildContext context, int value, Widget? widget) =>
-            Text("$value ${FlutterUI.translateLocal("px")}"),
+        itemBuilder: (BuildContext context, int value, Widget? widget) => Text("$value ${FlutterUI.translateLocal("px")}"),
         onPressed: (context, value) {
           var items = resolutions.map((e) => "$e ${FlutterUI.translateLocal("px")}").toList();
           _openDropdown(context, items, "$e ${FlutterUI.translateLocal("px")}", onValue: (selectedResolution) async {
@@ -378,8 +385,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (!(IConfigService().getAppConfig()?.uiConfig?.hideThemeSetting ?? false)) {
       final Brightness systemBrightness = MediaQuery.platformBrightnessOf(context);
       final Map<ThemeMode, String> themeMapping = {
-        ThemeMode.system:
-            "${FlutterUI.translateLocal("System")} (${FlutterUI.translateLocal(systemBrightness.name.capitalize())})",
+        ThemeMode.system: "${FlutterUI.translateLocal("System")} (${FlutterUI.translateLocal(systemBrightness.name.capitalize())})",
         ThemeMode.light: FlutterUI.translateLocal("Light"),
         ThemeMode.dark: FlutterUI.translateLocal("Dark"),
       };
@@ -407,9 +413,52 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
+    Widget? encryptionSetting;
+
+    if (sectokenAvailable == true) {
+      encryptionSetting = SettingItem(
+        frontIcon: FaIcon(FontAwesomeIcons.keycdn, color: Theme.of(context).colorScheme.primary),
+        title: FlutterUI.translateLocal("Encryption token is set"),
+        onLongPressed: (context, value) async {
+          final bool? delete = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(FlutterUI.translate("Delete token")),
+              content: Text("Do you want to delete the token?"),
+              actionsPadding: EdgeInsets.only(bottom: Theme.of(context).dialogTheme.actionsPadding?.vertical ?? 15, left: 8, right: 8),
+              actions: [
+                Row(
+                  spacing: 0,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: JVxColors.isLightTheme(context) ? TextButton.styleFrom(foregroundColor: Colors.black54) : TextButton.styleFrom(foregroundColor: Colors.grey.shade600),
+                      child: Text('Yes'),
+                    ),
+                    Spacer(),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text('No'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+
+          if (delete == true) {
+            sectokenAvailable = !await IConfigService().getConfigHandler().setValueSecure("$appId.encToken", null);
+
+            setState(() {});
+          }
+        },
+      );
+    }
+
     var items = [
       if (singleAppSetting != null) singleAppSetting,
       if (themeSetting != null) themeSetting,
+      if (encryptionSetting != null) encryptionSetting,
     ];
 
     if (items.isEmpty) {
@@ -471,9 +520,7 @@ class _SettingsPageState extends State<SettingsPage> {
       final RenderBox button = context.findRenderObject()! as RenderBox;
       final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
 
-      var offset = value != null
-          ? Offset(button.size.width, 0.0)
-          : Offset(button.size.width, const EdgeInsets.all(6.0).vertical);
+      var offset = value != null ? Offset(button.size.width, 0.0) : Offset(button.size.width, const EdgeInsets.all(6.0).vertical);
 
       final RelativeRect position = RelativeRect.fromRect(
         Rect.fromPoints(
@@ -610,8 +657,7 @@ class _SettingsPageState extends State<SettingsPage> {
       value: text,
       onPressed: !(connected ?? false) && IApiService().getRepository() is OnlineApiRepository
           ? (context, value) async {
-              await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket().catchError(
-                  (e, stack) => FlutterUI.logAPI.w("Manual WebSocket connection failed", error: e, stackTrace: stack));
+              await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket().catchError((e, stack) => FlutterUI.logAPI.w("Manual WebSocket connection failed", error: e, stackTrace: stack));
               setState(() {});
             }
           : null,

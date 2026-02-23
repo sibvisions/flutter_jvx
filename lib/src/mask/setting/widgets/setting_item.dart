@@ -46,6 +46,9 @@ class SettingItem<T> extends StatelessWidget {
   /// Will be called when item was pressed
   final Function(BuildContext context, T value)? onPressed;
 
+  /// Will be called when item was long pressed
+  final Function(BuildContext context, T value)? onLongPressed;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,6 +62,7 @@ class SettingItem<T> extends StatelessWidget {
     this.frontIcon,
     this.endIcons,
     this.onPressed,
+    this.onLongPressed,
     this.itemBuilder,
   });
 
@@ -94,6 +98,7 @@ class SettingItem<T> extends StatelessWidget {
             )
           : createSubtitle(context, value as T),
       onTap: () => onPressed?.call(context, (value ?? valueNotifier?.value) as T),
+      onLongPress: () => onLongPressed?.call(context, (value ?? valueNotifier?.value) as T),
     );
   }
 
