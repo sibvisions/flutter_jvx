@@ -104,30 +104,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   void setValue(dynamic pValue) {
     lastReceivedValue = pValue;
 
-    if (isInitialized && getValue() != pValue) {
-      if (pValue == null) {
-        if (isHtml) {
-          htmlController.clear();
-        } else {
-          textController.clear();
-        }
-      } else {
-        if (pValue is! String) {
-          pValue = pValue.toString();
-        }
-
-        if (isHtml) {
-          htmlController.setText(pValue);
-        } else {
-          textController.value = TextEditingValue(
-            text: pValue,
-            selection: TextSelection.collapsed(
-              offset: pValue.runes.length,
-            ),
-          );
-        }
-      }
-    }
+    _setValueIntern(pValue);
   }
 
   @override
@@ -320,6 +297,35 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
     }
 
     super.handleFocusChanged(pHasFocus);
+  }
+
+  ///Sets value async because getValue is an async method and we can't access old value without
+  ///async handling
+  Future<void> _setValueIntern(dynamic pValue) async {
+    if (isInitialized && await getValue() != pValue) {
+      if (pValue == null) {
+        if (isHtml) {
+          htmlController.clear();
+        } else {
+          textController.clear();
+        }
+      } else {
+        if (pValue is! String) {
+          pValue = pValue.toString();
+        }
+
+        if (isHtml) {
+          htmlController.setText(pValue);
+        } else {
+          textController.value = TextEditingValue(
+            text: pValue,
+            selection: TextSelection.collapsed(
+              offset: pValue.runes.length,
+            ),
+          );
+        }
+      }
+    }
   }
 
   /// The [HtmlEditor] does not update its status of enable/disable on its own through the constructor.
