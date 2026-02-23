@@ -214,7 +214,7 @@ class _AuthOverlayState extends State<AuthOverlay> with WidgetsBindingObserver {
                     margin: const EdgeInsets.all(20),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
@@ -223,24 +223,49 @@ class _AuthOverlayState extends State<AuthOverlay> with WidgetsBindingObserver {
                           offset: const Offset(0, 4),
                         ),
                       ],
-                      border: Border.all(color: Colors.red.shade100, width: 1),
+                      border: Border.all(color: Colors.red.shade200, width: 1),
                     ),
-                    child: Row(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.lock_person_rounded, color: Colors.red.shade400, size: 32),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            FlutterUI.translate("This application requires the use of biometrics or a PIN to proceed."),
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87,
+                        Row(
+                          children: [
+                            Icon(Icons.lock_person_rounded, color: Colors.red.shade400, size: 32),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                FlutterUI.translate("This application requires the use of biometrics or a PIN to proceed."),
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
+                        const SizedBox(height: 16),
+                        if (service.timeoutLeft() > 0)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            spacing: 0,
+                            children: [
+                              Text("${service.timeoutLeft()}", style: TextStyle(fontSize: 10))
+                            ],
+                          ),
+                        if (service.timeoutLeft() <= 0)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            spacing: 0,
+                            children: [
+                              SizedBox(
+                                width: 12,
+                                height: 12,
+                                child: CircularProgressIndicator(strokeWidth: 1.5,)
+                              )
+                            ],
+                          ),
+                      ]
+                    )
                   )
                 )
               )
@@ -248,7 +273,6 @@ class _AuthOverlayState extends State<AuthOverlay> with WidgetsBindingObserver {
           )
       ],
     );
-
   }
 
   void _authServiceUpdated() {

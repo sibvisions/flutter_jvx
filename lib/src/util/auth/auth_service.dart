@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:html_editor_enhanced/utils/utils.dart';
 import 'package:local_auth/local_auth.dart';
 
 import '../../flutter_ui.dart';
@@ -31,11 +33,16 @@ class AuthService extends ChangeNotifier {
   /// the current configuration list
   List<ProtectConfig>? _config;
 
+  /// The timer for automatic stop of authentication
+  Timer? _noAuthTimer;
+
+  int _noAuthTimerSeconds = 0;
+
   /// the index of invalid configuration
   int _invalidConfigIndex = -1;
 
   /// whether authentication is supported
-  bool _isAuthSupported = true;
+  bool _isAuthSupported = false;
 
   /// whether biometric authentication is possible
   bool _isBiometricAuthPossible = false;
@@ -159,14 +166,23 @@ class AuthService extends ChangeNotifier {
 
   /// Stops authentication but acts like user-cancel (to support delay)
   void stop() {
-    _isStopped = true;
+    _noAuthTimer?.cancel();
+    _noAuthTimer = null;
 
-    if (_isAuthenticating) {
-      _isAuthenticating = false;
-      _auth.stopAuthentication();
+    if (!_isStopped) {
+      _isStopped = true;
+
+      if (_isAuthenticating) {
+        _isAuthenticating = false;
+        _auth.stopAuthentication();
+      }
+
+      notifyListeners();
+
+      if (_invalidConfigIndex >= 0) {
+        _config![_invalidConfigIndex].onStop?.call();
+      }
     }
-
-    _notifyAuthentication(false);
   }
 
   bool isCanceled() {
@@ -183,6 +199,10 @@ class AuthService extends ChangeNotifier {
 
   bool isAuthSupported() {
     return _isAuthSupported;
+  }
+
+  int timeoutLeft() {
+    return _noAuthTimerSeconds;
   }
 
   void setSecure(bool secure) {
@@ -242,8 +262,23 @@ class AuthService extends ChangeNotifier {
       _isAuthenticated = false;
       _isCanceled = false;
 
+      _noAuthTimerSeconds = 15;
+      _noAuthTimer ??= Timer.periodic(Duration(seconds: 1), (t) {
+        if (_noAuthTimerSeconds <= 0) {
+          stop();
+        }
+        else {
+          _noAuthTimerSeconds--;
+
+          notifyListeners();
+        }
+      });
+
       return;
     }
+
+    _noAuthTimer?.cancel();
+    _noAuthTimer = null;
 
     if (checkTimeout) {
       _invalidConfigIndex = -1;

@@ -45,12 +45,16 @@ class ProtectConfig {
     /// the authentication callback event
     final AuthenticationCallback? onAuthentication;
 
+    /// the stop callback event
+    final Function? onStop;
+
     ProtectConfig({
         this.secureApp = true,
         this.name,
         reAuthTimeout,
         this.reAuthOnlyAfterResume = false,
         this.onAuthentication,
+        this.onStop,
         this.skeletonBuilder
     }) : reAuthTimeout = reAuthTimeout ?? reAuthOnlyAfterResume ? reAuthMaxTimeout : const Duration(seconds: 8),
          cacheKey = "${IConfigService().currentApp.value ?? "<undefined>"}@$name";
@@ -59,7 +63,7 @@ class ProtectConfig {
     String toString() {
         return 'ProtectConfig{secureApp: $secureApp, name: $name, reAuthTimeout: $reAuthTimeout, '
                'reAuthOnlyAfterResume: $reAuthOnlyAfterResume, onAuthentication: $onAuthentication, '
-               'skeletonBuilder: $skeletonBuilder}';
+               'onStop: $onStop, skeletonBuilder: $skeletonBuilder}';
     }
 
     @override
@@ -72,6 +76,7 @@ class ProtectConfig {
             other.reAuthTimeout == reAuthTimeout &&
             other.reAuthOnlyAfterResume == reAuthOnlyAfterResume &&
             other.onAuthentication == onAuthentication &&
+            other.onStop == onStop &&
             other.skeletonBuilder == skeletonBuilder;
     }
 
@@ -83,6 +88,7 @@ class ProtectConfig {
         reAuthTimeout,
         reAuthOnlyAfterResume,
         onAuthentication,
+        onStop,
         skeletonBuilder,
       );
     }

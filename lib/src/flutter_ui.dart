@@ -1221,6 +1221,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             secureApp: biometricSecure,
             reAuthOnlyAfterResume: true,
             onAuthentication: _authBackToLogin,
+            onStop: _authBackToOverview,
             skeletonBuilder: _skeletonMenu
         );
 
@@ -1233,6 +1234,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       ProtectConfig cfg = ProtectConfig(
           name: path,
           onAuthentication: _authBackToMenu,
+          onStop: _authShowMenu,
           skeletonBuilder: _skeletonScreen
       );
 
@@ -1255,25 +1257,39 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   Future<void> _authBackToMenu(bool? success) async {
       if (success == false) {
-        BuildContext? cxt = FlutterUI.getCurrentContext();
-
-        if (cxt != null) {
-          final rootContext = Navigator.of(cxt).context;
-          final popped = await Navigator.of(cxt).maybePop();
-
-          if (popped && rootContext.mounted) {
-            Beamer.of(rootContext).update();
-          }
-        }
-        else {
-          //TODO try close screen also....
-         IUiService().routeToMenu();
-        }
+        await _authShowMenu();
       }
+  }
+
+  Future<void> _authShowMenu() async {
+    BuildContext? cxt = FlutterUI.getCurrentContext();
+
+    if (cxt != null) {
+      final rootContext = Navigator.of(cxt).context;
+      final popped = await Navigator.of(cxt).maybePop();
+
+      if (popped && rootContext.mounted) {
+        Beamer.of(rootContext).update();
+      }
+    }
+    else {
+      IUiService().routeToMenu();
+    }
   }
 
   Future<void> _authBackToLogin(bool? success) async {
     if (success == false) {
+      unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout")));
+    }
+  }
+
+  Future<void> _authBackToOverview() async {
+    IUiService servUi = IUiService();
+
+    if (servUi.canRouteToAppOverview()) {
+      unawaited(IUiService().routeToAppOverview());
+    }
+    else {
       unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout")));
     }
   }

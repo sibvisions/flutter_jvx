@@ -208,7 +208,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         if (authenticated == null) {
           IUiService().showJVxDialog(ErrorDialog(title:
             FlutterUI.translate("Error"),
-            message: FlutterUI.translate("Required security features not enabled!"),
+            message: FlutterUI.translate("This application requires the use of biometrics or a PIN to proceed."),
             dismissible: true));
         }
         else if (authenticated) {
