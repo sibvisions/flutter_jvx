@@ -200,7 +200,7 @@ class UiService implements IUiService {
 
   @override
   Future<dynamic> getInput(String title, String fieldTitle, bool confirm) async {
-    return WidgetUtil.showTokenDialog(title, fieldTitle, confirm);
+    return WidgetUtil.showInputDialog(title, fieldTitle, confirm);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

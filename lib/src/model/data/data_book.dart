@@ -17,6 +17,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 
@@ -693,8 +694,34 @@ class DataBook {
     if (token != null && token!.isNotEmpty) {
       dynamic encodedValue = value;
 
-      if (ImageLoader.isBase64(value)) {
-        encodedValue = utf8.decode(base64.decode(value));
+      Uint8List? base64Decoded;
+
+      bool decodeDone = false;
+
+      try {
+        try {
+          if (ImageLoader.isBase64(value)) {
+            decodeDone = true;
+            base64Decoded = base64Decode(value);
+          }
+        }
+        catch (ex) {
+          if (!decodeDone) {
+            //https://github.com/flutter/flutter/issues/165995 -> https://github.com/dart-lang/core/issues/874
+            base64Decoded = base64Decode(value);
+          }
+        }
+      } catch (ex) {
+        FlutterUI.log.e(ex);
+      }
+
+      if (base64Decoded != null) {
+        try {
+          encodedValue = utf8.decode(base64Decoded);
+        }
+        catch (ex) {
+          FlutterUI.log.d(ex);
+        }
       }
 
       return CryptoUtil.decrypt(encodedValue, token!);

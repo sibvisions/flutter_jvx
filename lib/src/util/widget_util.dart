@@ -22,7 +22,7 @@ import '../flutter_ui.dart';
 
 abstract class WidgetUtil {
   static OverlayEntry? _overlayEntry;
-  static Completer<dynamic>? _tokenCompleter;
+  static Completer<dynamic>? _inputCompleter;
 
   static bool close() {
     if (_overlayEntry != null) {
@@ -35,24 +35,29 @@ abstract class WidgetUtil {
     return false;
   }
 
-  static void _closeIntern(String? token) {
+  static void _closeInputIntern(String? token) {
     _overlayEntry?.remove();
     _overlayEntry = null;
 
-    if (_tokenCompleter != null && !_tokenCompleter!.isCompleted) {
-      _tokenCompleter!.complete(token);
+    if (_inputCompleter != null && !_inputCompleter!.isCompleted) {
+      _inputCompleter!.complete(token);
     }
   }
 
-  static Future<dynamic> showTokenDialog(String title, String fieldTitle, bool confirm) async {
+  static Future<dynamic> showInputDialog(String title, String fieldTitle, bool confirm) async {
     if (_overlayEntry != null) {
-      return _tokenCompleter!.future;
+      return _inputCompleter!.future;
     }
 
-    _tokenCompleter = Completer<dynamic>();
+    _inputCompleter = Completer<dynamic>();
 
-    final tokenController = TextEditingController();
-    final confirmController = TextEditingController();
+    final TextEditingController valueController = TextEditingController();
+
+    TextEditingController? confirmController;
+
+    if (confirm) {
+      confirmController = TextEditingController();
+    }
 
     String? errorText;
 
@@ -64,15 +69,15 @@ abstract class WidgetUtil {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: tokenController,
+                controller: valueController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: FlutterUI.translate(fieldTitle),
                 ),
               ),
-              if (confirm )const SizedBox(height: 12),
-              if (confirm ) TextField(
-                controller: confirmController,
+              if (confirm) const SizedBox(height: 12),
+              if (confirm) TextField(
+                controller: confirmController!,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: FlutterUI.translate("Confirm"),
@@ -81,31 +86,43 @@ abstract class WidgetUtil {
               ),
             ],
           ),
+          actionsPadding: EdgeInsets.only(
+            bottom: Theme.of(context).dialogTheme.actionsPadding?.vertical ?? 15,
+            left: 10,
+            right: 10,
+            top: 5
+          ),
           actions: [
-            TextButton(
-              onPressed: () => _closeIntern(""),
-              child: Text(FlutterUI.translate("Cancel")),
-            ),
-            TextButton(
-              onPressed: () {
-                final token = tokenController.text.trim();
+            Row(
+              spacing: 0,
+              children: [
+                TextButton(
+                  onPressed: () => _closeInputIntern(""),
+                  child: Text(FlutterUI.translate("Cancel")),
+                ),
+                Spacer(),
+                TextButton(
+                  onPressed: () {
+                    final token = valueController.text.trim();
 
-                if (confirm) {
-                  final tokenConfirm = confirmController.text.trim();
+                    if (confirm) {
+                      final tokenConfirm = confirmController!.text.trim();
 
-                  if (token.isEmpty || tokenConfirm.isEmpty) {
-                    setState(() => errorText = FlutterUI.translate("Please enter both fields"));
-                    return;
-                  }
+                      if (token.isEmpty || tokenConfirm.isEmpty) {
+                        setState(() => errorText = FlutterUI.translate("Please enter both fields"));
+                        return;
+                      }
 
-                  if (token != tokenConfirm) {
-                    setState(() => errorText = "Tokens do not match!");
-                    return;
-                  }
-                }
-                _closeIntern(token);
-              },
-              child: Text(FlutterUI.translate("OK")),
+                      if (token != tokenConfirm) {
+                        setState(() => errorText = "Tokens do not match!");
+                        return;
+                      }
+                    }
+                    _closeInputIntern(token);
+                  },
+                  child: Text(FlutterUI.translate("OK")),
+                ),
+              ],
             ),
           ],
         );
@@ -113,24 +130,24 @@ abstract class WidgetUtil {
     );
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => Material(
-        type: MaterialType.transparency,
-        child: Stack(
-          children: [
-            ModalBarrier(
-              color: Colors.black54,
-              dismissible: true,
-              onDismiss: () => _closeIntern(""),
-            ),
+        builder: (context) => Material(
+          type: MaterialType.transparency,
+          child: Stack(
+            children: [
+              ModalBarrier(
+                color: Colors.black54,
+                dismissible: true,
+                onDismiss: () => _closeInputIntern(""),
+              ),
 
-            Center(child: w),
-          ],
-        ),
-      )
+              Center(child: w),
+            ],
+          ),
+        )
     );
 
     rootNavigatorKey.currentState?.insert(_overlayEntry!);
 
-    return _tokenCompleter!.future;
+    return _inputCompleter!.future;
   }
 }

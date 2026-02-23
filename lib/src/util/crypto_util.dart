@@ -22,86 +22,92 @@ import 'package:cryptography/cryptography.dart';
 import '../flutter_ui.dart';
 
 abstract class CryptoUtil {
-    static final _secureRandom = Random.secure();
+  static final _secureRandom = Random.secure();
 
-    //Generates salt with given number of bytes
-    static List<int> _generateSalt(int length) {
-      return List<int>.generate(length, (_) => _secureRandom.nextInt(256));
+  //Generates salt with given number of bytes
+  static List<int> _generateSalt(int length) {
+    return List<int>.generate(length, (_) => _secureRandom.nextInt(256));
+  }
+
+  /// Derives a key from a key code (maybe an appId)
+  static Future<SecretKey> _deriveKey(String keyCode, List<int> salt) async {
+    final pbkdf2 = Pbkdf2(
+      macAlgorithm: Hmac.sha256(),
+      iterations: 50000,
+      bits: 256,
+    );
+
+    return pbkdf2.deriveKey(
+      secretKey: SecretKey(utf8.encode(keyCode)),
+      nonce: salt,
+    );
+  }
+
+  /// Encrypts a [text] with [keyCode]
+  static Future<String> encrypt(String text, String keyCode) async {
+    try {
+      final algorithm = AesGcm.with256bits();
+      final salt = _generateSalt(16);
+
+      final key = await _deriveKey(keyCode, salt);
+
+      final nonce = algorithm.newNonce();
+
+      final secretBox = await algorithm.encrypt(
+        utf8.encode(text),
+        secretKey: key,
+        nonce: nonce);
+
+      return jsonEncode({
+        "salt": base64Encode(salt),
+        "nonce": base64Encode(secretBox.nonce),
+        "cipher": base64Encode(secretBox.cipherText),
+        "mac": base64Encode(secretBox.mac.bytes)
+      });
+    } catch (e) {
+      FlutterUI.log.e(e);
+
+      rethrow;
+    }
+  }
+
+  /// Decrypts an [encrypted] text with [keyCode]
+  static Future<String?> decrypt(String? encrypted, String keyCode) async {
+    if (encrypted == null) {
+      return null;
     }
 
-    /// Derives a key from a key code (maybe an appId)
-    static Future<SecretKey> _deriveKey(String keyCode, List<int> salt) async {
-        final pbkdf2 = Pbkdf2(
-            macAlgorithm: Hmac.sha256(),
-            iterations: 50000,
-            bits: 256,
-        );
-
-        return pbkdf2.deriveKey(
-            secretKey: SecretKey(utf8.encode(keyCode)),
-            nonce: salt,
-        );
+    if (!encrypted.startsWith("{") && !encrypted.endsWith("}")) {
+      return encrypted;
     }
 
-    /// Encrypts a [text] with [keyCode]
-    static Future<String> encrypt(String text, String keyCode) async {
-        try {
-            final algorithm = AesGcm.with256bits();
-            final salt = _generateSalt(16);
+    try {
+      final algorithm = AesGcm.with256bits();
+      final map = jsonDecode(encrypted);
 
-            final key = await _deriveKey(keyCode, salt);
+      final key = await _deriveKey(
+        keyCode,
+        base64Decode(map["salt"])
+      );
 
-            final nonce = algorithm.newNonce();
+      final secretBox = SecretBox(
+        base64Decode(map['cipher']),
+        nonce: base64Decode(map['nonce']),
+        mac: Mac(base64Decode(map['mac'])),
+      );
 
-            final secretBox = await algorithm.encrypt(
-                utf8.encode(text),
-                secretKey: key,
-                nonce: nonce
-            );
+      final decrypted = await algorithm.decrypt(
+        secretBox,
+        secretKey: key,
+      );
 
-            return jsonEncode({
-                "salt": base64Encode(salt),
-                "nonce": base64Encode(secretBox.nonce),
-                "cipher": base64Encode(secretBox.cipherText),
-                "mac": base64Encode(secretBox.mac.bytes)
-            });
-        } catch (e) {
-            FlutterUI.log.e(e);
-
-            rethrow;
-        }
+      return utf8.decode(decrypted);
+    } on SecretBoxAuthenticationError catch (se) {
+      FlutterUI.log.e(se);
+      //Wrong key (keyCode or salt)
+      return null;
+    } catch (e) {
+      rethrow;
     }
-
-    /// Decrypts an [encrypted] text with [keyCode]
-    static Future<String?> decrypt(String? encrypted, String keyCode) async {
-        if (encrypted == null) {
-            return null;
-        }
-
-        try {
-            final algorithm = AesGcm.with256bits();
-            final map = jsonDecode(encrypted);
-
-            final key = await _deriveKey(keyCode, base64Decode(map["salt"]));
-
-            final secretBox = SecretBox(
-                base64Decode(map['cipher']),
-                nonce: base64Decode(map['nonce']),
-                mac: Mac(base64Decode(map['mac'])),
-            );
-
-            final decrypted = await algorithm.decrypt(
-                secretBox,
-                secretKey: key,
-            );
-
-            return utf8.decode(decrypted);
-        } on SecretBoxAuthenticationError catch (se) {
-            FlutterUI.log.e(se);
-            //Wrong key (keyCode or salt)
-            return null;
-        } catch (e) {
-            rethrow;
-        }
-    }
+  }
 }
