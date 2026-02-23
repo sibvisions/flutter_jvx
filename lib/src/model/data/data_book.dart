@@ -628,7 +628,7 @@ class DataBook {
 
       if (token == null) {
         try {
-          token ??= await IUiService().getInput("Security token", "Token", true);
+          token ??= await IUiService().getInput("Encryption token", "Token", true);
 
           if (token != null && token!.isNotEmpty) {
             await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", token);
@@ -678,7 +678,7 @@ class DataBook {
 
       if (token == null) {
         try {
-          token ??= await IUiService().getInput("Security token", "Token", true);
+          token ??= await IUiService().getInput("Encryption token", "Token", true);
 
           if (token != null && token!.isNotEmpty) {
             await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", token);
