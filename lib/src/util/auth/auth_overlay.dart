@@ -82,8 +82,8 @@ class _AuthOverlayState extends State<AuthOverlay> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     service.addListener(_authServiceUpdated);
-    service.init(_protectConfig);
 
+    service.init(_protectConfig);
     service.authenticate(false);
   }
 
@@ -204,37 +204,47 @@ class _AuthOverlayState extends State<AuthOverlay> with WidgetsBindingObserver {
         ),
 
         if (!service.isAuthSupported())
-          Container(
-            margin: const EdgeInsets.all(20),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(10),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4), // Schatten nach unten verschoben
-                ),
-              ],
-              border: Border.all(color: Colors.red.shade100, width: 1),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.lock_person_rounded, color: Colors.red.shade400, size: 32),
-                const SizedBox(width: 16),
-                const Expanded(
-                  child: Text(
-                    'This application requires the use of biometrics or a PIN to proceed.',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87,
+          GestureDetector(
+            onTap: () => service.stop(),
+            child: Container(color: Colors.transparent,
+              child: Center(
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    margin: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(40),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                      border: Border.all(color: Colors.red.shade100, width: 1),
                     ),
-                  ),
-                ),
-              ],
-            ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.lock_person_rounded, color: Colors.red.shade400, size: 32),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            FlutterUI.translate("This application requires the use of biometrics or a PIN to proceed."),
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                )
+              )
+            )
           )
       ],
     );
@@ -244,7 +254,7 @@ class _AuthOverlayState extends State<AuthOverlay> with WidgetsBindingObserver {
   void _authServiceUpdated() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (mounted) {
-        if (service.isCanceled()) {
+        if (service.isCanceled() || service.isStopped()) {
           _delayedHide();
         }
         else {

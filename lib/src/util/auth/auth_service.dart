@@ -43,36 +43,37 @@ class AuthService extends ChangeNotifier {
   bool _isAuthenticating = false;
   bool _isAuthenticated = false;
   bool _isCanceled = false;
-
-
-  AuthService._internal() {
-    _auth.isDeviceSupported().then((bool isSupported) async {
-      _isAuthSupported = isSupported;
-
-      try {
-        if (await _auth.canCheckBiometrics) {
-
-          late List<BiometricType> biometricTypes;
-
-          try {
-            biometricTypes = await _auth.getAvailableBiometrics();
-
-            _isBiometricAuthPossible = biometricTypes.isNotEmpty;
-          } on PlatformException catch (e) {
-            FlutterUI.log.e(e);
-          }
-
-          _isBiometricAuthPossible = false;
-
-          notifyListeners();
-        }
-      } on PlatformException catch (e) {
-        FlutterUI.log.e(e);
-      }
-    });
-  }
+  bool _isStopped = false;
 
   static final AuthService instance = AuthService._internal();
+
+  AuthService._internal();
+
+  Future<void> setup() async {
+    _isAuthSupported = await _auth.isDeviceSupported();
+
+    try {
+      if (await _auth.canCheckBiometrics) {
+
+        late List<BiometricType> biometricTypes;
+
+        try {
+          biometricTypes = await _auth.getAvailableBiometrics();
+
+          _isBiometricAuthPossible = biometricTypes.isNotEmpty;
+        } on PlatformException catch (e) {
+          FlutterUI.log.e(e);
+
+          _isBiometricAuthPossible = false;
+        }
+      }
+      else {
+        _isBiometricAuthPossible = false;
+      }
+    } on PlatformException catch (e) {
+      FlutterUI.log.e(e);
+    }
+  }
 
   /// Clears biometric authentication cache for [appId] only
   static void clearCache(String? appId) {
@@ -85,6 +86,8 @@ class AuthService extends ChangeNotifier {
   }
 
   void init(List<ProtectConfig>? config) {
+    _isStopped = false;
+
     _config = config;
 
     if (_config != null && _config!.isNotEmpty) {
@@ -144,6 +147,7 @@ class AuthService extends ChangeNotifier {
     _globalAuthTime.removeWhere((key, value) => value.expires != null && now.difference(value.creation) >= value.expires!);
   }
 
+  /// Cancels immediate
   void cancel() {
     if (_isAuthenticating) {
       _isAuthenticating = false;
@@ -153,8 +157,24 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Stops authentication but acts like user-cancel (to support delay)
+  void stop() {
+    _isStopped = true;
+
+    if (_isAuthenticating) {
+      _isAuthenticating = false;
+      _auth.stopAuthentication();
+    }
+
+    _notifyAuthentication(false);
+  }
+
   bool isCanceled() {
     return _isCanceled;
+  }
+
+  bool isStopped() {
+    return _isStopped;
   }
 
   bool isAuthenticated() {
@@ -173,6 +193,8 @@ class AuthService extends ChangeNotifier {
 
   /// Notification about app resumed
   void resumed() {
+    _isStopped = false;
+
     bool notify = false;
 
     if (_config != null && _config!.isNotEmpty) {
@@ -205,9 +227,19 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> authenticate([bool checkTimeout = true]) async {
+    _isStopped = false;
+
     if (_config == null || _config!.isEmpty) {
       _invalidConfigIndex = -1;
       _isAuthenticated = true;
+      _isCanceled = false;
+
+      return;
+    }
+
+    if (!_isAuthSupported || (!_isBiometricAuthPossible && biometricOnly)) {
+      _invalidConfigIndex = 0;
+      _isAuthenticated = false;
       _isCanceled = false;
 
       return;

@@ -80,6 +80,7 @@ import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
 import 'service/ui/protect_config.dart';
 import 'util/auth/auth_overlay.dart';
+import 'util/auth/auth_service.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
 import 'util/json_template_manager.dart';
@@ -669,6 +670,8 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
+    //Auth support
+    await AuthService.instance.setup();
 
     App? urlApp = await _configureAppWithParameters(queryParameters);
 
