@@ -218,7 +218,14 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   ///Replaces the cell editor with another instance but keep the value(s)
   Future<void> _replaceCellEditor() async {
-    dynamic oldValue = await cellEditor.getValue();
+
+    bool oldFocus = false;
+
+    if (cellEditor is IFocusableCellEditor) {
+      oldFocus = (cellEditor as IFocusableCellEditor).focusNode.hasFocus;
+    }
+
+      dynamic oldValue = await cellEditor.getValue();
     List<dynamic>? oldValues;
 
     if (isLinkedEditor()) {
@@ -234,6 +241,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
     else {
       cellEditor.setValue(oldValue);
+    }
+
+    if (oldFocus) {
+      if (cellEditor is IFocusableCellEditor) {
+        (cellEditor as IFocusableCellEditor).focusNode.requestFocus();
+      }
     }
   }
 

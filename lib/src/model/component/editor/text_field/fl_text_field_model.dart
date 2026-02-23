@@ -21,6 +21,10 @@ class FlTextFieldModel extends FlLabelModel {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The style if the text editor should show/hide clear text
+  static const String STYLE_CLEAR_TEXT = "f_cleartext";
+
+
   /// the enter key completion
   static const String ENTER_KEY = "ENTER_KEY";
 
@@ -46,6 +50,9 @@ class FlTextFieldModel extends FlLabelModel {
 
   /// If this editor should have a clear icon.
   bool get hideClearIcon => styles.contains(FlComponentModel.STYLE_NO_CLEAR_ICON);
+
+  /// If this editor should show/hide clear text
+  bool get showClearText => styles.contains(STYLE_CLEAR_TEXT);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
