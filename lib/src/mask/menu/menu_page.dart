@@ -92,6 +92,11 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
   @override
   Widget build(BuildContext context) {
+    //not logged in -> nothing to show
+    if (!IUiService().loggedIn()) {
+      return Offstage();
+    }
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
