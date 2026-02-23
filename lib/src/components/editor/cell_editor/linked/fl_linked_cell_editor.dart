@@ -102,7 +102,14 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
   @override
   void setValue(dynamic pValue) {
-    _record = pValue;
+    if (pValue is (dynamic, List<dynamic>?)) {
+      _record = pValue;
+    }
+    else {
+      FlutterUI.logUI.e("Value $pValue is not a record -> set null");
+
+      _record = null;
+    }
 
     _updateControllerValue();
   }
@@ -228,6 +235,11 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Returns all values not just the assigned column
+  List<dynamic>? getValues() {
+    return _record?.$2;
+  }
 
   Future<void>? openLinkedCellPicker() {
     if (!isOpen) {

@@ -78,8 +78,11 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   /// The currently used cell editor.
   ICellEditor cellEditor = FlDummyCellEditor();
 
-  /// Last value;
+  /// Last value
   dynamic _currentValue;
+
+  /// Last values
+  List<dynamic>? _currentValues;
 
   FlEditorWrapperState() : super();
 
@@ -213,15 +216,25 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ///Replaces the cell editor with another instance but keep the value
+  ///Replaces the cell editor with another instance but keep the value(s)
   Future<void> _replaceCellEditor() async {
     dynamic oldValue = await cellEditor.getValue();
+    List<dynamic>? oldValues;
+
+    if (isLinkedEditor()) {
+      oldValues = (cellEditor as FlLinkedCellEditor).getValues();
+    }
 
     recreateCellEditor();
 
     model.applyComponentInformation(cellEditor.createWidgetModel());
 
-    cellEditor.setValue(oldValue);
+    if (isLinkedEditor()) {
+      cellEditor.setValue((oldValue, oldValues ?? _currentValues));
+    }
+    else {
+      cellEditor.setValue(oldValue);
+    }
   }
 
   /// Subscribes to the service and registers the set value call back.
@@ -288,8 +301,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       _currentValue = null;
     }
 
+    _currentValues = pDataRecord?.values;
+
     if (isLinkedEditor()) {
-      cellEditor.setValue((_currentValue, pDataRecord?.values));
+      cellEditor.setValue((_currentValue, _currentValues));
       setState(() {});
     } else  if (oldValue != _currentValue) {
       cellEditor.setValue(_currentValue);
