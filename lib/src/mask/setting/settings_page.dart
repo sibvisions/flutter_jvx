@@ -423,8 +423,8 @@ class _SettingsPageState extends State<SettingsPage> {
           final bool? delete = await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text(FlutterUI.translate("Delete token")),
-              content: Text("Do you want to delete the token?"),
+              title: Text(FlutterUI.translateLocal("Delete token")),
+              content: Text(FlutterUI.translateLocal("Do you want to delete the token?")),
               actionsPadding: EdgeInsets.only(bottom: Theme.of(context).dialogTheme.actionsPadding?.vertical ?? 15, left: 8, right: 8),
               actions: [
                 Row(
@@ -433,12 +433,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(true),
                       style: JVxColors.isLightTheme(context) ? TextButton.styleFrom(foregroundColor: Colors.black54) : TextButton.styleFrom(foregroundColor: Colors.grey.shade600),
-                      child: Text('Yes'),
+                      child: Text(FlutterUI.translateLocal("Yes")),
                     ),
                     Spacer(),
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('No'),
+                      child: Text(FlutterUI.translateLocal("No")),
                     ),
                   ],
                 ),

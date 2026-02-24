@@ -18,7 +18,9 @@ import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../components/editor/text_field/fl_text_field_widget.dart';
 import '../flutter_ui.dart';
 import 'jvx_colors.dart';
 
@@ -53,37 +55,120 @@ abstract class WidgetUtil {
 
     _inputCompleter = Completer<dynamic>();
 
+    bool valueHidden = true;
+    bool confirmHidden = true;
+
+    Function(void Function())? dialogSetState;
+
+    void onTextChanged() {
+      if (dialogSetState != null) {
+        dialogSetState!(() {});
+      }
+    }
+
     final TextEditingController valueController = TextEditingController();
+    valueController.addListener(onTextChanged);
 
     TextEditingController? confirmController;
 
     if (confirm) {
       confirmController = TextEditingController();
+      confirmController.addListener(onTextChanged);
     }
 
     String? errorText;
 
     Widget w = StatefulBuilder(
       builder: (context, setState) {
+
+        dialogSetState ??= setState;
+
+        bool isMatch = confirmController == null || valueController.text == confirmController.text;
+        bool hasValue = valueController.text.isNotEmpty;
+
+        bool isOkEnabled = (confirmController == null && valueController.text.isNotEmpty) ||
+                           (confirmController != null && confirmController.text.isNotEmpty && valueController.text.isNotEmpty && isMatch);
+
         return AlertDialog(
-          title: Text(FlutterUI.translate(title)),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            spacing: 0,
+            children: [
+              FaIcon(FontAwesomeIcons.keycdn),
+              SizedBox(width: 15),
+              Flexible(
+                fit: FlexFit.tight,
+                child: FittedBox(
+                  alignment: AlignmentGeometry.topLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Text(FlutterUI.translateLocal(title))
+                )
+              )
+            ]
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: valueController,
-                obscureText: true,
+                obscureText: valueHidden,
                 decoration: InputDecoration(
-                  labelText: FlutterUI.translate(fieldTitle),
+                  labelText: FlutterUI.translateLocal(fieldTitle),
+                  suffixIcon: valueController.text.isNotEmpty
+                      ? ExcludeFocus(
+                          child: IconButton(
+                            tooltip: FlutterUI.translateLocal(valueHidden ? "Show" : "Hide"),
+                            icon: Icon(
+                              valueHidden ? Icons.visibility : Icons.visibility_off,
+                            ),
+                            onPressed: () => setState(() => valueHidden = !valueHidden),
+                            color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                            iconSize: FlTextFieldWidget.iconSize,
+                          ),
+                        )
+                      : null,
                 ),
               ),
               if (confirm) const SizedBox(height: 12),
               if (confirm) TextField(
                 controller: confirmController!,
-                obscureText: true,
+                obscureText: confirmHidden,
                 decoration: InputDecoration(
-                  labelText: FlutterUI.translate("Confirm"),
+                  labelText: FlutterUI.translateLocal("Confirm"),
                   errorText: errorText,
+                  enabledBorder: hasValue ? (Theme.of(context).inputDecorationTheme.enabledBorder?.copyWith(
+                    borderSide: BorderSide(
+                      color: isMatch ? Colors.green : Colors.red,
+                      width: Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide.width ?? 1.0,
+                    ),
+                  ) ?? UnderlineInputBorder(borderSide: BorderSide(
+                    color: isMatch ? Colors.green : Colors.red,
+                    width: Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide.width ?? 1.0,
+                  )
+                  )) : null,
+                  focusedBorder: hasValue ? (Theme.of(context).inputDecorationTheme.focusedBorder?.copyWith(
+                    borderSide: BorderSide(
+                      color: isMatch ? Colors.green : Colors.red,
+                      width: Theme.of(context).inputDecorationTheme.focusedBorder?.borderSide.width ?? 2.0,
+                    ),
+                  ) ?? UnderlineInputBorder(borderSide: BorderSide(
+                    color: isMatch ? Colors.green : Colors.red,
+                    width: Theme.of(context).inputDecorationTheme.border?.borderSide.width ?? 2.0,
+                  )
+                  )) : null,
+                  suffixIcon: confirmController.text.isNotEmpty
+                      ? ExcludeFocus(
+                          child: IconButton(
+                            tooltip: FlutterUI.translateLocal(confirmHidden ? "Show" : "Hide"),
+                            icon: Icon(
+                              confirmHidden ? Icons.visibility : Icons.visibility_off,
+                            ),
+                            onPressed: () => setState(() => confirmHidden = !confirmHidden),
+                            color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                            iconSize: FlTextFieldWidget.iconSize,
+                          ),
+                        )
+                      : null,
                 ),
               ),
             ],
@@ -92,7 +177,7 @@ abstract class WidgetUtil {
             bottom: Theme.of(context).dialogTheme.actionsPadding?.vertical ?? 15,
             left: 10,
             right: 10,
-            top: 5
+            top: 10
           ),
           actions: [
             Row(
@@ -100,29 +185,12 @@ abstract class WidgetUtil {
               children: [
                 TextButton(
                   onPressed: () => _closeInputIntern(""),
-                  child: Text(FlutterUI.translate("Cancel")),
+                  child: Text(FlutterUI.translateLocal("Cancel")),
                 ),
                 Spacer(),
                 TextButton(
-                  onPressed: () {
-                    final token = valueController.text.trim();
-
-                    if (confirm) {
-                      final tokenConfirm = confirmController!.text.trim();
-
-                      if (token.isEmpty || tokenConfirm.isEmpty) {
-                        setState(() => errorText = FlutterUI.translate("Please enter both fields"));
-                        return;
-                      }
-
-                      if (token != tokenConfirm) {
-                        setState(() => errorText = "Tokens do not match!");
-                        return;
-                      }
-                    }
-                    _closeInputIntern(token);
-                  },
-                  child: Text(FlutterUI.translate("OK")),
+                  onPressed: isOkEnabled ? () => _closeInputIntern(valueController.text.trim()) : null,
+                  child: Text(FlutterUI.translateLocal("OK")),
                 ),
               ],
             ),

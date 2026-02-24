@@ -370,5 +370,26 @@
   {
     "text": "RCS",
     "translation": "RCS"
+  },
+  {
+    "text": "Delete token",
+    "translation": "Token löschen"
+  },
+  {
+    "text": "Do you want to delete the token?",
+    "translation": "Möchten Sie den Token löschen?"
+  },
+  {
+    "text": "Encryption token is set",
+    "translation": "Verschlüsselungstoken gesetzt"
+  },
+  {
+    "text": "Confirm",
+    "translation": "Bestätigen"
+  },
+  {
+    "text": "Encryption token",
+    "translation": "Verschlüsselungstoken"
   }
+
 ]
