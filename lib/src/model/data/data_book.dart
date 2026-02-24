@@ -32,7 +32,6 @@ import '../../service/ui/i_ui_service.dart';
 import '../../util/column_list.dart';
 import '../../util/crypto_util.dart';
 import '../../util/i_types.dart';
-import '../../util/image/image_loader.dart';
 import '../../util/parse_util.dart';
 import '../../util/sort_list.dart';
 import '../command/api/delete_record_command.dart';
@@ -694,26 +693,7 @@ class DataBook {
     if (token != null && token!.isNotEmpty) {
       dynamic encodedValue = value;
 
-      Uint8List? base64Decoded;
-
-      bool decodeDone = false;
-
-      try {
-        try {
-          if (ImageLoader.isBase64(value)) {
-            decodeDone = true;
-            base64Decoded = base64Decode(value);
-          }
-        }
-        catch (ex) {
-          if (!decodeDone) {
-            //https://github.com/flutter/flutter/issues/165995 -> https://github.com/dart-lang/core/issues/874
-            base64Decoded = base64Decode(value);
-          }
-        }
-      } catch (ex) {
-        FlutterUI.log.e(ex);
-      }
+      Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(value);
 
       if (base64Decoded != null) {
         try {

@@ -18,11 +18,18 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:flutter/services.dart';
 
 import '../flutter_ui.dart';
 
 abstract class CryptoUtil {
+
+  /// Base64 check regexp (see https://github.com/dart-lang/sdk/issues/60436#issuecomment-2768499393)
+  static final RegExp rxBase64 = RegExp(r'^(?:[A-Za-z\d+/]{2}(?:==$|[A-Za-z\d+/](?:=$|[A-Za-z\d+/])))*?$');
+
+  // Secure random number generator
   static final _secureRandom = Random.secure();
+
 
   //Generates salt with given number of bytes
   static List<int> _generateSalt(int length) {
@@ -110,4 +117,48 @@ abstract class CryptoUtil {
       rethrow;
     }
   }
+
+  ///Checks whether the given [text] is base64 encoded
+  static bool isBase64(dynamic text) {
+    if (text == null) {
+      return false;
+    }
+
+    if (text is String) {
+      if (text.isEmpty) {
+        return false;
+      }
+
+      return text.length % 4 == 0 && rxBase64.hasMatch(text);
+    }
+
+    return false;
+  }
+
+  /// Tries to decode given [base64] text to plain text
+  static Uint8List? tryDecodeBase64(String base64) {
+    Uint8List? base64Decoded;
+
+    bool decodeDone = false;
+
+    try {
+      try {
+        if (isBase64(base64)) {
+          decodeDone = true;
+          base64Decoded = base64Decode(base64);
+        }
+      }
+      catch (ex) {
+        if (!decodeDone) {
+          //https://github.com/flutter/flutter/issues/165995 -> https://github.com/dart-lang/core/issues/874
+          base64Decoded = base64Decode(base64);
+        }
+      }
+    } catch (ex) {
+      FlutterUI.log.e(ex);
+    }
+
+    return base64Decoded;
+  }
+
 }

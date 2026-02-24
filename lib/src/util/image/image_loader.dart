@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -27,6 +26,7 @@ import '../../service/api/i_api_service.dart';
 import '../../service/apps/app.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/file/file_manager.dart';
+import '../crypto_util.dart';
 import '../icon_util.dart';
 import '../jvx_logger.dart';
 
@@ -40,9 +40,6 @@ abstract class ImageLoader {
 
   /// The image cache
   static final Map<String, (MemoryImage image, Size? size)> _imageCache = {};
-
-  /// Base64 check regexp (see https://github.com/dart-lang/sdk/issues/60436#issuecomment-2768499393)
-  static final RegExp rxBase64 = RegExp(r'^(?:[A-Za-z\d+/]{2}(?:==$|[A-Za-z\d+/](?:=$|[A-Za-z\d+/])))*?$');
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -172,26 +169,7 @@ abstract class ImageLoader {
 
     ImageProvider imageProvider;
 
-    Uint8List? base64Decoded;
-
-    bool decodeDone = false;
-
-    try {
-      try {
-        if (isBase64(imageDefinition)) {
-          decodeDone = true;
-          base64Decoded = base64Decode(imageDefinition);
-        }
-      }
-      catch (ex) {
-        if (!decodeDone) {
-          //https://github.com/flutter/flutter/issues/165995 -> https://github.com/dart-lang/core/issues/874
-          base64Decoded = base64Decode(imageDefinition);
-        }
-      }
-    } catch (ex) {
-      FlutterUI.log.e(ex);
-    }
+    Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(imageDefinition);
 
     var listener_ = imageStreamListener;
 
@@ -350,23 +328,6 @@ abstract class ImageLoader {
     } else {
       return path;
     }
-  }
-
-  ///Checks whether the given [value] is base64 encoded
-  static bool isBase64(dynamic value) {
-    if (value == null) {
-      return false;
-    }
-
-    if (value is String) {
-      if (value.isEmpty) {
-        return false;
-      }
-
-      return value.length % 4 == 0 && rxBase64.hasMatch(value);
-    }
-
-    return false;
   }
 
   ///Clears the image cache
