@@ -16,9 +16,11 @@
 
 import 'dart:async';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 import '../flutter_ui.dart';
+import 'jvx_colors.dart';
 
 abstract class WidgetUtil {
   static OverlayEntry? _overlayEntry;
@@ -150,4 +152,42 @@ abstract class WidgetUtil {
 
     return _inputCompleter!.future;
   }
+
+  /// Shows a simple toast message
+  static void showToast(BuildContext? context, String message) {
+    BuildContext? ctxt = context ?? FlutterUI.getCurrentContext();
+
+    if (ctxt != null && ctxt.mounted) {
+      bool light = JVxColors.isLightTheme(context);
+
+      Flushbar flush = Flushbar(
+        onTap: (f) => f.dismiss(),
+        backgroundColor: light ? Colors.black.withAlpha(180) : Colors.grey.withAlpha(220),
+        messageText: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 0,
+          children: [
+            Icon(Icons.file_download_done, color: light ? JVxColors.DARKER_WHITE : Colors.black87),
+            SizedBox(width: 10),
+            Text(
+              FlutterUI.translate("Copied to clipboard"),
+              style: TextStyle(
+                color: light ? JVxColors.DARKER_WHITE : Colors.black87
+              ),
+            ),
+          ],
+        ),
+        flushbarPosition: FlushbarPosition.TOP,
+        duration: Duration(seconds: 2),
+        margin: EdgeInsets.all(20),
+        borderRadius: BorderRadius.circular(15),
+      );
+
+      unawaited(flush.show(ctxt));
+    }
+    else {
+      FlutterUI.logUI.e("No context for flushbar available!");
+    }
+  }
+
 }

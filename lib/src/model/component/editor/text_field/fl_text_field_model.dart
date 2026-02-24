@@ -24,6 +24,9 @@ class FlTextFieldModel extends FlLabelModel {
   /// The style if the text editor should show/hide clear text
   static const String STYLE_CLEAR_TEXT = "f_cleartext";
 
+  /// The style if the text editor should copy option
+  static const String STYLE_COPY = "f_copy";
+
 
   /// the enter key completion
   static const String ENTER_KEY = "ENTER_KEY";
@@ -53,6 +56,9 @@ class FlTextFieldModel extends FlLabelModel {
 
   /// If this editor should show/hide clear text
   bool get showClearText => styles.contains(STYLE_CLEAR_TEXT);
+
+  /// If this editor should show copy
+  bool get showCopy => styles.contains(STYLE_COPY);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

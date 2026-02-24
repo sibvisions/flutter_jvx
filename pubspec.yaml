@@ -158,6 +158,8 @@ dependencies:
 
   cryptography: ^2.0.0
 
+  another_flushbar: ^1.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

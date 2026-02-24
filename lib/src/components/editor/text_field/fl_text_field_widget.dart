@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:io';
 import 'dart:math' hide log;
 
 import 'package:flutter/foundation.dart';
@@ -30,6 +31,7 @@ import '../../../util/icon_util.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
 import '../../../util/parse_util.dart';
+import '../../../util/widget_util.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
 
 enum FlTextBorderType {
@@ -272,7 +274,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       return FaIcon(
         icon,
         size: iconSize,
-        color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
+        color: JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
       );
     }
     else {
@@ -280,7 +282,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       return Icon(
         icon,
         size: iconSize,
-        color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
+        color: JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
       );
     }
   }
@@ -313,6 +315,30 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     Widget? clearIcon = createClearIcon(context, forceAll);
     if (clearIcon != null) {
       icons.add(clearIcon);
+    }
+
+    if (model.showCopy) {
+      if (!((textController.text.isEmpty || model.isReadOnly) && !forceAll)) {
+        Widget iconCopy = InkWell(
+          canRequestFocus: false,
+          onTap: () async {
+            try {
+              await Clipboard.setData(ClipboardData(text: textController.text));
+
+              if (!Platform.isAndroid) {
+                // ignore: use_build_context_synchronously
+                WidgetUtil.showToast(context, "Copied to clipboard");
+              }
+            } catch (e) {
+              // ignore: use_build_context_synchronously
+              WidgetUtil.showToast(context, "Copy failed $e");
+            }
+          },
+          child: createEmbeddableIcon(context, Icons.copy),
+        );
+
+        icons.add(iconCopy);
+      }
     }
 
     icons.addAll(_createIconsFromStyle(context, FlComponentModel.STYLE_SUFFIX_ICON));

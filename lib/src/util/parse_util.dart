@@ -404,7 +404,7 @@ abstract class ParseUtil {
           BarcodeFormat.code128,
           BarcodeFormat.code39,
           BarcodeFormat.code93,
-          BarcodeFormat.codebar,
+          BarcodeFormat.codabar,
         ]);
       case "Code128":
         formats.add(BarcodeFormat.code128);
@@ -413,7 +413,8 @@ abstract class ParseUtil {
       case "Code93":
         formats.add(BarcodeFormat.code93);
       case "Codebar":
-        formats.add(BarcodeFormat.codebar);
+      case "Codabar":
+        formats.add(BarcodeFormat.codabar);
       case "DataMatrix":
         formats.add(BarcodeFormat.dataMatrix);
       case "EanAll":
@@ -425,8 +426,9 @@ abstract class ParseUtil {
         formats.add(BarcodeFormat.ean13);
       case "Ean8":
         formats.add(BarcodeFormat.ean8);
+      case "Itf14":
       case "Itf":
-        formats.add(BarcodeFormat.itf);
+        formats.add(BarcodeFormat.itf14);
       case "QrCode":
         formats.add(BarcodeFormat.qrCode);
       case "UpcAll":

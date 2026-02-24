@@ -70,23 +70,18 @@ class FlPasswordWidget extends FlTextFieldWidget {
 
     if (model.showClearText)
     {
-      if (!((textController.text.isEmpty ||
-             !model.isEditable ||
-             !model.isEnabled) &&
-            !forceAll)) {
+      if (!((textController.text.isEmpty || model.isReadOnly) && !forceAll)) {
         Widget iconEye = InkWell(
           canRequestFocus: false,
           onTap: () {
-            if (!model.isReadOnly) {
-              _showPlainText.value = !_showPlainText.value;
-            }
+            _showPlainText.value = !_showPlainText.value;
           },
           child: createEmbeddableIcon(context, obscureText ? Icons.visibility : Icons.visibility_off),
         );
 
-      icons.insert(0, iconEye);
+        icons.insert(0, iconEye);
       }
-      }
+    }
 
     return icons;
   }
