@@ -44,6 +44,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     super.isMandatory,
     this.canShowDialog = true,
     super.hideClearIcon,
+    super.showCopy
   }) : super(
           keyboardType: TextInputType.multiline,
         );

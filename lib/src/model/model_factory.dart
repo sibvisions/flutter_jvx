@@ -63,7 +63,7 @@ abstract class ModelFactory {
       case FlComponentClassname.CHECK_BOX:
         return FlCheckBoxModel();
       case FlComponentClassname.PASSWORD_FIELD:
-        return FlTextFieldModel();
+        return FlPasswordFieldModel();
       case FlComponentClassname.TABLE:
         return FlTableModel();
       case FlComponentClassname.RADIO_BUTTON:

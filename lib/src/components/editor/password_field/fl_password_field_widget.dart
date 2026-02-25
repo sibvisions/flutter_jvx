@@ -16,15 +16,25 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../model/component/fl_component_model.dart';
+import '../../../util/widgets/password_strength_indicator.dart';
 import '../text_field/fl_text_field_widget.dart';
 
-class FlPasswordWidget extends FlTextFieldWidget {
+class FlPasswordWidget extends FlTextFieldWidget<FlPasswordFieldModel> {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The height of password strength.
+  // ignore: non_constant_identifier_names
+  static double PASSWORD_STRENGTH_HEIGHT = 32;
+
   final ValueNotifier<bool> _showPlainText = ValueNotifier(false);
+
+  final bool showPlainText;
+
+  final bool showPasswordStrength;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -40,6 +50,9 @@ class FlPasswordWidget extends FlTextFieldWidget {
     super.inputFormatters,
     super.isMandatory,
     super.hideClearIcon,
+    super.showCopy,
+    this.showPlainText = false,
+    this.showPasswordStrength = false
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,8 +61,9 @@ class FlPasswordWidget extends FlTextFieldWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (model.showClearText) {
-      return ValueListenableBuilder(
+    Widget w;
+    if (model.showPlainText || showPlainText) {
+      w = ValueListenableBuilder(
           valueListenable: _showPlainText,
           builder: (context, value, _) {
             return super.build(context);
@@ -57,8 +71,27 @@ class FlPasswordWidget extends FlTextFieldWidget {
       );
     }
     else {
-      return super.build(context);
+      w = super.build(context);
     }
+
+    if (model.showPasswordStrength || showPasswordStrength) {
+      //don't use a column because it will create overflow exceptions if size changes
+      //with Flex and Flexible, we avoid this
+      w = Flex(direction: Axis.vertical,
+          children: [
+            w,
+            Flexible(child: Column(
+              children: [
+                SizedBox(height: 8),
+                PasswordStrengthIndicator(password: textController.text)
+              ]
+            )
+          )
+        ]
+      );
+    }
+
+    return w;
   }
 
   @override
@@ -68,9 +101,9 @@ class FlPasswordWidget extends FlTextFieldWidget {
   List<Widget> createSuffixIconItems([BuildContext? context, bool forceAll = false]) {
     List<Widget> icons = super.createSuffixIconItems(context, forceAll);
 
-    if (model.showClearText)
+    if (model.showPlainText || showPlainText)
     {
-      if (!((textController.text.isEmpty || model.isReadOnly) && !forceAll)) {
+      if (!((textController.text.isEmpty || !model.isEnabled) && !forceAll)) {
         Widget iconEye = InkWell(
           canRequestFocus: false,
           onTap: () {

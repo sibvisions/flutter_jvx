@@ -132,6 +132,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
           hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
+          showCopy: model.showCopy,
         );
       case (TEXT_HTML):
         return FlHtmlTextFieldWidget(
@@ -159,7 +160,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
       // );
       case (TEXT_PLAIN_PASSWORD):
         return FlPasswordWidget(
-          model: widgetModel,
+          model: widgetModel as FlPasswordFieldModel,
           valueChanged: (value, [immediate]) => onValueChange(value),
           endEditing: (value, [action]) => onEndEditing(value),
           focusNode: focusNode,
@@ -167,6 +168,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
           hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
+          showPlainText: model.showPlainText,
+          showCopy: model.showCopy,
+          showPasswordStrength: model.showPasswordStrength,
         );
       case (TEXT_PLAIN_SINGLELINE):
       default:
@@ -179,6 +183,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
           hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
+          showCopy: model.showCopy,
         );
     }
   }
@@ -189,9 +194,10 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
         return FlTextAreaModel();
+      case (TEXT_PLAIN_PASSWORD):
+        return FlPasswordFieldModel();
       case (TEXT_HTML):
       case (TEXT_PLAIN_SINGLELINE):
-      case (TEXT_PLAIN_PASSWORD):
       default:
         return FlTextFieldModel();
     }
@@ -243,8 +249,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
         FlTextAreaModel widgetModel = FlTextAreaModel();
         applyEditorJson(widgetModel, pJson);
         return FlTextAreaWidget.calculateTextAreaHeight(widgetModel);
-      case (TEXT_PLAIN_SINGLELINE):
       case (TEXT_PLAIN_PASSWORD):
+        return FlTextFieldWidget.TEXT_FIELD_HEIGHT + (model.showPasswordStrength ? FlPasswordWidget.PASSWORD_STRENGTH_HEIGHT : 0);
+      case (TEXT_PLAIN_SINGLELINE):
       default:
         return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
     }

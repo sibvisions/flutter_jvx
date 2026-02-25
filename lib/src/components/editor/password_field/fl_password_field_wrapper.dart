@@ -22,7 +22,7 @@ import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../text_field/fl_text_field_wrapper.dart';
 import 'fl_password_field_widget.dart';
 
-class FlPasswordFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
+class FlPasswordFieldWrapper extends BaseCompWrapperWidget<FlPasswordFieldModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,7 +37,7 @@ class FlPasswordFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
   FlPasswordFieldWrapperState createState() => FlPasswordFieldWrapperState();
 }
 
-class FlPasswordFieldWrapperState extends FlTextFieldWrapperState<FlTextFieldModel> {
+class FlPasswordFieldWrapperState extends FlTextFieldWrapperState<FlPasswordFieldModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -51,6 +51,7 @@ part 'editor/cell_editor/date/fl_date_editor_model.dart';
 part 'editor/cell_editor/linked/fl_linked_editor_model.dart';
 part 'editor/fl_editor_model.dart';
 part 'editor/text_area/fl_text_area_model.dart';
+part 'editor/password_field/fl_password_field_model.dart';
 part 'editor/text_field/fl_text_field_model.dart';
 part 'gauge/fl_gauge_model.dart';
 part 'icon/fl_icon_model.dart';

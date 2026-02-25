@@ -56,17 +56,26 @@ class ICellEditorModel {
   /// If this editor should be shown inside a table.
   bool directCellEditor = false;
 
-  /// The preferred editor mode
+  /// The preferred editor mode.
   int preferredEditorMode = DOUBLE_CLICK;
 
-  /// If this editor should open in a popup
+  /// If this editor should open in a popup.
   bool autoOpenPopup = false;
 
-  /// Styles
+  /// Styles.
   Set<String> styles = {};
 
   /// If this editor should have a clear icon.
   bool get hideClearIcon => styles.contains(FlComponentModel.STYLE_NO_CLEAR_ICON);
+
+  /// If this editor should show copy icon.
+  bool get showCopy => styles.contains(FlTextFieldModel.STYLE_COPY);
+
+  /// If this editor should show plain text icon.
+  bool get showPlainText => styles.contains(FlPasswordFieldModel.STYLE_PLAIN_TEXT);
+
+  /// If this editor should show password strength.
+  bool get showPasswordStrength => styles.contains(FlPasswordFieldModel.STYLE_PASSWORD_STRENGTH);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

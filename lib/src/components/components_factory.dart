@@ -81,7 +81,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.CHECK_BOX:
         return FlCheckBoxWrapper(model: model as FlCheckBoxModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.PASSWORD_FIELD:
-        return FlPasswordFieldWrapper(model: model as FlTextFieldModel, key: GlobalObjectKey(model.id));
+        return FlPasswordFieldWrapper(model: model as FlPasswordFieldModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.TABLE:
         FlTableModel tableModel = model as FlTableModel;
 

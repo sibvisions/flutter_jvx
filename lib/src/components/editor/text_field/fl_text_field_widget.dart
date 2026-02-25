@@ -86,6 +86,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   final bool hideClearIcon;
 
+  final bool showCopy;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,6 +140,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     this.keyboardType = TextInputType.text,
     this.isMandatory = false,
     this.hideClearIcon = false,
+    this.showCopy = false
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -317,8 +320,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       icons.add(clearIcon);
     }
 
-    if (model.showCopy) {
-      if (!((textController.text.isEmpty || model.isReadOnly) && !forceAll)) {
+    if (model.showCopy || showCopy) {
+      if (!((textController.text.isEmpty || !model.isEnabled) && !forceAll)) {
         Widget iconCopy = InkWell(
           canRequestFocus: false,
           onTap: () async {
