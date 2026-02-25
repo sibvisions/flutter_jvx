@@ -178,7 +178,7 @@ class AppConfig {
       requestTimeout: json['requestTimeout'] != null ? Duration(milliseconds: json['requestTimeout']) : null,
       aliveInterval: json['aliveInterval'] != null ? Duration(milliseconds: json['aliveInterval']) : null,
       wsPingInterval: json['wsPingInterval'] != null ? Duration(milliseconds: json['wsPingInterval']) : null,
-      payloadCompress : json['payloadCompress'] != null ? (json['wsPingInterval'] == true || json['wsPingInterval'] == "true") : null,
+      payloadCompress : json['payloadCompress'] != null ? (json['payloadCompress'] == true || json['payloadCompress'] == "true") : null,
       autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
       showAppOverviewWithoutDefault: json['showAppOverviewWithoutDefault'],
       customAppsAllowed: json['customAppsAllowed'],
