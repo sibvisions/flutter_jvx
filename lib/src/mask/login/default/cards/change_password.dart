@@ -24,6 +24,7 @@ import '../../../../service/command/i_command_service.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
+import '../../../../util/widgets/password_strength_indicator.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
 
@@ -117,7 +118,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             hintText: FlutterUI.translate("Username"),
           ),
         ),
-        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        const SizedBox(height: 5),
         TextField(
           enabled: widget.password == null,
           obscureText: _passwordHidden,
@@ -140,7 +141,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 : null,
           ),
         ),
-        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        const SizedBox(height: 5),
         TextField(
           obscureText: _newPasswordHidden,
           controller: newPasswordController,
@@ -162,7 +163,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                 : null,
           ),
         ),
-        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        SizedBox(height: 8),
+        PasswordStrengthIndicator(password: newPasswordController.text),
+        const SizedBox(height: 5),
         TextField(
           obscureText: _repeatPasswordHidden,
           controller: repeatPasswordController,
