@@ -217,8 +217,17 @@ class ICellEditorModel {
   }
 
   Set<String> _parseStyle(dynamic pStyle) {
+    if (pStyle == null) {
+      return {};
+    }
+
     String sStyle = (pStyle as String);
+
+    if (sStyle.isEmpty) {
+      return {};
+    }
 
     return sStyle.split(",").toSet();
   }
+
 }
