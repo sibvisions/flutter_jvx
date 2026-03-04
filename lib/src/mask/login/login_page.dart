@@ -98,6 +98,7 @@ class LoginPage extends StatefulWidget {
         LoginCommand(
           loginMode: mode,
           username: username,
+          password: password,
           confirmationCode: confirmationCode,
           createAuthKey: createAuthKey,
           reason: "LoginButton",

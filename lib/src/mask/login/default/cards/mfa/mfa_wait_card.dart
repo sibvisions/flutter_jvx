@@ -59,16 +59,21 @@ class _MFAWaitCardState extends State<MFAWaitCard> {
   Widget build(BuildContext context) {
     return MFACard(
       errorMessage: widget.errorMessage,
+      child: Padding(
+      padding: EdgeInsets.only(top: 10, bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           LoadingGauge(
             timeout: widget.timeout,
+            warning: widget.timeout != null ? widget.timeout! / 8 * 3 : null,
+            error: widget.timeout != null ? widget.timeout! / 8 : null,
             timeoutReset: widget.timeoutReset,
           ),
           Column(
             children: [
               Text(FlutterUI.translate("Matching code")),
+              SizedBox(height: 5),
               Text(
                 confirmationCode ?? "-",
                 style: const TextStyle(fontSize: 20),
@@ -77,6 +82,7 @@ class _MFAWaitCardState extends State<MFAWaitCard> {
           ),
         ],
       ),
+    )
     );
   }
 }

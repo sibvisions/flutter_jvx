@@ -47,14 +47,15 @@ class MFACard extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
-        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 7)),
         Text(
           FlutterUI.translate(subTitle),
+          textAlign: TextAlign.center,
         ),
         if (errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         if (errorMessage != null) DefaultLogin.buildErrorMessage(context, errorMessage!),
         Padding(
-          padding: EdgeInsets.only(top: 20.0, bottom: (showCancel ? 8.0 : 0.0)),
+          padding: EdgeInsets.only(top: 20.0, bottom: (showCancel ? 12.0 : 0.0)),
           child: child,
         ),
         if (showCancel)
