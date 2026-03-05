@@ -90,8 +90,8 @@ class _LoadingGaugeState extends State<LoadingGauge> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     int totalMs = timeout ?? 0;
-    // WICHTIG: Wir nutzen controller.value für die Echtzeit-Berechnung im Builder
-    // damit die Animation absolut flüssig ist.
+
+    //We use controller.value for realtime calculation in builder (for smooth animation)
 
     return ConstrainedBox(
       constraints: const BoxConstraints(minWidth: 120, minHeight: 120),
@@ -135,15 +135,20 @@ class _LoadingGaugeState extends State<LoadingGauge> with SingleTickerProviderSt
 
           // text color and blinking for 2 seconds in case of error area
           double scale = 1.0;
-          Color textColor = Theme.of(context).textTheme.labelMedium?.color ?? (JVxColors.isLightTheme(context) ? Colors.black : JVxColors.DARKER_WHITE);
+          Color textColor = Theme.of(context).textTheme.labelMedium?.color?.withAlpha(180) ?? (JVxColors.isLightTheme(context) ? Colors.black : JVxColors.DARKER_WHITE);
 
           if (widget.error != null) {
             //how long is error active
             double timeInError = widget.error! - remainingMs;
 
-            // only blink 2 seconds
-            if (timeInError > 0 && timeInError <= 2000) {
-              // blink frequence
+            // event 1: blink for 2 seconds immediate after mode switch (yellow -> red) (blink only 2 seconds)
+            bool isInitialErrorBlink = timeInError >= 0 && timeInError <= 2250;
+
+            // event 2: 5 seconds before the end till the end
+            bool isFinalCountdownBlink = remainingMs <= 6000 && remainingMs >= 0;
+
+            if (isInitialErrorBlink || isFinalCountdownBlink) {
+              // blink frequency
               double pulseValue = sin(timeInError * 0.01).abs();
 
               scale = 1.0 + (pulseValue * 0.15);
@@ -160,7 +165,7 @@ class _LoadingGaugeState extends State<LoadingGauge> with SingleTickerProviderSt
                     percent: 1.0 - controller.value,
                     color: progressColor,
                     strokeWidth: LoadingGauge.strokeWidth,
-                    backgroundColor: Colors.grey.shade300
+                    backgroundColor: JVxColors.isLightTheme(context) ? Colors.grey.shade300 : Colors.grey.shade800
                   ),
                 ),
               ),

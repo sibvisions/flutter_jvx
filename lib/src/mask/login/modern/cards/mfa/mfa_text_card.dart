@@ -178,6 +178,7 @@ class _MFATextCardState extends State<MFATextCard> {
 
     LoginPage.doMFALogin(
       username: widget.username,
+      password: widget.password,
       confirmationCode: codeController.text,
     ).then((success) {
       if (success) {

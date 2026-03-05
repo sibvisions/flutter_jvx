@@ -18,6 +18,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../flutter_ui.dart';
@@ -29,6 +30,7 @@ import '../../model/command/ui/route/route_to_login_command.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_colors.dart';
 import '../../util/widgets/jvx_webview.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
@@ -123,7 +125,14 @@ class LoginPage extends StatefulWidget {
         webOnlyWindowName: FlutterUI.translate("Verification"),
       );
     } else {
-      showDialog(
+        showBarModalBottomSheet(
+        barrierColor: JVxColors.LIGHTER_BLACK.withAlpha(Color.getAlphaFromOpacity(0.75)),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: const RoundedRectangleBorder(
+            side: BorderSide.none,
+            borderRadius: BorderRadius.only(topLeft: kDefaultBarTopRadius, topRight: kDefaultBarTopRadius),
+        ),
+        topControl: Container(),
         context: context,
         builder: (context) => Scaffold(
           appBar: AppBar(
@@ -135,7 +144,10 @@ class LoginPage extends StatefulWidget {
             initialUrl: uri,
           ),
         ),
-        barrierDismissible: false,
+        isDismissible: false,
+        enableDrag: false,
+        expand: true,
+        bounce: false,
       );
     }
   }
@@ -212,6 +224,8 @@ class _LoginPageState extends State<LoginPage> {
     String? loginLayout = appStyle.style(context, AppStyle.loginLayout);
 
     Widget login;
+
+    loginLayout = "modern";
 
     if (loginLayout == "modern") {
       login = ModernLogin(mode: widget.loginMode);

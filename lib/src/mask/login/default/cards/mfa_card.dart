@@ -38,6 +38,13 @@ class MFACard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle titleMedium = Theme.of(context).textTheme.titleMedium!;
+
+    final double spaceWidth = (TextPainter(
+      text: TextSpan(text: ' ', style: titleMedium),
+      textDirection: TextDirection.ltr,
+    )..layout()).size.width;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -48,10 +55,25 @@ class MFACard extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 7)),
+
+        /*
         Text(
           FlutterUI.translate(subTitle),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left
         ),
+        */
+
+        //Centered text block, with left aligned text
+        Center(
+          child: Wrap(
+            alignment: WrapAlignment.start, //centers the whole text block
+            crossAxisAlignment: WrapCrossAlignment.start, //left aligned in the block
+            spacing: spaceWidth,
+            runSpacing: 0.0,
+            children: FlutterUI.translate(subTitle).split(' ').map((word) => Text(word)).toList(),
+          ),
+        ),
+
         if (errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         if (errorMessage != null) DefaultLogin.buildErrorMessage(context, errorMessage!),
         Padding(
