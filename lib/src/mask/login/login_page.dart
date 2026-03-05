@@ -225,8 +225,6 @@ class _LoginPageState extends State<LoginPage> {
 
     Widget login;
 
-    loginLayout = "modern";
-
     if (loginLayout == "modern") {
       login = ModernLogin(mode: widget.loginMode);
     } else {
