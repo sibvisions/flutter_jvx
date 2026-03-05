@@ -23,6 +23,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
+import '../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
@@ -330,7 +331,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: () => LoginPage.changeMode(mode: LoginMode.Manual),
+                      onPressed: () => LoginPage.update(LoginData(mode: LoginMode.Manual)),
                       child: Text(FlutterUI.translate("Back")),
                     ),
                   ],

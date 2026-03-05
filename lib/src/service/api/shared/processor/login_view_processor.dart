@@ -19,7 +19,6 @@ import '../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../model/request/api_login_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/login_view_response.dart';
-import '../api_object_property.dart';
 import '../i_response_processor.dart';
 
 class LoginViewProcessor implements IResponseProcessor<LoginViewResponse> {
@@ -29,24 +28,18 @@ class LoginViewProcessor implements IResponseProcessor<LoginViewResponse> {
 
   @override
   List<BaseCommand> processResponse(LoginViewResponse pResponse, ApiRequest? pRequest) {
-    Map<String, dynamic> loginProps = {
-      ApiObjectProperty.username: pResponse.username,
-      ApiObjectProperty.confirmationCode: pResponse.confirmationCode,
-      ApiObjectProperty.link: pResponse.link,
-      ApiObjectProperty.timeout: pResponse.timeout,
-      ApiObjectProperty.timeoutReset: pResponse.timeoutReset,
-      ApiObjectProperty.errorMessage: pResponse.errorMessage,
-    };
-
-    if (pRequest is ApiLoginRequest) {
-      loginProps[ApiObjectProperty.password] = pRequest.password;
-    }
-
-    loginProps.removeWhere((key, value) => value == null);
-
     return [RouteToLoginCommand(
-      mode: pResponse.mode,
-      loginData: loginProps,
+      loginData: LoginData(
+        mode: pResponse.mode,
+        username: pResponse.username,
+        password: pRequest is ApiLoginRequest ? pRequest.password : null,
+        newPassword: pRequest is ApiLoginRequest ? pRequest.newPassword : null,
+        confirmationCode: pResponse.confirmationCode,
+        link: pResponse.link,
+        timeout: pResponse.timeout,
+        timeoutReset: pResponse.timeoutReset,
+        errorMessage: pResponse.errorMessage
+      ),
       reason: "Login as response",
     )];
   }

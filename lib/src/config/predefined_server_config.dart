@@ -137,18 +137,18 @@ class PredefinedServerConfig {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PredefinedServerConfig &&
-          runtimeType == other.runtimeType &&
-          appName == other.appName &&
-          baseUrl == other.baseUrl &&
-          username == other.username &&
-          password == other.password &&
-          title == other.title &&
-          icon == other.icon &&
-          isDefault == other.isDefault &&
-          locked == other.locked &&
-          parametersHidden == other.parametersHidden;
+    identical(this, other) ||
+      (other is PredefinedServerConfig &&
+       runtimeType == other.runtimeType &&
+       appName == other.appName &&
+       baseUrl == other.baseUrl &&
+       username == other.username &&
+       password == other.password &&
+       title == other.title &&
+       icon == other.icon &&
+       isDefault == other.isDefault &&
+       locked == other.locked &&
+       parametersHidden == other.parametersHidden);
 
   @override
   int get hashCode =>

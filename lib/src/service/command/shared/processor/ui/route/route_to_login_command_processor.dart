@@ -43,7 +43,7 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
     }
 
     FlutterUI.clearHistory();
-    LoginPage.changeMode(mode: command.mode, loginData: command.loginData);
+    LoginPage.update(command.loginData);
     FlutterUI.clearLocationHistory();
 
     return [];

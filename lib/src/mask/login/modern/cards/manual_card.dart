@@ -24,6 +24,7 @@ import '../../../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../../../config/app_config.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
+import '../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
@@ -316,7 +317,7 @@ class _ManualCardState extends State<ManualCard> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        onPressed: () => LoginPage.changeMode(mode: LoginMode.LostPassword),
+                        onPressed: () => LoginPage.update(LoginData(mode: LoginMode.LostPassword)),
                         child: Text(FlutterUI.translate("Reset password?")),
                       ),
                   ],

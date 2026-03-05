@@ -189,7 +189,6 @@ class RoundedGaugePainter extends CustomPainter {
   final Color color;
   final double strokeWidth;
   final Color backgroundColor;
-
   final double cornerRadius;
 
   RoundedGaugePainter({
@@ -218,26 +217,33 @@ class RoundedGaugePainter extends CustomPainter {
     final double sweepAngle = 2 * pi * percent;
     final double endAngle = startAngle + sweepAngle;
 
-    // Calc angle-offsets of corners
-    final double outerAlpha = cornerRadius / outerR;
-    final double innerAlpha = cornerRadius / innerR;
+    //we calc the effective radius, because it should shrink if bar gets too short (at the end of time)
+    double effectiveRadius = cornerRadius;
+    double maxAlpha = sweepAngle / 2.1;
+    double outerAlpha = effectiveRadius / outerR;
+
+    if (outerAlpha > maxAlpha) {
+      outerAlpha = maxAlpha;
+      effectiveRadius = outerAlpha * outerR;
+    }
+
+    final double innerAlpha = effectiveRadius / innerR;
+    final Radius radius = Radius.circular(effectiveRadius);
 
     final Path path = Path();
-
-    Radius radius = Radius.circular(cornerRadius);
 
     // Start cap
 
     // from outside near the corner
     path.moveTo(
-        center.dx + outerR * cos(startAngle + outerAlpha),
-        center.dy + outerR * sin(startAngle + outerAlpha)
+      center.dx + outerR * cos(startAngle + outerAlpha),
+      center.dy + outerR * sin(startAngle + outerAlpha)
     );
 
     //  outer corner
     path.arcToPoint(
-      Offset(center.dx + (outerR - cornerRadius) * cos(startAngle),
-        center.dy + (outerR - cornerRadius) * sin(startAngle)
+      Offset(center.dx + (outerR - effectiveRadius) * cos(startAngle),
+        center.dy + (outerR - effectiveRadius) * sin(startAngle)
       ),
       radius: radius,
       clockwise: false,
@@ -245,8 +251,8 @@ class RoundedGaugePainter extends CustomPainter {
 
     // flat
     path.lineTo(
-        center.dx + (innerR + cornerRadius) * cos(startAngle),
-        center.dy + (innerR + cornerRadius) * sin(startAngle)
+      center.dx + (innerR + effectiveRadius) * cos(startAngle),
+      center.dy + (innerR + effectiveRadius) * sin(startAngle)
     );
 
     // inner corner
@@ -260,10 +266,10 @@ class RoundedGaugePainter extends CustomPainter {
 
     // inside
     path.arcTo(Rect.fromCircle(
-        center: center,
-        radius: innerR),
+      center: center,
+      radius: innerR),
       startAngle + innerAlpha,
-      sweepAngle - (innerAlpha + (cornerRadius/innerR)),
+      max(0.0, sweepAngle - (innerAlpha + (effectiveRadius/innerR))),
       false
     );
 
@@ -272,8 +278,8 @@ class RoundedGaugePainter extends CustomPainter {
     // inner corner
     path.arcToPoint(
       Offset(
-        center.dx + (innerR + cornerRadius) * cos(endAngle),
-        center.dy + (innerR + cornerRadius) * sin(endAngle)
+        center.dx + (innerR + effectiveRadius) * cos(endAngle),
+        center.dy + (innerR + effectiveRadius) * sin(endAngle)
       ),
       radius: radius,
       clockwise: false,
@@ -281,8 +287,8 @@ class RoundedGaugePainter extends CustomPainter {
 
     // flat
     path.lineTo(
-        center.dx + (outerR - cornerRadius) * cos(endAngle),
-        center.dy + (outerR - cornerRadius) * sin(endAngle)
+      center.dx + (outerR - effectiveRadius) * cos(endAngle),
+      center.dy + (outerR - effectiveRadius) * sin(endAngle)
     );
 
     // outer corner
@@ -301,7 +307,7 @@ class RoundedGaugePainter extends CustomPainter {
         radius: outerR
       ),
       endAngle - outerAlpha,
-      -(sweepAngle - (outerAlpha + (cornerRadius/outerR))),
+      -max(0.0, (sweepAngle - (outerAlpha + (effectiveRadius/outerR)))),
       false
     );
 
@@ -314,5 +320,7 @@ class RoundedGaugePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant RoundedGaugePainter oldDelegate) =>
+      oldDelegate.percent != percent || oldDelegate.color != color;
+
 }

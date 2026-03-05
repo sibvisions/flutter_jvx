@@ -124,16 +124,16 @@ class ServerConfig {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is ServerConfig &&
-              runtimeType == other.runtimeType &&
-              appName == other.appName &&
-              baseUrl == other.baseUrl &&
-              username == other.username &&
-              password == other.password &&
-              title == other.title &&
-              icon == other.icon &&
-              isDefault == other.isDefault;
+    identical(this, other) ||
+      (other is ServerConfig &&
+       runtimeType == other.runtimeType &&
+       appName == other.appName &&
+       baseUrl == other.baseUrl &&
+       username == other.username &&
+       password == other.password &&
+       title == other.title &&
+       icon == other.icon &&
+       isDefault == other.isDefault);
 
   @override
   int get hashCode =>

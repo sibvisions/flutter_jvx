@@ -22,6 +22,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
+import '../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../state/loading_bar.dart';
@@ -181,7 +182,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: () => LoginPage.changeMode(mode: LoginMode.Manual),
+                      onPressed: () => LoginPage.update(LoginData(mode: LoginMode.Manual)),
                       child: Text(FlutterUI.translate("Back")),
                     ),
                   ],

@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../model/command/ui/route/route_to_login_command.dart';
 import '../login_handler.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
@@ -285,48 +286,48 @@ class ModernLogin extends StatelessWidget implements Login {
 
   @override
   Widget buildCard(BuildContext context, LoginMode? mode) {
-    Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
+    LoginData? loginData = context.currentBeamLocation.data as LoginData?;
+
     Widget card;
     switch (mode) {
       case LoginMode.LostPassword:
         card = LostPasswordCard(
-          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+          errorMessage: loginData?.errorMessage,
         );
         break;
       case LoginMode.ChangePassword:
       case LoginMode.ChangeOneTimePassword:
         card = ChangePasswordCard(
           useOTP: mode == LoginMode.ChangeOneTimePassword,
-          username: dataMap?[ApiObjectProperty.username],
-          password: dataMap?[ApiObjectProperty.password],
-          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+          username: loginData?.username,
+          password: loginData?.password,
+          errorMessage: loginData?.errorMessage,
         );
         break;
       case LoginMode.MFTextInput:
         // Is repeatedly called (password is missing on repeated calls)
         card = MFATextCard(
-          username: dataMap?[ApiObjectProperty.username],
-          password: dataMap?[ApiObjectProperty.password],
-          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+          username: loginData?.username,
+          password: loginData?.password,
+          errorMessage: loginData?.errorMessage,
         );
         break;
       case LoginMode.MFWait:
         // Is repeatedly called
-        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = MFAWaitCard(
-          timeout: dataMap?[ApiObjectProperty.timeout],
-          timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
-          confirmationCode: dataMap?[ApiObjectProperty.confirmationCode],
-          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+          timeout: loginData?.timeout,
+          timeoutReset: loginData?.timeoutReset,
+          confirmationCode: loginData?.confirmationCode,
+          errorMessage: loginData?.errorMessage,
         );
         break;
       case LoginMode.MFUrl:
         // Is repeatedly called
         card = MFAUrlCard(
-          timeout: dataMap?[ApiObjectProperty.timeout],
-          timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
-          link: dataMap?[ApiObjectProperty.link],
-          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+          timeout: loginData?.timeout,
+          timeoutReset: loginData?.timeoutReset,
+          link: loginData?.link,
+          errorMessage: loginData?.errorMessage,
         );
         break;
       case LoginMode.Manual:
@@ -334,7 +335,7 @@ class ModernLogin extends StatelessWidget implements Login {
         // No need for ValueListenableBuilder, as this in the same LayoutBuilder
         card = ManualCard(
           showSettings: showSettingsInCard.value,
-          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+          errorMessage: loginData?.errorMessage,
         );
         break;
     }

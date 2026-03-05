@@ -80,6 +80,10 @@ class LayoutPosition implements ICloneable {
 
   @override
   bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
     return other is LayoutPosition &&
         width == other.width &&
         height == other.height &&

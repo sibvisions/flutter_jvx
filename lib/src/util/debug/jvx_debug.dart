@@ -28,6 +28,7 @@ import '../../flutter_ui.dart';
 import '../../mask/jvx_overlay.dart';
 import '../../mask/login/login_page.dart';
 import '../../model/command/api/login_command.dart';
+import '../../model/command/ui/route/route_to_login_command.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
@@ -457,7 +458,7 @@ class UIDebug extends StatelessWidget {
           StatefulBuilder(builder: (context, setState) {
             return DropdownButton<LoginMode>(
               hint: const Text("Route to Login"),
-              value: cast<MainLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.loginModeNotifier.value,
+              value: cast<MainLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.loginDataNotifier.value.mode,
               items: LoginMode.values
                   .map((e) => DropdownMenuItem(
                         value: e,
@@ -465,7 +466,7 @@ class UIDebug extends StatelessWidget {
                       ))
                   .toList(),
               onChanged: (LoginMode? value) {
-                LoginPage.changeMode(mode: value!);
+                LoginPage.update(LoginData(mode: value!));
                 setState(() {});
               },
               isExpanded: true,

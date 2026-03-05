@@ -64,9 +64,8 @@ class _MFAUrlCardState extends State<MFAUrlCard> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text("URL:"),
           Align(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.center,
             child: TextButton(
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
@@ -87,6 +86,8 @@ class _MFAUrlCardState extends State<MFAUrlCard> {
             children: [
               LoadingGauge(
                 timeout: widget.timeout,
+                warning: widget.timeout != null ? widget.timeout! / 8 * 3 : null,
+                error: widget.timeout != null ? widget.timeout! / 8 : null,
                 timeoutReset: widget.timeoutReset,
               ),
             ],

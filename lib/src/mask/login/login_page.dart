@@ -25,10 +25,10 @@ import '../../model/command/api/cancel_login_command.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../model/command/api/reset_password_command.dart';
+import '../../model/command/ui/route/route_to_login_command.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
-import '../../util/extensions/string_extensions.dart';
 import '../../util/widgets/jvx_webview.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
@@ -50,11 +50,8 @@ class LoginPage extends StatefulWidget {
   ///
   /// This method **does not** clear touch any session data, this is just routing,
   /// for a logout use [LogoutCommand] instead.
-  static void changeMode({LoginMode? mode, Map<String, dynamic>? loginData}) {
-    FlutterUI.getBeamerDelegate().beamToReplacementNamed(
-      "/login${mode != null ? "?mode=${mode.name.firstCharLower()}" : ""}",
-      data: loginData,
-    );
+  static void update(LoginData loginData) {
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/login", data: loginData);
   }
 
   /// Sends a normal [LoginCommand].

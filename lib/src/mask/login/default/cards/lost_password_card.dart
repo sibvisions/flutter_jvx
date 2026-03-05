@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
+import '../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
 
@@ -85,7 +86,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
     );
 
     Widget backButton = TextButton(
-      onPressed: () => LoginPage.changeMode(mode: LoginMode.Manual),
+      onPressed: () => LoginPage.update(LoginData(mode: LoginMode.Manual)),
       child: Text(
         FlutterUI.translate("Cancel"),
         overflow: TextOverflow.ellipsis,

@@ -26,12 +26,14 @@ import '../../mask/menu/menu_page.dart';
 import '../../mask/setting/settings_page.dart';
 import '../../mask/work_screen/work_screen_page.dart';
 import '../../model/command/api/login_command.dart';
+import '../../model/command/ui/route/route_to_login_command.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/ui/i_ui_service.dart';
 
 /// Displays all possible screens of the menu
 class MainLocation extends BeamLocation<BeamState> {
-  final ValueNotifier<LoginMode> loginModeNotifier = ValueNotifier(LoginMode.Manual);
+  final ValueNotifier<LoginData> loginDataNotifier = ValueNotifier(LoginData(mode: LoginMode.Manual));
+
   static const screenNameKey = "workScreenName";
 
   /// The global return URI key used in [BeamState.queryParameters].
@@ -67,16 +69,28 @@ class MainLocation extends BeamLocation<BeamState> {
 
     if (state.pathPatternSegments.contains("login")) {
       IUiService().getAppManager()?.onLoginPage();
-      _updateLoginMode(state);
+
+      LoginData newData;
+
+      if (data is LoginData) {
+        newData = data as LoginData;
+      }
+      else {
+        newData = LoginData();
+      }
+
+      if (loginDataNotifier.value != newData) {
+        loginDataNotifier.value = newData;
+      }
 
       pages.add(
         BeamPage(
           title: FlutterUI.translate("Login"),
           key: const ValueKey("login"),
           type: beamPageType,
-          child: ValueListenableBuilder<LoginMode>(
-            valueListenable: loginModeNotifier,
-            builder: (context, mode, child) => LoginPage(loginMode: mode),
+          child: ValueListenableBuilder<LoginData>(
+            valueListenable: loginDataNotifier,
+            builder: (context, data, child) => LoginPage(loginMode: data.mode),
           ),
         ),
       );
@@ -121,18 +135,6 @@ class MainLocation extends BeamLocation<BeamState> {
     lastPage = pages.lastOrNull;
 
     return pages;
-  }
-
-  void _updateLoginMode(BeamState state) {
-    String? mode = state.queryParameters["mode"]?.toLowerCase();
-    LoginMode? loginMode;
-    if (mode != null) {
-      loginMode = LoginMode.values.firstWhereOrNull((e) => e.name.toLowerCase() == mode);
-    }
-    loginMode ??= LoginMode.Manual;
-    if (loginModeNotifier.value != loginMode) {
-      loginModeNotifier.value = loginMode;
-    }
   }
 
   @override
