@@ -37,6 +37,13 @@ class MFACard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle? titleMedium = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold);
+
+    final double spaceWidth = (TextPainter(
+      text: TextSpan(text: ' ', style: titleMedium),
+      textDirection: TextDirection.ltr,
+    )..layout()).size.width;
+
     return Card(
       color: Theme.of(context).colorScheme.surface.withAlpha(Color.getAlphaFromOpacity(0.9)),
       elevation: 10,
@@ -49,15 +56,13 @@ class MFACard extends StatelessWidget {
                 labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                 hintStyle: const TextStyle(fontWeight: FontWeight.w200),
               ),
-          textTheme: Theme.of(context).textTheme.copyWith(
-                titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
+          textTheme: Theme.of(context).textTheme.copyWith(titleMedium: titleMedium),
           canvasColor: JVxColors.darken(Theme.of(context).colorScheme.surface, 0.05),
         ),
         child: DefaultTextStyle.merge(
           style: const TextStyle(fontWeight: FontWeight.bold),
           child: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 16.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 8.0),
             child: SizedBox(
               width: MediaQuery.sizeOf(context).width / 10 * 8,
               child: SingleChildScrollView(
@@ -69,7 +74,7 @@ class MFACard extends StatelessWidget {
                         errorMessage!,
                       ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      padding: const EdgeInsets.only(top:20, bottom: 10),
                       child: Text(
                         FlutterUI.translate("Verification"),
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -77,6 +82,8 @@ class MFACard extends StatelessWidget {
                             ),
                       ),
                     ),
+
+                    /*
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Align(
@@ -84,8 +91,21 @@ class MFACard extends StatelessWidget {
                         child: Text(FlutterUI.translate(subTitle)),
                       ),
                     ),
+                    */
+
+                    //Centered text block, with left aligned text
+                    Center(
+                      child: Wrap(
+                        alignment: WrapAlignment.start, //centers the whole text block
+                        crossAxisAlignment: WrapCrossAlignment.start, //left aligned in the block
+                        spacing: spaceWidth,
+                        runSpacing: 0.0,
+                        children: FlutterUI.translate(subTitle).split(' ').map((word) => Text(word)).toList(),
+                      ),
+                    ),
+
                     Padding(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 8.0),
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 12.0),
                       child: child,
                     ),
                     TextButton(

@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../../../../../model/response/login_view_response.dart';
 import '../../../../../util/widgets/loading_gauge.dart';
@@ -46,6 +47,13 @@ class _MFAUrlCardState extends State<MFAUrlCard> {
   void initState() {
     super.initState();
     link = widget.link;
+
+    if (link != null) {
+      //show the link as soon as possible
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        LoginPage.openMFAURL(context, url: link!.url!);
+      });
+    }
   }
 
   @override
@@ -64,22 +72,24 @@ class _MFAUrlCardState extends State<MFAUrlCard> {
         children: [
           Column(
             children: [
-              const Text("URL:"),
-              TextButton(
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                ),
-                onPressed: link?.url != null ? () => LoginPage.openMFAURL(context, url: link!.url!) : null,
-                child: Text(
-                  link?.url ?? "-",
-                  style: const TextStyle(fontSize: 18),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                  onPressed: link?.url != null ? () => LoginPage.openMFAURL(context, url: link!.url!) : null,
+                  child: Text(
+                    _formatUrl(link?.url),
+                    style: const TextStyle(fontSize: 18, color: Colors.blue),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
               ),
             ],
           ),
@@ -89,6 +99,8 @@ class _MFAUrlCardState extends State<MFAUrlCard> {
             children: [
               LoadingGauge(
                 timeout: widget.timeout,
+                warning: widget.timeout != null ? widget.timeout! / 8 * 3 : null,
+                error: widget.timeout != null ? widget.timeout! / 8 : null,
                 timeoutReset: widget.timeoutReset,
               ),
             ],
@@ -97,4 +109,19 @@ class _MFAUrlCardState extends State<MFAUrlCard> {
       ),
     );
   }
+
+  String _formatUrl(String? url) {
+    if (url == null) {
+      return "-";
+    }
+
+    Uri? uri = Uri.tryParse(url);
+
+    if (uri != null) {
+      return uri.host;
+    }
+
+    return url;
+  }
+
 }
