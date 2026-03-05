@@ -166,10 +166,16 @@ class App {
 
   /// Sets the name of this app.
   Future<void> updateName(String? name) {
-    assert(!locked, "Locked apps cannot be updated.");
-    String? fallback = getPredefinedConfig(_id)?.appName;
-    var value = name == fallback ? null : name?.toString();
-    return _setString("name", value).then((_) => _name = value);
+    if (!locked) {
+      String? fallback = getPredefinedConfig(_id)?.appName;
+      var value = name == fallback ? null : name?.toString();
+      return _setString("name", value).then((_) => _name = value);
+    }
+    else {
+      FlutterUI.log.d("Locked app can't be updated: $_id");
+
+      return Future.value();
+    }
   }
 
   /// {@template app.url}
@@ -184,10 +190,17 @@ class App {
 
   /// Sets the base-url of this app.
   Future<void> updateBaseUrl(Uri? url) {
-    assert(!locked, "Locked apps cannot be updated.");
-    Uri? fallback = getPredefinedConfig(_id)?.baseUrl;
-    var value = url == fallback ? null : url?.toString();
-    return _setString("baseUrl", value).then((_) => _baseUrl = value);
+    //don't use assert here because we won't throw an error
+    if (!locked) {
+      Uri? fallback = getPredefinedConfig(_id)?.baseUrl;
+      var value = url == fallback ? null : url?.toString();
+      return _setString("baseUrl", value).then((_) => _baseUrl = value);
+    }
+    else {
+      FlutterUI.log.d("Locked app can't be updated: $_id");
+
+      return Future.value();
+    }
   }
 
   /// {@template app.username}
@@ -238,18 +251,25 @@ class App {
 
   /// Sets the title of this app.
   Future<void> updateTitle(String? title, [bool configValue = false]) {
-    assert(!locked, "Locked apps cannot be updated.");
-    String? fallback = getPredefinedConfig(_id)?.title;
-    var value = title == fallback ? null : title?.toString();
+    //don't use assert here because we won't throw an error
+    if (!locked) {
+      String? fallback = getPredefinedConfig(_id)?.title;
+      var value = title == fallback ? null : title?.toString();
 
-    if (configValue) {
-      //if we have a title but config value is null -> don't change it
-      if (_title != null && value == null) {
-        return Future.value();
+      if (configValue) {
+        //if we have a title but config value is null -> don't change it
+        if (_title != null && value == null) {
+          return Future.value();
+        }
       }
-    }
 
-    return _setString("title", value).then((_) => _title = value);
+      return _setString("title", value).then((_) => _title = value);
+    }
+    else {
+      FlutterUI.log.d("Locked app can't be updated: $_id");
+
+      return Future.value();
+    }
   }
 
   /// {@template app.icon}
@@ -263,18 +283,25 @@ class App {
 
   /// Sets the icon of this app.
   Future<void> updateIcon(String? icon, [bool configValue = false]) {
-    assert(!locked, "Locked apps cannot be updated.");
-    String? fallback = getPredefinedConfig(_id)?.icon;
-    var value = icon == fallback ? null : icon?.toString();
+    //don't use assert here because we won't throw an error
+    if (!locked) {
+      String? fallback = getPredefinedConfig(_id)?.icon;
+      var value = icon == fallback ? null : icon?.toString();
 
-    if (configValue) {
-      //if we have an icon but config value is null -> don't change it
-      if (_icon != null && value == null) {
-        return Future.value();
+      if (configValue) {
+        //if we have an icon but config value is null -> don't change it
+        if (_icon != null && value == null) {
+          return Future.value();
+        }
       }
-    }
 
-    return _setString("icon", value).then((_) => _icon = value);
+      return _setString("icon", value).then((_) => _icon = value);
+    }
+    else {
+      FlutterUI.log.d("Locked app can't be updated: $_id");
+
+      return Future.value();
+    }
   }
 
   /// {@template app.default}
@@ -288,12 +315,16 @@ class App {
 
   /// Sets the default state of this app.
   Future<void> updateDefault(bool pDefault) async {
+    //don't use assert here because we won't throw an error
     if (!locked) {
       if (pDefault) {
         await IConfigService().updateDefaultApp(_id);
       } else if (isDefault) {
         await IConfigService().refreshDefaultApp(true);
       }
+    }
+    else {
+      FlutterUI.log.d("Locked app can't be updated: $_id");
     }
   }
 
@@ -423,7 +454,12 @@ class App {
   /// **Attention:** Check if this is really necessary before using that method!
   Future<void> updateId(String newAppId) async {
     _checkId();
-    assert(!predefined && !locked, "Can't update ID of predefined app.");
+
+    if (predefined || locked) {
+      FlutterUI.log.d("Can't update ID of predefined app: $_id");
+
+      return;
+    }
 
     String oldAppId = _id!;
 
