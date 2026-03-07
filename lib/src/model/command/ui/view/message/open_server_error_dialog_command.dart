@@ -19,7 +19,7 @@ import 'ierror_command.dart';
 import 'message_view_command.dart';
 
 /// This command will open a popup containing the provided message
-class OpenServerErrorDialogCommand extends MessageViewCommand implements ErrorCommand {
+class OpenServerErrorDialogCommand extends MessageViewCommand implements IErrorCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

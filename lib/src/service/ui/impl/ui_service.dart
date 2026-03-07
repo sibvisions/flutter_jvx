@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 SIB Visions GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 import 'dart:async';
 import 'dart:math' hide log;
 
@@ -21,6 +37,7 @@ import '../../../mask/jvx_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
 import '../../../mask/work_screen/content.dart';
 import '../../../model/command/api/close_content_command.dart';
+import '../../../model/command/api/close_screen_command.dart';
 import '../../../model/command/api/fetch_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
@@ -1206,6 +1223,56 @@ class UiService implements IUiService {
           }
         }
       }
+    }
+  }
+
+  @override
+  Future<void> closeAllScreens([bool popPage = true]) async {
+    closeJVxDialogs();
+    disposeContents();
+
+    MenuModel menu = IUiService().getMenuModel();
+
+    List<CloseScreenCommand> closeCommands = [];
+    FlPanelModel? screenModel;
+
+    List<String> names = [];
+
+    for (int i = 0; i < menu.items.length; i++) {
+      screenModel = IStorageService().getComponentByNavigationName(menu.items[i].navigationName);
+
+      if (screenModel != null) {
+
+        names.add(menu.items[i].navigationName);
+
+        closeCommands.add(CloseScreenCommand(
+          componentName: screenModel.name,
+          reason: "User requested closing all screens",
+          popPage: popPage
+        ));
+      }
+    }
+
+    if (closeCommands.isNotEmpty) {
+      await ICommandService().sendCommands(closeCommands);
+    }
+
+      for (String name in names) {
+        FlutterUI
+            .getBeamerDelegate()
+            .beamingHistory
+            .whereType<MainLocation>()
+            .forEach((location) {
+          location.history.removeWhere(
+                (element) => element.routeInformation.uri.toString().endsWith(name),
+          );
+        });
+      }
+
+    FrameState? frame = Frame.maybeOf(FlutterUI.getCurrentContext());
+
+    if (frame != null) {
+      frame.rebuild();
     }
   }
 

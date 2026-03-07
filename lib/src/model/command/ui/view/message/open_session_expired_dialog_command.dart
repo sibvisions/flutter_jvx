@@ -19,7 +19,7 @@ import 'ierror_command.dart';
 import 'message_view_command.dart';
 
 /// Opens a dialog, telling the user that the session has expired
-class OpenSessionExpiredDialogCommand extends MessageViewCommand implements ErrorCommand {
+class OpenSessionExpiredDialogCommand extends MessageViewCommand implements IErrorCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1709,7 +1709,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     Object? error = snapshot.error!;
 
-    if (error is ErrorCommand) {
+    if (error is IErrorCommand) {
       error = error.error;
     }
 
