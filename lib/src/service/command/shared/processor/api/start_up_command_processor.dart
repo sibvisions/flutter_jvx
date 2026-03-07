@@ -45,7 +45,6 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
     IConfigService servConf = IConfigService();
 
     assert(servConf.baseUrl.value != null, "baseUrl can not be empty!");
-    assert(servConf.baseUrl.value != null, "baseUrl can not be empty!");
 
     IUiService servUi = IUiService();
 
