@@ -28,6 +28,7 @@ import '../../../model/command/api/startup_command.dart';
 import '../../../model/request/api_exit_request.dart';
 import '../../../model/response/menu_view_response.dart';
 import '../../../routing/locations/main_location.dart';
+import '../../../util/auth/auth_service.dart';
 import '../../../util/jvx_logger.dart';
 import '../../api/i_api_service.dart';
 import '../../api/shared/repository/no_op_repository.dart';
@@ -339,6 +340,9 @@ class AppService implements IAppService {
 
       IApiService().setRepository(NoOpRepository());
     }
+
+    //don't call stop here because this notifies listeners
+    AuthService.instance.cancel();
   }
 
   @override
