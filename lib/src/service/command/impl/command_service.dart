@@ -194,10 +194,10 @@ class CommandService implements ICommandService {
       }
 
       List<BaseCommand>? followCommands = await _processCommand(pCommand, null);
-      ErrorCommand? firstErrorCommand;
+      IErrorCommand? firstErrorCommand;
 
       while (followCommands != null) {
-        firstErrorCommand ??= followCommands.whereType<ErrorCommand>().firstOrNull;
+        firstErrorCommand ??= followCommands.whereType<IErrorCommand>().firstOrNull;
 
         List<BaseCommand>? newFollowCommands;
 
@@ -237,8 +237,8 @@ class CommandService implements ICommandService {
         }
       }
 
-      if ((error is! ErrorCommand)
-          && pCommand is! ErrorCommand && pCommand is! FeedbackCommand) {
+      if ((error is! IErrorCommand)
+          && pCommand is! IErrorCommand && pCommand is! FeedbackCommand) {
         bool showError = true;
 
         if (pCommand is AliveCommand) {

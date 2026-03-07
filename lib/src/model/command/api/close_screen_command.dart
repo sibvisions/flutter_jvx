@@ -25,6 +25,9 @@ class CloseScreenCommand extends ComponentCommand {
   /// The parameter for close.
   final Map<String, dynamic>? parameter;
 
+  /// Whether to pop page (e.g. show previous screen or menu).
+  final bool popPage;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,6 +35,7 @@ class CloseScreenCommand extends ComponentCommand {
   CloseScreenCommand({
     required super.componentName,
     this.parameter,
+    this.popPage = true,
     required super.reason,
     super.showLoading,
   });
@@ -42,6 +46,6 @@ class CloseScreenCommand extends ComponentCommand {
 
   @override
   String propertiesAsString() {
-    return "parameter: $parameter, ${super.propertiesAsString()}";
+    return "parameter: $parameter, popPage: $popPage, ${super.propertiesAsString()}";
   }
 }

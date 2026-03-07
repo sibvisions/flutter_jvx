@@ -32,9 +32,16 @@ class FlPasswordWidget extends FlTextFieldWidget<FlPasswordFieldModel> {
 
   final ValueNotifier<bool> _showPlainText = ValueNotifier(false);
 
+  /// forces to show plain-text (always)
+  final bool onlyPlainText;
+
   final bool showPlainText;
 
   final bool showPasswordStrength;
+
+  final bool hidePasswordStrengthLabel;
+
+  final bool hidePasswordStrengthColor;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -51,8 +58,12 @@ class FlPasswordWidget extends FlTextFieldWidget<FlPasswordFieldModel> {
     super.isMandatory,
     super.hideClearIcon,
     super.showCopy,
+    super.hideSuffixIcons,
+    this.onlyPlainText = false,
     this.showPlainText = false,
-    this.showPasswordStrength = false
+    this.showPasswordStrength = false,
+    this.hidePasswordStrengthLabel = false,
+    this.hidePasswordStrengthColor = false
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,7 +73,7 @@ class FlPasswordWidget extends FlTextFieldWidget<FlPasswordFieldModel> {
   @override
   Widget build(BuildContext context) {
     Widget w;
-    if (model.showPlainText || showPlainText) {
+    if (!onlyPlainText && (model.showPlainText || showPlainText)) {
       w = ValueListenableBuilder(
           valueListenable: _showPlainText,
           builder: (context, value, _) {
@@ -83,7 +94,11 @@ class FlPasswordWidget extends FlTextFieldWidget<FlPasswordFieldModel> {
             Flexible(child: Column(
               children: [
                 SizedBox(height: 8),
-                PasswordStrengthIndicator(password: textController.text)
+                PasswordStrengthIndicator(
+                  password: textController.text,
+                  hideLabel: hidePasswordStrengthLabel,
+                  coloring: !hidePasswordStrengthColor
+                )
               ]
             )
           )
@@ -95,13 +110,13 @@ class FlPasswordWidget extends FlTextFieldWidget<FlPasswordFieldModel> {
   }
 
   @override
-  bool get obscureText => !_showPlainText.value;
+  bool get obscureText => !onlyPlainText && !_showPlainText.value;
 
   @override
   List<Widget> createSuffixIconItems([BuildContext? context, bool forceAll = false]) {
     List<Widget> icons = super.createSuffixIconItems(context, forceAll);
 
-    if (model.showPlainText || showPlainText)
+    if (!onlyPlainText && (model.showPlainText || showPlainText))
     {
       if (!((textController.text.isEmpty || !model.isEnabled) && !forceAll)) {
         Widget iconEye = InkWell(

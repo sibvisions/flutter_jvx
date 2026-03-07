@@ -29,21 +29,31 @@ import '../../i_command_processor.dart';
 class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command, BaseCommand? origin) async {
-    FlPanelModel modelOfScreen =
-        IStorageService().getComponentByName(pComponentName: command.componentName) as FlPanelModel;
+    FlPanelModel? modelOfScreen =
+        IStorageService().getComponentByName(pComponentName: command.componentName) as FlPanelModel?;
 
-    if (!modelOfScreen.isCloseAble) {
+    if (modelOfScreen != null && !modelOfScreen.isCloseAble) {
       return [];
     }
 
-    List<BaseCommand> commands = await IApiService().sendRequest(
-      ApiCloseScreenRequest(
-        componentId: command.componentName,
-        parameter: command.parameter,
-      ),
-    );
+    List<BaseCommand> commands;
 
-    if (modelOfScreen.overviewBack) {
+    //model not available... (maybe a client problem) -> just remove on client-side
+    //and don't send close
+    if (modelOfScreen != null) {
+      commands = await IApiService().sendRequest(
+        ApiCloseScreenRequest(
+          componentId: command.componentName,
+          parameter: command.parameter,
+          routing: command.popPage
+        ),
+      );
+    }
+    else {
+      commands = [];
+    }
+
+    if (modelOfScreen != null && modelOfScreen.overviewBack) {
       unawaited(IUiService().routeToAppOverview());
       return [];
     }
@@ -52,6 +62,7 @@ class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> 
       DeleteScreenCommand(
         componentName: command.componentName,
         reason: "Navigation response was empty",
+        popPage: command.popPage
       ),
       ...commands
     ];

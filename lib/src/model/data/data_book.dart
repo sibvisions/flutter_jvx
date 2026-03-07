@@ -73,19 +73,22 @@ class DataBook {
   String dataProvider;
 
   /// All fetched records of this data book with specific page names.
-  Map<String, Map<int, List<dynamic>>> pageRecords;
+  Map<String, Map<int, List<dynamic>>> pageRecords = HashMap();
 
   /// All fetched records of this data book
-  Map<int, List<dynamic>> records;
+  Map<int, List<dynamic>> records = HashMap();
 
   /// All fetched records of this data book
-  Map<int, List<bool>> recordReadOnly;
+  Map<int, List<bool>> recordReadOnly = HashMap();
+
+  /// All crypto locks
+  final Map<String?, Map<int, List<String>>> _cryptoLock = HashMap();
 
   /// If this dataBook has already fetched all possible data
-  bool isAllFetched;
+  bool isAllFetched = false;
 
   /// Index of currently selected Row
-  int selectedRow;
+  int selectedRow = -1;
 
   /// Contains all metadata
   DalMetaData? _metaData;
@@ -106,7 +109,7 @@ class DataBook {
   }
 
   /// The list of still decrypted records because of missing metadata
-  Map<String, List<int>>? _notDecryptedCache;
+  Map<String?, List<int>>? _notDecryptedCache;
 
   /// Contains record formats. The key is the name of the component accessing the formats.
   Map<String, RecordFormat> recordFormats = HashMap();
@@ -136,20 +139,15 @@ class DataBook {
   /// Creates a [DataBook]
   DataBook({
     required this.dataProvider,
-    Map<int, List<dynamic>>? records,
-    this.isAllFetched = false,
-    this.selectedRow = -1,
-    Map<String, RecordFormat>? recordFormats,
-    Map<String, Map<int, List<dynamic>>>? pageRecords,
-    Map<int, List<bool>>? recordReadOnly,
-  })  : records = records ?? HashMap(),
-        pageRecords = pageRecords ?? HashMap(),
-        recordFormats = recordFormats ?? HashMap(),
-        recordReadOnly = recordReadOnly ?? HashMap();
+    DalMetaData? metaData
+  }) : _metaData = metaData,
+       hasMetaData = metaData != null;
 
   @override
   String toString() {
-    return 'DataBook{dataProvider: $dataProvider, isAllFetched: $isAllFetched, selectedRow: $selectedRow, records.length: ${records.length}, recordFormats.length: ${recordFormats.length}}';
+    return "DataBook{dataProvider: $dataProvider, isAllFetched: $isAllFetched, selectedRow: $selectedRow, "
+           "records.length: ${records.length}, recordFormats.length: ${recordFormats.length}, "
+           "hasMetaData: $hasMetaData, token set: ${token != null}}";
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,7 +158,7 @@ class DataBook {
   Future<void> updateFromFetch({required SaveFetchDataCommand pCommand}) async {
     var pFetchResponse = pCommand.response;
 
-    Map<int, List> dataMap;
+    Map<int, List<dynamic>> dataMap;
     String? pageKey;
 
     bool newPageKey = false;
@@ -195,25 +193,33 @@ class DataBook {
       rootKey = pageKey;
     }
 
-    List<int>? notEncrypted;
+    List<int>? notDecrypted;
 
     if (_metaData == null) {
-      notEncrypted = [];
+      notDecrypted = [];
     }
 
     // Save records
     for (int i = 0; i < pFetchResponse.records.length; i++) {
-      if (notEncrypted != null) {
-        notEncrypted.add(pFetchResponse.from + i);
+      if (notDecrypted != null) {
+        notDecrypted.add(pFetchResponse.from + i);
       }
 
-      dataMap[pFetchResponse.from + i] = await _decryptValues(pFetchResponse.records[i], _metaData!);
+      dataMap[pFetchResponse.from + i] = await _decryptValues(pageKey, pFetchResponse.from + i, pFetchResponse.records[i], _metaData!);
+    }
+
+    if (notDecrypted != null) {
+      _notDecryptedCache ??= {};
+      _notDecryptedCache![pageKey] = notDecrypted;
     }
 
     // Remove values with higher index if all records are fetched (clean old data)
-    if (pCommand.response.isAllFetched) {
+    if (pCommand.response.isAllFetched == true) {
       if (pFetchResponse.records.isEmpty) {
         dataMap.clear();
+
+        _notDecryptedCache = null;
+        _cryptoLock.clear();
       }
       else {
         dataMap.removeWhere((key, value) => key > pFetchResponse.to);
@@ -221,30 +227,21 @@ class DataBook {
     }
 
     if (pCommand.requestFilter.isEmpty && pageKey != null) {
-      if (pCommand.response.isAllFetched) {
+      if (pCommand.response.isAllFetched == true) {
         pageRecords[pageKey] = dataMap;
       } else {
-        if (notEncrypted != null) {
-          notEncrypted.clear();
-        }
-
         for (int i = 0; i < pFetchResponse.records.length; i++) {
-          if (notEncrypted != null) {
-            notEncrypted.add(pFetchResponse.from + i);
-          }
-
-          pageRecords[pageKey]![pFetchResponse.from + i] = await _decryptValues(pFetchResponse.records[i], _metaData);
+          pageRecords[pageKey]![pFetchResponse.from + i] = dataMap[pFetchResponse.from + i]!;
         }
-      }
-
-      if (notEncrypted != null) {
-        _notDecryptedCache ??= {};
-        _notDecryptedCache![pageKey] = notEncrypted;
       }
     }
 
     if (pCommand.requestFilter.isEmpty) {
-      isAllFetched = pFetchResponse.isAllFetched;
+      //don't change if isAllFetched is missing
+      if (pFetchResponse.isAllFetched != null) {
+        isAllFetched = pFetchResponse.isAllFetched!;
+      }
+
       selectedRow = pFetchResponse.selectedRow;
       if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
         selectedColumn = pFetchResponse.selectedColumn;
@@ -285,7 +282,7 @@ class DataBook {
       pDataProvider: dataProvider,
       pUpdatedCurrentPage: dataMap == records,
       pUpdatedPage: pageKey,
-      pFromStart: pFetchResponse.clear || newPageKey || (pFetchResponse.from == 0 && (pFetchResponse.to > 0 || pFetchResponse.isAllFetched))
+      pFromStart: pFetchResponse.clear || newPageKey || (pFetchResponse.from == 0 && (pFetchResponse.to > 0 || pFetchResponse.isAllFetched == true))
     );
   }
 
@@ -397,6 +394,10 @@ class DataBook {
     return changeDetected;
   }
 
+  bool hasCryptoLock(int rowNumber, String columnName) {
+    return _cryptoLock[null]?[rowNumber]?.contains(columnName) ?? false;
+  }
+
   /// Get the selected record,
   /// If no record is currently selected (-1) returns null
   /// If selected row is not found returns null
@@ -464,6 +465,10 @@ class DataBook {
 
     pageRecords.clear();
     records.clear();
+
+    _cryptoLock.clear();
+    _notDecryptedCache = null;
+
     isAllFetched = false;
   }
 
@@ -616,8 +621,43 @@ class DataBook {
     IUiService().disposeDataSubscription(pSubscriber: pSubObject, pDataProvider: pDataProvider);
   }
 
-  dynamic encryptValue(dynamic value) async {
-    if (value == null) {
+  /// Encrypts [values] of [columnNames] if necessary.
+  Future<List<dynamic>?> encryptValues(List<String> columnNames, List<dynamic> values) async {
+    List<dynamic>? valuesEncrypted;
+
+    if (metaData != null) {
+      ColumnDefinition? colDef;
+
+      for (int i = 0; i < columnNames.length; i++) {
+        colDef = metaData!.columnDefinitions.byName(columnNames[i]);
+
+        if (colDef?.dataTypeIdentifier == Types.ENCODED_BINARY) {
+          valuesEncrypted ??= List.from(values);
+
+          valuesEncrypted[i] = await _encryptValue(valuesEncrypted[i]);
+        }
+        else if (colDef?.dataTypeIdentifier == Types.BINARY) {
+          if (values[i] != null
+              && values[i] is! Uint8List
+              && !CryptoUtil.isBase64(values[i])) {
+            String valueString = values[i].toString();
+
+            if (valueString.isNotEmpty) {
+              valuesEncrypted ??= List.from(values);
+
+              valuesEncrypted[i] = base64Encode(utf8.encode(valueString));
+            }
+          }
+        }
+      }
+    }
+
+    return valuesEncrypted;
+  }
+
+  /// Encrypts [value].
+  dynamic _encryptValue(dynamic value) async {
+    if (value == null || (value is String && value.isEmpty)) {
       return value;
     }
 
@@ -643,11 +683,16 @@ class DataBook {
     if (token != null && token!.isNotEmpty) {
       return CryptoUtil.encrypt(value, token!);
     }
+    else if (value is! Uint8List
+             && !CryptoUtil.isBase64(value))
+    {
+      return base64Encode(utf8.encode(value.toString()));
+    }
 
     return value;
   }
 
-  Future<List<dynamic>> _decryptValues(List<dynamic> record, DalMetaData? metaData) async {
+  Future<List<dynamic>> _decryptValues(String? pageKey, int rowNumber, List<dynamic> record, DalMetaData? metaData) async {
     if (metaData == null) {
       return record;
     }
@@ -656,19 +701,59 @@ class DataBook {
 
     ColumnList colList = metaData.columnDefinitions;
 
+    DecryptedValue decValue;
+
     for (int i = 0; i < colList.length; i++) {
       if (colList[i].dataTypeIdentifier == Types.ENCODED_BINARY) {
         newRecord ??= List.from(record);
-        newRecord[i] = await decryptValue(newRecord[i]);
+        decValue = await decryptValue(newRecord[i]);
+
+        if (decValue.type == CryptoValueType.DecryptFailure
+            || decValue.type == CryptoValueType.Encrypted) {
+          Map<int, List<String>>? locks = _cryptoLock[pageKey];
+
+          if (locks == null) {
+            locks = HashMap();
+            _cryptoLock[pageKey] = locks;
+          }
+
+          List<String>? rowLocks = locks[rowNumber];
+
+          if (rowLocks == null) {
+            rowLocks = List.filled(3, colList[i].name, growable: true);
+
+            locks[rowNumber] = rowLocks;
+          }
+          else if (!rowLocks.contains(colList[i].name)) {
+            rowLocks.add(colList[i].name);
+          }
+        }
+        else {
+          _cryptoLock[pageKey]?[rowNumber]?.remove(colList[i].name);
+
+          newRecord[i] = decValue.value;
+        }
+      }
+      else if (colList[i].dataTypeIdentifier == Types.BINARY) {
+        //converts a string to binary
+        if (record[i] is String) {
+          newRecord ??= List.from(record);
+
+          Uint8List? newValue = CryptoUtil.tryDecodeBase64(newRecord[i]);
+
+          if (newValue != null) {
+            newRecord[i] = newValue;
+          }
+        }
       }
     }
 
     return newRecord ?? record;
   }
 
-  dynamic decryptValue(dynamic value) async {
+  Future<DecryptedValue> decryptValue(dynamic value) async {
     if (value == null) {
-      return value;
+      return DecryptedValue(value: value, type: CryptoValueType.PlainText);
     }
 
     ConfigHandler cfgHandler = IConfigService().getConfigHandler();
@@ -690,39 +775,50 @@ class DataBook {
       }
     }
 
-    if (token != null && token!.isNotEmpty) {
-      dynamic encodedValue = value;
+    dynamic encodedValue = value;
 
-      Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(value);
+    Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(value);
 
-      if (base64Decoded != null) {
-        try {
-          encodedValue = utf8.decode(base64Decoded);
-        }
-        catch (ex) {
-          FlutterUI.log.d(ex);
-        }
+    if (base64Decoded != null) {
+      try {
+        encodedValue = utf8.decode(base64Decoded);
       }
-
-      return CryptoUtil.decrypt(encodedValue, token!);
+      catch (ex) {
+        FlutterUI.log.d(ex);
+      }
     }
 
-    return value;
+    if (token != null && token!.isNotEmpty) {
+      return CryptoUtil.decrypt(encodedValue, token!);
+    }
+    else if (CryptoUtil.maybeEncrypted(encodedValue)) {
+
+      return DecryptedValue(value: value, type: CryptoValueType.Encrypted);
+    }
+
+    return DecryptedValue(value: encodedValue ?? value, type: CryptoValueType.PlainText);
   }
 
   Future<void> _decryptCachedValues() async {
     if (_notDecryptedCache != null) {
-      for (final entry in _notDecryptedCache!.entries) {
-        Map<int, List<dynamic>>? records = pageRecords[entry.key];
+      Map<int, List<dynamic>>? allRecords;
 
-        if (records != null) {
+      for (final entry in _notDecryptedCache!.entries) {
+        if (entry.key == null) {
+          allRecords = records;
+        }
+        else {
+          allRecords = pageRecords[entry.key];
+        }
+
+        if (allRecords != null) {
           List<dynamic>? record;
 
           for (int i = 0; i < entry.value.length; i++) {
-            record = records[i];
+            record = allRecords[i];
 
             if (record != null) {
-              records[i] = await _decryptValues(record, metaData);
+              record[i] = await _decryptValues(entry.key, i, record, metaData);
             }
           }
         }

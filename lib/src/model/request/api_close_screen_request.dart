@@ -28,6 +28,9 @@ class ApiCloseScreenRequest extends ApplicationRequest {
   /// Parameter to pass to the screen
   final Map<String, dynamic>? parameter;
 
+  /// Whether screen routing is enabled (internal state)
+  final bool routing;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,6 +38,7 @@ class ApiCloseScreenRequest extends ApplicationRequest {
   ApiCloseScreenRequest({
     required this.componentId,
     this.parameter,
+    this.routing = true
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

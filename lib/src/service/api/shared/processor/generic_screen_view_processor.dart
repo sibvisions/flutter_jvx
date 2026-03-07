@@ -21,6 +21,7 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route/route_to_workscreen_command.dart';
 import '../../../../model/component/fl_component_model.dart';
+import '../../../../model/request/api_close_screen_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
 import '../../../../util/misc/active_observer.dart';
@@ -45,6 +46,9 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
     String? screenNavigationName;
     bool bActive = false;
     bool bSecure = false;
+
+    //we check if routing is disabled
+    bool routing = pRequest is ApiCloseScreenRequest ? pRequest.routing : true;
 
     FlPanelModel? panel;
     // Handle New & Changed Components
@@ -86,31 +90,33 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
 
     BaseCommand? nextCommand;
 
-    // Handle Screen Opening
-    // if update == false => new screen that should be routed to
-    if (!IConfigService().offline.value) {
-      if (!pResponse.update) {
-        if (panel?.screenNavigationName != null) {
-          nextCommand = RouteToWorkScreenCommand(
-            screenName: panel!.screenNavigationName!,
-            secure: panel.secure,
-            reason: "Server sent screen.generic response with update = 'false'",
-          );
-        } else {
-          FlutterUI.logUI.w("Server sent screen update = 'false' but we have no panel with a matching screen name");
+    if (routing) {
+      // Handle Screen Opening
+      // if update == false => new screen that should be routed to
+      if (!IConfigService().offline.value) {
+        if (!pResponse.update) {
+          if (panel?.screenNavigationName != null) {
+            nextCommand = RouteToWorkScreenCommand(
+              screenName: panel!.screenNavigationName!,
+              secure: panel.secure,
+              reason: "Server sent screen.generic response with update = 'false'",
+            );
+          } else {
+            FlutterUI.logUI.w("Server sent screen update = 'false' but we have no panel with a matching screen name");
+          }
         }
-      }
-      else if (bActive) {
-        if (screenNavigationName != null) {
-          //Just activate the screen
-          nextCommand = RouteToWorkScreenCommand(
-            screenName: screenNavigationName,
-            secure: bSecure,
-            reason: "Route to screen from $runtimeType",
-          );
-        }
-        else {
-          FlutterUI.logUI.w("Server sent screen activation but we have no panel with a matching screen name");
+        else if (bActive) {
+          if (screenNavigationName != null) {
+            //Just activate the screen
+            nextCommand = RouteToWorkScreenCommand(
+              screenName: screenNavigationName,
+              secure: bSecure,
+              reason: "Route to screen from $runtimeType",
+            );
+          }
+          else {
+            FlutterUI.logUI.w("Server sent screen activation but we have no panel with a matching screen name");
+          }
         }
       }
     }

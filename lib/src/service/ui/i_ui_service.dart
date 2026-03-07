@@ -384,9 +384,11 @@ abstract class IUiService implements Service {
 
   void openContent(String name);
 
-  void closeContent(String name, [bool pSendClose = true]);
+  Future<void> closeContent(String name, [bool pSendClose = true]);
 
   void disposeContents();
+
+  Future<void> closeAllScreens([bool popPage = true]);
 
   bool isContentVisible(String pContentName);
 

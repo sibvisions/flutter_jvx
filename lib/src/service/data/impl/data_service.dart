@@ -68,8 +68,7 @@ class DataService implements IDataService {
 
   @override
   Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand pCommand}) async {
-    DataBook dataBook =
-        dataBooks[pCommand.response.dataProvider] ??= DataBook(dataProvider: pCommand.response.dataProvider);
+    DataBook dataBook = dataBooks[pCommand.response.dataProvider] ??= DataBook(dataProvider: pCommand.response.dataProvider);
 
     if (pCommand.response.clear) {
       dataBook.clearRecords();
@@ -124,36 +123,39 @@ class DataService implements IDataService {
     DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
 
     if (dataBook == null) {
+      DalMetaData metaData = DalMetaData(pChangedResponse.dataProvider);
+      metaData.applyMetaDataResponse(pChangedResponse);
+
       dataBook = DataBook(
         dataProvider: pChangedResponse.dataProvider,
-        records: HashMap(),
-        isAllFetched: false,
-        selectedRow: -1,
+        metaData: metaData
       );
+
       dataBooks[dataBook.dataProvider] = dataBook;
     }
-
-    dataBook.metaData = (dataBook.metaData ?? DalMetaData(pChangedResponse.dataProvider))
-      ..applyMetaDataResponse(pChangedResponse);
+    else {
+      dataBook.metaData ??= DalMetaData(pChangedResponse.dataProvider);
+      dataBook.metaData!.applyMetaDataResponse(pChangedResponse);
+    }
 
     return true;
   }
 
   @override
-  bool setMetaData({required DalMetaData pMetaData}) {
+  bool setMetaData(DalMetaData pMetaData) {
     DataBook? dataBook = dataBooks[pMetaData.dataProvider];
 
     if (dataBook == null) {
       dataBook = DataBook(
         dataProvider: pMetaData.dataProvider,
-        records: HashMap(),
-        isAllFetched: false,
-        selectedRow: -1,
+        metaData: pMetaData
       );
+
       dataBooks[dataBook.dataProvider] = dataBook;
     }
-
-    dataBook.metaData = pMetaData;
+    else {
+      dataBook.metaData = pMetaData;
+    }
 
     pMetaData.columnDefinitions.forEach((colDef) {
       if (colDef.cellEditorModel is FlLinkedCellEditorModel) {

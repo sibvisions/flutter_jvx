@@ -78,14 +78,28 @@ abstract class CryptoUtil {
     }
   }
 
-  /// Decrypts an [encrypted] text with [keyCode]
-  static Future<String?> decrypt(String? encrypted, String keyCode) async {
+  static bool maybeEncrypted(String? encrypted) {
     if (encrypted == null) {
-      return null;
+      return false;
+    }
+
+    if (encrypted.startsWith("{") && encrypted.endsWith("}")) {
+      //two keys are enough
+      return encrypted.contains('salt') && encrypted.contains('cipher');
+    }
+    else {
+      return false;
+    }
+  }
+
+  /// Decrypts an [encrypted] text with [keyCode]
+  static Future<DecryptedValue> decrypt(String? encrypted, String keyCode) async {
+    if (encrypted == null) {
+      return DecryptedValue(value: null);
     }
 
     if (!encrypted.startsWith("{") && !encrypted.endsWith("}")) {
-      return encrypted;
+      return DecryptedValue(value: encrypted, type: CryptoValueType.PlainText);
     }
 
     try {
@@ -108,13 +122,16 @@ abstract class CryptoUtil {
         secretKey: key,
       );
 
-      return utf8.decode(decrypted);
+      return DecryptedValue(value: utf8.decode(decrypted));
     } on SecretBoxAuthenticationError catch (se) {
-      FlutterUI.log.e(se);
+      FlutterUI.log.w(se);
+
       //Wrong key (keyCode or salt)
-      return null;
+      return DecryptedValue(value: encrypted, type: CryptoValueType.DecryptFailure);
     } catch (e) {
-      rethrow;
+      FlutterUI.log.e(e);
+
+      return DecryptedValue(value: encrypted, type: CryptoValueType.DecryptFailure);
     }
   }
 
@@ -161,4 +178,24 @@ abstract class CryptoUtil {
     return base64Decoded;
   }
 
+}
+
+/// Possible types for crypto values
+enum CryptoValueType {
+  PlainText,
+  Encrypted,
+  Decrypted,
+  DecryptFailure,
+}
+
+/// The DecryptedValue holds a value and type as result of decryption
+final class DecryptedValue {
+
+  final CryptoValueType type;
+  final dynamic value;
+
+  DecryptedValue({
+    this.value,
+    this.type = CryptoValueType.Decrypted
+  });
 }

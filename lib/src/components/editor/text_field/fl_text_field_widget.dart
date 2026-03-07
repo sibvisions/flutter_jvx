@@ -32,6 +32,7 @@ import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
 import '../../../util/parse_util.dart';
 import '../../../util/widget_util.dart';
+import '../../../util/widgets/no_focus_node.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
 
 enum FlTextBorderType {
@@ -88,6 +89,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   final bool showCopy;
 
+  final bool hideSuffixIcons;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,7 +143,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     this.keyboardType = TextInputType.text,
     this.isMandatory = false,
     this.hideClearIcon = false,
-    this.showCopy = false
+    this.showCopy = false,
+    this.hideSuffixIcons = false
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -149,7 +153,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   @override
   Widget build(BuildContext context) {
-    focusNode.canRequestFocus = model.isFocusable;
+    focusNode.canRequestFocus = model.isFocusable && model.isEditable && model.isEnabled;
+
+    InputBorder? borDisabled = createBorder(FlTextBorderType.disabledBorder);
 
     return TextField(
       controller: textController,
@@ -167,11 +173,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         contentPadding: contentPadding,
         border: createBorder(FlTextBorderType.border),
         errorBorder: createBorder(FlTextBorderType.errorBorder),
-        enabledBorder: createBorder(FlTextBorderType.enabledBorder),
+        enabledBorder: model.isEditable ? createBorder(FlTextBorderType.enabledBorder) : borDisabled,
         focusedBorder: createBorder(FlTextBorderType.focusedBorder),
-        disabledBorder: createBorder(FlTextBorderType.disabledBorder),
-        focusedErrorBorder: createBorder(FlTextBorderType.focusedBorder),
-        suffixIcon: createSuffixIcon(context),
+        disabledBorder: borDisabled,
+        focusedErrorBorder: createBorder(FlTextBorderType.focusedErrorBorder),
+        suffixIcon: hideSuffixIcons ? null : createSuffixIcon(context),
         suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
         prefixIcon: createPrefixIcon(context),
         prefixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
@@ -182,14 +188,14 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
       textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
       readOnly: model.isReadOnly,
-      style: model.createTextStyle(),
+      style: _createTextStyle(),
       onChanged: valueChanged,
       onEditingComplete: () => endEditing(textController.text, FlTextFieldModel.ENTER_KEY),
       expands: isExpanded,
       minLines: minLines,
       maxLines: maxLines,
       keyboardType: keyboardType,
-      focusNode: focusNode,
+      focusNode: model.isEditable ? focusNode : NoFocusNode(),
       inputFormatters: inputFormatters,
       obscureText: obscureText,
       obscuringCharacter: obscuringCharacter,
@@ -372,11 +378,14 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   InputBorder? createBorder(FlTextBorderType pBorderType) {
     Color borderEnabledColor;
+    Color? borderDisabledColor;
     Color? borderFocusedColor;
 
     if (model.isBorderVisible) {
-      borderEnabledColor = _extractBorderColor(FlComponentModel.STYLE_BORDER_COLOR) ?? JVxColors.COMPONENT_BORDER;
-      borderFocusedColor = _extractBorderColor(FlComponentModel.STYLE_BORDER_COLOR_FOCUSED);
+      borderEnabledColor = _extractColor(FlComponentModel.STYLE_BORDER_COLOR) ?? JVxColors.COMPONENT_BORDER;
+      borderFocusedColor = _extractColor(FlComponentModel.STYLE_BORDER_COLOR_FOCUSED);
+
+      borderDisabledColor = _extractColor(FlComponentModel.STYLE_BORDER_COLOR_DISABLED);
     } else {
       borderEnabledColor = Colors.transparent;
       borderFocusedColor = Colors.transparent;
@@ -395,7 +404,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       case FlTextBorderType.disabledBorder:
         return OutlineInputBorder(
           borderSide: BorderSide(
-            color: model.isBorderVisible ? JVxColors.COMPONENT_DISABLED : Colors.transparent,
+            color: model.isBorderVisible ? borderDisabledColor ?? JVxColors.COMPONENT_DISABLED : Colors.transparent,
           ),
         );
       case FlTextBorderType.focusedBorder:
@@ -421,18 +430,18 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return width;
   }
 
-  Color? _extractBorderColor(String pStylePrefix) {
+  Color? _extractColor(String pStylePrefix) {
     List<String> styles = _extractStringsFromStyle(pStylePrefix);
     if (styles.isEmpty) {
       return null;
     } else {
-      List<String> borderColorStrings = styles[0].split("_");
+      List<String> colorStrings = styles[0].split("_");
 
-      Color? iconColor = ParseUtil.parseColor(borderColorStrings[0]);
-      Color? iconColorDarkMode =
-          borderColorStrings.length >= 2 ? ParseUtil.parseColor(borderColorStrings[1]) : null;
+      Color? color = ParseUtil.parseColor(colorStrings[0]);
+      Color? colorDarkMode =
+          colorStrings.length >= 2 ? ParseUtil.parseColor(colorStrings[1]) : null;
 
-      return JVxColors.isLightTheme(FlutterUI.getCurrentContext()!) ? iconColor : iconColorDarkMode ?? iconColor;
+      return JVxColors.isLightTheme(FlutterUI.getCurrentContext()!) ? color : colorDarkMode ?? color;
     }
   }
 
@@ -475,4 +484,18 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     return listStrings;
   }
+
+  TextStyle _createTextStyle() {
+    Color? color;
+
+    if (model.isEnabled) {
+      color = _extractColor(FlComponentModel.STYLE_TEXT_COLOR);
+    }
+    else {
+      color = _extractColor(FlComponentModel.STYLE_TEXT_COLOR_DISABLED);
+    }
+
+    return model.createTextStyle(pForeground: color);
+  }
 }
+

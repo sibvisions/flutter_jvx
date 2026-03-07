@@ -44,7 +44,7 @@ abstract class IDataService implements Service {
   bool updateMetaData({required DalMetaDataResponse pChangedResponse});
 
   /// Establishes the meta data of the given dataBook
-  bool setMetaData({required DalMetaData pMetaData});
+  bool setMetaData(DalMetaData pMetaData);
 
   /// Updates parts of the meta data of a given dataBook
   bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse});

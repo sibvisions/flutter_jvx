@@ -42,7 +42,7 @@ class DalFetchResponse extends ApiResponse {
   final String? selectedColumn;
 
   /// True if all data for this dataBook have been fetched
-  final bool isAllFetched;
+  final bool? isAllFetched;
 
   /// Link to the connected dataBook
   final String dataProvider;
@@ -76,10 +76,10 @@ class DalFetchResponse extends ApiResponse {
     required this.dataProvider,
     required this.from,
     required this.selectedRow,
-    required this.isAllFetched,
     required this.columnNames,
     required this.to,
     required this.records,
+    this.isAllFetched,
     this.recordReadOnly,
     this.masterRow,
     this.clear = false,
@@ -97,7 +97,7 @@ class DalFetchResponse extends ApiResponse {
         to = json[ApiObjectProperty.to],
         from = json[ApiObjectProperty.from],
         columnNames = json[ApiObjectProperty.columnNames].cast<String>(),
-        isAllFetched = json[ApiObjectProperty.isAllFetched] ?? false,
+        isAllFetched = json[ApiObjectProperty.isAllFetched],
         selectedRow = json[ApiObjectProperty.selectedRow],
         selectedColumn = json[ApiObjectProperty.selectedColumn],
         dataProvider = json[ApiObjectProperty.dataProvider],

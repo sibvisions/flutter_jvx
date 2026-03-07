@@ -18,7 +18,7 @@ import 'ui_command.dart';
 import 'view/message/ierror_command.dart';
 
 /// This command will open a popup containing the provided message
-class OpenErrorDialogCommand extends UiCommand implements ErrorCommand {
+class OpenErrorDialogCommand extends UiCommand implements IErrorCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

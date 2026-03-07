@@ -23,7 +23,7 @@ class DeleteScreenCommand extends StorageCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Whether page should be popped
-  bool popPage = true;
+  bool popPage;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -32,6 +32,7 @@ class DeleteScreenCommand extends StorageCommand {
   DeleteScreenCommand({
     required super.componentName,
     required super.reason,
+    this.popPage = true,
     super.showLoading,
   });
 

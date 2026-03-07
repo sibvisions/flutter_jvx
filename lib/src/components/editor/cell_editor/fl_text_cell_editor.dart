@@ -79,6 +79,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   /// The last sent value;
   dynamic lastSentValue;
 
+  // Whether setValue was called
+  bool hasValue = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,6 +174,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           showPlainText: model.showPlainText,
           showCopy: model.showCopy,
           showPasswordStrength: model.showPasswordStrength,
+          hidePasswordStrengthLabel: !hasValue && textController.text.isEmpty
         );
       case (TEXT_PLAIN_SINGLELINE):
       default:
@@ -310,6 +314,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   ///async handling
   Future<void> _setValueIntern(dynamic pValue) async {
     if (isInitialized && await getValue() != pValue) {
+
+      hasValue = true && pValue != null;
+
       if (pValue == null) {
         if (isHtml) {
           htmlController.clear();

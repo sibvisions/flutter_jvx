@@ -151,10 +151,11 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
   @override
   String formatValue(Object? pValue) {
-    Object? showValue = pValue;
-    if (showValue == null) {
+    if (pValue == null) {
       return "";
     }
+
+    Object? showValue = pValue;
 
     if (model.displayConcatMask != null || model.displayReferencedColumnName != null) {
       ReferenceDefinition linkReference = effectiveLinkReference;

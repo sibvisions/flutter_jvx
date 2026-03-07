@@ -139,9 +139,10 @@ class SharedPrefsHandler implements ConfigHandler {
   @override
   Future<String?> getValueSecure(String name) async {
     if (kIsWeb) {
-      return _securePrefs.read(key: name).then((value) {
-        return CryptoUtil.decrypt(value, name);
-      });
+      String? pref = await _securePrefs.read(key: name);
+      DecryptedValue decValue = await CryptoUtil.decrypt(pref, name);
+
+      return decValue.value;
     }
     else {
       return _securePrefs.read(key: name);

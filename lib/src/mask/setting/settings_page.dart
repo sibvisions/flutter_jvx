@@ -24,6 +24,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../commands.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../service/api/i_api_service.dart';
@@ -448,6 +449,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
           if (delete == true) {
             sectokenAvailable = !await IConfigService().getConfigHandler().setValueSecure("$appId.encToken", null);
+
+            //close all screens because of changed encryption token
+            await IUiService().closeAllScreens(false);
 
             setState(() {});
           }

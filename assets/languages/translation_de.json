@@ -390,6 +390,29 @@
   {
     "text": "Encryption token",
     "translation": "Verschlüsselungstoken"
+  },
+  {
+    "text": "Very weak",
+    "translation": "Sehr schwach"
+  },
+  {
+    "text": "Weak",
+    "translation": "Schwach"
+  },
+  {
+    "text": "Fair",
+    "translation": "Ausreichend"
+  },
+  {
+    "text": "Good",
+    "translation": "Gut"
+  },
+  {
+    "text": "Strong",
+    "translation": "Stark"
+  },
+  {
+    "text": "Encryted",
+    "translation": "Verschlüsselt"
   }
-
 ]

@@ -91,15 +91,6 @@ class ColumnDefinition {
   /// If the number type is signed.
   bool? signed;
 
-  /// Enable auto trim to avoid whitespaces at the begin and end of texts
-  bool autoTrim;
-
-  /// The encoding of binary data types.
-  String encoding;
-
-  /// The fractional seconds precision.
-  int iFractionalSecondsPrecision;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -133,13 +124,10 @@ class ColumnDefinition {
         scale = json[ApiObjectProperty.scale],
         precision = json[ApiObjectProperty.precision],
         signed = json[ApiObjectProperty.signed],
-        autoTrim = json[ApiObjectProperty.autoTrim] ?? false,
-        iFractionalSecondsPrecision = json[ApiObjectProperty.fractionalSecondsPrecision] ?? 0,
         cellEditorJson = json[ApiObjectProperty.cellEditor] ?? {},
         cellEditorModel = json[ApiObjectProperty.cellEditor] != null
             ? ICellEditorModel.fromJson(json[ApiObjectProperty.cellEditor])
-            : ICellEditorModel(),
-        encoding = json[ApiObjectProperty.encoding] ?? "";
+            : ICellEditorModel();
 
   Map<String, dynamic> toJson() {
     return {
@@ -157,10 +145,7 @@ class ColumnDefinition {
       ApiObjectProperty.scale: scale,
       ApiObjectProperty.precision: precision,
       ApiObjectProperty.signed: signed,
-      ApiObjectProperty.autoTrim: autoTrim,
-      ApiObjectProperty.fractionalSecondsPrecision: iFractionalSecondsPrecision,
-      ApiObjectProperty.cellEditor: cellEditorJson,
-      ApiObjectProperty.encoding: encoding,
+      ApiObjectProperty.cellEditor: cellEditorJson
     };
   }
 }

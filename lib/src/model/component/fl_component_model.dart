@@ -91,6 +91,15 @@ abstract class FlComponentModel {
   /// The color of the border when focused.
   static const String STYLE_BORDER_COLOR_FOCUSED = "f_border_focused_color_";
 
+  /// The color of the border when disabled.
+  static const String STYLE_BORDER_COLOR_DISABLED = "f_border_disabled_color_";
+
+  /// The color of the text.
+  static const String STYLE_TEXT_COLOR = "f_text_color_";
+
+  /// The color of the text when disabled.
+  static const String STYLE_TEXT_COLOR_DISABLED = "f_text_disabled_color_";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

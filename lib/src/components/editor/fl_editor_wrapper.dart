@@ -27,7 +27,6 @@ import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
@@ -48,6 +47,7 @@ import 'cell_editor/fl_dummy_cell_editor.dart';
 import 'cell_editor/fl_image_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
 import 'cell_editor/linked/fl_linked_cell_editor.dart';
+import 'crypto/fl_crypto_lock_widget.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layout wrapper of various non layout widgets.
@@ -91,6 +91,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   DalMetaData? metaData;
 
+  /// The crypto-lock mode
+  bool cryptoLock = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,7 +124,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   modelUpdated() {
     // If a change of cell editors has occurred.
     if (model.changedCellEditor) {
-
       _replaceCellEditor();
     }
 
@@ -147,9 +149,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       );
     }
 
+    Widget? editorWidget;
+
+    if (cryptoLock && _currentValue != null) {
+      editorWidget = FlCryptoLockWidget(model: model, cellEditor: cellEditor);
+    }
+
+    editorWidget ??= cellEditor.createWidget(model.json, wrapper);
+
     return wrapWidget(
       context,
-      cellEditor.createWidget(model.json, wrapper),
+      editorWidget,
       useOutlineBadge
     );
   }
@@ -217,7 +227,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ///Replaces the cell editor with another instance but keep the value(s)
-  Future<void> _replaceCellEditor() async {
+  Future<void> _replaceCellEditor([bool pReSubscribe = true]) async {
 
     bool oldFocus = false;
 
@@ -225,14 +235,19 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       oldFocus = (cellEditor as IFocusableCellEditor).focusNode.hasFocus;
     }
 
-      dynamic oldValue = await cellEditor.getValue();
+    dynamic oldValue = await cellEditor.getValue();
+
     List<dynamic>? oldValues;
 
     if (isLinkedEditor()) {
       oldValues = (cellEditor as FlLinkedCellEditor).getValues();
     }
 
-    recreateCellEditor();
+    if (pReSubscribe) {
+      _unsubscribe();
+    }
+
+    recreateCellEditor(pReSubscribe);
 
     model.applyComponentInformation(cellEditor.createWidgetModel());
 
@@ -308,6 +323,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void setValue(DataRecord? pDataRecord) {
     var oldValue = _currentValue;
+
     if (pDataRecord != null && pDataRecord.values.isNotEmpty && pDataRecord.columnDefinitions.isNotEmpty) {
       _currentValue = pDataRecord.values[pDataRecord.columnDefinitions.indexByName(model.columnName)];
     } else {
@@ -315,6 +331,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
 
     _currentValues = pDataRecord?.values;
+
+    cryptoLock = pDataRecord != null && (IDataService().getDataBook(model.dataProvider)?.hasCryptoLock(pDataRecord.index, model.columnName) ?? false);
 
     if (isLinkedEditor()) {
       cellEditor.setValue((_currentValue, _currentValues));
@@ -411,16 +429,14 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void recreateCellEditor([bool pSubscribe = true]) {
     cellEditor.dispose();
 
-    //try to use columnDefinition if available
-    ColumnDefinition? colDef = IDataService().getDataBook(model.dataProvider)?.metaData?.columnDefinitions.byName(model.columnName);
-
     Map<String, dynamic> jsonCellEditor = Map.of(model.json[ApiObjectProperty.cellEditor]);
     cellEditor = ICellEditor.getCellEditor(
       name: model.name,
       cellEditorJson: jsonCellEditor,
       columnName: model.columnName,
       dataProvider: model.dataProvider,
-      columnDefinition: colDef,
+      //try to use columnDefinition if available
+      columnDefinition: IDataService().getDataBook(model.dataProvider)?.metaData?.columnDefinitions.byName(model.columnName),
       onChange: onChange,
       onEndEditing: onEndEditing,
       onFocusChanged: _onFocusChange,
