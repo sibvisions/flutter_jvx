@@ -26,7 +26,6 @@ import '../login_handler.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../model/response/login_view_response.dart';
-import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/config/i_config_service.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../../../util/image/image_loader.dart';
