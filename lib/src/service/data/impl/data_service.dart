@@ -19,6 +19,7 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../components/editor/cell_editor/referenced_cell_editor.dart';
 import '../../../flutter_ui.dart';
@@ -100,19 +101,28 @@ class DataService implements IDataService {
     bool changed = false;
 
     if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
-      changed = true;
-      dataBook.selectedColumn = pChangedResponse.selectedColumn;
+      changed = dataBook.selectedColumn != pChangedResponse.selectedColumn;
+
+      if (changed) {
+        dataBook.selectedColumn = pChangedResponse.selectedColumn;
+      }
     }
 
     if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedRow) && pChangedResponse.selectedRow != null) {
-      changed = true;
-      dataBook.selectedRow = pChangedResponse.selectedRow!;
+      changed |= dataBook.selectedRow != pChangedResponse.selectedRow!;
+
+      if (changed) {
+        dataBook.selectedRow = pChangedResponse.selectedRow!;
+      }
     }
 
     if (pChangedResponse.json.containsKey(ApiObjectProperty.treePath) && pChangedResponse.treePath != null) {
-      changed = true;
-      dataBook.selectedRow = pChangedResponse.treePath!.last;
-      dataBook.treePath = pChangedResponse.treePath;
+      changed |= !listEquals(dataBook.treePath, pChangedResponse.treePath);
+
+      if (changed) {
+        dataBook.treePath = pChangedResponse.treePath;
+        dataBook.selectedRow = pChangedResponse.treePath!.last;
+      }
     }
 
     return changed;
