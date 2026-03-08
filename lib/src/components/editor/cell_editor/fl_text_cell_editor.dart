@@ -314,7 +314,6 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   ///async handling
   Future<void> _setValueIntern(dynamic pValue) async {
     if (isInitialized && await getValue() != pValue) {
-
       hasValue = true && pValue != null;
 
       if (pValue == null) {
