@@ -321,8 +321,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  void setValue(DataRecord? pDataRecord) {
-    var oldValue = _currentValue;
+  Future<void> setValue(DataRecord? pDataRecord) async {
+    dynamic oldValue = _currentValue;
 
     if (pDataRecord != null && pDataRecord.values.isNotEmpty && pDataRecord.columnDefinitions.isNotEmpty) {
       _currentValue = pDataRecord.values[pDataRecord.columnDefinitions.indexByName(model.columnName)];
@@ -337,10 +337,15 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     if (isLinkedEditor()) {
       cellEditor.setValue((_currentValue, _currentValues));
       setState(() {});
-    } else  if (oldValue != _currentValue) {
-      cellEditor.setValue(_currentValue);
+    } else {
 
-      setState(() {});
+      dynamic editorValue = await cellEditor.getValue();
+
+      if (_currentValue != oldValue || !_isSameValue(editorValue)) {
+        cellEditor.setValue(_currentValue);
+
+        setState(() {});
+      }
     }
   }
 
