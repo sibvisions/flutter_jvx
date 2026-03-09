@@ -84,8 +84,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       );
     } else {
       return GestureDetector(
-        onTap: image == null && !IconUtil.isFontIcon(model.image)
-               && model.image != null && model.image!.isNotEmpty
+        onTap: image == null && !IconUtil.isFontIcon(model.image) && model.hasImage()
             ? () => showDialog(
                   context: context,
                   builder: (context) {
@@ -97,7 +96,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
                         ),
                         initialScale: PhotoViewComputedScale.contained * 0.75,
                         minScale: PhotoViewComputedScale.contained * 0.1,
-                        imageProvider: ImageLoader.getImageProvider(model.image),
+                        imageProvider: ImageLoader.getImageProvider(model.image!),
                       ),
                     );
                   },
@@ -138,7 +137,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   }
 
   Widget? _loadImage() {
-    if (model.image == null || model.image!.isEmpty) {
+    if (!model.hasImage()) {
       return null;
     }
 

@@ -486,7 +486,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       },
       tableSize: widget.tableSize,
       values: widget.chunkData.data[index]!,
-      recordFormat: widget.chunkData.recordFormats?[widget.model.name]?.rowFormats[index],
+      recordFormat: widget.chunkData.recordFormats?[widget.model.name]?[index],
       recordReadOnly: widget.chunkData.dataReadOnly?[index],
       index: index,
       isSelected: index == widget.selectedRowIndex,

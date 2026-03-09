@@ -81,7 +81,7 @@ abstract class ImageLoader {
 
   /// Loads any server sent image string.
   static Widget loadImage(
-    String imageDefinition, {
+    dynamic imageDefinition, {
     Function(Size, bool)? imageStreamListener,
     double? width,
     double? height,
@@ -90,7 +90,12 @@ abstract class ImageLoader {
     AlignmentGeometry alignment = Alignment.center,
     WidgetWrapper? wrapper
   }) {
-    if (imageDefinition.isNotEmpty) {
+    ImageProvider? imageProvider;
+
+    if (imageDefinition is Uint8List) {
+      imageProvider = getBinaryImageProvider(imageDefinition, imageStreamListener: imageStreamListener);
+    }
+    else if (imageDefinition is String && imageDefinition.isNotEmpty) {
       var iconDef = IconUtil.fromString(imageDefinition, width, color);
 
       if (iconDef?.icon != null) {
@@ -103,36 +108,38 @@ abstract class ImageLoader {
         );
       }
 
-      ImageProvider? imageProvider = getImageProvider(imageDefinition, imageStreamListener: imageStreamListener);
+      imageProvider = getImageProvider(imageDefinition, imageStreamListener: imageStreamListener);
+    }
 
-      if (imageProvider != null) {
+    if (imageProvider != null) {
+      double? width_;
+      double? height_;
+
+      if (imageDefinition is String) {
         List<String> split = imageDefinition.split(",");
-
-        double? width_;
-        double? height_;
 
         if (split.length >= 3) {
           width_ = double.tryParse(split[1]);
           height_ = double.tryParse(split[2]);
         }
+      }
 
-        Image img = Image(
-          image: imageProvider,
-          loadingBuilder: createImageLoadingBuilder(),
-          errorBuilder: createImageErrorBuilder(imageProvider),
-          width: width_ ?? width,
-          height: height_ ?? height,
-          fit: fit,
-          alignment: alignment,
-          gaplessPlayback: imageProvider is MemoryImage,
-        );
+      Image img = Image(
+        image: imageProvider,
+        loadingBuilder: createImageLoadingBuilder(),
+        errorBuilder: createImageErrorBuilder(imageProvider),
+        width: width_ ?? width,
+        height: height_ ?? height,
+        fit: fit,
+        alignment: alignment,
+        gaplessPlayback: imageProvider is MemoryImage,
+      );
 
-        if (wrapper != null) {
-          return wrapper(img, null);
-        }
-        else {
-          return img;
-        }
+      if (wrapper != null) {
+        return wrapper(img, null);
+      }
+      else {
+        return img;
       }
     }
 
@@ -146,7 +153,7 @@ abstract class ImageLoader {
     }
   }
 
-  static ImageProvider? getBinaryImageProvider(
+  static ImageProvider getBinaryImageProvider(
       Uint8List bytes, {
       Function(Size, bool)? imageStreamListener,
   }) {

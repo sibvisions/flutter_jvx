@@ -121,8 +121,12 @@ abstract class IconUtil {
     }
 
     ///Gets whether the given [imageDefinition] is a font icon definition.
-    static bool isFontIcon(String? imageDefinition) {
-        if (imageDefinition == null || imageDefinition.isEmpty) {
+    static bool isFontIcon(dynamic imageDefinition) {
+        if (imageDefinition is! String) {
+            return false;
+        }
+
+        if (imageDefinition.isEmpty) {
             return false;
         }
 

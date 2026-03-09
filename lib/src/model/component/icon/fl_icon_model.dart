@@ -22,7 +22,7 @@ class FlIconModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The image of the icon.
-  String? image;
+  dynamic image;
 
   /// If the aspect ratio of the image should be preserved.
   bool preserveAspectRatio = false;
@@ -37,10 +37,14 @@ class FlIconModel extends FlComponentModel {
       return _minimumSize;
     }
 
-    if (image != null && image!.isNotEmpty) {
+    if (!hasImage()) {
       return const Size.square(IconUtil.DEFAULT_ICON_SIZE);
     }
     return null;
+  }
+
+  bool hasImage() {
+    return image != null && (image is! String || (image as String).isNotEmpty);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

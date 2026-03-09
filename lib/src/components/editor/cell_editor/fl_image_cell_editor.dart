@@ -31,7 +31,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The image of the icon.
-  String? _value;
+  dynamic _value;
 
   ImageProvider? imageProvider;
 
