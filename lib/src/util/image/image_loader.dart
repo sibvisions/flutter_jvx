@@ -166,124 +166,131 @@ abstract class ImageLoader {
 
   /// Creates either a MemoryImage, a FileImage or a NetworkImage
   static ImageProvider? getImageProvider(
-    String? imageDefinition, {
+    dynamic imageDefinition, {
     App? app,
     Function(Size, bool)? imageStreamListener
   }) {
-    if (imageDefinition == null || imageDefinition.isEmpty) {
+    if (imageDefinition == null) {
       return null;
     }
 
-    ImageProvider imageProvider;
-
-    Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(imageDefinition);
-
-    var listener_ = imageStreamListener;
-
-    double? width_;
-    double? height_;
-
-    if (base64Decoded != null) {
-      MemoryImage? memImage;
-
-      (MemoryImage image, Size? size)? cacheInfo = _imageCache[imageDefinition];
-
-      if (cacheInfo != null) {
-        memImage = cacheInfo.$1;
-
-        Size? size = cacheInfo.$2;
-
-        if (size != null) {
-          width_ = size.width;
-          height_ = size.height;
-        }
-      }
-
-      if (memImage == null) {
-        memImage = MemoryImage(base64Decoded);
-
-        //images < 500Kb will be cached
-        if (base64Decoded.lengthInBytes < 512000) {
-          //we need a listener wrapper to update the cache with size
-          listener_ = (Size size, bool synchronousCall) {
-            _imageCache[imageDefinition] = (memImage!, size);
-
-            //foward to original listener
-            if (imageStreamListener != null) {
-              imageStreamListener(size, synchronousCall);
-            }
-          };
-
-          _imageCache[imageDefinition] = (memImage, null);
-        }
-      }
-
-      imageProvider = memImage;
+    if (imageDefinition is Uint8List) {
+      return getBinaryImageProvider(imageDefinition, imageStreamListener: imageStreamListener);
     }
-    else {
-      Uri? parsedURI;
+    else if (imageDefinition is String && imageDefinition.isNotEmpty) {
+      ImageProvider imageProvider;
 
-      try {
-        parsedURI = Uri.parse(imageDefinition);
-      } catch (_) {}
+      Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(imageDefinition);
 
-      if (parsedURI == null || !parsedURI.scheme.contains("http")) {
-        // Cut away optional size
-        int commaIndex = imageDefinition.indexOf(",");
+      var listener_ = imageStreamListener;
 
-        String imageDefinition_ = imageDefinition;
-        if (commaIndex >= 0) {
-          imageDefinition_ = imageDefinition.substring(0, commaIndex);
+      double? width_;
+      double? height_;
 
-          List<String> split = imageDefinition.substring(commaIndex + 1).split(",");
+      if (base64Decoded != null) {
+        MemoryImage? memImage;
 
-          if (split.length >= 2) {
-            width_ = double.tryParse(split[0]);
-            height_ = double.tryParse(split[1]);
+        (MemoryImage image, Size? size)? cacheInfo = _imageCache[imageDefinition];
+
+        if (cacheInfo != null) {
+          memImage = cacheInfo.$1;
+
+          Size? size = cacheInfo.$2;
+
+          if (size != null) {
+            width_ = size.width;
+            height_ = size.height;
           }
         }
 
-        if (imageDefinition_.startsWith("/")) {
-          imageDefinition_ = imageDefinition_.substring(1);
+        if (memImage == null) {
+          memImage = MemoryImage(base64Decoded);
+
+          //images < 500Kb will be cached
+          if (base64Decoded.lengthInBytes < 512000) {
+            //we need a listener wrapper to update the cache with size
+            listener_ = (Size size, bool synchronousCall) {
+              _imageCache[imageDefinition] = (memImage!, size);
+
+              //foward to original listener
+              if (imageStreamListener != null) {
+                imageStreamListener(size, synchronousCall);
+              }
+            };
+
+            _imageCache[imageDefinition] = (memImage, null);
+          }
         }
 
-        File? file;
-
-        String? appVersion = app?.version ?? IConfigService().version.value;
-
-        if (appVersion != null) {
-          IFileManager fileManager = IConfigService().getFileManager();
-
-          String path = fileManager.getAppSpecificPath(
-            "${IFileManager.IMAGES_PATH}/$imageDefinition_",
-            appId: app?.id ?? IConfigService().currentApp.value!,
-            version: appVersion,
-          );
-
-          file = fileManager.getFileSync(path);
-        }
-
-        if (file != null) {
-          imageProvider = FileImage(file);
-        } else {
-          Uri baseUrl = app?.baseUrl ?? IConfigService().baseUrl.value!;
-          String appName = app?.name ?? IConfigService().appName.value!;
-
-          imageProvider = NetworkImage("$baseUrl/resource/$appName/$imageDefinition_", headers: _getHeaders());
-        }
-      } else {
-        imageProvider = NetworkImage(imageDefinition, headers: _getHeaders());
+        imageProvider = memImage;
       }
+      else {
+        Uri? parsedURI;
+
+        try {
+          parsedURI = Uri.parse(imageDefinition);
+        } catch (_) {}
+
+        if (parsedURI == null || !parsedURI.scheme.contains("http")) {
+          // Cut away optional size
+          int commaIndex = imageDefinition.indexOf(",");
+
+          String imageDefinition_ = imageDefinition;
+          if (commaIndex >= 0) {
+            imageDefinition_ = imageDefinition.substring(0, commaIndex);
+
+            List<String> split = imageDefinition.substring(commaIndex + 1).split(",");
+
+            if (split.length >= 2) {
+              width_ = double.tryParse(split[0]);
+              height_ = double.tryParse(split[1]);
+            }
+          }
+
+          if (imageDefinition_.startsWith("/")) {
+            imageDefinition_ = imageDefinition_.substring(1);
+          }
+
+          File? file;
+
+          String? appVersion = app?.version ?? IConfigService().version.value;
+
+          if (appVersion != null) {
+            IFileManager fileManager = IConfigService().getFileManager();
+
+            String path = fileManager.getAppSpecificPath(
+              "${IFileManager.IMAGES_PATH}/$imageDefinition_",
+              appId: app?.id ?? IConfigService().currentApp.value!,
+              version: appVersion,
+            );
+
+            file = fileManager.getFileSync(path);
+          }
+
+          if (file != null) {
+            imageProvider = FileImage(file);
+          } else {
+            Uri baseUrl = app?.baseUrl ?? IConfigService().baseUrl.value!;
+            String appName = app?.name ?? IConfigService().appName.value!;
+
+            imageProvider = NetworkImage("$baseUrl/resource/$appName/$imageDefinition_", headers: _getHeaders());
+          }
+        } else {
+          imageProvider = NetworkImage(imageDefinition, headers: _getHeaders());
+        }
+      }
+
+      if (width_ != null || height_ != null) {
+        listener_?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
+      }
+      else {
+        _addImageListener(imageProvider, listener_);
+      }
+
+      return imageProvider;
     }
 
-    if (width_ != null || height_ != null) {
-      listener_?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
-    }
-    else {
-      _addImageListener(imageProvider, listener_);
-    }
-
-    return imageProvider;
+    return null;
   }
 
   static Map<String, String> _getHeaders() {
