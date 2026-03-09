@@ -20,6 +20,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../components/editor/cell_editor/referenced_cell_editor.dart';
 import '../../flutter_ui.dart';
@@ -248,32 +249,9 @@ class DataBook {
       }
       treePath = pFetchResponse.treePath;
 
-      if (pFetchResponse.recordFormats != null) {
-        for (String key in pFetchResponse.recordFormats!.keys) {
-          var newRecordFormat = pFetchResponse.recordFormats![key]!;
-          var recordFormat = recordFormats[key] ??= RecordFormat();
-          for (int rowIndex in pFetchResponse.recordFormats![key]!.rowFormats.keys) {
-            recordFormat.rowFormats[rowIndex] = newRecordFormat.rowFormats[rowIndex]!;
-          }
-        }
-      }
-
-      updateSortDefinitions(pFetchResponse.sortDefinitions);
-
-      if (pFetchResponse.recordReadOnly != null) {
-        pFetchResponse.recordReadOnly!.forEachIndexed(
-          (index, element) {
-            List<bool> readOnlyList = element.map((e) => e == RECORD_READONLY).toList();
-
-            // length -1 -> Last column of the values is no "column", it is the state of the row.
-            for (int i = readOnlyList.length; i < (dataMap.values.first.length - 1); i++) {
-              readOnlyList.add(readOnlyList.last);
-            }
-
-            recordReadOnly[pFetchResponse.from + index] = readOnlyList;
-          },
-        );
-      }
+      _updateSortDefinitions(pFetchResponse.sortDefinitions);
+      _updateRecordReadOnly(pFetchResponse.recordReadOnly, dataMap, pFetchResponse.from);
+      _updateRecordFormats(pFetchResponse.recordFormats);
     }
 
     referencedCellEditors.forEach((refCellEditor) => refCellEditor.buildDataToDisplayMap(this));
@@ -286,40 +264,90 @@ class DataBook {
     );
   }
 
-  /// Updates all data from a [DalDataProviderChangedResponse]
-  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
+  /// Updates record readonly. This method takes retrieved read-only mappings and converts from int to bool with full column
+  /// count and not the minimized mapping
+  bool _updateRecordReadOnly(List<List<dynamic>>? readOnlyMapping, Map<int, List<dynamic>> records, int startIndex) {
+    if (readOnlyMapping == null) {
+      return false;
+    }
+
+    // length -1 -> Last column of the values is no "column", it is the state of the row.
+    int columnCount = records.values.first.length - 1;
+
+    List<dynamic> mappingEntry;
+
     bool changed = false;
 
-    if (pChangedResponse.json.containsKey(ApiObjectProperty.sortDefinition)) {
-      changed = updateSortDefinitions(pChangedResponse.sortDefinitions);
-    }
+    for (int i = 0; i < readOnlyMapping.length; i++) {
+      mappingEntry = readOnlyMapping[i];
 
-    if (pChangedResponse.recordReadOnly != null) {
-      pChangedResponse.recordReadOnly!.forEachIndexed(
-        (index, element) {
-          List<bool> readOnlyList = element.map((e) => e == RECORD_READONLY).toList();
+      //filled
+      List<bool> readOnlyList = List.filled(columnCount, mappingEntry.last == RECORD_READONLY);
 
-          // length -1 -> Last column of the values is no "column", it is the state of the row.
-          for (int i = readOnlyList.length; i < (records.values.first.length - 1); i++) {
-            readOnlyList.add(readOnlyList.last);
-          }
-
-          recordReadOnly[index] = readOnlyList;
-        },
-      );
-      changed = true;
-    }
-
-    if (pChangedResponse.recordFormats != null) {
-      for (String key in pChangedResponse.recordFormats!.keys) {
-        var newRecordFormat = pChangedResponse.recordFormats![key]!;
-        var recordFormat = recordFormats[key] ??= RecordFormat();
-        for (int rowIndex in pChangedResponse.recordFormats![key]!.rowFormats.keys) {
-          recordFormat.rowFormats[rowIndex] = newRecordFormat.rowFormats[rowIndex]!;
+      if (mappingEntry.length > 1) {
+        //Translate values to bool
+        for (int j = 0; j < mappingEntry.length; j++) {
+          readOnlyList[j] = mappingEntry[j] == RECORD_READONLY;
         }
       }
-      changed = true;
+
+      List<bool>? oldReadOnlyList = recordReadOnly[startIndex + i];
+
+      if (!changed) {
+        //check if mapping has changed
+        changed |= !listEquals(oldReadOnlyList, readOnlyList);
+      }
+
+      recordReadOnly[startIndex + i] = readOnlyList;
     }
+
+    return changed;
+  }
+
+  /// Updates record formats.
+  bool _updateRecordFormats(Map<String, RecordFormat>? formats) {
+    if (formats == null) {
+      return false;
+    }
+
+    bool changed = false;
+
+    for (String key in formats.keys) {
+      var newRecordFormat = formats[key]!;
+      var recordFormat = recordFormats[key];
+
+      if (recordFormat == null) {
+        recordFormat = RecordFormat();
+
+        changed = true;
+      }
+
+      RowFormat? oldRowFormat;
+
+      for (int rowIndex in recordFormats[key]!.keys) {
+        if (!changed) {
+          oldRowFormat = recordFormat[rowIndex];
+
+          if (oldRowFormat == null) {
+            changed = true;
+          }
+          else {
+            changed |= oldRowFormat == newRecordFormat[rowIndex]!;
+          }
+        }
+
+        recordFormat[rowIndex] = newRecordFormat[rowIndex]!;
+      }
+    }
+
+    return changed;
+  }
+
+  /// Updates all data from a [DalDataProviderChangedResponse]
+  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
+    bool changed = _updateSortDefinitions(pChangedResponse.sortDefinitions);
+    changed |= _updateRecordReadOnly(pChangedResponse.recordReadOnly, records, 0);
+    changed |= _updateRecordFormats(pChangedResponse.recordFormats);
 
     if (pChangedResponse.deletedRow != null && pChangedResponse.deletedRow! < records.length) {
       for (int i = pChangedResponse.deletedRow!; i < records.length - 1; i++) {
@@ -361,7 +389,7 @@ class DataBook {
   }
 
   /// Sets the sort definition and returns if anything changed
-  bool updateSortDefinitions(SortList? pSortDefinitions) {
+  bool _updateSortDefinitions(SortList? pSortDefinitions) {
     if (_metaData == null) {
       return false;
     }

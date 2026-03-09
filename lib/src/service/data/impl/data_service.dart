@@ -271,14 +271,14 @@ class DataService implements IDataService {
 
         RecordFormat formats;
         RecordFormat? formatsNew;
-        RowFormat? rowformat;
+        RowFormat? rowFormat;
 
         for (String key in dataBook.recordFormats.keys) {
           formats = dataBook.recordFormats[key]!;
 
-          rowformat = formats.rowFormats[i];
+          rowFormat = formats[i];
 
-          if (rowformat != null) {
+          if (rowFormat != null) {
             formatsNew = resultRecordFormats[key];
 
             if (formatsNew == null) {
@@ -287,7 +287,7 @@ class DataService implements IDataService {
               resultRecordFormats[key] = formatsNew;
             }
 
-            formatsNew.rowFormats[i] = rowformat;
+            formatsNew[i] = rowFormat;
           }
         }
       }

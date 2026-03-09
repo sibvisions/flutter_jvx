@@ -14,7 +14,10 @@
  * the License.
  */
 
+import 'dart:collection';
 import 'dart:ui';
+
+import 'package:collection/collection.dart';
 
 import '../../flutter_ui.dart';
 import '../../service/api/shared/api_object_property.dart';
@@ -24,8 +27,10 @@ import '../../util/parse_util.dart';
 import '../component/i_font_style.dart';
 
 /// A RecordFormat represents the cell formats of all records inside a specific component.
-class RecordFormat {
-  Map<int, RowFormat> rowFormats = {};
+class RecordFormat extends MapBase<int, RowFormat>{
+  static const _mapEquality = MapEquality<int, RowFormat>();
+
+  final Map<int, RowFormat> _inner = {};
 
   RecordFormat();
 
@@ -40,31 +45,65 @@ class RecordFormat {
     dynamic recordsJson = json[ApiObjectProperty.records];
     int recordIndex = from;
     for (List<dynamic> recordIndexesDynamic in recordsJson ?? []) {
-      rowFormats[recordIndex] = RowFormat(List<int>.from(recordIndexesDynamic), formats);
+      _inner[recordIndex] = RowFormat(List<int>.from(recordIndexesDynamic), formats);
       recordIndex++;
     }
   }
 
   CellFormat? getCellFormat(int row, int column) {
-    if (!rowFormats.containsKey(row) || column < 0) {
+    if (column < 0 ||!_inner.containsKey(row)) {
       return null;
     }
 
-    return rowFormats[row]!.getCellFormat(column);
+    return _inner[row]!.getCellFormat(column);
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method implementations
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  RowFormat? operator [](Object? key) => _inner[key];
+
+  @override
+  void operator []=(int key, RowFormat value) => _inner[key] = value;
+
+  @override
+  void clear() => _inner.clear();
+
+  @override
+  Iterable<int> get keys => _inner.keys;
+
+  @override
+  RowFormat? remove(Object? key) => _inner.remove(key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overriden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RecordFormat) return false;
+
+    return _mapEquality.equals(_inner, other._inner);
+  }
+
+  @override
+  int get hashCode => _mapEquality.hash(_inner);
+
+  @override
   String toString() {
-    return "RecordFormat{rowFormats: $rowFormats}";
+    return "RecordFormat{$_inner}";
   }
 
 }
 
 class RowFormat {
+  static const _listEqualityInt = ListEquality<int>();
+  static const _listEqualityCell = ListEquality<CellFormat?>();
+
+
   List<int> columnIndexToFormatIndex = [];
   List<CellFormat?> formats = [];
 
@@ -94,6 +133,22 @@ class RowFormat {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overriden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RowFormat) return false;
+
+    return _listEqualityInt.equals(
+        columnIndexToFormatIndex, other.columnIndexToFormatIndex) &&
+        _listEqualityCell.equals(formats, other.formats);
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    _listEqualityInt.hash(columnIndexToFormatIndex),
+    _listEqualityCell.hash(formats),
+  );
 
   @override
   String toString() {
@@ -154,6 +209,29 @@ class CellFormat {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overriden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CellFormat) return false;
+
+    return background == other.background &&
+      foreground == other.foreground &&
+      font == other.font &&
+      imageString == other.imageString &&
+      style == other.style &&
+      leftIndent == other.leftIndent;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    background,
+    foreground,
+    font,
+    imageString,
+    style,
+    leftIndent,
+  );
 
   @override
   String toString() {
