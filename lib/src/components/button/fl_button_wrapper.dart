@@ -262,7 +262,14 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         return false;
       }
 
-      return ICommandService().sendCommands(await _createButtonCommands(overwrittenButtonPressId));
+      List<BaseCommand> commands = await _createButtonCommands(overwrittenButtonPressId);
+
+      if (commands.isNotEmpty) {
+        return ICommandService().sendCommands(commands);
+      }
+      else {
+        return Future.value(false);
+      }
     }).then((success) {
       if (!success) {
         return false;
@@ -287,6 +294,16 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   Future<List<BaseCommand>> _createButtonCommands(String? pOverwrittenButtonPressId) async {
     List<BaseCommand> commands = [];
 
+    BaseCommand? commandAfterPress;
+
+    if (model.classNameEventSourceRef == FlButtonWidget.GEO_LOCATION_BUTTON) {
+      commandAfterPress = await locateDevice();
+
+      if (commandAfterPress == null) {
+        return commands;
+      }
+    }
+
     var oldFocus = IUiService().getFocus();
     commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Button clicked Focus"));
 
@@ -297,8 +314,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       ),
     );
 
-    if (model.classNameEventSourceRef == FlButtonWidget.GEO_LOCATION_BUTTON) {
-      commands.add(await locateDevice());
+    if (commandAfterPress != null) {
+      commands.add(commandAfterPress);
     }
 
     commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Button clicked focus"));
@@ -356,19 +373,28 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     OfflineUtil.initOffline(screenModel!.name);
   }
 
-  Future<BaseCommand> locateDevice() async {
-    Position position = await getPosition();
-    if (FlutterUI.logUI.cl(Lvl.d)) {
-      FlutterUI.logUI.d("Received geolocation data: $position");
+  Future<BaseCommand?> locateDevice() async {
+    Position? position;
+
+    try {
+      position = await getPosition();
+      if (FlutterUI.logUI.cl(Lvl.d)) {
+        FlutterUI.logUI.d("Received geolocation data: $position");
+      }
+
+      return SetValuesCommand(
+        dataProvider: model.dataProvider,
+        editorColumnName: model.columnName,
+        columnNames: [model.latitudeColumnName, model.longitudeColumnName],
+        values: [position.latitude, position.longitude],
+        reason: "Location was determined",
+      );
+    }
+    catch (e, stack) {
+      IUiService().showErrorDialog(title: "Device access", error: e, stackTrace: stack);
     }
 
-    return SetValuesCommand(
-      dataProvider: model.dataProvider,
-      editorColumnName: model.columnName,
-      columnNames: [model.latitudeColumnName, model.longitudeColumnName],
-      values: [position.latitude, position.longitude],
-      reason: "Location was determined",
-    );
+    return null;
   }
 
   /// Determine the current position of the device.
