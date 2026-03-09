@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
@@ -323,7 +325,10 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           textController.clear();
         }
       } else {
-        if (pValue is! String) {
+        if (pValue is Uint8List) {
+            pValue = utf8.decode(pValue);
+        }
+        else if (pValue is! String) {
           pValue = pValue.toString();
         }
 
