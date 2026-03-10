@@ -67,7 +67,10 @@ abstract class OfflineUtil {
 
   static Widget getOfflineBar(BuildContext context, {bool useElevation = false}) {
     return Material(
-      color: backgroundColor,
+      color: Color.alphaBlend(
+        Theme.of(context).colorScheme.surfaceTint.withAlpha(18),
+        backgroundColor,
+      ),
       elevation: useElevation ? Theme.of(context).appBarTheme.elevation ?? 4.0 : 0.0,
       child: Container(
         height: 20,

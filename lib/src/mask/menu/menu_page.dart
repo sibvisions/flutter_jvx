@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -94,7 +95,10 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   Widget build(BuildContext context) {
     //not logged in -> nothing to show
     if (!IUiService().loggedIn()) {
-      return Offstage();
+      if (!kDebugMode || !IConfigService().offline.value && !OfflineUtil.isGoingOffline) {
+        //if we use Offstage in offline mode (test app), no menu will be shown because we're not logged in
+        return Offstage();
+      }
     }
 
     return PopScope(
