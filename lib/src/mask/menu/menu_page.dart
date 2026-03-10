@@ -182,6 +182,22 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 body = getScreen(screen);
               }
 
+              if (body == null && menuModel.items.isEmpty) {
+                body = Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (isOffline && !OfflineUtil.isGoingOffline) OfflineUtil.getOfflineBar(context),
+                    const SizedBox(height: 80),
+                    Icon(Icons.notes, size: 80, color: Colors.grey),
+                    const SizedBox(height: 16),
+                    Text(
+                      FlutterUI.translate("No screens available"),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                );
+              }
+
               Widget? background;
 
               if (backgroundBuilder != null) {
