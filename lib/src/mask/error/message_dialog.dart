@@ -130,6 +130,7 @@ class _MessageDialogState extends State<MessageDialog> {
     return AlertDialog(
       contentPadding: actions == null ? const EdgeInsets.all(24) : null,
       actionsPadding: actions != null ? JVxColors.ALERTDIALOG_ACTION_PADDING : null,
+      //constraints: BoxConstraints(minWidth: 260),
       title: _command.title?.isNotEmpty == true
         ? Padding(
             padding: const EdgeInsets.only(bottom: 10),
@@ -168,8 +169,8 @@ class _MessageDialogState extends State<MessageDialog> {
     if (ParseUtil.isHTML(_command.message)) {
       var measure = MeasureUtil.measureHtml(context, _command.message!);
 
-      //will be shown in full width, because of Padding
-      text = Padding(padding: const EdgeInsets.all(0), child: SizedBox(width: measure.size.width, height: measure.size.height, child: measure.html));
+      //will be shown in full width, because of Align
+      text = Align(alignment: Alignment.topLeft, child: SizedBox(width: measure.size.width, height: measure.size.height, child: measure.html));
     }
     else{
       text = _command.message != null ? Text(_command.message!) : const Text("");
