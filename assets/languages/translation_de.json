@@ -414,5 +414,25 @@
   {
     "text": "Encrypted",
     "translation": "Verschlüsselt"
+  },
+  {
+    "text": "No screens available",
+    "translation": "Keine Bearbeitungsmasken verfügbar"
+  },
+  {
+    "text": "Device access",
+    "translation": "Gerät Zugriff"
+  },
+  {
+    "text": "Location services are disabled",
+    "translation": "Standortdienste sind deaktiviert"
+  },
+  {
+    "text": "Location permissions are denied",
+    "translation": "Zugriff auf Standort verweigert"
+  },
+  {
+    "text": "Location permissions are permanently denied",
+    "translation": "Zugriff auf Standort dauerhaft verweigert"
   }
 ]
