@@ -41,7 +41,7 @@ class ListImage extends StatelessWidget {
   final JsonWidgetData? data;
 
   final String? columnName;
-  final String? imageDefinition;
+  final dynamic imageDefinition;
   final Uint8List? bytes;
   final double? radius;
   final IconData? icon;
@@ -75,7 +75,7 @@ class ListImage extends StatelessWidget {
     double radius_ = radius ?? 30;
 
     Uint8List? bytes_ = bytes;
-    String? imageDefinition_ = imageDefinition;
+    dynamic imageDefinition_ = imageDefinition;
 
     Color? iconColor_ = iconColor;
 
@@ -104,10 +104,10 @@ class ListImage extends StatelessWidget {
       }
     }
 
-    if (bytes_ != null) {
+    if (bytes_ != null || imageDefinition_ is Uint8List) {
       return CircleAvatar(
         minRadius: radius_,
-        backgroundImage: MemoryImage(bytes_),
+        backgroundImage: MemoryImage(bytes_ ?? imageDefinition_),
       );
     } else if (imageDefinition_ != null) {
       return CircleAvatar(

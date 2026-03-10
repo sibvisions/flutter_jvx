@@ -318,12 +318,14 @@ class DataBook {
       if (recordFormat == null) {
         recordFormat = RecordFormat();
 
+        recordFormats[key] = recordFormat;
+
         changed = true;
       }
 
       RowFormat? oldRowFormat;
 
-      for (int rowIndex in recordFormats[key]!.keys) {
+      for (int rowIndex in recordFormat.keys) {
         if (!changed) {
           oldRowFormat = recordFormat[rowIndex];
 

@@ -145,7 +145,7 @@ class JsonListImage extends JsonWidgetData {
 
   final Color? iconColor;
 
-  final String? imageDefinition;
+  final dynamic imageDefinition;
 
   final double? radius;
 }
@@ -172,7 +172,7 @@ class ListImageBuilderModel extends JsonWidgetBuilderModel {
 
   final Color? iconColor;
 
-  final String? imageDefinition;
+  final dynamic imageDefinition;
 
   final double? radius;
 
@@ -294,7 +294,7 @@ class ListImageSchema {
       'icon': SchemaHelper.objectSchema(IconDataSchema.id),
       'iconBackgroundColor': SchemaHelper.objectSchema(ColorSchema.id),
       'iconColor': SchemaHelper.objectSchema(ColorSchema.id),
-      'imageDefinition': SchemaHelper.stringSchema,
+      'imageDefinition': SchemaHelper.anySchema,
       'radius': SchemaHelper.numberSchema,
     },
   };
