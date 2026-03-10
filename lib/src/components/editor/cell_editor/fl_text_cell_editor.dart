@@ -326,7 +326,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
         }
       } else {
         if (pValue is Uint8List) {
-            pValue = utf8.decode(pValue);
+          //try to show a text instead of bytes
+          pValue = utf8.decode(pValue);
         }
         else if (pValue is! String) {
           pValue = pValue.toString();
