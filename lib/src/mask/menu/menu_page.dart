@@ -95,7 +95,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   Widget build(BuildContext context) {
     //not logged in -> nothing to show
     if (!IUiService().loggedIn()) {
-      if (!kDebugMode || !IConfigService().offline.value && !OfflineUtil.isGoingOffline) {
+      if (!kDebugMode || (!IConfigService().offline.value && !OfflineUtil.isGoingOffline)) {
         //if we use Offstage in offline mode (test app), no menu will be shown because we're not logged in
         return Offstage();
       }
