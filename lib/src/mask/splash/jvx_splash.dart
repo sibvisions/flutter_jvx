@@ -77,6 +77,7 @@ class _JVxSplashState extends State<JVxSplash> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
         children: [
           widget.background,
           Column(
