@@ -19,7 +19,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SelectItem extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final FaIconData icon;
   final VoidCallback? onTap;
 
   const SelectItem({

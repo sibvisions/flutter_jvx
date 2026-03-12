@@ -135,9 +135,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         menuSearchController.clear();
                         setState(() {});
                       },
-                      icon: const FaIcon(
-                        FontAwesomeIcons.magnifyingGlass,
-                        size: 22,
+                      icon: const Icon(
+                        Icons.search,
+                        size: 26,
                       ),
                     ),
                   );

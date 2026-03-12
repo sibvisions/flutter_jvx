@@ -204,8 +204,8 @@ class WebFrameState extends FrameState {
             child: Builder(
               builder: (context) => IconButton(
                 tooltip: FlutterUI.translate("Settings"),
-                icon: FaIcon(
-                  FontAwesomeIcons.gear,
+                icon: Icon(
+                  Icons.settings_outlined,
                   color: iconColor,
                 ),
                 onPressed: () => widget.openSettings(context),

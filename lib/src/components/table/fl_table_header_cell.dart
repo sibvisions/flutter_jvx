@@ -181,7 +181,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
         cellText,
         style: style,
         overflow: TextOverflow.ellipsis,
-        maxLines: model.wordWrapEnabled ? null : 1
+        maxLines: model.wordWrapEnabled ? null : 1,
       );
 
       if (sortMode == null) {
@@ -197,7 +197,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
 
       double gap;
 
-      TextStyle sortStyle = style.copyWith(fontSize: 8);
+      TextStyle sortStyle = style.copyWith(fontSize: 8, color: sortMode == SortMode.ascending ? Colors.green : Colors.red);
 
       //small gap if width is smaller than "only" icons (with separator)
       if (width < 16 + 5 + (sortIndex != null ? ParseUtil.getTextWidth(text: sortIndex!.toString(), style: sortStyle) : 0) +
@@ -210,19 +210,24 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
 
       return Row(
         mainAxisAlignment: mainAxisAlignment,
+        spacing: 0,
         children: [
           Flexible(fit: FlexFit.loose, child: text),
           SizedBox(width: gap),
-          FaIcon(
-            sortMode == SortMode.ascending ? FontAwesomeIcons.sortUp : FontAwesomeIcons.sortDown,
-            size: 16,
+          Padding(
+            padding: EdgeInsets.only(top: sortMode == SortMode.ascending ? 0 : 10, bottom: sortMode == SortMode.ascending ? 10 : 0),
+            child: Icon(
+              sortMode == SortMode.ascending ? Icons.expand_less : Icons.expand_more,
+              size: 16,
+              color: sortMode == SortMode.ascending ? Colors.green : Colors.red,
+            )
           ),
           if (sortIndex != null)
             Text(
               sortIndex!.toString(),
               style: sortStyle,
               maxLines: 1,
-            ),
+            )
         ],
       );
     }

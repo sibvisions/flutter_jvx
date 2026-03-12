@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../model/component/fl_component_model.dart';
 import '../../text_field/fl_text_field_widget.dart';
@@ -39,7 +38,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
   List<Widget> createSuffixIconItems([BuildContext? context, bool forceAll = false]) {
     List<Widget> items = super.createSuffixIconItems(context, forceAll);
 
-    items.add(createEmbeddableIcon(context, FontAwesomeIcons.caretDown));
+    items.add(createEmbeddableIcon(context, Icons.expand_more, 24));
 
     return items;
   }

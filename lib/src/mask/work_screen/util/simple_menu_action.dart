@@ -74,8 +74,8 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
               Container(
                 width: 24,
                 alignment: Alignment.center,
-                child: FaIcon(
-                  FontAwesomeIcons.gear,
+                child: Icon(
+                  Icons.settings_outlined,
                   color: Theme.of(context).iconTheme.color,
                   size: 20,
                 ),
@@ -99,7 +99,7 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
               Container(
                 width: 24,
                 alignment: Alignment.center,
-                child: FaIcon(
+                child: Icon(
                   AppOverviewPage.appsIcon,
                   color: Theme.of(context).iconTheme.color,
                   size: 20,

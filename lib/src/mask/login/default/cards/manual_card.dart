@@ -18,7 +18,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../../../config/app_config.dart';
@@ -234,7 +233,7 @@ class _ManualCardState extends State<ManualCard> {
 
     Widget textButton = TextButton.icon(
       onPressed: () => replaceSettingsWithApps ? IUiService().routeToAppOverview() : IUiService().routeToSettings(),
-      icon: replaceSettingsWithApps ? const Icon(AppOverviewPage.appsIcon) : const FaIcon(FontAwesomeIcons.gear),
+      icon: replaceSettingsWithApps ? const Icon(AppOverviewPage.appsIcon) : const Icon(Icons.settings_outlined),
       label: Text(
         FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
         overflow: TextOverflow.ellipsis,

@@ -164,7 +164,7 @@ class _ManualCardState extends State<ManualCard> {
                                   : IUiService().routeToSettings(),
                               icon: replaceSettingsWithApps
                                   ? const Icon(AppOverviewPage.appsIcon)
-                                  : const FaIcon(FontAwesomeIcons.gear),
+                                  : const Icon(Icons.settings_outlined),
                             ),
                         ],
                       ),

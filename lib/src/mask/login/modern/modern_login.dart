@@ -19,7 +19,6 @@ import 'dart:math';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../model/command/ui/route/route_to_login_command.dart';
 import '../login_handler.dart';
@@ -122,7 +121,7 @@ class ModernLogin extends StatelessWidget implements Login {
                         replaceSettingsWithApps ? IUiService().routeToAppOverview() : IUiService().routeToSettings(),
                     icon: replaceSettingsWithApps
                         ? const Icon(AppOverviewPage.appsIcon)
-                        : const FaIcon(FontAwesomeIcons.gear),
+                        : const Icon(Icons.settings_outlined),
                     label: Text(
                       FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
                       overflow: TextOverflow.ellipsis,

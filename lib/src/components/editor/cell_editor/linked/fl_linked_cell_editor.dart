@@ -20,7 +20,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../../flutter_ui.dart';
@@ -71,7 +70,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   bool get tableDeleteIcon => !model.hideClearIcon && super.tableDeleteIcon;
 
   @override
-  IconData? get tableEditIcon => FontAwesomeIcons.caretDown;
+  IconData? get tableEditIcon => Icons.expand_more;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

@@ -20,7 +20,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
 import '../../flutter_ui.dart';
@@ -594,27 +593,27 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       String? columnLabel = dataChunk.columnDefinitions.byName(pColumnName)?.label;
 
       if (columnLabel == FlTableHeaderCell.CHECKBOX_DESELECTED) {
-        popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squareCheck, "Select", DataContextMenuItemType.SORT));
+        popupMenuEntries.add(createContextMenuItem(Icons.check_box_outlined, "Select", DataContextMenuItemType.SORT));
       }
       else if (columnLabel == FlTableHeaderCell.CHECKBOX_SELECTED) {
-        popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.square, "Deselect", DataContextMenuItemType.SORT));
+        popupMenuEntries.add(createContextMenuItem(Icons.check_box_outline_blank_outlined, "Deselect", DataContextMenuItemType.SORT));
       }
       else {
-        popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.sort, "Sort", DataContextMenuItemType.SORT));
+        popupMenuEntries.add(createContextMenuItem(Icons.unfold_more, "Sort", DataContextMenuItemType.SORT, 19));
       }
       separator++;
     }
 
     if (metaData.insertEnabled && !metaData.readOnly) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squarePlus, "New", DataContextMenuItemType.INSERT));
+      popupMenuEntries.add(createContextMenuItem(Icons.add_box_outlined, "New", DataContextMenuItemType.INSERT));
     }
 
     if (isRowDeletable(pRowIndex)) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", DataContextMenuItemType.DELETE));
+      popupMenuEntries.add(createContextMenuItem(Icons.delete_outline, "Delete", DataContextMenuItemType.DELETE));
     }
 
     if (isAnyCellInRowEditable(pRowIndex)) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", DataContextMenuItemType.EDIT));
+      popupMenuEntries.add(createContextMenuItem(Icons.edit_note_outlined, "Edit", DataContextMenuItemType.EDIT));
     }
 
     if (separator > 0 && popupMenuEntries.length > separator) {
@@ -786,7 +785,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Flexible(child: Icon(FontAwesomeIcons.penToSquare, size: 14)),
+                Flexible(child: Icon(Icons.edit_note_outlined, size: 14)),
                 Flexible(child: Text(FlutterUI.translate("Edit"), style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis)),
               ]
             )
@@ -805,7 +804,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
                 .labelSmall!
                 .color,
             label: FlutterUI.translate("Edit"),
-            icon: FontAwesomeIcons.penToSquare,
+            icon: Icons.edit_note_outlined,
             padding: const EdgeInsets.only(left: 8, right: 8),
           ),
         );
@@ -848,7 +847,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Flexible(child: Icon(FontAwesomeIcons.trash, size: 14)),
+                      Flexible(child: Icon(Icons.delete_outlined, size: 14)),
                       Flexible(child: Text(FlutterUI.translate("Delete"), style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis)),
                     ]
                 )
@@ -867,7 +866,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
                 .labelSmall!
                 .color,
             label: FlutterUI.translate("Delete"),
-            icon: FontAwesomeIcons.trash,
+            icon: Icons.delete_outline,
             padding: const EdgeInsets.only(left: 8, right: 8),
           ),
         );

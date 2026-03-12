@@ -392,7 +392,7 @@ class _SettingsPageState extends State<SettingsPage> {
       };
 
       var theme = IConfigService().themePreference.value;
-      IconData themeIcon = FontAwesomeIcons.sun;
+      FaIconData themeIcon = FontAwesomeIcons.sun;
       if (theme == ThemeMode.light) themeIcon = FontAwesomeIcons.solidSun;
       if (theme == ThemeMode.dark) themeIcon = FontAwesomeIcons.solidMoon;
 
@@ -486,7 +486,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   SettingItem _buildPickerItem<T>(
     BuildContext context, {
-    required IconData frontIcon,
+    required FaIconData frontIcon,
     List<Widget>? endIcons,
     required String title,
     required T value,

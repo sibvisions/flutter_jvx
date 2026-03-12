@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../model/component/fl_component_model.dart';
 import '../../text_field/fl_text_field_widget.dart';
@@ -35,7 +34,7 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
   List<Widget> createSuffixIconItems([BuildContext? context, bool forceAll = false]) {
     List<Widget> items = super.createSuffixIconItems(context, forceAll);
 
-    items.add(createEmbeddableIcon(context, FontAwesomeIcons.calendar));
+    items.add(createEmbeddableIcon(context, Icons.calendar_today_outlined));
 
     return items;
   }

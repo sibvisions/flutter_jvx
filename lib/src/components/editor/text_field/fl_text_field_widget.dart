@@ -278,11 +278,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     );
   }
 
-  Icon _getIcon(BuildContext? context, IconData icon) {
+  Icon _getIcon(BuildContext? context, IconData icon, [double? size]) {
     if (icon.fontFamily == FontAwesomeIcons.plus.fontFamily) {
       return FaIcon(
-        icon,
-        size: iconSize,
+        FaIconData(icon),
+        size: size ?? iconSize,
         color: JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
       );
     }
@@ -290,14 +290,14 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       //should work with any icon data
       return Icon(
         icon,
-        size: iconSize,
+        size: size ?? iconSize,
         color: JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
       );
     }
   }
 
-  Widget createEmbeddableIcon(BuildContext? context, IconData icon) {
-    return _wrapIcon(_getIcon(context, icon));
+  Widget createEmbeddableIcon(BuildContext? context, IconData icon, [double? size]) {
+    return _wrapIcon(_getIcon(context, icon, size));
   }
 
   /// Wraps the suf/pre-fix icon items with a container.

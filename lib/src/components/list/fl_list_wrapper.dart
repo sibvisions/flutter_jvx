@@ -20,7 +20,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/base_command.dart';
@@ -421,7 +420,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
               .labelSmall!
               .color,
           label: FlutterUI.translate("Edit"),
-          icon: FontAwesomeIcons.penToSquare,
+          icon: Icons.edit_note_outlined,
           padding: const EdgeInsets.only(left: 8, right: 8),
         ),
       );
@@ -457,7 +456,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
               .labelSmall!
               .color,
           label: FlutterUI.translate("Delete"),
-          icon: FontAwesomeIcons.trash,
+          icon: Icons.delete,
           padding: const EdgeInsets.only(left: 8, right: 8),
         ),
       );
@@ -535,15 +534,15 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     }
 
     if (metaData.insertEnabled && !metaData.readOnly) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squarePlus, "New", DataContextMenuItemType.INSERT));
+      popupMenuEntries.add(createContextMenuItem(Icons.add_box_outlined, "New", DataContextMenuItemType.INSERT));
     }
 
     if (isRowDeletable(index)) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", DataContextMenuItemType.DELETE));
+      popupMenuEntries.add(createContextMenuItem(Icons.delete_outline, "Delete", DataContextMenuItemType.DELETE));
     }
 
     if (isAnyCellInRowEditable(index)) {
-      popupMenuEntries.add(createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", DataContextMenuItemType.EDIT));
+      popupMenuEntries.add(createContextMenuItem(Icons.edit_note_outlined, "Edit", DataContextMenuItemType.EDIT));
     }
 
     if (separator > 0 && popupMenuEntries.length > separator) {

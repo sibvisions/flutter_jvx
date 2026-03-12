@@ -70,7 +70,7 @@ dependencies:
 # SVG Support
   flutter_svg: ^2.0.0
   # Icons
-  font_awesome_flutter: ^10.0.0
+  font_awesome_flutter: ^11.0.0
   # Managing different persistent classes
   get_it: ^9.0.0
   # QR Scanner
@@ -101,7 +101,7 @@ dependencies:
   latlong2: ^0.9.1
   geolocator: ^14.0.0
   scrollview_observer: ^1.26.0
-  url_launcher: ^6.3.0
+  url_launcher: ^6.0.0
   linked_scroll_controller: ^0.2.0
   liquid_progress_indicator:
     git:

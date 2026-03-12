@@ -358,7 +358,7 @@ mixin FlDataMixin {
   }
 
   /// Creates a single item for a popup menu.
-  PopupMenuItem<DataContextMenuItemType> createContextMenuItem(IconData icon, String text, DataContextMenuItemType value) {
+  PopupMenuItem<DataContextMenuItemType> createContextMenuItem(IconData icon, String text, DataContextMenuItemType value, [double ? iconSize]) {
     return PopupMenuItem<DataContextMenuItemType>(
       enabled: true,
       value: value,
@@ -370,7 +370,8 @@ mixin FlDataMixin {
             alignment: Alignment.center,
             child: Icon(
               icon,
-              size: 16,
+              size: iconSize ?? 16,
+
             ),
           ),
           Padding(

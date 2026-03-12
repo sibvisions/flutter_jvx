@@ -21,7 +21,7 @@ abstract class FontAwesomeUtil {
 
   static FaIcon? getIcon(String name, [double? size, Color? color, bool useDefault = true]) {
 
-    IconData? data = ICONS[name] ?? (useDefault ? FontAwesomeIcons.circleQuestion : null);
+    FaIconData? data = ICONS[name] ?? (useDefault ? FontAwesomeIcons.circleQuestion : null);
 
     if (data != null) {
       return FaIcon(
@@ -35,7 +35,7 @@ abstract class FontAwesomeUtil {
     }
   }
 
-  static const Map<String, IconData> ICONS = {
+  static const Map<String, FaIconData> ICONS = {
 
     //IFontAwesome mappings
 

@@ -221,7 +221,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       _buildFooterEntry(
         context: context,
         text: FlutterUI.translate("Settings"),
-        leadingIcon: FontAwesomeIcons.gear,
+        leadingIcon: Icons.settings_outlined,
         onTap: widget.onSettingsPressed,
         isNormalSize: isNormalSize,
       ),
@@ -232,7 +232,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         _buildFooterEntry(
           context: context,
           text: FlutterUI.translate("Change password"),
-          leadingIcon: FontAwesomeIcons.key,
+          leadingIcon: Icons.key,
           onTap: widget.onChangePasswordPressed,
           isNormalSize: isNormalSize,
         ),
@@ -306,10 +306,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
     if (IApiService().getRepository().cancelledSessionExpired.value) {
       text = "Restart";
-      icon = FontAwesomeIcons.arrowsRotate;
+      icon = Icons.cached_rounded;
     } else {
       text = "Logout";
-      icon = FontAwesomeIcons.rightFromBracket;
+      icon = Icons.logout;
     }
 
     return _buildFooterEntry(
@@ -391,7 +391,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         leading: Builder(
           builder: (context) => CircleAvatar(
             backgroundColor: Colors.transparent,
-            child: FaIcon(
+            child: Icon(
               leadingIcon,
               color: IconTheme.of(context).color,
             ),
@@ -407,7 +407,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
           child: Tooltip(
             message: text,
             child: Center(
-              child: FaIcon(
+              child: Icon(
                 leadingIcon,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),

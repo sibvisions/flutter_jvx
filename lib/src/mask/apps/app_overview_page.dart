@@ -45,7 +45,7 @@ class AppOverviewPage extends StatefulWidget {
 
   const AppOverviewPage({super.key});
 
-  static const IconData appsIcon = Icons.window;
+  static const IconData appsIcon = Icons.grid_view_outlined;
 
   static ImageProvider? getAppIcon(App? app) {
     if (app == null) return null;
@@ -444,7 +444,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                   ),
                 ),
                 onPressed: () => IUiService().routeToSettings(),
-                icon: const FaIcon(FontAwesomeIcons.gear),
+                icon: const Icon(Icons.settings_outlined),
               )
             : ListTileTheme.merge(
                 iconColor: Theme.of(context).colorScheme.primary,
@@ -494,7 +494,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                     PopupMenuItem(
                       value: 2,
                       child: ListTile(
-                        leading: FaIcon(FontAwesomeIcons.gear,
+                        leading: Icon(Icons.settings_outlined,
                                         color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary :
                                                                                  Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24,
                         ),

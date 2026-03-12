@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/foundation.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
 class ExportJsonPage extends StatefulWidget {
@@ -98,7 +97,7 @@ class _ExportExamplePageState extends State<ExportJsonPage> {
                             JsonPadding(padding: const EdgeInsets.all(5), child: JsonText("Welcome"),),
                             JsonIcon(Icons.add,
                                 color: Colors.grey.shade400),
-                            JsonIcon(FontAwesomeIcons.adn,
+                            JsonIcon(Icons.abc,
                                 color: Colors.red),
                             JsonMemoryImage(image: "")
                         ]));

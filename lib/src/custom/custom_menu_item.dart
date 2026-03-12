@@ -48,7 +48,7 @@ class CustomMenuItem {
     //use iconBuilder (1st)
     WidgetBuilder? imageBuilder,
     //or FaIcon (2nd)
-    IconData? faIcon,
+    FaIconData? faIcon,
     //or Icon (3rd)
     IconData? icon
   })  : imageBuilder = (imageBuilder ?? (faIcon != null ? (_) => FaIcon(faIcon) : (icon != null ? (_) => Icon(icon) : null))),

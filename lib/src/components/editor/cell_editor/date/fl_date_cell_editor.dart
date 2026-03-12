@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -51,7 +50,7 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   bool get tableDeleteIcon => !model.hideClearIcon && super.tableDeleteIcon;
 
   @override
-  IconData? get tableEditIcon => FontAwesomeIcons.calendar;
+  IconData? get tableEditIcon => Icons.calendar_today_outlined;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

@@ -718,7 +718,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   /// the position of the table widget shouldn't collide with event position.
   /// Only events outside the table widget will be recognized
   void _closeSlidables([PointerEvent? event, Duration? duration]) {
-    if (!mounted || _slideController.isEmpty) {
+    if (!mounted || _slideController.isEmpty || !context.mounted) {
       return;
     }
 

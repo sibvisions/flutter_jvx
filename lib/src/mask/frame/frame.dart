@@ -24,6 +24,7 @@ import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_colors.dart';
 import '../jvx_overlay.dart';
 import '../login/default/cards/change_password.dart';
 import 'mobile_frame.dart';
@@ -170,9 +171,15 @@ abstract class FrameState extends State<Frame> {
                 IUiService().updateDesignMode(!designMode);
               },
               icon: Icon(
-                designMode ? Icons.design_services : Icons.design_services_outlined,
+                designMode ? Icons.architecture : Icons.architecture_outlined,
                 size: 26,
-            ),
+                color: designMode ? (JVxColors.isLightTheme(context) ? JVxColors.DARKER_WHITE : Colors.black87) : null,
+              ),
+                style: IconButton.styleFrom(
+                  backgroundColor: designMode ? (JVxColors.isLightTheme(context) ?
+                   JVxColors.darken(Theme.of(context).colorScheme.primary, 0.15) : JVxColors.lighten(Theme.of(context).colorScheme.onPrimary, 0.15))
+                   : Colors.transparent,
+                )
             );
           },
         ),
