@@ -54,6 +54,13 @@ class _FlMapWidgetState extends State<FlMapWidget> {
   Timer? timer;
 
   @override
+  void dispose() {
+    super.dispose();
+
+    timer?.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FlutterMap(
       mapController: widget.mapController,
