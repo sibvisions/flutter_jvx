@@ -77,7 +77,6 @@ class ListImage extends StatelessWidget {
           imageDefinition_ = result;
         }
 
-
         CellFormat? format = entry.getCellFormat(columnName);
 
         if (format != null) {

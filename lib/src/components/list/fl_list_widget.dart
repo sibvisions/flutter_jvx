@@ -33,7 +33,7 @@ import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/response/application_settings_response.dart';
 import '../../util/icon_util.dart';
-import '../../util/json_template_manager.dart';
+import '../../util/ui_template_manager.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
@@ -176,13 +176,13 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   final List<SlidableController> _slideController = [];
 
   /// The cache for all dynamic widget creation futures (per template)
-  final Map<String, Future<dynamic>> jsonTemplateFutures = {};
+  final Map<String, Future<dynamic>> uiTemplateFutures = {};
 
   /// The template resource (style definition)
-  String? jsonTemplateName;
+  String? uiTemplateName;
 
   /// Whether we have a new "unchecked" template
-  bool newJsonTemplate = false;
+  bool newUITemplate = false;
 
   /// Whether to show list entries as cards (style definition)
   bool asCard = false;
@@ -202,8 +202,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   /// The column separators (style definition)
   List<String>? columnSeparator;
 
-  /// The current future for the json template (style definition)
-  Future<dynamic>? jsonTemplateFuture;
+  /// The current future for the ui template (style definition)
+  Future<dynamic>? uiTemplateFuture;
 
   /// The currently selected row index
   int selectedRowIndex = -1;
@@ -213,7 +213,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
   /// initializes styling
   void _initStyle() {
-    jsonTemplateName = null;
+    uiTemplateName = null;
 
     asCard = false;
     withArrow = false;
@@ -223,7 +223,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     mapColumnsPerRow = null;
     columnSeparator = null;
 
-    jsonTemplateFuture = null;
+    uiTemplateFuture = null;
 
     Set<String> styles = widget.model.styles;
 
@@ -236,9 +236,9 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
         if (styleDef.startsWith(FlListWidget.STYLE_TEMPLATE_MARKER)) {
           styleDef = styleDef.substring(FlListWidget.STYLE_TEMPLATE_MARKER.length);
 
-          newJsonTemplate = true;
+          newUITemplate = true;
 
-          jsonTemplateName = styleDef;
+          uiTemplateName = styleDef;
         }
         else if (!asCard && styleDef == FlListWidget.STYLE_AS_CARD) {
           asCard = true;
@@ -288,14 +288,14 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     //sort of caching for the future because it should be possible to change the template
     //and we avoid multiple loading of template by using same future
     //(otherwise initState would be a better place)
-    if (jsonTemplateName != null) {
-      if (!jsonTemplateFutures.containsKey(jsonTemplateName)) {
-        jsonTemplateFuture = JsonTemplateManager.loadTemplate(jsonTemplateName!);
+    if (uiTemplateName != null) {
+      if (!uiTemplateFutures.containsKey(uiTemplateName)) {
+        uiTemplateFuture = UITemplateManager.loadTemplate(uiTemplateName!);
 
-        jsonTemplateFutures[jsonTemplateName!] = jsonTemplateFuture!;
+        uiTemplateFutures[uiTemplateName!] = uiTemplateFuture!;
       }
       else {
-        jsonTemplateFuture = jsonTemplateFutures[jsonTemplateName];
+        uiTemplateFuture = uiTemplateFutures[uiTemplateName];
       }
     }
 
@@ -309,7 +309,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   void initState() {
     super.initState();
 
-    _initJsonTemplateEngine();
+    _initUITemplateEngine();
 
     FlutterUI.registerGlobalSubscription(GlobalSubscription(subbedObj: this, onTap: _closeSlidables));
 
@@ -387,9 +387,9 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       });
     }
 
-    if (jsonTemplateName != null && !JsonTemplateManager.hasTemplate(jsonTemplateName)) {
+    if (uiTemplateName != null && !UITemplateManager.hasTemplate(uiTemplateName)) {
       return FutureBuilder(
-          future: jsonTemplateFuture,
+          future: uiTemplateFuture,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               if (FlutterUI.logUI.cl(Lvl.e)) {
@@ -398,8 +398,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
               return Center(child: Text(FlutterUI.translate("An error has occurred!")));
             } else if (snapshot.hasData) {
 
-              if (newJsonTemplate) {
-                _updateJsonTemplateEngine();
+              if (newUITemplate) {
+                _updateUITemplateEngine();
               }
 
               return _buildList(
@@ -423,13 +423,13 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       );
     }
 
-    if (newJsonTemplate) {
-      _updateJsonTemplateEngine();
+    if (newUITemplate) {
+      _updateUITemplateEngine();
     }
 
     return _buildList(
       context,
-      JsonTemplateManager.getTemplateFromCache(jsonTemplateName),
+      UITemplateManager.getTemplateFromCache(uiTemplateName),
       mapColumnsPerRow,
       columnSeparator,
       vAlign,
@@ -468,7 +468,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     });
   }
 
-  void _initJsonTemplateEngine() {
+  void _initUITemplateEngine() {
     _runtime.clearLibraries();
 
     // Local widget library
@@ -477,17 +477,24 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     _runtime.update(FlListWidget._localName, _createLocalWidgets());
   }
 
-  /// Updates "json" template engine
-  void _updateJsonTemplateEngine() {
-    newJsonTemplate = false;
+  /// Updates UI template engine
+  void _updateUITemplateEngine() {
+    newUITemplate = false;
 
+    dynamic tpl = UITemplateManager.getTemplateFromCache(uiTemplateName);
+
+    if (tpl is String) {
+      _runtime.update(FlListWidget.mainName, parseLibraryFile(tpl));
+    }
+    else {
+      _runtime.update(FlListWidget.mainName, decodeLibraryBlob(tpl));
+    }
     // Remote widget library
-    _runtime.update(FlListWidget.mainName, parseLibraryFile(JsonTemplateManager.getTemplateFromCache(jsonTemplateName)));
   }
 
   Widget _buildList(
     BuildContext context,
-    dynamic jsonTemplate,
+    dynamic uiTemplate,
     Map<int, int>? mapColumnsPerRow,
     List<String>? columnSeparator,
     MainAxisAlignment? verticalAlign,
@@ -550,7 +557,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
                         Widget listEntry = FlListEntry(
                           model: widget.model,
-                          runtime: jsonTemplate != null ? _runtime : null,
+                          runtime: uiTemplate != null ? _runtime : null,
                           index: index,
                           columnDefinitions: widget.chunkData.columnDefinitions,
                           cellEditors: widget.cellEditors,

@@ -114,7 +114,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Creates a list entry from given json template
+  /// Creates a list entry from given ui template
   Widget _fromTemplate(BuildContext context) {
     //We use DataContext for access to the current entry (this)
     return DataContext(

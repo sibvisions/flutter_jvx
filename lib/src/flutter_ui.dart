@@ -83,7 +83,7 @@ import 'util/auth/auth_overlay.dart';
 import 'util/auth/auth_service.dart';
 import 'util/config_util.dart';
 import 'util/debug/jvx_debug.dart';
-import 'util/json_template_manager.dart';
+import 'util/ui_template_manager.dart';
 import 'util/jvx_logger.dart';
 import 'util/extensions/list_extensions.dart';
 import 'util/http_overrides.dart';
@@ -540,7 +540,7 @@ class FlutterUI extends StatefulWidget {
     SimplePrinter.levelPrefixes[Level.fatal] = '';
 
     ImageLoader.clearCache();
-    JsonTemplateManager.clearCache();
+    UITemplateManager.clearCache();
 
     Logger.addOutputListener((event) {
       LogLevel? level = LogLevel.values.firstWhereOrNull((element) => element.name == event.origin.level.name);

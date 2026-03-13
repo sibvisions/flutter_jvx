@@ -27,7 +27,7 @@ import '../service/config/i_config_service.dart';
 import '../service/file/file_manager.dart';
 import 'jvx_logger.dart';
 
-abstract class JsonTemplateManager {
+abstract class UITemplateManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +43,7 @@ abstract class JsonTemplateManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Private constructor to prevent instantiation
-  JsonTemplateManager._();
+  UITemplateManager._();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -78,10 +78,10 @@ abstract class JsonTemplateManager {
     }
 
     if (FlutterUI.logUI.cl(Lvl.d)) {
-      FlutterUI.logUI.d("Load json template $templateName");
+      FlutterUI.logUI.d("Load UI template $templateName");
     }
 
-    if (kIsWeb) {
+    if (!kIsWeb) {
       String? appVersion = servConf.version.value;
 
       if (appVersion != null) {
@@ -96,17 +96,26 @@ abstract class JsonTemplateManager {
         File? file = fileManager.getFileSync(path);
 
         if (file?.existsSync() == true) {
-          String jsonTemplate = file!.readAsStringSync();
-
-          jsonTemplate = jsonDecode(jsonTemplate);
-
-          _templateCache[cacheKey] = jsonTemplate;
+          dynamic tplBytes = await file!.readAsBytes();
 
           if (FlutterUI.logUI.cl(Lvl.d)) {
             FlutterUI.logUI.d("Template $templateName found!");
           }
 
-          return jsonTemplate;
+          if (isBinaryRfw(tplBytes)) {
+            _templateCache[cacheKey] = tplBytes;
+
+            return tplBytes;
+          }
+          else {
+            String uiTemplate = utf8.decode(tplBytes);
+
+            uiTemplate = decodeTemplate(uiTemplate);
+
+            _templateCache[cacheKey] = uiTemplate;
+
+            return uiTemplate;
+          }
         }
         else {
           //no template available
@@ -130,13 +139,13 @@ abstract class JsonTemplateManager {
         options: Options(
           method: Method.GET.name,
           headers: _getHeaders(),
-          responseType: ResponseType.plain
+          responseType: ResponseType.bytes
         )
       );
 
-      dynamic jsonTemplate = await response.data;
+      dynamic uiTemplate = await response.data;
 
-      if (jsonTemplate != null) {
+      if (uiTemplate != null) {
         if (FlutterUI.logUI.cl(Lvl.d)) {
           FlutterUI.logUI.d("Template $templateName found!");
         }
@@ -147,12 +156,61 @@ abstract class JsonTemplateManager {
         }
       }
 
-      jsonTemplate = jsonDecode(jsonTemplate);
+      if (isBinaryRfw(uiTemplate)) {
+        _templateCache[cacheKey] = uiTemplate;
+      }
+      else {
+        if (uiTemplate is Uint8List) {
+          uiTemplate = utf8.decode(uiTemplate);
+        }
 
-      _templateCache[cacheKey] = jsonTemplate;
+        uiTemplate = decodeTemplate(uiTemplate);
 
-      return jsonTemplate;
+        _templateCache[cacheKey] = uiTemplate;
+      }
+
+      return uiTemplate;
     }
+  }
+
+  static bool isBinaryRfw(dynamic data) {
+    if (data is Uint8List) {
+      if (data.length < 4) return false;
+
+      // "arfw" (0x61, 0x72, 0x66, 0x77)
+      bool isArfw = data[0] == 0x61 && data[1] == 0x72 &&
+                    data[2] == 0x66 && data[3] == 0x77;
+
+      // (0xFE, 'R', 'F', 'W')
+      bool isFeRfw = data[0] == 0xFE && data[1] == 0x52 &&
+                     data[2] == 0x46 && data[3] == 0x57;
+
+      // (0xFE, 'R', 'F', 'W')
+      bool isRfw0 = data[0] == 0x52 && data[1] == 0x46 &&
+                    data[2] == 0x57 && data[3] == 0;
+
+
+      return isArfw || isFeRfw || isRfw0;
+    }
+
+    return false;
+  }
+
+  static dynamic decodeTemplate(dynamic uiTemplate) {
+    if (uiTemplate != null) {
+      if (uiTemplate is String) {
+        //problems with parsing
+        String template = uiTemplate.replaceAll('\r\n', '\n');
+
+        if (template.trimLeft().startsWith("{") && template.trimRight().endsWith("}")) {
+          return jsonDecode(template);
+        }
+
+        return template;
+      }
+    }
+
+    return uiTemplate;
   }
 
   static Map<String, String> _getHeaders() {
