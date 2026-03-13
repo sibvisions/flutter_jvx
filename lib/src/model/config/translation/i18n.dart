@@ -43,9 +43,10 @@ class I18n {
   final Map<String, String> _translations = {};
 
   static Future<Iterable<String>> listLocalTranslationFiles() async {
-    final Map<String, dynamic> manifestMap =
-        await rootBundle.loadString("AssetManifest.json").then((s) => jsonDecode(s));
-    return manifestMap.keys.where((e) => _checkPath(e));
+    final assetManifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+    final assets = assetManifest.listAssets();
+
+    return assets.where((e) => _checkPath(e));
   }
 
   static bool _checkPath(String e) =>

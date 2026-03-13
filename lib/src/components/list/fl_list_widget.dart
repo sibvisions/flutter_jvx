@@ -16,10 +16,14 @@
 
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:json_dynamic_widget/json_dynamic_widget.dart';
+import 'package:rfw/formats.dart';
+import 'package:rfw/rfw.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../../flutter_ui.dart';
@@ -28,6 +32,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/response/application_settings_response.dart';
+import '../../util/icon_util.dart';
 import '../../util/json_template_manager.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
@@ -35,9 +40,9 @@ import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import '../util/scroll_mixin.dart';
 import 'fl_list_entry.dart';
-import 'builder/list_cell_builder.dart';
-import 'builder/list_image_builder.dart';
-import 'builder/list_space_builder.dart';
+import 'localwidgets/list_cell.dart';
+import 'localwidgets/list_image.dart';
+import 'localwidgets/list_space.dart';
 
 typedef ListTapCallback = void Function(int rowIndex);
 typedef ListLongPressCallback = void Function(int rowIndex, Offset pGlobalPosition);
@@ -49,6 +54,12 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // remote widget libraries
+  static const LibraryName _coreName = LibraryName(<String>['core', 'widgets']);
+  static const LibraryName _materialName = LibraryName(<String>['material', 'widgets']);
+  static const LibraryName _localName = LibraryName(<String>['local', 'widgets']);
+  static const LibraryName mainName = LibraryName(<String>['main']);
 
   /// This style defines the marker for custom card templates
   static const String STYLE_TEMPLATE_MARKER = "f_template_";
@@ -149,6 +160,8 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
 
 class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMixin,
                                                           ScrollMixin {
+  // remote widgets
+  final Runtime _runtime = Runtime();
 
   /// The current sliver context
   BuildContext? _sliverContext;
@@ -165,11 +178,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   /// The cache for all dynamic widget creation futures (per template)
   final Map<String, Future<dynamic>> jsonTemplateFutures = {};
 
-  /// The dynamic widget registry
-  final JsonWidgetRegistry registry = JsonWidgetRegistry();
-
   /// The template resource (style definition)
   String? jsonTemplateName;
+
+  /// Whether we have a new "unchecked" template
+  bool newJsonTemplate = false;
 
   /// Whether to show list entries as cards (style definition)
   bool asCard = false;
@@ -222,6 +235,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
         if (styleDef.startsWith(FlListWidget.STYLE_TEMPLATE_MARKER)) {
           styleDef = styleDef.substring(FlListWidget.STYLE_TEMPLATE_MARKER.length);
+
+          newJsonTemplate = true;
 
           jsonTemplateName = styleDef;
         }
@@ -294,11 +309,9 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   void initState() {
     super.initState();
 
-    FlutterUI.registerGlobalSubscription(GlobalSubscription(subbedObj: this, onTap: _closeSlidables));
+    _initJsonTemplateEngine();
 
-    registry.registerCustomBuilder("list_image", const JsonWidgetBuilderContainer(builder: ListImageBuilder.fromDynamic));
-    registry.registerCustomBuilder("list_cell", const JsonWidgetBuilderContainer(builder: ListCellBuilder.fromDynamic));
-    registry.registerCustomBuilder("list_space", const JsonWidgetBuilderContainer(builder: ListSpaceBuilder.fromDynamic));
+    FlutterUI.registerGlobalSubscription(GlobalSubscription(subbedObj: this, onTap: _closeSlidables));
 
     _scrollController = ScrollController(
         initialScrollOffset: widget.model.json["scroll_offset"] ?? 0,
@@ -356,9 +369,10 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   void dispose() {
     super.dispose();
 
+    _runtime.dispose();
+
     FlutterUI.disposeGlobalSubscription(this);
 
-    registry.dispose();
     _scrollController?.dispose();
   }
 
@@ -383,6 +397,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
               }
               return Center(child: Text(FlutterUI.translate("An error has occurred!")));
             } else if (snapshot.hasData) {
+
+              if (newJsonTemplate) {
+                _updateJsonTemplateEngine();
+              }
+
               return _buildList(
                 context,
                 snapshot.data!,
@@ -404,6 +423,10 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       );
     }
 
+    if (newJsonTemplate) {
+      _updateJsonTemplateEngine();
+    }
+
     return _buildList(
       context,
       JsonTemplateManager.getTemplateFromCache(jsonTemplateName),
@@ -413,6 +436,53 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       asCard,
       withBorder,
       withArrow);
+  }
+
+  WidgetLibrary _createLocalWidgets() {
+    return LocalWidgetLibrary(<String, LocalWidgetBuilder>{
+      "ListCell": (BuildContext context, DataSource source) {
+        return ListCell(
+          columnName: source.v<String>(["columnName"]),
+          useFormat: source.v<bool>(["useFormat"]) ?? true,
+          prefix: source.v<String>(["prefix"]),
+          postfix : source.v<String>(["postfix"])
+        );
+      },
+      "ListSpace": (BuildContext context, DataSource source) {
+        return ListSpace(
+          notEmptyColumnNames: ArgumentDecoders.list(source, ["notEmptyColumnNames"], ArgumentDecoders.string),
+          text: source.v<String>(["text"]),
+          width: source.v<double>(["width"]),
+          height: source.v<double>(["height"])
+        );
+      },
+      "ListImage": (BuildContext context, DataSource source) {
+        return ListImage(
+          columnName: source.v<String>(["columnName"]),
+          icon: IconUtil.fromString(source.v<String>(["icon"])),
+          radius: source.v<double>(["radius"]),
+          iconColor: ArgumentDecoders.color(source, ["iconColor"]),
+          iconBackgroundColor: ArgumentDecoders.color(source, ["iconBackgroundColor"]),
+        );
+      }
+    });
+  }
+
+  void _initJsonTemplateEngine() {
+    _runtime.clearLibraries();
+
+    // Local widget library
+    _runtime.update(FlListWidget._coreName, createCoreWidgets());
+    _runtime.update(FlListWidget._materialName, createMaterialWidgets());
+    _runtime.update(FlListWidget._localName, _createLocalWidgets());
+  }
+
+  /// Updates "json" template engine
+  void _updateJsonTemplateEngine() {
+    newJsonTemplate = false;
+
+    // Remote widget library
+    _runtime.update(FlListWidget.mainName, parseLibraryFile(JsonTemplateManager.getTemplateFromCache(jsonTemplateName)));
   }
 
   Widget _buildList(
@@ -480,17 +550,16 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
                         Widget listEntry = FlListEntry(
                           model: widget.model,
+                          runtime: jsonTemplate != null ? _runtime : null,
                           index: index,
                           columnDefinitions: widget.chunkData.columnDefinitions,
                           cellEditors: widget.cellEditors,
                           isSelected: selected,
                           values: widget.chunkData.data[index]!,
                           recordFormat: widget.chunkData.recordFormats?[widget.model.name],
-                          jsonTemplate: jsonTemplate,
                           columnsPerRow: mapColumnsPerRow,
                           columnSeparator: columnSeparator,
                           mainAxisAlignment: verticalAlign,
-                          registry: registry,
                           entryBuilder: widget.entryBuilder,
                         );
 

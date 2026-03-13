@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SIB Visions GmbH
+ * Copyright 2026 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,63 +13,48 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 
-part 'list_cell_builder.g.dart';
+import 'package:flutter/material.dart';
 
-//dart run build_runner build --delete-conflicting-outputs
-
-@jsonWidget
-abstract class _ListCellBuilder extends JsonWidgetBuilder {
-  const _ListCellBuilder({
-    required super.args,
-  });
-
-  @override
-  ListCell buildCustom({
-    ChildWidgetBuilder? childBuilder,
-    required BuildContext context,
-    required JsonWidgetData data,
-    Key? key,
-  });
-}
+import '../../util/data_context.dart';
+import '../fl_list_entry.dart';
 
 class ListCell extends StatelessWidget {
-  final JsonWidgetData data;
-
-  final dynamic wrappedWidget;
   final String? columnName;
   final String? prefix;
   final String? postfix;
   final bool useFormat;
+  final Widget? wrappedWidget;
 
   const ListCell({
-    @JsonBuildArg() required this.data,
     super.key,
     this.columnName,
     this.useFormat = true,
     this.prefix,
     this.postfix,
-    this.wrappedWidget
+    this.wrappedWidget,
   });
 
   @override
   Widget build(BuildContext context) {
-
     if (wrappedWidget != null) {
-      return wrappedWidget;
+      return wrappedWidget!;
     }
 
-    JsonWidgetFunction? func = data.jsonWidgetRegistry.getFunction("formatListCell");
+    if (columnName != null) {
+      DataContext? dc = DataContext.of(context);
 
-    if (func != null) {
-      dynamic result = func(args: [this], registry: data.jsonWidgetRegistry);
+      if (dc != null) {
+        FlListEntry entry = dc.data;
 
-      if (result is Widget) {
-        return result;
+        Widget? w = entry.formatListCell(this);
+
+        if (w != null) {
+          return w;
+        }
       }
     }
 
-    return wrappedWidget ?? Container();
+    return Container();
   }
 }

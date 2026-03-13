@@ -17,7 +17,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';

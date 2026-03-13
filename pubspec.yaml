@@ -31,7 +31,7 @@ dependencies:
 
   # Translations capability
   intl: any # An exact version pin will be provided by the Flutter SDK
-  timezone: ^0.10.0
+  timezone: ^0.11.0
   flutter_timezone: ^5.0.0
 
   # Config
@@ -142,13 +142,12 @@ dependencies:
 #      path: speech_to_text
 
   push: ^3.0.0
-  flutter_local_notifications: ^20.0.0
+  flutter_local_notifications: ^21.0.0
   open_filex: ^4.7.0
 
-  json_dynamic_widget: ^10.0.0
   screenshot: ^3.0.0
 
-  app_links: ^6.4.0
+  app_links: ^7.0.0
 
   badges: ^3.1.0
 
@@ -157,8 +156,12 @@ dependencies:
   local_auth: ^3.0.0
 
   cryptography: ^2.0.0
+  # for sync hashing
+  crypto: ^3.0.0
 
   another_flushbar: ^1.0.0
+
+  rfw: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -166,14 +169,8 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
   build_runner: ^2.4.14
-  json_dynamic_widget_codegen: 3.0.0
 
 dependency_overrides:
-
-  json_theme:
-    git:
-      url: https://github.com/wardbj93/json_theme
-      path: packages/json_theme
 
   #until wasm is fixed in original package
   flutter_keyboard_visibility:

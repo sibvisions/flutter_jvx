@@ -179,7 +179,7 @@ class FlutterUI extends StatefulWidget {
     printer: PrefixPrinter(JVxPrettyPrinter(
       colors: false,
       prefix: "GENERAL",
-      printTime: true,
+      dateTimeFormat: DateTimeFormat.dateAndTime,
       methodCount: 0,
       errorMethodCount: 30,
     )),
@@ -191,7 +191,7 @@ class FlutterUI extends StatefulWidget {
     printer: PrefixPrinter(JVxPrettyPrinter(
       colors: false,
       prefix: "API",
-      printTime: true,
+      dateTimeFormat: DateTimeFormat.dateAndTime,
       methodCount: 0,
       errorMethodCount: 30,
     )),
@@ -203,7 +203,7 @@ class FlutterUI extends StatefulWidget {
     printer: PrefixPrinter(JVxPrettyPrinter(
       colors: false,
       prefix: "COMMAND",
-      printTime: true,
+      dateTimeFormat: DateTimeFormat.dateAndTime,
       methodCount: 0,
       errorMethodCount: 30,
     )),
@@ -215,7 +215,7 @@ class FlutterUI extends StatefulWidget {
     printer: PrefixPrinter(JVxPrettyPrinter(
       colors: false,
       prefix: "UI",
-      printTime: true,
+      dateTimeFormat: DateTimeFormat.dateAndTime,
       methodCount: 0,
       errorMethodCount: 30,
     )),

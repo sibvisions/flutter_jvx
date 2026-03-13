@@ -17,7 +17,8 @@
 import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
-import 'package:json_dynamic_widget/json_dynamic_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:rfw/rfw.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
@@ -26,7 +27,6 @@ import '../../model/layout/alignments.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
-import '../../util/extensions/color_extensions.dart';
 import '../../util/i_types.dart';
 import '../../util/image/image_loader.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
@@ -34,23 +34,22 @@ import '../editor/cell_editor/fl_check_box_cell_editor.dart';
 import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import '../table/fl_table_cell.dart';
-import 'builder/list_cell_builder.dart';
-import 'builder/list_image_builder.dart';
+import '../util/data_context.dart';
+import 'fl_list_widget.dart';
+import 'localwidgets/list_cell.dart';
+import 'localwidgets/list_image.dart';
 
 typedef DismissedCallback = void Function(int index);
 
-typedef ListEntryBuilder = Widget? Function(
-  BuildContext context,
-  FlListEntry widget
-);
+typedef ListEntryBuilder = Widget? Function(BuildContext context, FlListEntry widget);
 
 class FlListEntry extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// the widget registry
-  final JsonWidgetRegistry registry;
+  // Runtime for rfw
+  final Runtime? runtime;
 
   /// The colum definitions to build
   final ColumnList columnDefinitions;
@@ -70,9 +69,6 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   /// The record formats
   final RecordFormat? recordFormat;
 
-  /// custom card template as json
-  final dynamic jsonTemplate;
-
   /// the column separators
   final List<String>? columnSeparator;
 
@@ -89,20 +85,9 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlListEntry({super.key,
-    required super.model,
-    required this.registry,
-    required this.columnDefinitions,
-    required this.cellEditors,
-    required this.values,
-    required this.index,
-    required this.isSelected,
-    this.recordFormat,
-    this.jsonTemplate,
-    this.columnsPerRow,
-    this.columnSeparator,
-    mainAxisAlignment,
-    ListEntryBuilder? entryBuilder}) : mainAxisAlignment = mainAxisAlignment ?? MainAxisAlignment.center, _entryBuilder = entryBuilder;
+  const FlListEntry({super.key, required super.model, this.runtime, required this.columnDefinitions, required this.cellEditors, required this.values, required this.index, required this.isSelected, this.recordFormat, this.columnsPerRow, this.columnSeparator, mainAxisAlignment, ListEntryBuilder? entryBuilder})
+      : mainAxisAlignment = mainAxisAlignment ?? MainAxisAlignment.center,
+        _entryBuilder = entryBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -116,10 +101,9 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       if (w != null) {
         return w;
       }
-    }
-    else {
-      if (jsonTemplate != null) {
-        return _fromTemplate(context, jsonTemplate!);
+    } else {
+      if (runtime != null) {
+        return _fromTemplate(context);
       }
     }
 
@@ -131,164 +115,15 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Creates a list entry from given json template
-  Widget _fromTemplate(BuildContext context, dynamic jsonTemplate)  {
-    //gets the raw value for a specific column
-    registry.registerFunction("getValue", ({args, required registry}) {
-      if (args != null) {
-        return values[columnDefinitions.indexByName(args[0])];
-      }
-
-      return null;
-    });
-
-    /// gets the cell format for a specific column
-    registry.registerFunction("getCellFormat", ({args, required registry}) {
-      if (args != null) {
-        return recordFormat?.getCellFormat(index, columnDefinitions.indexByName(args[0]));
-      }
-
-      return null;
-    });
-
-    /// gets the background of cell format for a specific column
-    registry.registerFunction("background", ({args, required registry}) {
-
-      if (args != null) {
-        CellFormat? cf = recordFormat?.getCellFormat(index, columnDefinitions.indexByName(args[0]));
-
-        return cf?.background?.toHex() ?? (args.length > 1 ? args[1] : null);
-      }
-
-      return null;
-    });
-
-    /// gets the foreground of cell format for a specific column
-    registry.registerFunction("foreground", ({args, required registry}) {
-
-      if (args != null) {
-        CellFormat? cf = recordFormat?.getCellFormat(index, columnDefinitions.indexByName(args[0]));
-
-        return cf?.foreground?.toHex() ?? (args.length > 1 ? args[1] : null);
-      }
-
-      return null;
-    });
-
-    //format a list_cell value (similar to _defaultEntry)
-    registry.registerFunction("formatListCell", ({args, required registry}) {
-      if (args != null) {
-        ListCell cell = args.elementAt(0);
-
-        if (cell.columnName != null) {
-          int columnIndex = columnDefinitions.indexByName(cell.columnName!);
-
-          Widget? w;
-
-          if (columnIndex > 0) {
-            ColumnDefinition colDef = columnDefinitions.byName(cell.columnName!)!;
-
-            if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName ||
-                FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
-
-               w = IntrinsicWidth(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: _getCheckBoxWidget(cell.columnName!, cell.prefix, cell.postfix))
-              );
-            }
-          }
-
-          if (w == null) {
-            w = _createTextWidget(
-                cellEditors[cell.columnName],
-                values[columnIndex],
-                recordFormat?.getCellFormat(index, columnIndex));
-
-            if (cell.useFormat) {
-              w = _applyCellProfileImageOrIndent(w, recordFormat?.getCellFormat(index, columnIndex), cell.prefix, cell.postfix);
-            }
-            else if (w != null) {
-              if (cell.postfix != null || cell.prefix != null) {
-                List<Widget> widgets = [];
-
-                if (cell.prefix != null) {
-                  widgets.add(Text(cell.prefix!));
-                }
-
-                widgets.add(w);
-
-                if (cell.postfix != null) {
-                  widgets.add(Text(cell.postfix!));
-                }
-
-                return IntrinsicWidth(child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: widgets,
-                ));
-              }
-            }
-          }
-
-          return w;
-        }
-      }
-
-      return const Text("");
-    });
-
-    //check if ALL given column names have a value != null and not empty
-    registry.registerFunction("hasValue", ({args, required registry}) {
-      if (args != null) {
-        dynamic columnNames = args;
-
-        List<dynamic>? columns;
-
-        if (columnNames is List<dynamic>) {
-          columns = columnNames;
-        }
-        else if (columnNames is String) {
-          columns = [columnNames];
-        }
-
-        bool hasValues;
-
-        if (columns != null) {
-          hasValues = true;
-
-          for (int i = 0; i < columns.length; i++) {
-            int columnIndex = columnDefinitions.indexByName(columns[i]);
-
-            hasValues &= values[columnIndex] != null && values[columnIndex].toString().isNotEmpty;
-          }
-        }
-        else {
-          hasValues = false;
-        }
-
-        return hasValues;
-      }
-
-      return const Text("");
-    });
-
-    registry.clearValues();
-
-    int colIndex;
-
-    for (int i = 0; i < model.columnNames.length; i++) {
-      colIndex = columnDefinitions.indexByName(model.columnNames[i]);
-
-      if (colIndex >= 0) {
-        registry.setValue(model.columnNames[i], values[colIndex]);
-      }
-    }
-
-    Widget w = JsonWidgetData.fromDynamic(
-      jsonTemplate,
-      registry: registry,
-    ).build(context: context);
-
-    return w;
+  Widget _fromTemplate(BuildContext context) {
+    //We use DataContext for access to the current entry (this)
+    return DataContext(
+        data: this,
+        child: RemoteWidget(
+          runtime: runtime!,
+          data: DynamicContent(),
+          widget: const FullyQualifiedWidgetName(FlListWidget.mainName, 'listEntry'),
+        ));
   }
 
   /// Creates a default entry if no template is available
@@ -307,13 +142,9 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         if (colDef.dataTypeIdentifier == Types.BINARY) {
           //fifo
           imageColumn ??= model.columnNames[i];
-        }
-        else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != colDef.cellEditorClassName &&
-                 FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != colDef.cellEditorClassName) {
+        } else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != colDef.cellEditorClassName && FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != colDef.cellEditorClassName) {
           valueColumns.add(model.columnNames[i]);
-        }
-        else if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName ||
-                 FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
+        } else if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName || FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
           checkBoxColumns.add(model.columnNames[i]);
         }
       }
@@ -347,8 +178,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         if (cols == 0) {
           //0 per definition is special (means: empty row)
           row = const Row(children: [Text("")]);
-        }
-        else {
+        } else {
           List<Widget> liColumns = [];
 
           for (int j = 0; j < cols && colPos < maxColumns; j++) {
@@ -364,8 +194,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
             if (j > 0) {
               if (columnSeparator != null && sepIndex < columnSeparator!.length) {
                 separator = columnSeparator![sepIndex++];
-              }
-              else {
+              } else {
                 separator = " ";
               }
             }
@@ -383,15 +212,13 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
             if (liColumns.length == 1) {
               //no wrapping needed to avoid overflow
               row = Row(children: [Flexible(child: liColumns[0])]);
-            }
-            else {
+            } else {
               //wrap to avoid overflow
               row = Wrap(children: liColumns);
             }
           }
         }
-      }
-      else {
+      } else {
         colName = valueColumns[colPos++];
         colIndex = columnDefinitions.indexByName(colName);
         cellFormat = recordFormat?.getCellFormat(index, colIndex);
@@ -429,8 +256,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       if (i > 0) {
         if (columnSeparator != null && sepIndex < columnSeparator!.length) {
           separator = columnSeparator![sepIndex++];
-        }
-        else {
+        } else {
           separator = " ";
         }
       }
@@ -443,10 +269,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     }
 
     if (liCheckBoxes.isNotEmpty) {
-      liRows.add(Padding(
-        padding: const EdgeInsets.only(top: 15),
-        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: liCheckBoxes)
-      ));
+      liRows.add(Padding(padding: const EdgeInsets.only(top: 15), child: Row(mainAxisAlignment: MainAxisAlignment.start, children: liCheckBoxes)));
     }
 
     //No rows, show an info text
@@ -460,42 +283,19 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       CellFormat? format = recordFormat?.getCellFormat(index, columnDefinitions.indexByName(imageColumn));
 
       widget = IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              color: format?.background ?? Colors.grey.shade200,
-              child: Padding(
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Container(
+            color: format?.background ?? Colors.grey.shade200,
+            child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: ListImage.predefined(
                   imageDefinition: values[columnDefinitions.indexByName(imageColumn)],
                   iconColor: format?.foreground,
-                )
-              )
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: mainAxisAlignment,
-                  children: liRows
-                )
-              )
-            )
-          ]
-        )
-      );
-    }
-    else {
-      widget = Padding(
-        padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
-        child: Column(
-          mainAxisAlignment: mainAxisAlignment,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: liRows
-        )
-      );
+                ))),
+        Expanded(child: Padding(padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5), child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: mainAxisAlignment, children: liRows)))
+      ]));
+    } else {
+      widget = Padding(padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5), child: Column(mainAxisAlignment: mainAxisAlignment, crossAxisAlignment: CrossAxisAlignment.start, children: liRows));
     }
 
     return widget;
@@ -503,10 +303,8 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
   /// Creates a normal text widget for the cell.
   Text? _createTextWidget(ICellEditor? cellEditor, dynamic value, CellFormat? format) {
-
     //similar code available in [FlTableCell]
     if (cellEditor != null) {
-
       String cellText = cellEditor.formatValue(value);
       TextStyle style = model.createTextStyle();
 
@@ -526,8 +324,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         textAlign = TextAlign.left;
       }
 
-      if (cellEditor.model.className == FlCellEditorClassname.TEXT_CELL_EDITOR &&
-          cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_PASSWORD) {
+      if (cellEditor.model.className == FlCellEditorClassname.TEXT_CELL_EDITOR && cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_PASSWORD) {
         cellText = "•" * cellText.length;
       }
 
@@ -539,12 +336,10 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
           maxLines: model.wordWrapEnabled ? null : 1,
           textAlign: textAlign,
         );
-      }
-      else {
+      } else {
         return null;
       }
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -556,17 +351,13 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
     double indent = cellFormat?.leftIndent?.toDouble() ?? 0;
 
-    if (cellFormat?.imageString == null
-        || cellFormat?.imageString?.isEmpty == true) {
-
+    if (cellFormat?.imageString == null || cellFormat?.imageString?.isEmpty == true) {
       if (indent > 0) {
         widgets = [Padding(padding: EdgeInsets.only(left: indent))];
-      }
-      else {
+      } else {
         widgets = [];
       }
-    }
-    else {
+    } else {
       Widget? cellImage = ImageLoader.loadImage(
         cellFormat!.imageString!,
         color: cellFormat.foreground,
@@ -574,8 +365,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
       if (text != null) {
         widgets = [Padding(padding: EdgeInsets.only(right: FlTableCell.formatImageGap, left: indent), child: cellImage)];
-      }
-      else {
+      } else {
         widgets = [cellImage];
       }
     }
@@ -597,7 +387,8 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     }
 
     //row would use the fill width without IntrinsicWidth
-    return IntrinsicWidth(child: Row(
+    return IntrinsicWidth(
+        child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: widgets,
     ));
@@ -615,9 +406,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     Widget w = ced.createWidget(model.json);
 
     //no changes possible
-    w = AbsorbPointer(
-        absorbing: true,
-        child: w);
+    w = AbsorbPointer(absorbing: true, child: w);
 
     if (prefix != null) {
       widgets.add(Text(prefix));
@@ -629,14 +418,8 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     ColumnDefinition? colDef = columnDefinitions.byName(columnName);
 
     if (colDef?.label.isNotEmpty == true) {
-
       if (ced is FlCheckBoxCellEditor) {
-        if (ced.model.styles.none((style) =>
-        style == FlCheckBoxModel.STYLE_SWITCH ||
-            style == FlCheckBoxModel.STYLE_UI_SWITCH ||
-            style == FlCheckBoxModel.STYLE_UI_BUTTON ||
-            style == FlCheckBoxModel.STYLE_UI_TOGGLEBUTTON ||
-            style == FlCheckBoxModel.STYLE_UI_HYPERLINK)) {
+        if (ced.model.styles.none((style) => style == FlCheckBoxModel.STYLE_SWITCH || style == FlCheckBoxModel.STYLE_UI_SWITCH || style == FlCheckBoxModel.STYLE_UI_BUTTON || style == FlCheckBoxModel.STYLE_UI_TOGGLEBUTTON || style == FlCheckBoxModel.STYLE_UI_HYPERLINK)) {
           widgets.add(Text(" ${colDef!.label}"));
         }
       }
@@ -649,4 +432,101 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     return widgets;
   }
 
+  dynamic getValue(String? columnName) {
+    if (columnName != null) {
+      return values[columnDefinitions.indexByName(columnName)];
+    }
+
+    return null;
+  }
+
+  bool hasValue(List<String>? columnNames) {
+    bool hasValues;
+
+    if (columnNames != null && columnNames.isNotEmpty) {
+      hasValues = true;
+
+      for (int i = 0; i < columnNames.length; i++) {
+        int columnIndex = columnDefinitions.indexByName(columnNames[i]);
+
+        hasValues &= values[columnIndex] != null && values[columnIndex].toString().isNotEmpty;
+      }
+
+      return hasValues;
+    } else {
+      return false;
+    }
+  }
+
+  Widget? formatListCell(ListCell cell) {
+    if (cell.columnName != null) {
+      int columnIndex = columnDefinitions.indexByName(cell.columnName!);
+
+      Widget? w;
+
+      if (columnIndex > 0) {
+        ColumnDefinition colDef = columnDefinitions.byName(cell.columnName!)!;
+
+        if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName || FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
+          w = IntrinsicWidth(child: Row(mainAxisAlignment: MainAxisAlignment.start, children: _getCheckBoxWidget(cell.columnName!, cell.prefix, cell.postfix)));
+        }
+      }
+
+      if (w == null) {
+        w = _createTextWidget(cellEditors[cell.columnName], values[columnIndex], recordFormat?.getCellFormat(index, columnIndex));
+
+        if (cell.useFormat) {
+          w = _applyCellProfileImageOrIndent(w, recordFormat?.getCellFormat(index, columnIndex), cell.prefix, cell.postfix);
+        } else if (w != null) {
+          if (cell.postfix != null || cell.prefix != null) {
+            List<Widget> widgets = [];
+
+            if (cell.prefix != null) {
+              widgets.add(Text(cell.prefix!));
+            }
+
+            widgets.add(w);
+
+            if (cell.postfix != null) {
+              widgets.add(Text(cell.postfix!));
+            }
+
+            return IntrinsicWidth(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: widgets,
+            ));
+          }
+        }
+      }
+
+      return w;
+    }
+
+    return const Text("");
+  }
+
+  CellFormat? getCellFormat(String? columnName) {
+    if (columnName != null) {
+      return recordFormat?.getCellFormat(index, columnDefinitions.indexByName(columnName));
+    }
+
+    return null;
+  }
+
+  Color? background(String? columnName, Color? defaultColor) {
+    if (columnName != null) {
+      return recordFormat?.getCellFormat(index, columnDefinitions.indexByName(columnName))?.background ?? defaultColor;
+    }
+
+    return null;
+  }
+
+  Color? foreground(String? columnName, Color? defaultColor) {
+    if (columnName != null) {
+      return recordFormat?.getCellFormat(index, columnDefinitions.indexByName(columnName))?.foreground ?? defaultColor;
+    }
+
+    return null;
+  }
 }

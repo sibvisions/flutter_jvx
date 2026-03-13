@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SIB Visions GmbH
+ * Copyright 2026 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,22 +14,26 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/widgets.dart';
 
-import 'export_json_page.dart';
+class DataContext extends InheritedWidget {
+  final dynamic data;
 
-void main() {
-    testWidgets("Example json creation", (WidgetTester tester) async {
-        ExportJsonPage widget = const ExportJsonPage(0);
+  const DataContext({
+    super.key,
+    required this.data,
+    required super.child
+  });
 
-        await tester.pumpWidget(MaterialApp(home: widget));
+  static DataContext? of(BuildContext context) {
+      final result = context.dependOnInheritedWidgetOfExactType<DataContext>();
 
-        //Test does nothing because we moved from json_dynamic_widget (discontinued) to rfw
+      assert(result != null, 'No DataContext in BuildContext available');
 
-        Finder f = find.byTooltip("Export Button");
-        f.tryEvaluate();
+      return result;
+  }
 
-        await tester.tap(f);
-    });
+  @override
+  bool updateShouldNotify(DataContext oldWidget) => data != oldWidget.data;
+
 }

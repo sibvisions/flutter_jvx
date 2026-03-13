@@ -37,7 +37,6 @@ abstract class IconUtil {
     // Private constructor to prevent instantiation
     IconUtil._();
 
-
     ///Gets the (icon, size and color) for the given [imageDefinition] if it's a font icon.
     static ({Widget? icon, double? size, Color? color})? fromString(String? imageDefinition, [double? size, Color? color]) {
 

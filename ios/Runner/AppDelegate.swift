@@ -2,14 +2,16 @@ import UIKit
 import Flutter
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
 
-  var privacyBlurView: UIVisualEffectView?
-  let CHANNEL = "com.sibvisions.flutter_jvx/security"
-  var isAuthenticating = false
-  var isSecure = false;
+  static let CHANNEL = "com.sibvisions.flutter_jvx/security"
 
-  var secureCount: Int = 0
+  static var isAuthenticating = false
+  static var secureCount: Int = 0
+
+  static var isSecure: Bool {
+   return secureCount > 0
+  }
 
   override func application(
     _ application: UIApplication,
@@ -19,83 +21,36 @@ import Flutter
       UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
     }
 
-    let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
-    let privacyChannel = FlutterMethodChannel(name: CHANNEL, binaryMessenger: controller.binaryMessenger)
-
-    // Listener for flutter commands
-    privacyChannel.setMethodCallHandler({(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-      if call.method == "setAuthStatus" {
-        // Don't show blur if auth is active
-        self.isAuthenticating = call.arguments as? Bool ?? false
-        result(true)
-      } else if call.method == "hideBlur" {
-        self.hideBlurScreen()
-        result(true)
-      }
-      else if call.method == "setSecure" {
-        var secure  = call.arguments as? Bool ?? false
-
-        if secure {
-          self.secureCount += 1
-        }
-        else {
-          self.secureCount -= 1
-          if (self.secureCount < 0) {
-            self.secureCount = 0
-          }
-        }
-
-        if self.secureCount == 0 {
-          self.isSecure = false
-        }
-        else if self.secureCount == 1 {
-          self.isSecure = true
-        }
-
-        result(true)
-      } else {
-        result(FlutterMethodNotImplemented)
-      }
-    })
-
-    GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-  override func applicationWillResignActive(_ application: UIApplication) {
-    if isSecure && !isAuthenticating {
-      showBlurScreen()
-    }
+  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+
+    setupMethodChannel(messenger: engineBridge.applicationRegistrar.messenger())
   }
 
-  override func applicationDidBecomeActive(_ application: UIApplication) {
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-      self.hideBlurScreen()
-    }
-  }
+  private func setupMethodChannel(messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: AppDelegate.CHANNEL, binaryMessenger: messenger)
 
-  private func showBlurScreen() {
-    if privacyBlurView == nil {
-      // Defines blur style (light, dark or extraLight)
-      let blurEffect = UIBlurEffect(style: .systemMaterial)
-      privacyBlurView = UIVisualEffectView(effect: blurEffect)
-      privacyBlurView?.frame = self.window?.bounds ?? UIScreen.main.bounds
-
-      //fixes problem with rotation
-      privacyBlurView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-      privacyBlurView?.isUserInteractionEnabled = false
-
-      self.window?.addSubview(privacyBlurView!)
-    }
-  }
-
-  private func hideBlurScreen() {
-    UIView.animate(withDuration: 0.2, animations: {
-      self.privacyBlurView?.alpha = 0
-    }) { _ in
-      self.privacyBlurView?.removeFromSuperview()
-      self.privacyBlurView = nil
-    }
+    channel.setMethodCallHandler({ (call, result) in
+      switch call.method {
+        case "setAuthStatus":
+          AppDelegate.isAuthenticating = call.arguments as? Bool ?? false
+          result(true)
+        case "hideBlur":
+          NotificationCenter.default.post(name: NSNotification.Name("HidePrivacyBlur"), object: nil)
+          result(true)
+        case "setSecure":
+          let secure = call.arguments as? Bool ?? false
+          AppDelegate.secureCount += secure ? 1 : -1
+          if AppDelegate.secureCount < 0 { AppDelegate.secureCount = 0 }
+          result(true)
+        default:
+          result(FlutterMethodNotImplemented)
+      }
+    })
   }
 
 }
+

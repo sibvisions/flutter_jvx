@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:crypto/crypto.dart';
 
 import '../../components/base_wrapper/base_comp_wrapper_widget.dart';
 import '../../flutter_ui.dart';
@@ -164,6 +165,56 @@ abstract class ImageLoader {
     return imageProvider;
   }
 
+  static MemoryImage createCachedMemoryImage(String cacheKey, Uint8List data, Function(Size, bool)? imageStreamListener) {
+    MemoryImage? memImage;
+
+    (MemoryImage image, Size? size)? cacheInfo = _imageCache[cacheKey];
+
+    double? width_;
+    double? height_;
+
+    if (cacheInfo != null) {
+      memImage = cacheInfo.$1;
+
+      Size? size = cacheInfo.$2;
+
+      if (size != null) {
+        width_ = size.width;
+        height_ = size.height;
+      }
+    }
+
+    if (memImage == null) {
+      memImage = MemoryImage(data);
+
+      var listener_ = imageStreamListener;
+
+      //images < 500Kb will be cached
+      if (data.lengthInBytes < 512000) {
+        //we need a listener wrapper to update the cache with size
+        listener_ = (Size size, bool synchronousCall) {
+          _imageCache[cacheKey] = (memImage!, size);
+
+          //foward to original listener
+          if (imageStreamListener != null) {
+            imageStreamListener(size, synchronousCall);
+          }
+        };
+
+        _imageCache[cacheKey] = (memImage, null);
+      }
+
+      if (width_ != null || height_ != null) {
+        listener_?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
+      }
+      else {
+        _addImageListener(memImage, listener_);
+      }
+    }
+
+    return memImage;
+  }
+
   /// Creates either a MemoryImage, a FileImage or a NetworkImage
   static ImageProvider? getImageProvider(
     dynamic imageDefinition, {
@@ -175,54 +226,13 @@ abstract class ImageLoader {
     }
 
     if (imageDefinition is Uint8List) {
-      return getBinaryImageProvider(imageDefinition, imageStreamListener: imageStreamListener);
+      return createCachedMemoryImage(md5.convert(imageDefinition).toString(), imageDefinition, imageStreamListener);
     }
     else if (imageDefinition is String && imageDefinition.isNotEmpty) {
-      ImageProvider imageProvider;
-
       Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(imageDefinition);
 
-      var listener_ = imageStreamListener;
-
-      double? width_;
-      double? height_;
-
       if (base64Decoded != null) {
-        MemoryImage? memImage;
-
-        (MemoryImage image, Size? size)? cacheInfo = _imageCache[imageDefinition];
-
-        if (cacheInfo != null) {
-          memImage = cacheInfo.$1;
-
-          Size? size = cacheInfo.$2;
-
-          if (size != null) {
-            width_ = size.width;
-            height_ = size.height;
-          }
-        }
-
-        if (memImage == null) {
-          memImage = MemoryImage(base64Decoded);
-
-          //images < 500Kb will be cached
-          if (base64Decoded.lengthInBytes < 512000) {
-            //we need a listener wrapper to update the cache with size
-            listener_ = (Size size, bool synchronousCall) {
-              _imageCache[imageDefinition] = (memImage!, size);
-
-              //foward to original listener
-              if (imageStreamListener != null) {
-                imageStreamListener(size, synchronousCall);
-              }
-            };
-
-            _imageCache[imageDefinition] = (memImage, null);
-          }
-        }
-
-        imageProvider = memImage;
+        return createCachedMemoryImage(imageDefinition, base64Decoded, imageStreamListener);
       }
       else {
         Uri? parsedURI;
@@ -230,6 +240,11 @@ abstract class ImageLoader {
         try {
           parsedURI = Uri.parse(imageDefinition);
         } catch (_) {}
+
+        ImageProvider imageProvider;
+
+        double? width_;
+        double? height_;
 
         if (parsedURI == null || !parsedURI.scheme.contains("http")) {
           // Cut away optional size
@@ -278,16 +293,16 @@ abstract class ImageLoader {
         } else {
           imageProvider = NetworkImage(imageDefinition, headers: _getHeaders());
         }
-      }
 
-      if (width_ != null || height_ != null) {
-        listener_?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
-      }
-      else {
-        _addImageListener(imageProvider, listener_);
-      }
+        if (width_ != null || height_ != null) {
+          imageStreamListener?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
+        }
+        else {
+          _addImageListener(imageProvider, imageStreamListener);
+        }
 
-      return imageProvider;
+        return imageProvider;
+      }
     }
 
     return null;

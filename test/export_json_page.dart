@@ -15,7 +15,8 @@
  */
 
 import 'package:flutter/foundation.dart';
-import 'package:json_dynamic_widget/json_dynamic_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ExportJsonPage extends StatefulWidget {
 
@@ -28,30 +29,25 @@ class ExportJsonPage extends StatefulWidget {
 }
 
 class _ExportExamplePageState extends State<ExportJsonPage> {
-    final GlobalKey<JsonWidgetExporterData> _exportKey = GlobalKey<JsonWidgetExporterData>();
+    final GlobalKey exportKey = GlobalKey();
 
-    int _count = 1;
+    void initState() {
+        super.initState();
+    }
 
     @override
     Widget build(BuildContext context) {
-        final registry = JsonWidgetRegistry();
-
-        registry.setValue('count', _count);
-        registry.setValue('increment', () => () => setState(() => _count++));
-
         return Scaffold(
             appBar: AppBar(
                 actions: [
                     IconButton(
+                        tooltip: "Export Button",
                         icon: const Icon(
                             Icons.copy,
                             color: Colors.white,
                         ),
                         onPressed: () {
-                            final data = _exportKey.currentState!.export(
-                                indent: '  ',
-                                mode: ReverseEncodingMode.json,
-                            );
+                            final data = "";
 
                             if (kDebugMode) {
                                 print(data);
@@ -74,68 +70,8 @@ class _ExportExamplePageState extends State<ExportJsonPage> {
                     ),
                 ),
             ),
-            body: JsonWidgetExporter(
-                key: _exportKey,
-                child: JsonExportable(
-                    child: _createWidgetData(registry, widget.mode),
-                ),
-            ),
+            body: Container(),
         );
     }
 
-    JsonWidgetData _createWidgetData(JsonWidgetRegistry registry, int mode) {
-
-        switch (mode)
-        {
-            case 0:
-                return JsonContainer(
-                    color: Colors.grey,
-                    foregroundDecoration: null,
-                    decoration: null,
-                    child: JsonRow(
-                        children: [
-                            JsonPadding(padding: const EdgeInsets.all(5), child: JsonText("Welcome"),),
-                            JsonIcon(Icons.add,
-                                color: Colors.grey.shade400),
-                            JsonIcon(Icons.abc,
-                                color: Colors.red),
-                            JsonMemoryImage(image: "")
-                        ]));
-            default:
-                return JsonScaffold(
-                    appBar: JsonAppBar(
-                        title: JsonText('Example'),
-                    ),
-                    body: JsonListView(
-                        children: [
-                            for (var i = 0; i < _count; i++)
-                                JsonListTile(
-                                    subtitle: JsonText(
-                                        args: {
-                                            'text': r'${i + 1}',
-                                        },
-                                        registry: JsonWidgetRegistry(
-                                            parent: registry,
-                                            values: {
-                                                'i': i,
-                                            },
-                                        ),
-                                        '${i + 1}',
-                                    ),
-                                    title: JsonText('ListTile'),
-                                ),
-                        ],
-                    ),
-                    floatingActionButton: JsonFloatingActionButton(
-                        args: {
-                            'onPressed': r'${increment()}',
-                        },
-                        registry: registry,
-                        onPressed: () => setState(() => _count++),
-                        child: JsonIcon(Icons.add),
-                    ),
-                );
-        }
-
-    }
 }

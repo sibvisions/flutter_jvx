@@ -20,7 +20,6 @@ import 'dart:math' hide log;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_ui.dart';
 import '../../../mask/state/app_style.dart';
@@ -279,21 +278,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   Icon _getIcon(BuildContext? context, IconData icon, [double? size]) {
-    if (icon.fontFamily == FontAwesomeIcons.plus.fontFamily) {
-      return FaIcon(
-        FaIconData(icon),
-        size: size ?? iconSize,
-        color: JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
-      );
-    }
-    else {
-      //should work with any icon data
-      return Icon(
-        icon,
-        size: size ?? iconSize,
-        color: JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
-      );
-    }
+    return Icon(
+      icon,
+      size: size ?? iconSize,
+      color: JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
+    );
   }
 
   Widget createEmbeddableIcon(BuildContext? context, IconData icon, [double? size]) {

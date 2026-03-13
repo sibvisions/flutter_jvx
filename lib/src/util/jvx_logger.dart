@@ -121,7 +121,7 @@ class JVxPrettyPrinter extends PrettyPrinter {
     super.lineLength,
     super.colors,
     super.printEmojis,
-    super.printTime,
+    super.dateTimeFormat,
     super.excludeBox,
     super.noBoxingByDefault,
     super.excludePaths,

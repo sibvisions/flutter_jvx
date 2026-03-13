@@ -3244,7 +3244,7 @@ Future<TimeOfDay?> showTimePicker({
 }
 
 void _announceToAccessibility(BuildContext context, String message) {
-  SemanticsService.announce(message, Directionality.of(context));
+  SemanticsService.sendAnnouncement(View.of(context), message, Directionality.of(context));
 }
 
 // An abstract base class for the M2 and M3 defaults below, so that their return
