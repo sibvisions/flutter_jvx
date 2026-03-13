@@ -205,7 +205,7 @@ class DataBook {
         notDecrypted.add(pFetchResponse.from + i);
       }
 
-      dataMap[pFetchResponse.from + i] = await _decryptValues(pageKey, pFetchResponse.from + i, pFetchResponse.records[i], _metaData!);
+      dataMap[pFetchResponse.from + i] = await _decryptValues(pageKey, pFetchResponse.from + i, pFetchResponse.records[i], _metaData);
     }
 
     if (notDecrypted != null) {
