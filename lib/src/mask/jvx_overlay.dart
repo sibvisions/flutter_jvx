@@ -30,6 +30,7 @@ import '../service/config/i_config_service.dart';
 import '../service/service.dart';
 import '../service/ui/i_ui_service.dart';
 import '../util/auth/auth_overlay.dart';
+import '../util/auth/auth_service.dart';
 import '../util/jvx_colors.dart';
 import '../util/widgets/status_banner.dart';
 import 'apps/app_overview_page.dart';
@@ -289,6 +290,10 @@ class JVxOverlayState extends State<JVxOverlay> {
             builder: (context, snapshot) {
               EdgeInsets insView = MediaQuery.viewPaddingOf(context);
 
+              //important, because if we don't use an overlay - we should reset security
+              if (IUiService().clientId.value == null) {
+                AuthService.instance.setSecure(false);
+              }
 
               return LoadingBar(
                 show: _loading && snapshot.connectionState == ConnectionState.done,

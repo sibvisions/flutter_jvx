@@ -103,7 +103,6 @@ class _AuthOverlayState extends State<AuthOverlay> with WidgetsBindingObserver {
     super.didUpdateWidget(oldWidget);
 
     if (_isConfigChanged(_protectConfig, widget.config)) {
-
       bool hideTimerStopped = _timerHide?.isActive != true;
 
       //if hide timer is active -> hiding overlay is in progress -> don't change config until timer is done
