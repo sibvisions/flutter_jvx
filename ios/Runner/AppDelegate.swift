@@ -53,4 +53,3 @@ import Flutter
   }
 
 }
-
