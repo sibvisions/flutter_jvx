@@ -192,34 +192,44 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   @override
-  LayoutData calculateConstrainedSize(LayoutPosition? calcPosition) {
+  LayoutData calculateConstrainedSize(LayoutPosition calcPosition) {
     double calcWidth = layoutData.calculatedSize!.width;
     double calcHeight = layoutData.calculatedSize!.height;
 
-    LayoutPosition constraintPos = calcPosition ?? layoutData.layoutPosition!;
+    double positionWidth = calcPosition.width;
+    double positionHeight = calcPosition.height;
 
-    double positionWidth = constraintPos.width;
-    double positionHeight = constraintPos.height;
+    bool changed = false;
 
     // Constraint by width
     if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-      double newHeight = cellEditor.getEditorHeight(model.json) ??
-          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionWidth)).ceilToDouble();
+      double newWidth = cellEditor.getEditorWidth(model.json) ??
+          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionWidth)).ceilToDouble();
 
-      layoutData.widthConstrains[positionWidth] = newHeight;
+      layoutData.widthConstrains[positionWidth] = newWidth;
+
+      changed = true;
     }
 
     // Constraint by height
     if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-      double? newWidth = cellEditor.getEditorWidth(model.json) ??
-          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionHeight)).ceilToDouble();
+      double? newHeight = cellEditor.getEditorHeight(model.json) ??
+          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionHeight)).ceilToDouble();
 
-      layoutData.heightConstrains[positionHeight] = newWidth;
+      layoutData.heightConstrains[positionHeight] = newHeight;
+
+      changed = true;
     }
 
-    var sentData = LayoutData.from(layoutData);
-    sentData.layoutPosition = constraintPos;
-    return sentData;
+    if (changed) {
+      LayoutData layoutDataNew = LayoutData.from(layoutData);
+      layoutDataNew.layoutPosition = calcPosition;
+
+      return layoutDataNew;
+    }
+    else {
+      return layoutData;
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

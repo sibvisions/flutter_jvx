@@ -32,9 +32,6 @@ class FlowLayout extends ILayout {
   /// The original layout string
   final String layoutString;
 
-  /// The split layout string.
-  final List<String> splitLayoutString;
-
   /// Gaps between the components
   late final Gaps gaps;
 
@@ -59,15 +56,19 @@ class FlowLayout extends ILayout {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlowLayout({required this.layoutString, required this.scaling}) : splitLayoutString = layoutString.split(",") {
-    margins = ILayout.marginsFromList(marginList: splitLayoutString.sublist(1, 5), scaling: scaling);
-    gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7), scaling: scaling);
-    isRowOrientationHorizontal =
-        AlignmentOrientationE.fromString(splitLayoutString[7]) == AlignmentOrientation.HORIZONTAL;
-    outerHa = HorizontalAlignmentE.fromString(splitLayoutString[8]);
-    outerVa = VerticalAlignmentE.fromString(splitLayoutString[9]);
-    innerAlignment = int.parse(splitLayoutString[10]);
-    autoWrap = ParseUtil.parseBoolOrFalse(splitLayoutString[11]);
+  FlowLayout({
+    required this.layoutString,
+    required this.scaling
+  }) {
+    List<String> layoutDef = layoutString.split(",");
+
+    margins = ILayout.marginsFromList(marginList: layoutDef.sublist(1, 5), scaling: scaling);
+    gaps = Gaps.createFromList(gapsList: layoutDef.sublist(5, 7), scaling: scaling);
+    isRowOrientationHorizontal = AlignmentOrientationE.fromString(layoutDef[7]) == AlignmentOrientation.HORIZONTAL;
+    outerHa = HorizontalAlignmentE.fromString(layoutDef[8]);
+    outerVa = VerticalAlignmentE.fromString(layoutDef[9]);
+    innerAlignment = int.parse(layoutDef[10]);
+    autoWrap = ParseUtil.parseBoolOrFalse(layoutDef[11]);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -287,6 +288,7 @@ class FlowLayout extends ILayout {
 
     return _FlowGrid(columns: anzCols, rows: anzRows, gridWidth: width, gridHeight: height);
   }
+
 } // FlowLayout
 
 class _FlowGrid {
@@ -310,5 +312,11 @@ class _FlowGrid {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  _FlowGrid({required this.columns, required this.rows, required this.gridWidth, required this.gridHeight});
+  _FlowGrid({
+    required this.columns,
+    required this.rows,
+    required this.gridWidth,
+    required this.gridHeight
+  });
+
 } // FlowGrid

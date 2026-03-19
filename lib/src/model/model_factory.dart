@@ -19,7 +19,7 @@ import '../service/api/shared/api_object_property.dart';
 import '../service/api/shared/fl_component_classname.dart';
 
 abstract class ModelFactory {
-  static FlComponentModel buildModel(String className) {
+  static FlComponentModel buildModel(String className, String? classNameEventSourceRef) {
     switch (className) {
       // Containers
       case FlContainerClassname.PANEL:
@@ -114,8 +114,9 @@ abstract class ModelFactory {
       List<FlComponentModel> models = [];
       for (dynamic changedComponent in pChangedComponents) {
         String? className = changedComponent[ApiObjectProperty.className];
+        String? classNameEventSourceRef = changedComponent[ApiObjectProperty.classNameEventSourceRef];
         if (className != null) {
-          FlComponentModel model = ModelFactory.buildModel(className);
+          FlComponentModel model = ModelFactory.buildModel(className, classNameEventSourceRef);
           model.applyFromJson(changedComponent);
           models.add(model);
         }

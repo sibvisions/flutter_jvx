@@ -56,19 +56,34 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
   }
 
   @override
-  LayoutData calculateConstrainedSize(LayoutPosition? calcPosition) {
-    LayoutPosition constraintPos = calcPosition ?? layoutData.layoutPosition!;
+  LayoutData calculateConstrainedSize(LayoutPosition calcPosition) {
+    double positionWidth = calcPosition.width;
+    double positionHeight = calcPosition.height;
 
-    double positionWidth = constraintPos.width;
-    double positionHeight = constraintPos.height;
+    bool changed = false;
 
-    // Constraint by width
-    layoutData.widthConstrains[positionWidth] = model.originalSize.width;
-    // Constraint by height
-    layoutData.heightConstrains[positionHeight] = model.originalSize.height;
+    if (layoutData.widthConstrains[positionWidth] != model.originalSize.width) {
+      // Constraint by width
+      layoutData.widthConstrains[positionWidth] = model.originalSize.width;
 
-    var sentData = LayoutData.from(layoutData);
-    sentData.layoutPosition = constraintPos;
-    return sentData;
+      changed = true;
+    }
+
+    if (layoutData.heightConstrains[positionHeight] != model.originalSize.height) {
+      // Constraint by height
+      layoutData.heightConstrains[positionHeight] = model.originalSize.height;
+
+      changed = true;
+    }
+
+    if (changed) {
+      LayoutData layoutDataNew = LayoutData.from(layoutData);
+      layoutDataNew.layoutPosition = calcPosition;
+
+      return layoutDataNew;
+    }
+    else {
+      return layoutData;
+    }
   }
 }

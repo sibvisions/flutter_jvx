@@ -267,7 +267,6 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   List<BaseCommand> _performLayout({required LayoutData pLayoutData}) {
-
     if (FlutterUI.logLayout.cl(Lvl.d)) {
       FlutterUI.logLayout.d(
           "${pLayoutData.name}|${pLayoutData.id} performLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");

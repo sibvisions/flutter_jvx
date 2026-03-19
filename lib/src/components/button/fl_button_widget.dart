@@ -75,29 +75,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget? get image {
-    String? imageDefinition = model.className != FlCellEditorClassname.CHECK_BOX_CELL_EDITOR
-        ? model.image
-        : ((model as FlCheckBoxModel).imageName != null && (model as FlCheckBoxModel).imageName!.isNotEmpty)
-            ? (model as FlCheckBoxModel).imageName
-            : null;
-
-    if (imageDefinition != null) {
-      Color? color;
-
-      if (IconUtil.isFontIcon(imageDefinition)) {
-        if (!model.borderPainted || model.borderOnMouseEntered) {
-          color = JVxColors.LIGHTER_BLACK;
-        } else {
-          color = model.createTextStyle().color;
-        }
-      }
-
-      return ImageLoader.loadImage(
-        imageDefinition, color: color,
-      );
-    }
-
-    return null;
+    return getImage(model);
   }
 
   bool get isButtonFocusable => model.isFocusable;
@@ -170,8 +148,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Returns the icon and/or the text of the button.
-  Widget? createButtonChild(BuildContext context) {
+  static Widget? createChildWidget(BuildContext context, FlButtonModel model, [Widget? image]) {
     if (model.labelModel.text.isNotEmpty && image != null) {
       if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
           model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
@@ -179,56 +156,37 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           mainAxisSize: MainAxisSize.min,
           textBaseline: TextBaseline.alphabetic,
           textDirection: // If the text is aligned to the left, the text comes before the icon
-              model.labelModel.verticalAlignment == VerticalAlignment.TOP ? TextDirection.rtl : TextDirection.ltr,
+          model.labelModel.verticalAlignment == VerticalAlignment.TOP ? TextDirection.rtl : TextDirection.ltr,
           children: [
-            image!,
+            image,
             SizedBox(height: model.imageTextGap.toDouble()),
-            Flexible(child: createTextWidget(context)),
+            Flexible(child: _createChildTextWidget(context, model)),
           ],
         );
       } else {
         return Row(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: getCrossAxisAlignment(model.labelModel.verticalAlignment),
+          crossAxisAlignment: _getCrossAxisAlignment(model.labelModel.verticalAlignment),
           textBaseline: TextBaseline.alphabetic,
           textDirection: // If the text is aligned to the left, the text comes before the icon
-              model.labelModel.horizontalAlignment == HorizontalAlignment.LEFT ? TextDirection.rtl : TextDirection.ltr,
+          model.labelModel.horizontalAlignment == HorizontalAlignment.LEFT ? TextDirection.rtl : TextDirection.ltr,
           children: [
-            image!,
+            image,
             SizedBox(width: model.imageTextGap.toDouble()),
-            Flexible(child: createTextWidget(context)),
+            Flexible(child: _createChildTextWidget(context, model)),
           ],
         );
       }
     } else if (model.labelModel.text.isNotEmpty) {
-      return createTextWidget(context);
+      return _createChildTextWidget(context, model);
     } else if (image != null) {
-      return image!;
+      return image;
     } else {
       return null;
     }
   }
 
-  Widget createDirectButtonChild(BuildContext context) {
-    return Align(
-      alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-      child: createButtonChild(context),
-    );
-  }
-
-  /// Converts [VerticalAlignment] into a usable [CrossAxisAlignment] for [Row]
-  CrossAxisAlignment getCrossAxisAlignment(VerticalAlignment pAlignment) {
-    if (pAlignment == VerticalAlignment.TOP) {
-      return CrossAxisAlignment.start;
-    } else if (pAlignment == VerticalAlignment.BOTTOM) {
-      return CrossAxisAlignment.end;
-    }
-
-    return CrossAxisAlignment.center;
-  }
-
-  /// Gets the text widget of the button with the label model.
-  Widget createTextWidget(BuildContext context) {
+  static Widget _createChildTextWidget(BuildContext context, FlButtonModel model) {
     TextStyle textStyle = model.labelModel.createTextStyle();
 
     if (!model.isEnabled) {
@@ -241,12 +199,67 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       );
     }
 
-    return FlLabelWidget.getTextWidget(
+    return FlLabelWidget.createTextWidget(
       model.labelModel,
       pTextStyle: textStyle,
     );
   }
 
+  static Widget? getImage(FlButtonModel model) {
+    String? imageDefinition = model.className != FlCellEditorClassname.CHECK_BOX_CELL_EDITOR
+        ? model.image
+        : ((model as FlCheckBoxModel).imageName != null && model.imageName!.isNotEmpty)
+        ? model.imageName
+        : null;
+
+    if (imageDefinition != null) {
+      Color? color;
+
+      if (IconUtil.isFontIcon(imageDefinition)) {
+        if (!model.borderPainted || model.borderOnMouseEntered) {
+          color = JVxColors.LIGHTER_BLACK;
+        } else {
+          color = model.createTextStyle().color;
+        }
+      }
+
+      return ImageLoader.loadImage(
+        imageDefinition, color: color,
+      );
+    }
+
+    return null;
+  }
+
+  /// Returns the icon and/or the text of the button.
+  Widget? createButtonChild(BuildContext context) {
+    return createChildWidget(context, model, image);
+  }
+
+  Widget createDirectButtonChild(BuildContext context) {
+    return Align(
+      alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+      child: createButtonChild(context),
+    );
+  }
+
+  /// Converts [VerticalAlignment] into a usable [CrossAxisAlignment] for [Row]
+  static CrossAxisAlignment _getCrossAxisAlignment(VerticalAlignment pAlignment) {
+    if (pAlignment == VerticalAlignment.TOP) {
+      return CrossAxisAlignment.start;
+    } else if (pAlignment == VerticalAlignment.BOTTOM) {
+      return CrossAxisAlignment.end;
+    }
+
+    return CrossAxisAlignment.center;
+  }
+
+  /// Gets the text widget of the button with the label model.
+/*
+  Widget createTextWidget(BuildContext context) {
+    return createChildTextWidget(context, model);
+  }
+*/
   /// Gets the button style.
   ButtonStyle createButtonStyle(BuildContext context) {
     Color? backgroundColor;

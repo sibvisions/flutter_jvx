@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2026 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,66 +14,63 @@
  * the License.
  */
 
-import 'dart:ui';
+import 'dart:math';
+
+import 'package:flutter/widgets.dart';
 
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
+import '../util/i_clonable.dart';
 import 'i_layout.dart';
 
-class TabLayout extends ILayout {
+/// The NullLayout allows free positioning.
+class NullLayout extends ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // int selectedIndex;
-
-  double tabHeaderHeight;
+  /// The modifier with which to scale the layout.
+  final double scaling;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  TabLayout({required this.tabHeaderHeight}); //, required this.selectedIndex});
+  /// Initializes a [NullLayout].
+  NullLayout({required this.scaling});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  ILayout clone() {
-    return TabLayout(tabHeaderHeight: tabHeaderHeight); //, selectedIndex: selectedIndex);
+  NullLayout clone() {
+    return NullLayout(scaling: scaling);
   }
 
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
-    LayoutPosition? childrenPosition;
-    if (pParent.hasPosition) {
-      double width = pParent.layoutPosition!.width;
-      double height = pParent.layoutPosition!.height - tabHeaderHeight;
-      childrenPosition = LayoutPosition(
-        width: width,
-        height: height,
-        top: 0,
-        left: 0,
-      );
-    }
+    double width = 0;
+    double height = 0;
 
-    double calcWidth = 0.0;
-    double calcHeight = 0.0;
-    for (LayoutData childData in pChildren) {
-      if (childData.hasCalculatedSize) {
-        if (childData.calculatedSize!.width > calcWidth) {
-          calcWidth = childData.calculatedSize!.width;
-        }
-        if (childData.calculatedSize!.height > calcHeight) {
-          calcHeight = childData.calculatedSize!.height;
-        }
+    LayoutPosition? bounds;
+
+    for (int i = 0; i < pChildren.length; i++) {
+
+      bounds = pChildren[i].bounds;
+
+      if (bounds != null) {
+        width = max(width, bounds.left + bounds.width);
+        height = max(height, bounds.top + bounds.height);
+
+        pChildren[i].layoutPosition = pChildren[i].bounds;
       }
-
-      childData.layoutPosition = childrenPosition;
+      else {
+        pChildren[i].layoutPosition = LayoutPosition(top: 0, left: 0, width: 0, height: 0);
+      }
     }
 
-    pParent.calculatedSize = Size(calcWidth, calcHeight + tabHeaderHeight);
+    pParent.calculatedSize = Size(width, height);
   }
 
 }

@@ -72,7 +72,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
     FlPanelWidget panelWidget = FlPanelWidget(
       model: model,
-      children: children.values.toList(),
+      children: childWidgets,
     );
 
     return wrapWidget(context, panelWidget);

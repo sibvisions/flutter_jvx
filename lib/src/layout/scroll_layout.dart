@@ -21,9 +21,26 @@ import '../model/layout/layout_position.dart';
 import 'i_layout.dart';
 
 class ScrollLayout extends ILayout {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   ILayout originalLayout;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   ScrollLayout(this.originalLayout);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  ILayout clone() {
+    return ScrollLayout(originalLayout.clone());
+  }
 
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
@@ -45,10 +62,9 @@ class ScrollLayout extends ILayout {
     pParent.applyFromOther(clonedParentData);
   }
 
-  @override
-  ILayout clone() {
-    return ScrollLayout(originalLayout.clone());
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static double widthOfScrollPanel(LayoutData layoutData) {
     double width = 0.0;

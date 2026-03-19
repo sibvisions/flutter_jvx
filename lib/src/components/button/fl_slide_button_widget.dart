@@ -108,7 +108,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
                 icon: image,
                 toggleColor: model.foreground,
                 rolling: true,
-                child: createTextWidget(),
+                child: _createTextWidget(),
               ),
             ),
           ),
@@ -122,7 +122,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Gets the text widget of the button with the label model.
-  Widget createTextWidget() {
+  Widget _createTextWidget() {
     TextStyle textStyle = model.labelModel.createTextStyle();
 
     if (!model.isEnabled) {
@@ -131,7 +131,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
       textStyle = textStyle.copyWith(color: Colors.blue);
     }
 
-    return FlLabelWidget.getTextWidget(
+    return FlLabelWidget.createTextWidget(
       model.labelModel,
       pTextStyle: textStyle,
     );

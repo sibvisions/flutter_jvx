@@ -29,6 +29,8 @@ class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponent
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command, BaseCommand? origin) async {
 
+    //MARK: Update Components and wait for layout
+
     if (command.affectedComponents.isEmpty
         && command.changedComponents.isEmpty
         && command.deletedComponents.isEmpty

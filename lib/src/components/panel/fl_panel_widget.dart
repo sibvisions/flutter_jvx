@@ -22,13 +22,13 @@ import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/text_field/fl_text_field_widget.dart';
 
 class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
+  final List<Widget> children;
+
   const FlPanelWidget({
     super.key,
     required super.model,
     required this.children,
   });
-
-  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +38,14 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
       background ??= FlTextFieldWidget.defaultBackground(context);
     }
 
-    Widget panelWidget = DecoratedBox(
-      decoration: BoxDecoration(color: background),
-      child: Stack(children: children),
-    );
+    Widget panelWidget = Stack(children: children);
+
+    if (background != null) {
+      panelWidget = DecoratedBox(
+        decoration: BoxDecoration(color: background),
+        child: panelWidget,
+      );
+    }
 
     if (model.hasStandardBorder) {
       return wrapWithStandardBorder(panelWidget);

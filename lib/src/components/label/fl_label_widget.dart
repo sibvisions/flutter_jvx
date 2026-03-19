@@ -51,7 +51,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     Widget child;
 
-    child = getTextWidget(model, pSelectable: onTap == null && onTapDown == null && onTapUp == null, pDummy: dummy);
+    child = createTextWidget(model, pSelectable: onTap == null && onTapDown == null && onTapUp == null, pDummy: dummy);
 
     if (model.toolTipText != null) {
       child = getTooltipWidget(child);
@@ -86,7 +86,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     return Tooltip(message: model.toolTipText!, child: pChild);
   }
 
-  static Widget getTextWidget(FlLabelModel pModel, {TextStyle? pTextStyle, bool pSelectable = false, bool pDummy = false}) {
+  static Widget createTextWidget(FlLabelModel pModel, {TextStyle? pTextStyle, bool pSelectable = false, bool pDummy = false}) {
     Widget textWidget;
 
     if (!pDummy && ParseUtil.isHTML(pModel.text)) {

@@ -23,6 +23,7 @@ import 'border_layout.dart';
 import 'flow_layout.dart';
 import 'form_layout.dart';
 import 'grid_layout.dart';
+import 'null_layout.dart';
 import 'split_layout.dart';
 
 // The states a layout can be in. If a component is dirty, it gets redrawn.
@@ -60,7 +61,7 @@ abstract class ILayout implements ICloneable {
         case "BorderLayout":
           return BorderLayout(layoutString: pModel.layout!, scaling: pModel.scaling);
         case "FormLayout":
-          return FormLayout(layoutData: pModel.layoutData!, layoutString: pModel.layout!, scaling: pModel.scaling);
+          return FormLayout(layoutString: pModel.layout!, scaling: pModel.scaling, layoutData: pModel.layoutData!);
         case "GridLayout":
           return GridLayout(layoutString: pModel.layout!, scaling: pModel.scaling);
         case "FlowLayout":
@@ -72,7 +73,7 @@ abstract class ILayout implements ICloneable {
       }
     }
 
-    return null;
+    return NullLayout(scaling: pModel.scaling);
   }
 
   /// Creates an EdgeInset from the margins.

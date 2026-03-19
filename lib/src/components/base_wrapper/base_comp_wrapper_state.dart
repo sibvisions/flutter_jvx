@@ -87,6 +87,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       name: model.name,
       parentId: model.parent,
       constraints: model.constraints,
+      bounds: model.bounds,
       preferredSize: model.preferredSize,
       minSize: model.minimumSize,
       maxSize: model.maximumSize,
@@ -330,27 +331,31 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Is called when a new [LayoutData] is sent from the [ILayoutService].
   void receiveNewLayoutData(LayoutData pLayoutData) {
-
     //mark layout data "received"
     pLayoutData.receivedDate = DateTime.now();
 
-    LayoutPosition? calcPosition;
     if (pLayoutData.hasPosition && pLayoutData.layoutPosition!.isConstraintCalc) {
-      calcPosition = pLayoutData.layoutPosition;
+      LayoutPosition newPosition = pLayoutData.layoutPosition!;
+
+      //try to use old position
       pLayoutData.layoutPosition = layoutData.layoutPosition;
       layoutData = pLayoutData;
+
+      // Check if new position constrains component. Only sends command if constraint is new.
+      if (lastContext != null) {
+        LayoutData layoutDataNew = calculateConstrainedSize(newPosition);
+
+        if (!identical(layoutDataNew, layoutData))
+        {
+          sendCalcSize(pLayoutData: layoutDataNew, pReason: "Component has been constrained");
+        }
+      }
     } else {
       layoutData = pLayoutData;
-      calcPosition = null;
     }
 
     if (FlutterUI.logLayout.cl(Lvl.d)) {
       FlutterUI.logLayout.d("${model.name}|${model.id} receiveNewLayoutData ${pLayoutData.layoutPosition}");
-    }
-
-    // Check if new position constrains component. Only sends command if constraint is new.
-    if (calcPosition != null && lastContext != null) {
-      sendCalcSize(pLayoutData: calculateConstrainedSize(calcPosition), pReason: "Component has been constrained");
     }
 
     setState(() {});
@@ -359,34 +364,44 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   /// Calculates the size the components wants to have if a specific side of it is constrained.
   ///
   /// E.g. Calculates how much height a [FlLabelWidget] would want, if it only had 100px space in width.
-  LayoutData calculateConstrainedSize(LayoutPosition? calcPosition) {
+  LayoutData calculateConstrainedSize(LayoutPosition calcPosition) {
     double calcWidth = layoutData.calculatedSize!.width;
     double calcHeight = layoutData.calculatedSize!.height;
 
-    LayoutPosition constraintPos = calcPosition ?? layoutData.layoutPosition!;
+    double positionWidth = calcPosition.width;
+    double positionHeight = calcPosition.height;
 
-    double positionWidth = constraintPos.width;
-    double positionHeight = constraintPos.height;
+    bool changed = false;
 
     // Constraint by width
     if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-      double newHeight =
-      (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionWidth)).ceilToDouble();
+      double newWidth =
+      (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionWidth)).ceilToDouble();
 
-      layoutData.widthConstrains[positionWidth] = newHeight;
+      layoutData.widthConstrains[positionWidth] = newWidth;
+
+      changed = true;
     }
 
     // Constraint by height
     if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-      double? newWidth =
-      (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionHeight)).ceilToDouble();
+      double? newHeight =
+      (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionHeight)).ceilToDouble();
 
-      layoutData.heightConstrains[positionHeight] = newWidth;
+      layoutData.heightConstrains[positionHeight] = newHeight;
+
+      changed = true;
     }
 
-    var sentData = LayoutData.from(layoutData);
-    sentData.layoutPosition = constraintPos;
-    return sentData;
+    if (changed) {
+      LayoutData layoutDataNew = LayoutData.from(layoutData);
+      layoutDataNew.layoutPosition = calcPosition;
+
+      return layoutDataNew;
+    }
+    else {
+      return layoutData;
+    }
   }
 
   /// Calculates the size the components ideally wants to have.

@@ -73,6 +73,9 @@ class LayoutData implements ICloneable {
   /// The insets of the component.
   EdgeInsets insets;
 
+  /// The defined bounds
+  LayoutPosition? bounds;
+
   /// The actual position of the component inside their parent.
   LayoutPosition? layoutPosition;
 
@@ -129,6 +132,7 @@ class LayoutData implements ICloneable {
     this.indexOf,
     this.layout,
     this.isFixedSize = false,
+    this.bounds,
     DateTime? receivedDate
   })
   {
@@ -154,6 +158,7 @@ class LayoutData implements ICloneable {
       layout: layout?.clone(),
       children: List.of(children),
       constraints: constraints,
+      bounds: bounds?.clone(),
       minSize: minSize != null ? Size.copy(minSize!) : null,
       maxSize: maxSize != null ? Size.copy(maxSize!) : null,
       preferredSize: hasPreferredSize ? Size.copy(preferredSize!) : null,

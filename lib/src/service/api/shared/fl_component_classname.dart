@@ -23,6 +23,7 @@ abstract class FlComponentClassname {
   static const String MENU_ITEM = "MenuItem";
   static const String SEPARATOR = "Separator";
   static const String SIGNATURE_PAD = "SignaturePad";
+  static const String BUTTON_GROUP = "ButtonGroup";
   static const String POPUP_MENU_BUTTON = "PopupMenuButton";
   static const String CHECK_BOX = "CheckBox";
   static const String PASSWORD_FIELD = "PasswordField";

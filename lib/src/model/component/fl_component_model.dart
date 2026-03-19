@@ -106,7 +106,7 @@ abstract class FlComponentModel {
 
   // Basic Data
 
-  /// The json base base data
+  /// The json base data
   Map<String, dynamic>? jsonBase;
 
   /// The component id.

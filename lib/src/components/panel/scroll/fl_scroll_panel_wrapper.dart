@@ -71,7 +71,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
       isScrollable: isScrollable,
       horizontalScrollController: _horizontalController,
       verticalScrollController: _verticalController,
-      children: children.values.toList(),
+      children: childWidgets,
     );
 
     return (wrapWidget(context, panelWidget));

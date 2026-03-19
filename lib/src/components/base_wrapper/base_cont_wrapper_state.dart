@@ -43,6 +43,9 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   /// A map of all children widgets
   Map<String, Widget> children = {};
 
+  /// A list of all children widgets
+  List<Widget> childWidgets = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -111,6 +114,8 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
       layoutData.children = updatedChildren.keys.toList();
 
       children = updatedChildren;
+      childWidgets = children.values.toList(growable: false);
+
       if (pSetStateOnChange) {
         setState(() {});
       }

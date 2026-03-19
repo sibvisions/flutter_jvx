@@ -24,6 +24,11 @@ extension VerticalAlignmentE on VerticalAlignment {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Gets [pAlignment] as [VerticalAlignment]
+  static VerticalAlignment fromInt(int pAlignment) {
+    return VerticalAlignment.values[pAlignment];
+  }
+
   /// Parses [pAlignment] to [VerticalAlignment]
   static VerticalAlignment fromString(String pAlignment) {
     return VerticalAlignment.values[int.parse(pAlignment)];
@@ -31,6 +36,13 @@ extension VerticalAlignmentE on VerticalAlignment {
 
   /// Parses [pAlignment] to [VerticalAlignment]
   static VerticalAlignment fromDynamic(dynamic pAlignment) {
+    if (pAlignment is String) {
+      return VerticalAlignment.values[int.parse(pAlignment)];
+    }
+    else if (pAlignment is int) {
+      return VerticalAlignment.values[pAlignment];
+    }
+
     return VerticalAlignment.values[int.parse(pAlignment.toString())];
   }
 
@@ -56,6 +68,11 @@ extension HorizontalAlignmentE on HorizontalAlignment {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Gets [pAlignment] as [HorizontalAlignment]
+  static HorizontalAlignment fromInt(int pAlignment) {
+    return HorizontalAlignment.values[pAlignment];
+  }
+
   /// Parses [pAlignment] to [HorizontalAlignment]
   static HorizontalAlignment fromString(String pAlignment) {
     return HorizontalAlignment.values[int.parse(pAlignment)];
@@ -63,6 +80,13 @@ extension HorizontalAlignmentE on HorizontalAlignment {
 
   /// Parses [pAlignment] to [HorizontalAlignment]
   static HorizontalAlignment fromDynamic(dynamic pAlignment) {
+    if (pAlignment is String) {
+      return HorizontalAlignment.values[int.parse(pAlignment)];
+    }
+    else if (pAlignment is int) {
+      return HorizontalAlignment.values[pAlignment];
+    }
+
     return HorizontalAlignment.values[int.parse(pAlignment.toString())];
   }
 

@@ -88,6 +88,20 @@ class SplitLayout extends ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  ILayout clone() {
+    return SplitLayout(
+      leftTopRatio: leftTopRatio,
+      splitAlignment: splitAlignment,
+      splitterSize: splitterSize,
+      calculateLikeScroll: calculateLikeScroll,
+    )
+      ..firstComponentSize = firstComponentSize
+      ..secondComponentSize = secondComponentSize
+      ..firstComponentViewer = firstComponentViewer
+      ..secondComponentViewer = secondComponentViewer;
+  }
+
+  @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // Either left or top child, dependent on splitter orientation
     LayoutData leftTopChild = pChildren.firstWhere((element) => element.constraints == FIRST_COMPONENT);
@@ -185,20 +199,6 @@ class SplitLayout extends ILayout implements ICloneable {
     }
 
     pParent.calculatedSize = Size(width, height);
-  }
-
-  @override
-  ILayout clone() {
-    return SplitLayout(
-      leftTopRatio: leftTopRatio,
-      splitAlignment: splitAlignment,
-      splitterSize: splitterSize,
-      calculateLikeScroll: calculateLikeScroll,
-    )
-      ..firstComponentSize = firstComponentSize
-      ..secondComponentSize = secondComponentSize
-      ..firstComponentViewer = firstComponentViewer
-      ..secondComponentViewer = secondComponentViewer;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

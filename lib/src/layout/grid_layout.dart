@@ -42,13 +42,24 @@ class GridLayout extends ILayout {
   /// Size of the grid
   late final GridSize gridSize;
 
-  GridLayout({required this.layoutString, required this.scaling}) {
-    List<String> layoutList = layoutString.split(",");
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    margins = ILayout.marginsFromList(marginList: layoutList.sublist(1, 5), scaling: scaling);
-    gaps = Gaps.createFromList(gapsList: layoutList.sublist(5, 7), scaling: scaling);
-    gridSize = GridSize.fromList(list: layoutList.sublist(7, 9));
+  GridLayout({
+    required this.layoutString,
+    required this.scaling
+  }) {
+    List<String> layoutDef = layoutString.split(",");
+
+    margins = ILayout.marginsFromList(marginList: layoutDef.sublist(1, 5), scaling: scaling);
+    gaps = Gaps.createFromList(gapsList: layoutDef.sublist(5, 7), scaling: scaling);
+    gridSize = GridSize.fromList(list: layoutDef.sublist(7, 9));
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   ILayout clone() {
@@ -157,16 +168,15 @@ class GridLayout extends ILayout {
     for (LayoutData data in pChildren) {
       CellConstraint constraint = cellConstraints[data.id]!;
 
-      final num left =
-          getPosition(xPositions, constraint.gridX, columnWidth, gaps.horizontalGap) + constraint.margins.left;
-      final num top = getPosition(yPositions, constraint.gridY, rowHeight, gaps.verticalGap) + constraint.margins.top;
+      final num left = _getPosition(xPositions, constraint.gridX, columnWidth, gaps.horizontalGap) + constraint.margins.left;
+      final num top = _getPosition(yPositions, constraint.gridY, rowHeight, gaps.verticalGap) + constraint.margins.top;
       final num width =
-          getPosition(xPositions, constraint.gridX + constraint.gridWidth, columnWidth, gaps.horizontalGap) -
+          _getPosition(xPositions, constraint.gridX + constraint.gridWidth, columnWidth, gaps.horizontalGap) -
               left -
               gaps.horizontalGap -
               constraint.margins.right;
       final num height =
-          getPosition(yPositions, constraint.gridY + constraint.gridHeight, rowHeight, gaps.verticalGap) -
+          _getPosition(yPositions, constraint.gridY + constraint.gridHeight, rowHeight, gaps.verticalGap) -
               top -
               gaps.verticalGap -
               constraint.margins.bottom;
@@ -182,7 +192,11 @@ class GridLayout extends ILayout {
     pParent.calculatedSize = Size(calcWidth, calcHeight);
   }
 
-  num getPosition(List<num> pPositions, int pIndex, num pSize, num pGap) {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  num _getPosition(List<num> pPositions, int pIndex, num pSize, num pGap) {
     if (pIndex < 0) {
       return pPositions[0] + pIndex * (pSize + pGap);
     } else if (pIndex >= pPositions.length) {

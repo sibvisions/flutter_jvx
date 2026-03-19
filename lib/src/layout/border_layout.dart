@@ -16,7 +16,6 @@
 
 import 'dart:collection';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 import '../model/layout/gaps.dart';
@@ -66,7 +65,7 @@ class BorderLayout extends ILayout implements ICloneable {
   final Map<String, LayoutPosition> _positions = HashMap<String, LayoutPosition>();
 
   /// [LayoutData] of container this layout belongs to.
-  late LayoutData pParent;
+  late LayoutData _parent;
 
   /// Child with layout constraint [NORTH];
   LayoutData? _childNorth;
@@ -88,26 +87,61 @@ class BorderLayout extends ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [BorderLayout].
-  BorderLayout({required this.layoutString, required this.scaling}) {
-    _updateValuesFromString(layoutString);
+  BorderLayout({
+    required this.layoutString,
+    required this.scaling
+  }) {
+    List<String> layoutDef = layoutString.split(",");
+
+    /// [1] = top margin in px (double)
+    /// [2] = left margin in px (double)
+    /// [3] = bottom margin in px (double)
+    /// [4] = right margin in px (double)
+    /// [5] = horizontal gap in px (int)
+    /// [6] = vertical gap in px (int)
+    margins = ILayout.marginsFromList(marginList: layoutDef.sublist(1, 5), scaling: scaling);
+    gaps = Gaps.createFromList(gapsList: layoutDef.sublist(5, 7), scaling: scaling);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Makes a deep copy of this [BorderLayout].
+  @override
+  BorderLayout clone() {
+    return BorderLayout(layoutString: layoutString, scaling: scaling);
+  }
+
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // Clear constraint map.
     _positions.clear();
-    this.pParent = pParent;
+    _parent = pParent;
 
-    _childNorth = pChildren.lastWhereOrNull((element) => NORTH == element.constraints?.toUpperCase());
-    _childSouth = pChildren.lastWhereOrNull((element) => SOUTH == element.constraints?.toUpperCase());
-    _childEast = pChildren.lastWhereOrNull((element) => EAST == element.constraints?.toUpperCase());
-    _childWest = pChildren.lastWhereOrNull((element) => WEST == element.constraints?.toUpperCase());
-    _childCenter = pChildren.lastWhereOrNull((element) => CENTER == element.constraints?.toUpperCase());
+    String? compConst;
 
+    for (int i = 0; i < pChildren.length; i++) {
+      compConst = pChildren[i].constraints?.toUpperCase();
+
+      if (compConst != null) {
+        if (NORTH == compConst) {
+          _childNorth = pChildren[i];
+        }
+        else if (SOUTH == compConst) {
+          _childSouth = pChildren[i];
+        }
+        else if (WEST == compConst) {
+          _childWest = pChildren[i];
+        }
+        else if (EAST == compConst) {
+          _childEast = pChildren[i];
+        }
+        else if (CENTER == compConst) {
+          _childCenter = pChildren[i];
+        }
+      }
+    }
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
 
@@ -168,44 +202,14 @@ class BorderLayout extends ILayout implements ICloneable {
     }
   }
 
-  /// Makes a deep copy of this [BorderLayout].
-  @override
-  BorderLayout clone() {
-    return BorderLayout(layoutString: layoutString, scaling: scaling);
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Updates values of this [BorderLayout] to match data in this string.
-  ///
-  /// String has to be: BorderLayout,[1],[2],[3],[4],[5],[6]
-  ///
-  /// Where:
-  ///
-  /// [1] = top margin in px (double)
-  ///
-  /// [2] = left margin in px (double)
-  ///
-  /// [3] = bottom margin in px (double)
-  ///
-  /// [4] = right margin in px (double)
-  ///
-  /// [5] = horizontal gap in px (int)
-  ///
-  /// [6] = vertical gap in px (int)
-  void _updateValuesFromString(String layout) {
-    List<String> parameter = layout.split(",");
-
-    margins = ILayout.marginsFromList(marginList: parameter.sublist(1, 5), scaling: scaling);
-    gaps = Gaps.createFromList(gapsList: parameter.sublist(5, 7), scaling: scaling);
-  }
-
   /// Returns the preferred layout size
   Size _preferredLayoutSize() {
-    if (pParent.hasPreferredSize) {
-      return pParent.preferredSize!;
+    if (_parent.hasPreferredSize) {
+      return _parent.preferredSize!;
     } else {
       double width = 0;
       double height = 0;
@@ -253,8 +257,8 @@ class BorderLayout extends ILayout implements ICloneable {
       }
 
       return Size(
-        width + margins.horizontal + pParent.insets.horizontal,
-        height + margins.vertical + pParent.insets.vertical,
+        width + margins.horizontal + _parent.insets.horizontal,
+        height + margins.vertical + _parent.insets.vertical,
       );
     }
   }

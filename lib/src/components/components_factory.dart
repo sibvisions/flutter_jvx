@@ -36,6 +36,7 @@ import 'icon/fl_icon_wrapper.dart';
 import 'label/fl_label_wrapper.dart';
 import 'list/fl_list_wrapper.dart';
 import 'map/fl_map_wrapper.dart';
+import 'panel/button/fl_button_group_wrapper.dart';
 import 'panel/fl_panel_wrapper.dart';
 import 'panel/group/fl_group_panel_wrapper.dart';
 import 'panel/scroll/fl_scroll_panel_wrapper.dart';
@@ -51,6 +52,11 @@ abstract class ComponentsFactory {
     switch (model.className) {
       // Containers
       case FlContainerClassname.PANEL:
+        if (FlComponentClassname.BUTTON_GROUP == model.classNameEventSourceRef) {
+          return FlButtonGroupWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
+        }
+
+        return FlPanelWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
       case FlContainerClassname.DESKTOP_PANEL:
       case FlContainerClassname.TOOLBAR_PANEL:
         return FlPanelWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));

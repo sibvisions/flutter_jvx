@@ -39,9 +39,6 @@ class FormLayout extends ILayout {
   /// The original layout string
   final String layoutString;
 
-  /// The split layout string.
-  final List<String> splitLayoutString;
-
   /// The original layout data string
   final String layoutData;
 
@@ -67,11 +64,15 @@ class FormLayout extends ILayout {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FormLayout({required this.layoutData, required this.layoutString, required this.scaling})
-      : splitLayoutString = layoutString.split(",") {
-    margins = ILayout.marginsFromList(marginList: splitLayoutString.sublist(1, 5), scaling: scaling);
-    gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7), scaling: scaling);
-    alignment = splitLayoutString.sublist(7, 9);
+  FormLayout({required this.layoutString,
+    required this.scaling,
+    required this.layoutData}
+  ) {
+    List<String> layoutDef = layoutString.split(",");
+
+    margins = ILayout.marginsFromList(marginList: layoutDef.sublist(1, 5), scaling: scaling);
+    gaps = Gaps.createFromList(gapsList: layoutDef.sublist(5, 7), scaling: scaling);
+    alignment = layoutDef.sublist(7, 9);
     anchors = _getAnchors(layoutData);
     horizontalAlignment = HorizontalAlignmentE.fromString(alignment[0]);
     verticalAlignment = VerticalAlignmentE.fromString(alignment[1]);
@@ -165,7 +166,7 @@ class FormLayout extends ILayout {
       required FormLayoutSize pPreferredMinimumSize,
       required Gaps pGaps}) {
     // Clears the auto size
-    clearAutoSize(pAnchors: pAnchors);
+    _clearAutoSize(pAnchors: pAnchors);
 
     // Part of clearing the auto size -> Visible component anchors are used.
     pComponentConstraints.forEach((key, value) {
@@ -176,16 +177,16 @@ class FormLayout extends ILayout {
     });
 
     // Init autoSize
-    initAutoSize(pAnchors);
+    _initAutoSize(pAnchors);
 
     // Init autoSize Anchors
     for (var component in pComponentData) {
       FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
-      initAutoSizeRelative(pStartAnchor: constraint.leftAnchor, pEndAnchor: constraint.rightAnchor, pAnchors: pAnchors);
-      initAutoSizeRelative(pStartAnchor: constraint.rightAnchor, pEndAnchor: constraint.leftAnchor, pAnchors: pAnchors);
-      initAutoSizeRelative(pStartAnchor: constraint.topAnchor, pEndAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
-      initAutoSizeRelative(pStartAnchor: constraint.bottomAnchor, pEndAnchor: constraint.topAnchor, pAnchors: pAnchors);
+      _initAutoSizeRelative(pStartAnchor: constraint.leftAnchor, pEndAnchor: constraint.rightAnchor, pAnchors: pAnchors);
+      _initAutoSizeRelative(pStartAnchor: constraint.rightAnchor, pEndAnchor: constraint.leftAnchor, pAnchors: pAnchors);
+      _initAutoSizeRelative(pStartAnchor: constraint.topAnchor, pEndAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
+      _initAutoSizeRelative(pStartAnchor: constraint.bottomAnchor, pEndAnchor: constraint.topAnchor, pAnchors: pAnchors);
     }
 
     // AutoSize calculations
@@ -193,13 +194,13 @@ class FormLayout extends ILayout {
       for (var component in pComponentData) {
         FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
         Size preferredSize = component.bestSize;
-        calculateAutoSize(
+        _calculateAutoSize(
             pLeftTopAnchor: constraint.topAnchor,
             pRightBottomAnchor: constraint.bottomAnchor,
             pPreferredSize: preferredSize.height,
             pAutoSizeCount: autoSizeCount,
             pAnchors: pAnchors);
-        calculateAutoSize(
+        _calculateAutoSize(
             pLeftTopAnchor: constraint.leftAnchor,
             pRightBottomAnchor: constraint.rightAnchor,
             pPreferredSize: preferredSize.width,
@@ -212,22 +213,22 @@ class FormLayout extends ILayout {
         FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
         double count;
-        count = finishAutoSizeCalculation(
+        count = _finishAutoSizeCalculation(
             leftTopAnchor: constraint.leftAnchor, rightBottomAnchor: constraint.rightAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
         }
-        count = finishAutoSizeCalculation(
+        count = _finishAutoSizeCalculation(
             leftTopAnchor: constraint.rightAnchor, rightBottomAnchor: constraint.leftAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
         }
-        count = finishAutoSizeCalculation(
+        count = _finishAutoSizeCalculation(
             leftTopAnchor: constraint.topAnchor, rightBottomAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
         }
-        count = finishAutoSizeCalculation(
+        count = _finishAutoSizeCalculation(
             leftTopAnchor: constraint.bottomAnchor, rightBottomAnchor: constraint.topAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
@@ -482,11 +483,11 @@ class FormLayout extends ILayout {
     for (var component in pComponentData) {
       FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
       Size preferredComponentSize = component.bestSize;
-      calculateRelativeAnchor(
+      _calculateRelativeAnchor(
           leftTopAnchor: constraints.leftAnchor,
           rightBottomAnchor: constraints.rightAnchor,
           preferredSize: preferredComponentSize.width);
-      calculateRelativeAnchor(
+      _calculateRelativeAnchor(
           leftTopAnchor: constraints.topAnchor,
           rightBottomAnchor: constraints.bottomAnchor,
           preferredSize: preferredComponentSize.height);
@@ -603,7 +604,7 @@ class FormLayout extends ILayout {
   }
 
   /// Calculates the preferred size of relative anchors.
-  void calculateRelativeAnchor(
+  void _calculateRelativeAnchor(
       {required FormLayoutAnchor leftTopAnchor,
       required FormLayoutAnchor rightBottomAnchor,
       required double preferredSize}) {
@@ -663,7 +664,7 @@ class FormLayout extends ILayout {
   }
 
   /// Gets all non-calculated auto size anchors between start and end anchor
-  List<FormLayoutAnchor> getAutoSizeAnchorsBetween(
+  List<FormLayoutAnchor> _getAutoSizeAnchorsBetween(
       {required FormLayoutAnchor pStartAnchor,
       required FormLayoutAnchor pEndAnchor,
       required HashMap<String, FormLayoutAnchor> pAnchors}) {
@@ -684,26 +685,26 @@ class FormLayout extends ILayout {
   }
 
   /// Init component auto size position of anchor.
-  void initAutoSizeRelative(
+  void _initAutoSizeRelative(
       {required FormLayoutAnchor pStartAnchor,
       required FormLayoutAnchor pEndAnchor,
       required HashMap<String, FormLayoutAnchor> pAnchors}) {
     List<FormLayoutAnchor> autoSizeAnchors =
-        getAutoSizeAnchorsBetween(pStartAnchor: pStartAnchor, pEndAnchor: pEndAnchor, pAnchors: pAnchors);
+        _getAutoSizeAnchorsBetween(pStartAnchor: pStartAnchor, pEndAnchor: pEndAnchor, pAnchors: pAnchors);
     for (FormLayoutAnchor anchor in autoSizeAnchors) {
       anchor.relative = false;
     }
   }
 
   /// Calculates the preferred size of component auto size anchors.
-  void calculateAutoSize(
+  void _calculateAutoSize(
       {required FormLayoutAnchor pLeftTopAnchor,
       required FormLayoutAnchor pRightBottomAnchor,
       required double pPreferredSize,
       required double pAutoSizeCount,
       required HashMap<String, FormLayoutAnchor> pAnchors}) {
     List<FormLayoutAnchor> autoSizeAnchors =
-        getAutoSizeAnchorsBetween(pStartAnchor: pLeftTopAnchor, pEndAnchor: pRightBottomAnchor, pAnchors: pAnchors);
+        _getAutoSizeAnchorsBetween(pStartAnchor: pLeftTopAnchor, pEndAnchor: pRightBottomAnchor, pAnchors: pAnchors);
 
     if (autoSizeAnchors.length == pAutoSizeCount) {
       double fixedSize = pRightBottomAnchor.getAbsolutePosition() - pLeftTopAnchor.getAbsolutePosition();
@@ -720,7 +721,8 @@ class FormLayout extends ILayout {
     }
 
     autoSizeAnchors =
-        getAutoSizeAnchorsBetween(pStartAnchor: pRightBottomAnchor, pEndAnchor: pLeftTopAnchor, pAnchors: pAnchors);
+        _getAutoSizeAnchorsBetween(pStartAnchor: pRightBottomAnchor, pEndAnchor: pLeftTopAnchor, pAnchors: pAnchors);
+
     if (autoSizeAnchors.length == pAutoSizeCount) {
       double fixedSize = pRightBottomAnchor.getAbsolutePosition() - pLeftTopAnchor.getAbsolutePosition();
       for (FormLayoutAnchor anchor in autoSizeAnchors) {
@@ -737,12 +739,12 @@ class FormLayout extends ILayout {
   }
 
   /// Marks all touched AutoSize anchors as calculated
-  double finishAutoSizeCalculation(
+  double _finishAutoSizeCalculation(
       {required FormLayoutAnchor leftTopAnchor,
       required FormLayoutAnchor rightBottomAnchor,
       required HashMap<String, FormLayoutAnchor> pAnchors}) {
     List<FormLayoutAnchor> autoSizeAnchors =
-        getAutoSizeAnchorsBetween(pStartAnchor: leftTopAnchor, pEndAnchor: rightBottomAnchor, pAnchors: pAnchors);
+        _getAutoSizeAnchorsBetween(pStartAnchor: leftTopAnchor, pEndAnchor: rightBottomAnchor, pAnchors: pAnchors);
     double counter = 0;
     for (FormLayoutAnchor anchor in autoSizeAnchors) {
       if (!anchor.firstCalculation) {
@@ -754,7 +756,7 @@ class FormLayout extends ILayout {
   }
 
   /// Clears auto size position of anchors
-  void clearAutoSize({required HashMap<String, FormLayoutAnchor> pAnchors}) {
+  void _clearAutoSize({required HashMap<String, FormLayoutAnchor> pAnchors}) {
     pAnchors.forEach((anchorName, anchor) {
       anchor.relative = anchor.autoSize;
       anchor.autoSizeCalculated = false;
@@ -767,7 +769,7 @@ class FormLayout extends ILayout {
     });
   }
 
-  void initAutoSize(HashMap<String, FormLayoutAnchor> pAnchors) {
+  void _initAutoSize(HashMap<String, FormLayoutAnchor> pAnchors) {
     // Init autoSize Anchor position
     pAnchors.forEach((anchorName, anchor) {
       // Check if two autoSize anchors are side by side
