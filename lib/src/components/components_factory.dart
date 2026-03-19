@@ -63,6 +63,10 @@ abstract class ComponentsFactory {
       case FlContainerClassname.GROUP_PANEL:
         return FlGroupPanelWrapper(model: model as FlGroupPanelModel, key: GlobalObjectKey(model.id));
       case FlContainerClassname.SCROLL_PANEL:
+        if (FlComponentClassname.BUTTON_GROUP == model.classNameEventSourceRef) {
+          return FlButtonGroupWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
+        }
+
         return FlScrollPanelWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
       case FlContainerClassname.SPLIT_PANEL:
         return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: GlobalObjectKey(model.id));

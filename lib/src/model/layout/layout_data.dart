@@ -341,11 +341,11 @@ class LayoutData implements ICloneable {
       // If component has position, see if a constrained position has already been set and replace current height or width
       if (hasPosition) {
         if (widthConstrains.containsKey(layoutPosition!.width)) {
-          height = widthConstrains[layoutPosition!.width]!;
+          width = widthConstrains[layoutPosition!.width]!;
         }
 
         if (heightConstrains.containsKey(layoutPosition!.height)) {
-          width = heightConstrains[layoutPosition!.height]!;
+          height = heightConstrains[layoutPosition!.height]!;
         }
       }
     }

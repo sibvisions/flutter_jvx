@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
@@ -22,6 +24,8 @@ import '../../../../flutter_jvx.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
+import '../../../model/layout/layout_data.dart';
+import '../../../model/layout/layout_position.dart';
 import '../../../util/jvx_logger.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
@@ -138,6 +142,46 @@ class _FlButtonGroupWrapperState extends BaseContWrapperState<FlPanelModel> {
     }
 
     return Size(minWidth, minHeight);
+  }
+
+  LayoutData calculateConstrainedSize(LayoutPosition calcPosition) {
+    double calcWidth = layoutData.calculatedSize!.width;
+    double calcHeight = layoutData.calculatedSize!.height;
+
+    double positionWidth = calcPosition.width;
+    double positionHeight = calcPosition.height;
+
+    bool changed = false;
+
+    // Constraint by width
+    if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
+      double newWidth =
+      (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionWidth)).ceilToDouble();
+
+      layoutData.widthConstrains[positionWidth] = newWidth;
+
+      changed = true;
+    }
+
+    // Constraint by height
+    if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
+      double? newHeight =
+      (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionHeight)).ceilToDouble();
+
+      layoutData.heightConstrains[positionHeight] = newHeight;
+
+      changed = true;
+    }
+
+    if (changed) {
+      LayoutData layoutDataNew = LayoutData.from(layoutData);
+      layoutDataNew.layoutPosition = calcPosition;
+
+      return layoutDataNew;
+    }
+    else {
+      return layoutData;
+    }
   }
 
   Size calculateSize2(BuildContext context) {

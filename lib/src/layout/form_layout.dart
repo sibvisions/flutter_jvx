@@ -194,6 +194,7 @@ class FormLayout extends ILayout {
       for (var component in pComponentData) {
         FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
         Size preferredSize = component.bestSize;
+
         _calculateAutoSize(
             pLeftTopAnchor: constraint.topAnchor,
             pRightBottomAnchor: constraint.bottomAnchor,
@@ -579,6 +580,7 @@ class FormLayout extends ILayout {
         FormLayoutAnchor leftAnchor = anchors[anchorNames[1]]!;
         FormLayoutAnchor bottomAnchor = anchors[anchorNames[2]]!;
         FormLayoutAnchor rightAnchor = anchors[anchorNames[3]]!;
+
         // Build Constraint
         FormLayoutConstraints constraint = FormLayoutConstraints(
             bottomAnchor: bottomAnchor, leftAnchor: leftAnchor, rightAnchor: rightAnchor, topAnchor: topAnchor);
