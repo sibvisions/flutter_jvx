@@ -408,7 +408,6 @@ class AuthService extends ChangeNotifier {
       if (e.code == LocalAuthExceptionCode.userCanceled
           || e.code == LocalAuthExceptionCode.timeout
           || e.code == LocalAuthExceptionCode.systemCanceled) {
-print("Canceled: false");
         _isAuthenticating = false;
         _isCanceled = true;
 

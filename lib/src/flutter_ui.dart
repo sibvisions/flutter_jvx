@@ -46,6 +46,7 @@ import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/jvx_splash.dart';
 import 'mask/splash/splash.dart';
 import 'mask/work_screen/skeleton_screen.dart';
+import 'mask/work_screen/work_screen_page.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/command/api/feedback_command.dart';
 import 'model/command/api/logout_command.dart';
@@ -1266,7 +1267,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     if (cxt != null) {
       final rootContext = Navigator.of(cxt).context;
-      final popped = await Navigator.of(cxt).maybePop();
+      final popped = await Navigator.of(cxt).maybePop("forceClose");
 
       if (popped && rootContext.mounted) {
         Beamer.of(rootContext).update();
@@ -1279,14 +1280,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   Future<void> _authBackToLogin(bool? success) async {
     if (success == false) {
-      unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout")).onError((error, stackTrace) {
 
-        print("ERROR");
+        unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout"), throwFirstErrorCommand: true).catchError((error) {
+          IUiService().routeToAppOverview();
 
-        IUiService().routeToAppOverview();
-
-        return Future.value(false);
-      },));
+          return Future.value(false);
+        }));
     }
   }
 

@@ -620,11 +620,25 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       if (item?.screenLongName == null || (model == null && customScreen == null)) {
         context.beamBack();
       } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
+        //it is possible to forceClose from "outside" (see FlutterUI)
+        bool wasForced = isForced || "forceClose" == result;
+
+        if (wasForced) {
+          isForced = true;
+        }
+
         BaseCommand commandToCloseScreen = _closeScreen();
 
         unawaited(IUiService().saveAllEditors(pReason: "Closing screen").then((success) {
           if (success) {
-            unawaited(ICommandService().sendCommand(commandToCloseScreen));
+            unawaited(ICommandService().sendCommand(commandToCloseScreen, throwFirstErrorCommand: true).catchError((error) {
+
+              if (wasForced) {
+                IUiService().routeToMenu();
+              }
+
+              return Future.value(false);
+            }));
           }
         }));
       }

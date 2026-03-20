@@ -324,25 +324,28 @@ class AppService implements IAppService {
   }
 
   Future<void> _stopApp({bool restart = false}) async {
-    var repository = IApiService().getRepository();
-    if (repository is OnlineApiRepository && IUiService().clientId.value != null) {
-      // Send request directly to avoid blocking command service shutdown.
-      unawaited(repository
-          .sendRequestAndForget(ApiExitRequest())
-          .catchError((e, stack) => FlutterUI.log.e("Exit request failed", error: e, stackTrace: stack)));
+    try {
+      var repository = IApiService().getRepository();
+      if (repository is OnlineApiRepository && IUiService().clientId.value != null) {
+        // Send request directly to avoid blocking command service shutdown.
+        unawaited(repository
+            .sendRequestAndForget(ApiExitRequest())
+            .catchError((e, stack) => FlutterUI.log.e("Exit request failed", error: e, stackTrace: stack)));
+      }
+
+      await FlutterUI.clearServices(restart ? ClearReason.RESTART : ClearReason.DEFAULT);
+
+      if (!restart) {
+        await IConfigService().updateCurrentApp(null);
+        await IUiService().i18n().setLanguage(IConfigService().getLanguage());
+
+        IApiService().setRepository(NoOpRepository());
+      }
     }
-
-    await FlutterUI.clearServices(restart ? ClearReason.RESTART : ClearReason.DEFAULT);
-
-    if (!restart) {
-      await IConfigService().updateCurrentApp(null);
-      await IUiService().i18n().setLanguage(IConfigService().getLanguage());
-
-      IApiService().setRepository(NoOpRepository());
+    finally {
+      //don't call stop here because this notifies listeners
+      AuthService.instance.cancel();
     }
-
-    //don't call stop here because this notifies listeners
-    AuthService.instance.cancel();
   }
 
   @override
