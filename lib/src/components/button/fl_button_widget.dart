@@ -16,11 +16,11 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../service/api/shared/fl_component_classname.dart';
+import '../../util/haptic_util.dart';
 import '../../util/icon_util.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
@@ -108,15 +108,15 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     if (pressEvent != null && pressEvent != EMPTY_CALLBACK) {
       pressEvent = () {
         if (model.isHapticLight) {
-          HapticFeedback.lightImpact();
+          HapticUtil.light();
         } else if (model.isHapticMedium) {
-          HapticFeedback.mediumImpact();
+          HapticUtil.medium();
         } else if (model.isHapticHeavy) {
-          HapticFeedback.heavyImpact();
+          HapticUtil.heavy();
         } else if (model.isHapticClick) {
-          HapticFeedback.selectionClick();
+          HapticUtil.selection();
         } else if (model.isHaptic) {
-          HapticFeedback.vibrate();
+          HapticUtil.vibrate();
         }
 
         getOnPressed(context)!.call();

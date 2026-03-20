@@ -14,23 +14,20 @@
  * the License.
  */
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../model/command/api/press_button_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
-import '../../../model/layout/layout_data.dart';
-import '../../../model/layout/layout_position.dart';
-import '../../../util/jvx_logger.dart';
+import '../../../service/command/i_command_service.dart';
+import '../../../service/ui/i_ui_service.dart';
+import '../../../util/parse_util.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
-import '../../button/fl_button_wrapper.dart';
+import '../../editor/text_field/fl_text_field_widget.dart';
 import 'fl_button_group_widget.dart';
 
 class FlButtonGroupWrapper extends BaseCompWrapperWidget<FlPanelModel> {
@@ -41,8 +38,8 @@ class FlButtonGroupWrapper extends BaseCompWrapperWidget<FlPanelModel> {
 }
 
 class _FlButtonGroupWrapperState extends BaseContWrapperState<FlPanelModel> {
-
-  GlobalKey buttonKey = GlobalKey();
+  /// The access to the buttons
+  GlobalKey buttonsKey = GlobalKey();
 
   /// The button (children) subscriber
   final Object _buttonSubscriber = Object();
@@ -102,21 +99,41 @@ class _FlButtonGroupWrapperState extends BaseContWrapperState<FlPanelModel> {
     });
 
     return wrapWidget(context, FlButtonGroupWidget(
-      buttonKey: buttonKey,
+      buttonsKey: buttonsKey,
       model: model,
       horizontalAlignment: model.horizontalAlignment,
+      onPressed: _onPressed,
       children: childWidgets
     ));
   }
 
   @override
   double calculateRenderBoxWidth(BuildContext context, double height) {
-    return (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicWidth(height).ceilToDouble();
+    BuildContext? ctx = buttonsKey.currentContext;
+
+    //we use the buttonsKey because calculation would not work with real renderbox because of LayoutBuilder
+    if (ctx != null) {
+      return super.calculateRenderBoxWidth(ctx, height);
+    }
+    else {
+      ThemeData theme = Theme.of(context);
+
+      //calculate 3 characters per widget with standard text style
+      return childWidgets.length * 3 * ParseUtil.getTextWidth(text: "w", style: theme.toggleButtonsTheme.textStyle ?? theme.textTheme.labelMedium ?? TextStyle());
+    }
   }
 
   @override
   double calculateRenderBoxHeight(BuildContext context, double width) {
-    return (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicHeight(width).ceilToDouble();
+    BuildContext? ctx = buttonsKey.currentContext;
+
+    //we use the buttonsKey because calculation would not work with real renderbox because of LayoutBuilder
+    if (ctx != null) {
+      return super.calculateRenderBoxHeight(ctx, width);
+    }
+    else {
+      return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
+    }
   }
 
   void _registerButtons() {
@@ -129,15 +146,18 @@ class _FlButtonGroupWrapperState extends BaseContWrapperState<FlPanelModel> {
       ComponentSubscription componentSubscription = ComponentSubscription<FlButtonModel>(
         compId: model,
         subbedObj: _buttonSubscriber,
-        modelUpdatedCallback: buttonModelUpdated,
+        modelUpdatedCallback: _buttonModelUpdated,
       );
 
       servUi.registerAsLiveComponent(componentSubscription);
     }
   }
 
-  void buttonModelUpdated() {
+  void _buttonModelUpdated() {
     setState(() {});
   }
 
+  void _onPressed(int index) {
+    ICommandService().sendCommand(PressButtonCommand(componentName: (childWidgets[index] as BaseCompWrapperWidget).model.name, reason: "ButtonGroup pressed button"));
+  }
 }

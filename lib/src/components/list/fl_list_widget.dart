@@ -19,7 +19,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rfw/formats.dart';
@@ -32,6 +31,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/response/application_settings_response.dart';
+import '../../util/haptic_util.dart';
 import '../../util/icon_util.dart';
 import '../../util/ui_template_manager.dart';
 import '../../util/jvx_colors.dart';
@@ -652,7 +652,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
                                       widget.chunkData.setStatusRaw(index, "DISMISSED");
 
-                                      HapticFeedback.mediumImpact();
+                                      HapticUtil.medium();
 
                                       setState(() {});
                                     }

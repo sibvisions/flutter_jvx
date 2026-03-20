@@ -15,9 +15,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../../flutter_ui.dart';
+import '../../../../../util/haptic_util.dart';
 import '../../../login_page.dart';
 import '../mfa_card.dart';
 
@@ -106,7 +106,7 @@ class _MFATextCardState extends State<MFATextCard> {
       confirmationCode: codeController.text,
     ).then((success) {
       if (!success) {
-        HapticFeedback.heavyImpact();
+        HapticUtil.heavy();
       }
     });
   }

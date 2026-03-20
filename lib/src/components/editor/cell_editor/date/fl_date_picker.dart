@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../flutter_ui.dart';
+import '../../../../util/haptic_util.dart';
 
 // The M3 sizes are coming from the tokens, but are hand coded,
 // as the current token DB does not contain landscape versions.
@@ -2027,7 +2028,7 @@ class _CalendarDateRangePickerState extends State<_CalendarDateRangePicker> {
     switch (Theme.of(context).platform) {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
-        HapticFeedback.vibrate();
+        HapticUtil.vibrate();
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
       case TargetPlatform.macOS:

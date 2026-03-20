@@ -15,12 +15,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
+import '../../../../util/haptic_util.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
 
@@ -160,7 +160,7 @@ class _ChangeOneTimePasswordCardState extends State<ChangeOneTimePasswordCard> {
       newPassword: newPasswordController.text,
     ).then((success) {
       if (!success) {
-        HapticFeedback.heavyImpact();
+        HapticUtil.heavy();
       }
     });
   }

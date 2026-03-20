@@ -17,10 +17,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../flutter_ui.dart';
+import '../../../../../util/haptic_util.dart';
 import '../../../../../util/jvx_colors.dart';
 import '../../../../../util/widgets/progress/progress_button.dart';
 import '../../../../state/loading_bar.dart';
@@ -147,7 +147,7 @@ class _MFATextCardState extends State<MFATextCard> {
       if (success) {
         setState(() => progressButtonState = ButtonState.success);
       } else {
-        HapticFeedback.heavyImpact();
+        HapticUtil.heavy();
         setState(() => progressButtonState = ButtonState.fail);
       }
     });
@@ -187,7 +187,7 @@ class _MFATextCardState extends State<MFATextCard> {
           progressButtonState = ButtonState.success;
         });
       } else {
-        HapticFeedback.heavyImpact();
+        HapticUtil.heavy();
 
         _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
 

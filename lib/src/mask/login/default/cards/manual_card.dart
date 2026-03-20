@@ -17,7 +17,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../../../config/app_config.dart';
@@ -26,6 +25,7 @@ import '../../../../model/command/api/login_command.dart';
 import '../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
+import '../../../../util/haptic_util.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../apps/app_overview_page.dart';
@@ -263,7 +263,7 @@ class _ManualCardState extends State<ManualCard> {
           progressButtonState = ButtonState.success;
         });
       } else {
-        HapticFeedback.heavyImpact();
+        HapticUtil.heavy();
 
         _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
 

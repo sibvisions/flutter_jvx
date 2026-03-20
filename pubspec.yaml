@@ -163,6 +163,8 @@ dependencies:
 
   rfw: ^1.1.2
 
+  haptic_feedback: ^0.6.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

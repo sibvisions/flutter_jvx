@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../flutter_ui.dart';
+import '../haptic_util.dart';
 import '../jvx_colors.dart';
 
 /// Definition of the callback for the Scanner.
@@ -242,7 +243,7 @@ class _JVxScannerState extends State<JVxScanner> with SingleTickerProviderStateM
     }
 
     if (newCodes.isNotEmpty) {
-      await HapticFeedback.vibrate();
+      await HapticUtil.vibrate();
 
       var result = widget.callback(newCodes.toList(growable: false));
       if (result is Future) await result;

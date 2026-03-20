@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../../../flutter_ui.dart';
@@ -23,6 +22,7 @@ import '../../../../model/command/api/change_password_command.dart';
 import '../../../../service/command/i_command_service.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
+import '../../../../util/haptic_util.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/password_strength_indicator.dart';
 import '../../login_page.dart';
@@ -298,7 +298,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           if (success) {
             Navigator.of(FlutterUI.getCurrentContext()!).pop();
           } else {
-            HapticFeedback.heavyImpact();
+            HapticUtil.heavy();
           }
         });
       }

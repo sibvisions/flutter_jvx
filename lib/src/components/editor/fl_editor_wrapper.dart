@@ -16,7 +16,6 @@
 
 import 'dart:async';
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -30,8 +29,6 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
-import '../../model/layout/layout_data.dart';
-import '../../model/layout/layout_position.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../service/command/i_command_service.dart';
@@ -194,7 +191,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     if (sizeWidth == null || sizeHeight == null) {
       Size calculatedSize = super.calculateSize(context);
-      
+
       sizeWidth ??= calculatedSize.width;
       sizeHeight ??= calculatedSize.height;
     }

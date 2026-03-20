@@ -21,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
@@ -31,6 +30,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../util/extensions/double_extensions.dart';
+import '../../util/haptic_util.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
@@ -479,7 +479,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
 
           widget.chunkData.setStatusRaw(index, "DISMISSED");
 
-          HapticFeedback.mediumImpact();
+          HapticUtil.medium();
 
           setState(() {});
         }

@@ -1279,7 +1279,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   Future<void> _authBackToLogin(bool? success) async {
     if (success == false) {
-      unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout")));
+      unawaited(ICommandService().sendCommand(LogoutCommand(reason: "Biometric check logout")).onError((error, stackTrace) {
+
+        print("ERROR");
+
+        IUiService().routeToAppOverview();
+
+        return Future.value(false);
+      },));
     }
   }
 

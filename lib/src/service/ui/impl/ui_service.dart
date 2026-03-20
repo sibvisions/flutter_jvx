@@ -21,7 +21,6 @@ import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -63,6 +62,7 @@ import '../../../model/response/application_parameters_response.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/main_location.dart';
+import '../../../util/haptic_util.dart';
 import '../../../util/jvx_colors.dart';
 import '../../../util/widget_util.dart';
 import '../../apps/app.dart';
@@ -977,7 +977,7 @@ class UiService implements IUiService {
 
       //feedback for the user
       if (pDialog is IError) {
-        HapticFeedback.heavyImpact();
+        HapticUtil.error();
 
         //better not
         //SystemSound.play(SystemSoundType.click);

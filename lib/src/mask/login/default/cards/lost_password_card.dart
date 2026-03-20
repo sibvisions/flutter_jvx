@@ -15,11 +15,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../model/command/ui/route/route_to_login_command.dart';
+import '../../../../util/haptic_util.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
 
@@ -109,7 +109,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
       identifier: identifierController.text,
     ).then((success) {
       if (!success) {
-        HapticFeedback.heavyImpact();
+        HapticUtil.heavy();
       }
     });
   }

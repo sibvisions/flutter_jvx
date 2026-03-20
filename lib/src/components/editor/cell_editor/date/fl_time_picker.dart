@@ -12,6 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../flutter_ui.dart';
+import '../../../../util/haptic_util.dart';
 
 // Examples can assume:
 // late BuildContext context;
@@ -2852,7 +2853,7 @@ class _TimePickerState extends State<_TimePicker> with RestorationMixin {
       case TargetPlatform.windows:
         _vibrateTimer?.cancel();
         _vibrateTimer = Timer(_kVibrateCommitDelay, () {
-          HapticFeedback.vibrate();
+          HapticUtil.vibrate();
           _vibrateTimer = null;
         });
       case TargetPlatform.iOS:

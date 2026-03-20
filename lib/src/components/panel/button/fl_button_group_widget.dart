@@ -16,30 +16,36 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../components.dart';
-import '../../../model/command/api/press_button_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
-import '../../../service/api/shared/api_object_property.dart';
-import '../../../service/command/i_command_service.dart';
-import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../../../util/haptic_util.dart';
+import '../../base_wrapper/fl_stateless_widget.dart';
+import '../../button/fl_button_widget.dart';
 import '../../button/fl_button_wrapper.dart';
 import '../../button/toggle/fl_toggle_button_wrapper.dart';
+import '../../editor/text_field/fl_text_field_widget.dart';
+import '../fl_panel_widget.dart';
 
 class FlButtonGroupWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
 
-  final Key? buttonKey;
+  /// The fast-access key for buttons component
+  final Key? buttonsKey;
 
+  /// The children
   final List<Widget> children;
+
+  /// The on-pressed listener
+  final void Function(int index)? onPressed;
 
   final HorizontalAlignment horizontalAlignment;
 
   const FlButtonGroupWidget({
     super.key,
-    this.buttonKey,
+    this.buttonsKey,
     required super.model,
     required this.children,
-    this.horizontalAlignment = HorizontalAlignment.LEFT
+    this.horizontalAlignment = HorizontalAlignment.LEFT,
+    this.onPressed
   });
 
   @override
@@ -60,16 +66,29 @@ class FlButtonGroupWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
       }
     }
 
-
     Widget buttonWidget = Column(
       mainAxisAlignment: MainAxisAlignment.start,
         children: [LayoutBuilder(builder: (context, constraints) {
           return SingleChildScrollView(scrollDirection: Axis.horizontal,
               child: ToggleButtons(
-                key: buttonKey,
+                key: buttonsKey,
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
                 onPressed: (int index) {
-                  ICommandService().sendCommand(PressButtonCommand(componentName: (children[index] as BaseCompWrapperWidget).model.name, reason: "ButtonGroup pressed button"));
+                  FlButtonModel butmod = (children[index] as FlButtonWrapper).model;
+
+                  if (butmod.isHapticLight) {
+                    HapticUtil.light();
+                  } else if (butmod.isHapticMedium) {
+                    HapticUtil.medium();
+                  } else if (butmod.isHapticHeavy) {
+                    HapticUtil.heavy();
+                  } else if (butmod.isHapticClick) {
+                    HapticUtil.selection();
+                  } else if (butmod.isHaptic) {
+                    HapticUtil.vibrate();
+                  }
+
+                  onPressed?.call(index);
                 },
               isSelected: selected,
               children: widgets

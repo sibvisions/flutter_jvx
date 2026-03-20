@@ -124,19 +124,19 @@ class FlButtonModel extends FlComponentModel {
   /// If the button is a secure button
   bool get isSecure => styles.contains(STYLE_SECURE);
 
-  /// Whether the button invokes [HapticFeedback.lightImpact] on press.
+  /// Whether the button invokes [HapticUtil.light] on press.
   bool get isHapticLight => styles.contains(STYLE_HAPTIC_LIGHT);
 
-  /// Whether the button invokes [HapticFeedback.mediumImpact] on press.
+  /// Whether the button invokes [HapticUtil.medium] on press.
   bool get isHapticMedium => styles.contains(STYLE_HAPTIC_MEDIUM);
 
-  /// Whether the button invokes [HapticFeedback.heavyImpact] on press.
+  /// Whether the button invokes [HapticUtil.heavy] on press.
   bool get isHapticHeavy => styles.contains(STYLE_HAPTIC_HEAVY);
 
-  /// Whether the button invokes [HapticFeedback.selectionClick] on press.
+  /// Whether the button invokes [HapticUtil.selection] on press.
   bool get isHapticClick => styles.contains(STYLE_HAPTIC_CLICK);
 
-  /// Whether the button invokes [HapticFeedback.vibrate] on press.
+  /// Whether the button invokes [HapticUtil.vibrate] on press.
   bool get isHaptic => styles.contains(STYLE_HAPTIC);
 
   /// If the button has no default paddings and is small.
