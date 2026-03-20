@@ -174,6 +174,16 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   @override
+  double calculateRenderBoxWidth(BuildContext context, double height) {
+    return cellEditor.getEditorWidth(model.json) ?? super.calculateRenderBoxWidth(context, height);
+  }
+
+  @override
+  double calculateRenderBoxHeight(BuildContext context, double width) {
+    return cellEditor.getEditorHeight(model.json) ?? super.calculateRenderBoxHeight(context, width);
+  }
+
+  @override
   Size calculateSize(BuildContext context) {
     double? sizeWidth = cellEditor.getEditorWidth(model.json);
     if (sizeWidth != null) {
@@ -184,52 +194,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     if (sizeWidth == null || sizeHeight == null) {
       Size calculatedSize = super.calculateSize(context);
+      
       sizeWidth ??= calculatedSize.width;
       sizeHeight ??= calculatedSize.height;
     }
 
     return Size(sizeWidth, sizeHeight);
-  }
-
-  @override
-  LayoutData calculateConstrainedSize(LayoutPosition calcPosition) {
-    double calcWidth = layoutData.calculatedSize!.width;
-    double calcHeight = layoutData.calculatedSize!.height;
-
-    double positionWidth = calcPosition.width;
-    double positionHeight = calcPosition.height;
-
-    bool changed = false;
-
-    // Constraint by width
-    if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-      double newWidth = cellEditor.getEditorWidth(model.json) ??
-          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionWidth)).ceilToDouble();
-
-      layoutData.widthConstrains[positionWidth] = newWidth;
-
-      changed = true;
-    }
-
-    // Constraint by height
-    if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-      double? newHeight = cellEditor.getEditorHeight(model.json) ??
-          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionHeight)).ceilToDouble();
-
-      layoutData.heightConstrains[positionHeight] = newHeight;
-
-      changed = true;
-    }
-
-    if (changed) {
-      LayoutData layoutDataNew = LayoutData.from(layoutData);
-      layoutDataNew.layoutPosition = calcPosition;
-
-      return layoutDataNew;
-    }
-    else {
-      return layoutData;
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

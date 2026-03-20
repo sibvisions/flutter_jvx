@@ -110,83 +110,13 @@ class _FlButtonGroupWrapperState extends BaseContWrapperState<FlPanelModel> {
   }
 
   @override
-  Size calculateSize(BuildContext context) {
-    double minWidth = 0;
-    double minHeight = 0;
-
-    //It's possible that width is defined but height is undefined or vice versa.
-    //In both cases, we should try to get the value. Only if no value is defined,
-    //throw an error
-
-    Error? eWidth;
-    try {
-      minWidth = (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicWidth(double.infinity).ceilToDouble();
-    }
-    on Error catch (e) {
-      eWidth = e;
-    }
-
-    Error? eHeight;
-    try {
-      minHeight = (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
-    }
-    on Error catch (e) {
-      eHeight = e;
-    }
-
-    if (eWidth != null && eHeight != null) {
-      if (FlutterUI.logUI.cl(Lvl.d)) {
-        FlutterUI.logUI.d("It's not possible to get the size of widget $runtimeType");
-      }
-      throw eWidth;
-    }
-
-    return Size(minWidth, minHeight);
+  double calculateRenderBoxWidth(BuildContext context, double height) {
+    return (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicWidth(height).ceilToDouble();
   }
 
-  LayoutData calculateConstrainedSize(LayoutPosition calcPosition) {
-    double calcWidth = layoutData.calculatedSize!.width;
-    double calcHeight = layoutData.calculatedSize!.height;
-
-    double positionWidth = calcPosition.width;
-    double positionHeight = calcPosition.height;
-
-    bool changed = false;
-
-    // Constraint by width
-    if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-      double newWidth =
-      (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionWidth)).ceilToDouble();
-
-      layoutData.widthConstrains[positionWidth] = newWidth;
-
-      changed = true;
-    }
-
-    // Constraint by height
-    if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-      double? newHeight =
-      (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionHeight)).ceilToDouble();
-
-      layoutData.heightConstrains[positionHeight] = newHeight;
-
-      changed = true;
-    }
-
-    if (changed) {
-      LayoutData layoutDataNew = LayoutData.from(layoutData);
-      layoutDataNew.layoutPosition = calcPosition;
-
-      return layoutDataNew;
-    }
-    else {
-      return layoutData;
-    }
-  }
-
-  Size calculateSize2(BuildContext context) {
-
-    return Size(20, FlTextFieldWidget.TEXT_FIELD_HEIGHT + 4);
+  @override
+  double calculateRenderBoxHeight(BuildContext context, double width) {
+    return (buttonKey.currentContext?.findRenderObject() as RenderBox).getMaxIntrinsicHeight(width).ceilToDouble();
   }
 
   void _registerButtons() {

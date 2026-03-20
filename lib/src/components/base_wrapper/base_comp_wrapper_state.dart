@@ -361,6 +361,14 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     setState(() {});
   }
 
+  double calculateRenderBoxWidth(BuildContext context, double height) {
+    return (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(height).ceilToDouble();
+  }
+
+  double calculateRenderBoxHeight(BuildContext context, double width) {
+    return (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(width).ceilToDouble();
+  }
+
   /// Calculates the size the components wants to have if a specific side of it is constrained.
   ///
   /// E.g. Calculates how much height a [FlLabelWidget] would want, if it only had 100px space in width.
@@ -375,20 +383,14 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
     // Constraint by width
     if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-      double newWidth =
-      (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionWidth)).ceilToDouble();
-
-      layoutData.widthConstrains[positionWidth] = newWidth;
+      layoutData.widthConstrains[positionWidth] = calculateRenderBoxWidth(lastContext!, max(0.0, positionHeight));
 
       changed = true;
     }
 
     // Constraint by height
     if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-      double? newHeight =
-      (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionHeight)).ceilToDouble();
-
-      layoutData.heightConstrains[positionHeight] = newHeight;
+      layoutData.heightConstrains[positionHeight] = calculateRenderBoxHeight(lastContext!, max(0.0, positionWidth));
 
       changed = true;
     }
@@ -415,7 +417,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
     Error? eWidth;
     try {
-      minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(double.infinity).ceilToDouble();
+      minWidth = calculateRenderBoxWidth(context, double.infinity);
     }
     on Error catch (e) {
       eWidth = e;
@@ -423,7 +425,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
     Error? eHeight;
     try {
-      minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
+      minHeight = calculateRenderBoxHeight(context, double.infinity);
     }
     on Error catch (e) {
       eHeight = e;
