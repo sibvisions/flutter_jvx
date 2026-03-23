@@ -712,9 +712,25 @@ abstract class OfflineUtil {
         oldLoadingEnabled = ols?.isLoadingEnabled();
         ols?.setLoadingEnabled(false);
 
-        Set<String> activeDataProviders = getActiveDataProviders(pScreenName);
+        Set<String> relevantDataProviders = getActiveDataProviders(pScreenName);
+
+        IDataService servData = IDataService();
+
+        //ignore dataProviders which are are marked only online
+        relevantDataProviders.removeWhere((element) {
+          DalMetaData? mdat = servData.getDataBook(element)?.metaData;
+
+          if (mdat != null) {
+            if (mdat.flags?.contains("onlineOnly") == true) {
+              return true;
+            }
+          }
+
+          return false;
+        });
+
         await fetchDataProvider(
-          activeDataProviders,
+          relevantDataProviders,
           progressUpdate: (value, max) {
             ProgressDialogService.update(Config(
               progress: value,
@@ -731,13 +747,17 @@ abstract class OfflineUtil {
 
         await offlineApiRepository.start();
 
-        IDataService servData = IDataService();
+        List<DataBook> dataBooks = [];
 
-        var dataBooks = servData
-            .getDataBooks()
-            .values
-            .where((element) => activeDataProviders.contains(element.dataProvider))
-            .toList(growable: false);
+        DataBook? book;
+        for (int i = 0; i < relevantDataProviders.length; i++) {
+          book = servData.getDataBook(relevantDataProviders.elementAt(i));
+
+          if (book != null) {
+            dataBooks.add(book);
+          }
+        }
+
         await offlineApiRepository.initDatabase(
           dataBooks,
               (value, max, {progress}) {

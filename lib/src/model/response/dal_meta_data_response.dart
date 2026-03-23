@@ -41,10 +41,16 @@ class DalMetaDataResponse extends ApiResponse {
   List<String>? columnViewTable;
 
   /// All visible columns of this this data book if shown in a tree
-  List<String>? columnViewTree = [];
+  List<String>? columnViewTree;
+
+  ///The flags
+  List<String>? flags;
 
   /// The path to the dataBook
   String dataProvider;
+
+  /// The primary key columns of the dataBook
+  List<String>? primaryKeyColumns;
 
   /// If the databook is readonly.
   bool? readOnly;
@@ -66,9 +72,6 @@ class DalMetaDataResponse extends ApiResponse {
 
   /// If data book allows insertion of any row.
   bool? modelInsertEnabled;
-
-  /// The primary key columns of the dataBook
-  List<String>? primaryKeyColumns;
 
   /// If the row 0 is an additional row (Not deletable)
   bool? additionalRowVisible;
@@ -98,6 +101,7 @@ class DalMetaDataResponse extends ApiResponse {
             ? ReferenceDefinition.fromJson(json[ApiObjectProperty.rootReference])
             : null,
         additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
+        flags = json[ApiObjectProperty.flags] != null ? List<String>.from(json[ApiObjectProperty.flags]) : null,
         super.fromJson();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -111,7 +115,7 @@ class DalMetaDataResponse extends ApiResponse {
            "updateEnabled: $updateEnabled, insertEnabled: $insertEnabled, modelDeleteEnabled: $modelDeleteEnabled, "
            "modelInsertEnabled: $modelInsertEnabled, modelUpdateEnabled: $modelUpdateEnabled, primaryKeyColumns: $primaryKeyColumns, "
            "masterReference: $masterReference, detailReferences: $detailReferences, rootReference: $rootReference,"
-           "additionalRowVisible: $additionalRowVisible, ${super.propertiesAsString()}";
+           "additionalRowVisible: $additionalRowVisible, flags: $flags, ${super.propertiesAsString()}";
   }
 
 }

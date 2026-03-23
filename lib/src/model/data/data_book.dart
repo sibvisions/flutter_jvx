@@ -884,6 +884,24 @@ class DalMetaData {
   /// All visible columns of this this dataBook if shown in a tree
   List<String> columnViewTree = [];
 
+  /// The primary key columns of the dataBook
+  List<String> primaryKeyColumns = [];
+
+  /// The sort definitions of this data book.
+  SortList? sortDefinitions = SortList.empty();
+
+  /// Combined json of this metaData
+  Map<String, dynamic> json = {};
+
+  /// The last changed properties
+  List<String> changedProperties = [];
+
+  /// The list of all created referenced cell editors.
+  List<ReferencedCellEditor> createdReferencedCellEditors = [];
+
+  /// The flags
+  List<String>? flags;
+
   /// If the data book is readonly.
   bool readOnly = false;
 
@@ -904,21 +922,6 @@ class DalMetaData {
 
   /// If data book allows insertion of any row.
   bool modelInsertEnabled = true;
-
-  /// The primary key columns of the dataBook
-  List<String> primaryKeyColumns = [];
-
-  /// The sort definitions of this data book.
-  SortList? sortDefinitions = SortList.empty();
-
-  /// Combined json of this metaData
-  Map<String, dynamic> json = {};
-
-  /// The last changed properties
-  List<String> changedProperties = [];
-
-  /// The list of all created referenced cell editors.
-  List<ReferencedCellEditor> createdReferencedCellEditors = [];
 
   /// If the row 0 is an additional row (Not deletable)
   bool additionalRowVisible = false;
@@ -950,6 +953,7 @@ class DalMetaData {
             ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.rootReference])
             : null,
         additionalRowVisible = pJson[ApiObjectProperty.additionalRowVisible],
+        flags = pJson[ApiObjectProperty.flags],
         json = pJson["json"] ?? {} {
     changedProperties = json.keys.toList();
   }
@@ -1050,6 +1054,12 @@ class DalMetaData {
       isChanged = true;
     }
 
+    if (pResponse.flags != null && !listEquals(flags, pResponse.flags)) {
+      flags = pResponse.flags;
+
+      isChanged = true;
+    }
+
     isChanged |= ParseUtil.applyJsonToJson(pResponse.json, json);
 
     return isChanged;
@@ -1104,6 +1114,12 @@ class DalMetaData {
       additionalRowVisible = pResponse.additionalRowVisible!;
 
       changedProperties.add(ApiObjectProperty.additionalRowVisible);
+    }
+
+    if (pResponse.flags != null && !listEquals(flags, pResponse.flags)) {
+      flags = pResponse.flags;
+
+      changedProperties.add(ApiObjectProperty.flags);
     }
 
     if (pResponse.changedColumns != null) {
@@ -1193,6 +1209,7 @@ class DalMetaData {
     data[ApiObjectProperty.detailReferences] = (detailReferences != null && detailReferences!.isNotEmpty) ? detailReferences!.map((e) => e.toJson()).toList() : null;
     data[ApiObjectProperty.rootReference] = rootReference?.toJson();
     data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
+    data[ApiObjectProperty.flags] = flags;
     data["json"] = json;
     return data;
   }

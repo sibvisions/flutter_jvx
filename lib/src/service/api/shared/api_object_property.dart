@@ -290,6 +290,7 @@ abstract class ApiObjectProperty {
   static const String modelUpdateEnabled = "model_updateEnabled";
   static const String modelInsertEnabled = "model_insertEnabled";
   static const String additionalRowVisible = "additionalRowVisible";
+  static const String flags = "flags";
   static const String filter = "filter";
   static const String fetch = "fetch";
   static const String onlySelected = "onlySelected";

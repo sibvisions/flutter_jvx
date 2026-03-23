@@ -49,6 +49,24 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// Values of all changed Columns, corresponds to [changedColumnNames] order
   final List<dynamic>? changedValues;
 
+  /// The tree path
+  final List<int>? treePath;
+
+  /// The selected column
+  final String? selectedColumn;
+
+  /// The changed sort definitions
+  final SortList? sortDefinitions;
+
+  /// The cell formats for this data provider.
+  final Map<String, RecordFormat>? recordFormats;
+
+  /// Saves which records are read only and which are not.
+  final List<List<dynamic>>? recordReadOnly;
+
+  /// The flags
+  final List<String>? flags;
+
   /// If data book is readOnly
   final bool? readOnly;
 
@@ -75,21 +93,6 @@ class DalDataProviderChangedResponse extends ApiResponse {
 
   /// If the row 0 is an additional row (Not deletable)
   final bool? additionalRowVisible;
-
-  /// The tree path
-  final List<int>? treePath;
-
-  /// The selected column
-  final String? selectedColumn;
-
-  /// The changed sort definitions
-  final SortList? sortDefinitions;
-
-  /// The cell formats for this data provider.
-  final Map<String, RecordFormat>? recordFormats;
-
-  /// Saves which records are read only and which are not.
-  final List<List<dynamic>>? recordReadOnly;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -122,6 +125,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
         sortDefinitions = SortList.fromList((json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList()),
         closed = json[ApiObjectProperty.closed],
         additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
+        flags = json[ApiObjectProperty.flags] != null ? List<String>.from(json[ApiObjectProperty.flags]) : null,
         super.fromJson();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,7 +140,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
            "updateEnabled: $updateEnabled, modelDeleteEnabled: $modelDeleteEnabled, modelInsertEnabled: $modelInsertEnabled, "
            "modelUpdateEnabled: $modelUpdateEnabled, readOnly: $readOnly, treePath: $treePath, selectedColumn: $selectedColumn, "
            "recordFormats: $recordFormats, recordReadOnly: $recordReadOnly, sortDefinitions: $sortDefinitions, closed: $closed, "
-           "additionalRowVisible: $additionalRowVisible, ${super.propertiesAsString()}";
+           "additionalRowVisible: $additionalRowVisible, flags: $flags, ${super.propertiesAsString()}";
   }
 
 }
