@@ -383,9 +383,18 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   Widget _wrapWithSafeArea(BuildContext context, Widget child, [bool transparent = false]) {
-    if (safeAreaColor != null) {
+    Color? color = safeAreaColor;
+
+    //no safe-area color, but screen has a color -> use it
+    if (color == null) {
+      if (model != null && model!.background != null) {
+        color = model!.background;
+      }
+    }
+
+    if (color != null) {
       return Container(
-          color: transparent ? Colors.transparent : safeAreaColor,
+          color: transparent ? Colors.transparent : color,
           child: SafeArea(
               child: Container(
                 color: transparent ? Colors.transparent : Theme.of(context).colorScheme.surface,

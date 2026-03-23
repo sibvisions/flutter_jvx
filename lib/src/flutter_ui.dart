@@ -46,7 +46,6 @@ import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/jvx_splash.dart';
 import 'mask/splash/splash.dart';
 import 'mask/work_screen/skeleton_screen.dart';
-import 'mask/work_screen/work_screen_page.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/command/api/feedback_command.dart';
 import 'model/command/api/logout_command.dart';
