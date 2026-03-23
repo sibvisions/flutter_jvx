@@ -18,6 +18,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 
+import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/data_command.dart';
@@ -31,6 +32,7 @@ import '../../../../../model/command/data/save_meta_data_command.dart';
 import '../../../../../model/data/data_book.dart';
 import '../../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../../model/data/subscriptions/data_record.dart';
+import '../../../../../util/jvx_logger.dart';
 import '../../../../data/i_data_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
@@ -39,6 +41,10 @@ import '../../i_command_processor.dart';
 class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DataCommand command, BaseCommand? origin) async {
+    if (FlutterUI.logCommand.cl(Lvl.d)) {
+      FlutterUI.logCommand.d("Execute data command ${command.runtimeType}");
+    }
+
     if (command is SaveMetaDataCommand) {
       return _saveMetaData(command);
     } else if (command is SaveFetchDataCommand) {

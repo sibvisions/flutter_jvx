@@ -76,7 +76,7 @@ class DataService implements IDataService {
       dataBook.selectedRow = -1;
     }
 
-    unawaited(dataBook.updateFromFetch(pCommand: pCommand));
+    await dataBook.updateFromFetch(pCommand: pCommand);
 
     return [];
   }
