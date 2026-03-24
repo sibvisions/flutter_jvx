@@ -35,7 +35,7 @@ export 'model/command/api/login_command.dart';
 export 'model/command/api/logout_command.dart';
 export 'model/command/api/navigation_command.dart';
 export 'model/command/api/open_screen_command.dart';
-export 'model/command/api/open_tab_command.dart';
+export 'model/command/api/select_tab_command.dart';
 export 'model/command/api/press_button_command.dart';
 export 'model/command/api/reload_command.dart';
 export 'model/command/api/reload_menu_command.dart';

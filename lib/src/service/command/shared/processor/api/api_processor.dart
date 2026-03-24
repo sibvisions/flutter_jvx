@@ -45,7 +45,7 @@ import '../../../../../model/command/api/logout_command.dart';
 import '../../../../../model/command/api/mouse_command.dart';
 import '../../../../../model/command/api/navigation_command.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
-import '../../../../../model/command/api/open_tab_command.dart';
+import '../../../../../model/command/api/select_tab_command.dart';
 import '../../../../../model/command/api/press_button_command.dart';
 import '../../../../../model/command/api/reload_command.dart';
 import '../../../../../model/command/api/reload_data_command.dart';
@@ -96,7 +96,7 @@ import 'logout_command_processor.dart';
 import 'mouse_command_processor.dart';
 import 'navigation_command_processor.dart';
 import 'open_screen_command_processor.dart';
-import 'open_tab_command_processor.dart';
+import 'select_tab_command_processor.dart';
 import 'press_button_command_processor.dart';
 import 'reload_command_processor.dart';
 import 'reload_data_processor.dart';
@@ -149,7 +149,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final PressButtonCommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
   final SetValueCommandProcessor _setValueProcessor = SetValueCommandProcessor();
   final ActionCommandProcessor _actionProcessor = ActionCommandProcessor();
-  final OpenTabCommandProcessor _tabOpenProcessor = OpenTabCommandProcessor();
+  final SelectTabCommandProcessor _tabOpenProcessor = SelectTabCommandProcessor();
   final CloseTabCommandProcessor _tabCloseProcessor = CloseTabCommandProcessor();
   final CloseFrameCommandProcessor _closeFrameProcessor = CloseFrameCommandProcessor();
   final CloseContentCommandProcessor _closeContentProcessor = CloseContentCommandProcessor();
@@ -204,7 +204,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _setValuesProcessor;
     } else if (command is CloseTabCommand) {
       return _tabCloseProcessor;
-    } else if (command is OpenTabCommand) {
+    } else if (command is SelectTabCommand) {
       return _tabOpenProcessor;
     } else if (command is ChangePasswordCommand) {
       return _changePasswordProcessor;

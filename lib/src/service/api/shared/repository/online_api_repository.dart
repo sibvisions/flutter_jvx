@@ -67,7 +67,7 @@ import '../../../../model/request/api_mouse_pressed_request.dart';
 import '../../../../model/request/api_mouse_released_request.dart';
 import '../../../../model/request/api_navigation_request.dart';
 import '../../../../model/request/api_open_screen_request.dart';
-import '../../../../model/request/api_open_tab_request.dart';
+import '../../../../model/request/api_select_tab_request.dart';
 import '../../../../model/request/api_press_button_request.dart';
 import '../../../../model/request/api_reload_menu_request.dart';
 import '../../../../model/request/api_reload_request.dart';
@@ -156,7 +156,7 @@ class OnlineApiRepository extends IRepository {
     ApiActivateScreenRequest: (_) => APIRoute.POST_ACTIVATE_SCREEN,
     ApiSetParameter: (_) => APIRoute.POST_SET_PARAMETER,
     ApiSetScreenParameter: (_) => APIRoute.POST_SET_SCREEN_PARAMETER,
-    ApiOpenTabRequest: (_) => APIRoute.POST_SELECT_TAB,
+    ApiSelectTabRequest: (_) => APIRoute.POST_SELECT_TAB,
     ApiPressButtonRequest: (_) => APIRoute.POST_PRESS_BUTTON,
     ApiSetValueRequest: (_) => APIRoute.POST_SET_VALUE,
     ApiActionRequest: (_) => APIRoute.POST_ACTION,
