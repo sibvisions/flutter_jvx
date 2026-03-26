@@ -25,15 +25,13 @@ class TabLayout extends ILayout {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // int selectedIndex;
-
   double tabHeaderHeight;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  TabLayout({required this.tabHeaderHeight}); //, required this.selectedIndex});
+  TabLayout({this.tabHeaderHeight = 0});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -41,7 +39,7 @@ class TabLayout extends ILayout {
 
   @override
   ILayout clone() {
-    return TabLayout(tabHeaderHeight: tabHeaderHeight); //, selectedIndex: selectedIndex);
+    return TabLayout(tabHeaderHeight: tabHeaderHeight);
   }
 
   @override
