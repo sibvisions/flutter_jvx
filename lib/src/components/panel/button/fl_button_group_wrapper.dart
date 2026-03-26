@@ -64,7 +64,7 @@ class _FlButtonGroupWrapperState extends BaseContWrapperState<FlPanelModel> {
   void initState() {
     super.initState();
 
-    buildChildren(pSetStateOnChange: false);
+    buildChildren(setStateOnChange: false);
     registerParent();
 
     _registerButtons();
