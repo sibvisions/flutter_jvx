@@ -48,69 +48,69 @@ import 'tree/fl_tree_wrapper.dart';
 
 abstract class ComponentsFactory {
 
-  static Widget buildWidget(FlComponentModel model) {
+  static Widget buildWidget(FlComponentModel model, {Key Function(String id)? keyProvider, bool offstage = false}) {
     switch (model.className) {
       // Containers
       case FlContainerClassname.PANEL:
         if (FlComponentClassname.BUTTON_GROUP == model.classNameEventSourceRef) {
-          return FlButtonGroupWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
+          return FlButtonGroupWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider));
         }
 
-        return FlPanelWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
+        return FlPanelWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
       case FlContainerClassname.DESKTOP_PANEL:
       case FlContainerClassname.TOOLBAR_PANEL:
-        return FlPanelWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
+        return FlPanelWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
       case FlContainerClassname.GROUP_PANEL:
-        return FlGroupPanelWrapper(model: model as FlGroupPanelModel, key: GlobalObjectKey(model.id));
+        return FlGroupPanelWrapper(model: model as FlGroupPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
       case FlContainerClassname.SCROLL_PANEL:
         if (FlComponentClassname.BUTTON_GROUP == model.classNameEventSourceRef) {
-          return FlButtonGroupWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
+          return FlButtonGroupWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider));
         }
 
-        return FlScrollPanelWrapper(model: model as FlPanelModel, key: GlobalObjectKey(model.id));
+        return FlScrollPanelWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
       case FlContainerClassname.SPLIT_PANEL:
-        return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: GlobalObjectKey(model.id));
+        return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
       case FlContainerClassname.TABSET_PANEL:
-        return FlTabPanelWrapper(model: model as FlTabPanelModel, key: GlobalObjectKey(model.id));
+        return FlTabPanelWrapper(model: model as FlTabPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
 
       // Components
       case FlComponentClassname.BUTTON:
-        return FlButtonWrapper(model: model as FlButtonModel, key: GlobalObjectKey(model.id));
+        return FlButtonWrapper(model: model as FlButtonModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.TOGGLE_BUTTON:
-        return FlToggleButtonWrapper(model: model as FlToggleButtonModel, key: GlobalObjectKey(model.id));
+        return FlToggleButtonWrapper(model: model as FlToggleButtonModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.LABEL:
-        return FlLabelWrapper(model: model as FlLabelModel, key: GlobalObjectKey(model.id));
+        return FlLabelWrapper(model: model as FlLabelModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.TEXT_FIELD:
-        return FlTextFieldWrapper(model: model as FlTextFieldModel, key: GlobalObjectKey(model.id));
+        return FlTextFieldWrapper(model: model as FlTextFieldModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.TEXT_AREA:
-        return FlTextAreaWrapper(model: model as FlTextAreaModel, key: GlobalObjectKey(model.id));
+        return FlTextAreaWrapper(model: model as FlTextAreaModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.ICON:
-        return FlIconWrapper(model: model as FlIconModel, key: GlobalObjectKey(model.id));
+        return FlIconWrapper(model: model as FlIconModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.POPUP_MENU_BUTTON:
-        return FlPopupMenuButtonWrapper(model: model as FlPopupMenuButtonModel, key: GlobalObjectKey(model.id));
+        return FlPopupMenuButtonWrapper(model: model as FlPopupMenuButtonModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.CHECK_BOX:
-        return FlCheckBoxWrapper(model: model as FlCheckBoxModel, key: GlobalObjectKey(model.id));
+        return FlCheckBoxWrapper(model: model as FlCheckBoxModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.PASSWORD_FIELD:
-        return FlPasswordFieldWrapper(model: model as FlPasswordFieldModel, key: GlobalObjectKey(model.id));
+        return FlPasswordFieldWrapper(model: model as FlPasswordFieldModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.TABLE:
         FlTableModel tableModel = model as FlTableModel;
 
         if (tableModel.asList) {
-          return FlListWrapper(model: tableModel, key: GlobalObjectKey(model.id));
+          return FlListWrapper(model: tableModel, key: _createKey(model.id, keyProvider));
         }
         else {
-          return FlTableWrapper(model: tableModel, key: GlobalObjectKey(model.id));
+          return FlTableWrapper(model: tableModel, key: _createKey(model.id, keyProvider));
         }
       case FlComponentClassname.RADIO_BUTTON:
-        return FlRadioButtonWrapper(model: model as FlRadioButtonModel, key: GlobalObjectKey(model.id));
+        return FlRadioButtonWrapper(model: model as FlRadioButtonModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.MAP:
-        return FlMapWrapper(model: model as FlMapModel, key: GlobalObjectKey(model.id));
+        return FlMapWrapper(model: model as FlMapModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.CHART:
-        return FlChartWrapper(model: model as FlChartModel, key: GlobalObjectKey(model.id));
+        return FlChartWrapper(model: model as FlChartModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.GAUGE:
-        return FlGaugeWrapper(model: model as FlGaugeModel, key: GlobalObjectKey(model.id));
+        return FlGaugeWrapper(model: model as FlGaugeModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.TREE:
-        return FlTreeWrapper(model: model as FlTreeModel, key: GlobalObjectKey(model.id));
+        return FlTreeWrapper(model: model as FlTreeModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.POPUP_MENU:
         continue defaultUnknown;
       case FlComponentClassname.MENU_ITEM:
@@ -118,26 +118,39 @@ abstract class ComponentsFactory {
 
       // Cell editors:
       case FlComponentClassname.EDITOR:
-        return FlEditorWrapper(model: model as FlEditorModel, key: GlobalObjectKey(model.id));
+        return FlEditorWrapper(model: model as FlEditorModel, key: _createKey(model.id, keyProvider));
 
       // Custom
       case FlContainerClassname.CUSTOM_CONTAINER:
       case FlComponentClassname.CUSTOM_COMPONENT:
         switch (model.classNameEventSourceRef) {
           case FlComponentClassname.SIGNATURE_PAD:
-            return FlSignaturePadWrapper(model: model as FlCustomContainerModel, key: GlobalObjectKey(model.id));
+            return FlSignaturePadWrapper(model: model as FlCustomContainerModel, key: _createKey(model.id, keyProvider));
         }
 
         continue defaultUnknown;
 
       defaultUnknown:
       default:
-        return FlDummyWrapper(model: model, key: GlobalObjectKey(model.id));
+        return FlDummyWrapper(model: model, key: _createKey(model.id, keyProvider), offstage: offstage);
     }
   }
 
   /// Used for replace components
-  static Widget buildCustomWidget(FlComponentModel pModel, CustomComponent pCustomComponent) {
-    return FlCustomWrapper(model: pModel, key: GlobalObjectKey(pModel.id), customComponent: pCustomComponent);
+  static Widget buildCustomWidget(
+    FlComponentModel pModel,
+    CustomComponent pCustomComponent,
+    {Key Function(String)? keyProvider}) {
+    return FlCustomWrapper(model: pModel, key: _createKey(pModel.id, keyProvider), customComponent: pCustomComponent);
   }
+
+  static Key _createKey(String id, Key Function(String)? keyProvider) {
+    if (keyProvider == null) {
+      return GlobalObjectKey(id);
+    }
+    else {
+      return keyProvider(id);
+    }
+  }
+
 }

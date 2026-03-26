@@ -707,11 +707,18 @@ class UiService implements IUiService {
       // Copy list to avoid concurrent modification
       List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
 
+      bool noSubscription = true;
+
       for (int j = 0; j < copy.length; j++) {
         if (copy[j].compId == updatedModels[i] && copy[j].modelUpdatedCallback != null) {
           // Notify active component
           copy[j].modelUpdatedCallback!.call();
+          noSubscription = false;
         }
+      }
+
+      if (noSubscription) {
+        FlutterUI.logUI.d("Model without subscription: ${updatedModels[i]}");
       }
     }
   }

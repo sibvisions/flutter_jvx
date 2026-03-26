@@ -23,7 +23,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_dummy_widget.dart';
 
 class FlDummyWrapper<M extends FlComponentModel> extends BaseCompWrapperWidget<M> {
-  const FlDummyWrapper({super.key, required super.model});
+  const FlDummyWrapper({super.key, required super.model, super.offstage});
 
   @override
   BaseCompWrapperState createState() => _FlDummyWrapperState();
@@ -34,15 +34,21 @@ class _FlDummyWrapperState extends BaseCompWrapperState<FlComponentModel> {
 
   @override
   Widget build(BuildContext context) {
-    FlDummyWidget dummyWidget = FlDummyWidget(
-      model: model,
-      key: Key("${model.id}_Widget"),
-    );
+    Widget w;
+    if (widget.offstage) {
+      w = Offstage();
+    }
+    else {
+      w = FlDummyWidget(
+        model: model,
+        key: Key("${model.id}_Widget"),
+      );
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      postFrameCallback(context);
-    });
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        postFrameCallback(context);
+      });
+    }
 
-    return wrapWidget(context, dummyWidget);
+    return wrapWidget(context, w);
   }
 }

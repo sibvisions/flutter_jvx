@@ -18,20 +18,29 @@ import 'package:flutter/widgets.dart';
 
 import '../../layout/i_layout.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../service/storage/i_storage_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_panel_widget.dart';
 
 class FlPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
-  const FlPanelWrapper({super.key, required super.model});
+  const FlPanelWrapper({super.key, required super.model, super.offstage});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlPanelWrapperState();
 }
 
 class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  String? _layoutDefinition;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   _FlPanelWrapperState() : super();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,16 +51,18 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   void initState() {
     super.initState();
 
-    createLayout();
+    createLayout(true);
 
-    buildChildren(pSetStateOnChange: false);
+    buildChildren(setStateOnChange: false);
+
     registerParent();
   }
 
-  void createLayout() {
-    layoutData.layout = ILayout.getLayout(model);
-    layoutData.children =
-        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+  void createLayout([bool force = false]) {
+    if (force || _layoutDefinition != model.layout) {
+      layoutData.layout = ILayout.getLayout(model);
+      _layoutDefinition = model.layout;
+    }
   }
 
   @override
@@ -61,20 +72,27 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     super.modelUpdated();
 
     buildChildren();
+
     registerParent();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (model.isScreen && !model.exists) {
-      return wrapWidget(context, Container());
+    Widget w;
+
+    if (widget.offstage) {
+      w = Offstage();
+    }
+    else if (model.isScreen && !model.exists) {
+      w = Container();
+    }
+    else {
+      w = FlPanelWidget(
+        model: model,
+        children: childWidgets,
+      );
     }
 
-    FlPanelWidget panelWidget = FlPanelWidget(
-      model: model,
-      children: childWidgets,
-    );
-
-    return wrapWidget(context, panelWidget);
+    return wrapWidget(context, w);
   }
 }

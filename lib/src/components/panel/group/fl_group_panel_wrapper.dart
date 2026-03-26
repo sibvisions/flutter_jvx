@@ -32,7 +32,7 @@ class FlGroupPanelWrapper extends BaseCompWrapperWidget<FlGroupPanelModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlGroupPanelWrapper({super.key, required super.model});
+  const FlGroupPanelWrapper({super.key, required super.model, super.offstage});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -62,7 +62,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     _createLayout();
     layoutAfterBuild = true;
 
-    buildChildren(pSetStateOnChange: false);
+    buildChildren(setStateOnChange: false);
   }
 
   @override
@@ -86,11 +86,18 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   @override
   Widget build(BuildContext context) {
-    if (model.isFlatStyle) {
-      return _buildFlat(context);
-    } else {
-      return _buildModern(context);
+    Widget w;
+
+    if (widget.offstage) {
+      w = Offstage();
     }
+    else if (model.isFlatStyle) {
+      w = _buildFlat(context);
+    } else {
+      w = _buildModern(context);
+    }
+
+    return wrapWidget(context, w);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,26 +105,23 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _buildFlat(BuildContext context) {
-    return (wrapWidget(
-      context,
-      Column(
-        verticalDirection: verticalDirection,
-        children: [
-          FlGroupPanelHeaderWidget(model: model, postFrameCallback: postFrameCallback),
-          const Divider(
-            color: JVxColors.COMPONENT_BORDER,
-            height: 0.0,
-            thickness: 1.0,
-          ),
-          FlSizedPanelWidget(
-            model: model,
-            width: widthOfGroupPanel,
-            height: heightOfGroupPanel,
-            children: childWidgets,
-          ),
-        ],
-      ),
-    ));
+    return Column(
+      verticalDirection: verticalDirection,
+      children: [
+        FlGroupPanelHeaderWidget(model: model, postFrameCallback: postFrameCallback),
+        const Divider(
+          color: JVxColors.COMPONENT_BORDER,
+          height: 0.0,
+          thickness: 1.0,
+        ),
+        FlSizedPanelWidget(
+          model: model,
+          width: widthOfGroupPanel,
+          height: heightOfGroupPanel,
+          children: childWidgets,
+        ),
+      ],
+    );
   }
 
   Widget _buildModern(BuildContext context) {
@@ -143,50 +147,47 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     // (only if background color is set)
     int offset = model.background != null ? 4 : 0;
 
-    return wrapWidget(
-      context,
-      Padding(
-        padding: paddings,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(4.0),
-            boxShadow: shadows,
-          ),
-          child: Column(
-            verticalDirection: verticalDirection,
-            children: [
-              Container(
-                height: (groupHeaderHeight + offset) / 2,
-                clipBehavior: Clip.none,
-                decoration: BoxDecoration(
-                  color: model.background,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
-                ),
-                child: OverflowBox(
-                  maxHeight: groupHeaderHeight + offset,
-                  minHeight: groupHeaderHeight + offset,
-                  alignment: model.verticalAlignment == VerticalAlignment.BOTTOM
-                      ? Alignment.topCenter
-                      : Alignment.bottomCenter,
-                  child: FlGroupPanelHeaderWidget(
-                    model: model,
-                    postFrameCallback: postFrameCallback,
-                  ),
+    return Padding(
+      padding: paddings,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(4.0),
+          boxShadow: shadows,
+        ),
+        child: Column(
+          verticalDirection: verticalDirection,
+          children: [
+            Container(
+              height: (groupHeaderHeight + offset) / 2,
+              clipBehavior: Clip.none,
+              decoration: BoxDecoration(
+                color: model.background,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+              ),
+              child: OverflowBox(
+                maxHeight: groupHeaderHeight + offset,
+                minHeight: groupHeaderHeight + offset,
+                alignment: model.verticalAlignment == VerticalAlignment.BOTTOM
+                    ? Alignment.topCenter
+                    : Alignment.bottomCenter,
+                child: FlGroupPanelHeaderWidget(
+                  model: model,
+                  postFrameCallback: postFrameCallback,
                 ),
               ),
-              FlSizedPanelWidget(
-                model: model,
-                width: widthOfGroupPanel,
-                height: heightOfGroupPanel - offset / 2,
-                decoration: BoxDecoration(
-                  color: model.background,
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(4), bottomRight: Radius.circular(4)),
-                ),
-                children: childWidgets,
+            ),
+            FlSizedPanelWidget(
+              model: model,
+              width: widthOfGroupPanel,
+              height: heightOfGroupPanel - offset / 2,
+              decoration: BoxDecoration(
+                color: model.background,
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(4), bottomRight: Radius.circular(4)),
               ),
-            ],
-          ),
+              children: childWidgets,
+            ),
+          ],
         ),
       ),
     );

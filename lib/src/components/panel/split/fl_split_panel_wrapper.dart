@@ -29,7 +29,7 @@ import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_split_panel_widget.dart';
 
 class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
-  const FlSplitPanelWrapper({super.key, required super.model});
+  const FlSplitPanelWrapper({super.key, required super.model, super.offstage});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlSplitPanelWrapperState();
@@ -59,7 +59,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
       registerParent();
     });
 
-    buildChildren(pSetStateOnChange: false);
+    buildChildren(setStateOnChange: false);
     registerParent();
   }
 
@@ -75,9 +75,13 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   @override
   Widget build(BuildContext context) {
-    return wrapWidget(
-      context,
-      MouseRegion(
+    Widget w;
+
+    if (widget.offstage) {
+      w = Offstage();
+    }
+    else {
+      w = MouseRegion(
         cursor: mouseCursor,
         child: FlSplitPanelWidget(
           model: model,
@@ -91,8 +95,10 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
             getDragSlider(),
           ],
         ),
-      ),
-    );
+      );
+    }
+
+    return wrapWidget(context, w);
   }
 
   @override

@@ -28,7 +28,7 @@ import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_scroll_panel_widget.dart';
 
 class FlScrollPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
-  const FlScrollPanelWrapper({super.key, required super.model});
+  const FlScrollPanelWrapper({super.key, required super.model, super.offstage});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlScrollPanelWrapperState();
@@ -46,7 +46,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
     _createLayout();
 
-    buildChildren(pSetStateOnChange: false);
+    buildChildren(setStateOnChange: false);
     registerParent();
   }
 
@@ -62,19 +62,26 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
   @override
   Widget build(BuildContext context) {
-    FlScrollPanelWidget panelWidget = FlScrollPanelWidget(
-      model: model,
-      width: widthOfScrollPanel,
-      height: heightOfScrollPanel,
-      viewWidth: layoutData.layoutPosition?.width ?? widthOfScrollPanel,
-      viewHeight: layoutData.layoutPosition?.height ?? heightOfScrollPanel,
-      isScrollable: isScrollable,
-      horizontalScrollController: _horizontalController,
-      verticalScrollController: _verticalController,
-      children: childWidgets,
-    );
+    Widget w;
 
-    return (wrapWidget(context, panelWidget));
+    if (widget.offstage) {
+      w = Offstage();
+    }
+    else {
+      w = FlScrollPanelWidget(
+        model: model,
+        width: widthOfScrollPanel,
+        height: heightOfScrollPanel,
+        viewWidth: layoutData.layoutPosition?.width ?? widthOfScrollPanel,
+        viewHeight: layoutData.layoutPosition?.height ?? heightOfScrollPanel,
+        isScrollable: isScrollable,
+        horizontalScrollController: _horizontalController,
+        verticalScrollController: _verticalController,
+        children: childWidgets,
+      );
+    }
+
+    return wrapWidget(context, w);
   }
 
   @override

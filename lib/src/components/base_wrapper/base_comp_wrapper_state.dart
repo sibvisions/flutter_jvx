@@ -278,7 +278,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Callback called after every build.
   void postFrameCallback(BuildContext context) {
-    if (!context.mounted) {
+    if (!context.mounted || widget.offstage) {
       return;
     }
 

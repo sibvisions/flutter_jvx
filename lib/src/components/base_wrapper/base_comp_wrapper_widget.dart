@@ -34,11 +34,14 @@ abstract class BaseCompWrapperWidget<M extends FlComponentModel> extends Statefu
   /// The model of the component.
   final M model;
 
+  /// Whether the widget is an offstage widget
+  final bool offstage;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const BaseCompWrapperWidget({super.key, required this.model});
+  const BaseCompWrapperWidget({super.key, required this.model, this.offstage = false});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

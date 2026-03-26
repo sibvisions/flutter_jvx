@@ -47,7 +47,6 @@ export '../../src/components/panel/group/fl_group_panel_header_widget.dart';
 export '../../src/components/panel/scroll/fl_scroll_panel_widget.dart';
 export '../../src/components/panel/split/fl_split_panel_widget.dart';
 export '../../src/components/panel/tabset/fl_tab_controller.dart';
-export '../../src/components/panel/tabset/fl_tab_header.dart';
 export '../../src/components/signature_pad/fl_signature_pad_widget.dart';
 export '../../src/components/table/fl_table_widget.dart';
 export '../../src/components/table/fl_table_edit_dialog.dart';
