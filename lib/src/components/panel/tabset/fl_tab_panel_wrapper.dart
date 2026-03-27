@@ -20,6 +20,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../flutter_ui.dart';
 import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';
@@ -72,17 +73,20 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   /// The list of tab views.
   List<Widget> tabContentList = [];
 
-  /// The list of tab views.
-  List<int> enabledContentIndices = [];
+  /// The list of (offstage) tab view components.
+  List<Widget> tabContentListOffstage = [];
 
   /// The list of tab view components.
   List<BaseCompWrapperWidget> tabContentComponents = [];
 
-  /// The list of tab view components.
-  List<Widget> tabLayoutComponents = [];
+  /// The list of indices of enabled tab contents.
+  List<int> enabledTabContentIndices = [];
 
   /// all available children
-  Map<Key, KeepAliveWrapper> allChildren = {};
+  Map<Key, KeepAliveWrapper> allComponents = {};
+
+  /// all available (offstage) layout components
+  Map<String, Widget> allOffstageComponents = {};
 
   /// last sent selected tab index
   int _lastSentIndex = -1;
@@ -123,8 +127,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       double page = _pageController.page!;
 
       //check that index is in range (e.g. removed tab)
-      if (page >= enabledContentIndices.length - 1) {
-        page = (enabledContentIndices.length - 1).toDouble();
+      if (page >= enabledTabContentIndices.length - 1) {
+        page = (enabledTabContentIndices.length - 1).toDouble();
       }
 
       int floor = page.floor();
@@ -132,8 +136,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       double fraction = page - floor;
 
       // Mapping mit Range-Check
-      int startTab = enabledContentIndices[floor];
-      int endTab = enabledContentIndices[ceil];
+      int startTab = enabledTabContentIndices[floor];
+      int endTab = enabledTabContentIndices[ceil];
 
       //calculate target position in header (e.g. 0.0 -> 3.0)
       double mappedHeaderPos = startTab + (fraction * (endTab - startTab));
@@ -179,31 +183,47 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       tabHeaderList.clear();
       tabContentList.clear();
 
-      enabledContentIndices.clear();
+      enabledTabContentIndices.clear();
       tabContentComponents.clear();
-      tabLayoutComponents.clear();
+      tabContentListOffstage.clear();
 
       tabsToBeRemoved.clear();
 
       KeepAliveWrapper? aliveWrapper;
 
       FlComponentModel compModel;
+      Widget? wOffstage;
+
+      IStorageService servStorage = IStorageService();
+
+      //cleanup removed components
+      allComponents.removeWhere((key, value) => servStorage.getComponentModel(pComponentId: value.modelId) == null);
+      allOffstageComponents.removeWhere((key, value) => servStorage.getComponentModel(pComponentId: key) == null);
+
 
       for (int i = 0; i < childWidgets.length; i++) {
         tabContentComponents.add((childWidgets[i] as BaseCompWrapperWidget));
 
-        // we need a copy of the component as placeholder for layout events
-        // but we can't use the original widget because of the global key
-        // so we create a new widget but don't render anything
-        tabLayoutComponents.add(ComponentsFactory.buildWidget(
-          (childWidgets[i] as BaseCompWrapperWidget).model,
-          keyProvider: (id) => ValueKey("copy $id"),
-          offstage: true)
-        );
-
         compModel = tabContentComponents[i].model;
 
-        aliveWrapper = allChildren[childWidgets[i].key!];
+        wOffstage = allOffstageComponents[compModel.id];
+
+        if (wOffstage == null) {
+          // we need a copy of the component as placeholder for layout events
+          // but we can't use the original widget because of the global key
+          // so we create a new widget but don't render anything
+          wOffstage = ComponentsFactory.buildWidget(
+            compModel,
+            keyProvider: (id) => ValueKey("copy $id"),
+            offstage: true
+          );
+
+          allOffstageComponents[compModel.id] = wOffstage;
+        }
+
+        tabContentListOffstage.add(wOffstage);
+
+        aliveWrapper = allComponents[childWidgets[i].key!];
 
         if (aliveWrapper == null) {
           aliveWrapper = KeepAliveWrapper(
@@ -211,7 +231,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
               key: ValueKey("content: ${compModel.id}"),
               child: childWidgets[i]);
 
-          allChildren[childWidgets[i].key!] = aliveWrapper;
+          allComponents[childWidgets[i].key!] = aliveWrapper;
         }
 
         tabContentList.add(aliveWrapper);
@@ -242,32 +262,35 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
             .first);
 
         if (enabledState[i]) {
-          enabledContentIndices.add(i);
+          enabledTabContentIndices.add(i);
         }
       }
 
-      FlTabController ol = _tabController;
+      FlTabController oldController = _tabController;
 
-      int index = min(_tabController.index, max(tabContentList.length - 1, 0));
+      try {
+        int index = min(_tabController.index, max(tabContentList.length - 1, 0));
 
-      _tabController = FlTabController(
-        length: tabContentList.length,
-        initialIndex: index,
-        vsync: this,
-        enabledState: enabledState,
-      );
+        _tabController = FlTabController(
+          length: tabContentList.length,
+          initialIndex: index,
+          vsync: this,
+          enabledState: enabledState,
+        );
 
-      if (!enabledState[index]) {
-        _tabController.animateTo(model.selectedIndex);
-      }
+        if (!enabledState[index]) {
+          _tabController.animateTo(model.selectedIndex);
+        }
 
-      if (_pageController.hasClients) {
-        if (enabledContentIndices.isNotEmpty) {
-          _pageController.jumpToPage(enabledContentIndices.indexOf(index));
+        if (_pageController.hasClients) {
+          if (enabledTabContentIndices.isNotEmpty) {
+            _pageController.jumpToPage(enabledTabContentIndices.indexOf(index));
+          }
         }
       }
-
-      Future.delayed(kTabScrollDuration, () => ol.dispose());
+      finally {
+        Future.delayed(kTabScrollDuration, () => oldController.dispose());
+      }
 
       if (forceSetState || (childrenChanged && setStateOnChange)) {
         setState(() {});
@@ -275,7 +298,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     }
     else {
       if (model.selectedIndex >= 0 && _tabController.index != model.selectedIndex) {
-        _pageController.animateToPage(enabledContentIndices.indexOf(model.selectedIndex), duration: kTabScrollDuration, curve: Curves.easeInOut);
+        _pageController.animateToPage(enabledTabContentIndices.indexOf(model.selectedIndex), duration: kTabScrollDuration, curve: Curves.easeInOut);
       }
 
       if (forceSetState) {
@@ -285,9 +308,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     return childrenChanged;
   }
-
-// Ein ValueNotifier, um den Header flüssig zu steuern
-  final ValueNotifier<double> headerPosition = ValueNotifier(0.0);
 
   @override
   Widget build(BuildContext context) {
@@ -304,8 +324,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
-
-    print(heightOfTabPanel);
 
     ColorScheme colorScheme = Theme.of(context).colorScheme;
 
@@ -336,7 +354,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                     return;
                   }
 
-                  int contentPos = enabledContentIndices.indexOf(value);
+                  int contentPos = enabledTabContentIndices.indexOf(value);
 
                   _tabController.animateTo(contentPos);
 
@@ -352,7 +370,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                   unawaited(_pageController.animateToPage(contentPos, duration: kTabScrollDuration, curve: Curves.easeInOut));
 
                   if (_lastSentIndex != value) {
-                    print("SEND select TAB-2 $value");
                     unawaited(ICommandService().sendCommand(
                       SelectTabCommand(componentName: model.name, index: value, reason: "Selects the tab."),
                     ));
@@ -382,7 +399,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 //              child:
             PageView.builder(
                 controller: _pageController,
-                itemCount: enabledContentIndices.length,
+                itemCount: enabledTabContentIndices.length,
                 findChildIndexCallback: (Key key) {
                   for (int i = 0; i < tabContentList.length; i++) {
                     if (tabContentList[i].key == key) {
@@ -393,14 +410,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                   return -1;
                 },
                 onPageChanged: (index) {
-                  int originalIndex = enabledContentIndices[index];
+                  int originalIndex = enabledTabContentIndices[index];
 
                   if (!_isManualTap) {
                     _tabController.animateTo(originalIndex);
 
                     if (_lastSentIndex != originalIndex) {
-                      print("SEND select TAB-1 $originalIndex");
-
                       ICommandService().sendCommand(
                         SelectTabCommand(componentName: model.name, index: originalIndex, reason: "Selects the tab."),
                       );
@@ -410,7 +425,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                   }
                 },
                 itemBuilder: (context, index) {
-                  Widget wrapper = tabContentList[enabledContentIndices[index]];
+                  Widget wrapper = tabContentList[enabledTabContentIndices[index]];
 
                   return Stack(children: [wrapper]);
                 },
@@ -420,7 +435,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
             width: 0,
             height: 0,
             child: Stack(
-              children: heightOfTabPanel == 0 ? tabContentComponents : tabLayoutComponents
+              children: heightOfTabPanel == 0 ? tabContentComponents : tabContentListOffstage
             )
           )
         ],
