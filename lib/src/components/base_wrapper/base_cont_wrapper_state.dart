@@ -57,7 +57,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  affected() {
+  void affected() {
     buildChildren();
     registerParent();
   }

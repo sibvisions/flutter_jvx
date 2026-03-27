@@ -194,8 +194,7 @@ abstract class FlComponentModel {
   HorizontalAlignment horizontalAlignment = HorizontalAlignment.CENTER;
 
   /// The font of the component.
-  // TODO maybe make this nullable? -> Should be set by theme and not here as default
-  JVxFont font = JVxFont();
+  JVxFont? font;
 
   /// The tooltip text of the component.
   String? toolTipText;
@@ -501,10 +500,10 @@ abstract class FlComponentModel {
       {Color? pForeground, double? pFontSize, FontStyle? pFontStyle, FontWeight? pFontWeight, String? pFontFamily}) {
     return TextStyle(
       color: pForeground ?? (isEnabled ? foreground : JVxColors.toggleColor(JVxColors.COMPONENT_DISABLED)),
-      fontSize: pFontSize ?? font.fontSize.toDouble(),
-      fontStyle: pFontStyle ?? (font.isItalic ? FontStyle.italic : FontStyle.normal),
-      fontWeight: pFontWeight ?? (font.isBold ? FontWeight.bold : FontWeight.normal),
-      fontFamily: pFontFamily ?? font.fontName,
+      fontSize: pFontSize ?? font?.fontSize.toDouble(),
+      fontStyle: pFontStyle ?? (font?.isItalic == true ? FontStyle.italic : FontStyle.normal),
+      fontWeight: pFontWeight ?? (font?.isBold == true ? FontWeight.bold : FontWeight.normal),
+      fontFamily: pFontFamily ?? font?.fontName,
       overflow: TextOverflow.ellipsis,
     );
   }

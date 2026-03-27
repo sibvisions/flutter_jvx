@@ -175,7 +175,7 @@ class FlButtonModel extends FlComponentModel {
   }
 
   @override
-  set font(JVxFont pFont) {
+  set font(JVxFont? pFont) {
     super.font = pFont;
     labelModel.font = pFont;
   }

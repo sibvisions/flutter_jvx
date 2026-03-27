@@ -18,6 +18,19 @@ part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlTabPanelModel extends FlPanelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The style name for tabs without rounded border
+  static const String STYLE_TABHEADER_NOT_ROUNDED = "f_tabheader_not_rounded";
+
+  /// The style name for scroll tabs configuration
+  static const String STYLE_TABHEADER_SCROLL = "f_tabheader_scroll";
+
+  /// The style namr for vertical tab alignment
+  static const String STYLE_TAB_ALIGNMENT_VERTICAL = "f_tab_alignment_vertical";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -35,6 +48,15 @@ class FlTabPanelModel extends FlPanelModel {
 
   /// Placement of the tab. TOP and BOTTOM is supported.
   TabPlacements tabPlacement = TabPlacements.TOP;
+
+  /// whether tabbar is rounded
+  bool get isTabHeaderRounded => !styles.contains(STYLE_TABHEADER_NOT_ROUNDED);
+
+  /// whether tabbar should scroll
+  bool get isTabHeaderScroll => styles.contains(STYLE_TABHEADER_SCROLL);
+
+  /// whether tab should align vertical
+  bool get isTabAlignmentVertical => styles.contains(STYLE_TAB_ALIGNMENT_VERTICAL);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

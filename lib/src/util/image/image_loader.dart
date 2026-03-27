@@ -89,7 +89,8 @@ abstract class ImageLoader {
     Color? color,
     BoxFit fit = BoxFit.none,
     AlignmentGeometry alignment = Alignment.center,
-    WidgetWrapper? wrapper
+    WidgetWrapper? wrapper,
+    nowrap = false
   }) {
     ImageProvider? imageProvider;
 
@@ -103,10 +104,15 @@ abstract class ImageLoader {
 
         imageStreamListener?.call(Size.square(iconDef?.size ?? IconUtil.DEFAULT_ICON_SIZE), true);
 
-        return Align(
-          alignment: alignment,
-          child: wrapper != null ? wrapper(iconDef!.icon, null) : iconDef!.icon,
-        );
+        if (nowrap) {
+          return iconDef!.icon!;
+        }
+        else {
+          return Align(
+            alignment: alignment,
+            child: wrapper != null ? wrapper(iconDef!.icon, null) : iconDef!.icon,
+          );
+        }
       }
 
       imageProvider = getImageProvider(imageDefinition, imageStreamListener: imageStreamListener);
@@ -116,7 +122,7 @@ abstract class ImageLoader {
       double? width_;
       double? height_;
 
-      if (imageDefinition is String) {
+      if (imageDefinition is String && imageDefinition.isNotEmpty) {
         List<String> split = imageDefinition.split(",");
 
         if (split.length >= 3) {

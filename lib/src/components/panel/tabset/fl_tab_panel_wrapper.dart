@@ -20,7 +20,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../../../../flutter_jvx.dart';
 import '../../../flutter_ui.dart';
 import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';
@@ -28,6 +27,7 @@ import '../../../model/command/api/select_tab_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../service/command/i_command_service.dart';
+import '../../../service/storage/i_storage_service.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
 import '../../../util/parse_util.dart';
@@ -41,6 +41,16 @@ import 'fl_tab_controller.dart';
 
 enum TabPlacements { WRAP, TOP, LEFT, BOTTOM, RIGHT }
 
+typedef _LayoutConstraints = ({
+  bool enabled,
+  bool closable,
+  String text,
+  String imageString,
+  bool imageWithSize,
+  double? imageWidth,
+  double? imageHeight
+});
+
 class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
   const FlTabPanelWrapper({super.key, required super.model, super.offstage});
 
@@ -49,6 +59,13 @@ class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
 }
 
 class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with TickerProviderStateMixin {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //48 = 46 + indicatorWeight (see tabs.dart - _kTabHeight)
+  static double maxTabHeight = 48;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,8 +108,14 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   /// last sent selected tab index
   int _lastSentIndex = -1;
 
+  /// max tab-height
+  double _maxTabHeight = -1;
+
   /// whether first initialization is done
   bool initDone = false;
+
+  /// whether tab is scrollable
+  bool _isScrollable = true;
 
   /// whether changing index by manual tap
   bool _isManualTap = false;
@@ -160,7 +183,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   @override
-  modelUpdated() {
+  void modelUpdated() {
     super.modelUpdated();
 
     layoutAfterBuild = true;
@@ -169,7 +192,15 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   @override
-  affected() {
+  void reassemble() {
+    super.reassemble();
+
+    tabHeaderList.clear();
+    (layoutData.layout as TabLayout).tabHeaderHeight = 0;
+  }
+
+  @override
+  void affected() {
     layoutAfterBuild = true;
 
     buildChildren(forceSetState: true);
@@ -180,6 +211,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     bool childrenChanged = super.buildChildren(setStateOnChange: false);
 
     if (childrenChanged) {
+      _isScrollable = true;
+
       tabHeaderList.clear();
       tabContentList.clear();
 
@@ -316,8 +349,52 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     }
 
     if (tabHeaderList.isEmpty) {
+      List<_LayoutConstraints> constraints = [];
+
+      //pre-parse constraints
       for (int i = 0; i < tabContentList.length; i++) {
-        tabHeaderList.add(createTab(context, tabContentComponents[i], i));
+        constraints.add(_parseConstraints(tabContentComponents[i].model.constraints));
+      }
+
+      if (model.isTabHeaderScroll) {
+        _isScrollable = true;
+      }
+      else {
+        int withText = 0;
+        int withImage = 0;
+        int withClose = 0;
+
+        //analyze constraints for tab header configuration
+        for (int i = 0; i < constraints.length; i++) {
+          if (constraints[i].closable) {
+            withClose++;
+          }
+          if (constraints[i].text.isNotEmpty) {
+            withText++;
+          }
+          if (constraints[i].imageString.isNotEmpty) {
+            withImage++;
+          }
+        }
+
+        if (withText == 0 && withImage == constraints.length) {
+          //only images -> an indicator for disabled scrolling
+          _isScrollable = constraints.length > 6;
+        }
+        else if (withClose == 0) {
+          //text and images but not closable
+          _isScrollable = constraints.length > 4;
+        }
+      }
+
+      _maxTabHeight = maxTabHeight;
+
+      Tab tab;
+      for (int i = 0; i < tabContentList.length; i++) {
+        tab = _createTab(context, tabContentComponents[i], i, scrollable: _isScrollable, constraints: constraints[i]);
+        _maxTabHeight = max(_maxTabHeight, tab.height ?? 0);
+
+        tabHeaderList.add(tab);
       }
     }
 
@@ -327,66 +404,89 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    TabBar tabBar = TabBar(
+      key: _keyHeader,
+      dividerHeight: 0,
+      indicator: TabPlacements.BOTTOM == model.tabPlacement ? _getBottomIndicator(_maxTabHeight) : null,
+      labelColor: colorScheme.onSurface,
+      //indicatorColor: colorScheme.onSurface,
+      controller: _tabController,
+      tabs: tabHeaderList,
+      isScrollable: _isScrollable,
+      tabAlignment: _isScrollable ? TabAlignment.start : null,
+      onTap: (value) async {
+        _isManualTap = true;
+
+        try {
+          if (!_tabController.isTabEnabled(value)) {
+            return;
+          }
+
+          int contentPos = enabledTabContentIndices.indexOf(value);
+
+          _tabController.animateTo(contentPos);
+
+          int currentPage = _pageController.page!.round();
+
+          if ((contentPos - currentPage).abs() > 1) {
+            int neighborIndex = contentPos > currentPage ? contentPos - 1 : contentPos + 1;
+            _pageController.jumpToPage(neighborIndex);
+
+            await WidgetsBinding.instance.endOfFrame;
+          }
+
+          unawaited(_pageController.animateToPage(contentPos, duration: kTabScrollDuration, curve: Curves.easeInOut));
+
+          if (_lastSentIndex != value) {
+            unawaited(ICommandService().sendCommand(
+              SelectTabCommand(componentName: model.name, index: value, reason: "Selects the tab."),
+            ));
+
+            _lastSentIndex = value;
+          }
+        }
+        finally {
+          _isManualTap = false;
+        }
+      },
+    );
+
+    Widget header;
+
+    if (model.background != null) {
+      header = Container(
+        width: widthOfTabPanel,
+        height: (layoutData.layout as TabLayout).tabHeaderHeight,
+        decoration: BoxDecoration(
+          borderRadius: model.isTabHeaderRounded ? BorderRadius.circular(4.0) : null,
+          color: model.background,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4.0),
+          child: tabBar,
+        ),
+      );
+    }
+    else {
+      header = SizedBox(
+        width: widthOfTabPanel,
+        height: (layoutData.layout as TabLayout).tabHeaderHeight,
+        child: tabBar
+      );
+    }
+
     return wrapWidget(
       context,
       Wrap(
         direction: Axis.vertical,
         verticalDirection: TabPlacements.BOTTOM == model.tabPlacement ? VerticalDirection.up : VerticalDirection.down,
         children: [
-          Container(
-            color: model.background,
-            width: widthOfTabPanel,
-            height: (layoutData.layout as TabLayout).tabHeaderHeight,
-            child: TabBar(
-              key: _keyHeader,
-              dividerHeight: 0,
-              labelColor: colorScheme.onSurface,
-              //indicatorColor: colorScheme.onSurface,
-              controller: _tabController,
-              tabs: tabHeaderList,
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              onTap: (value) async {
-                _isManualTap = true;
-
-                try {
-                  if (!_tabController.isTabEnabled(value)) {
-                    return;
-                  }
-
-                  int contentPos = enabledTabContentIndices.indexOf(value);
-
-                  _tabController.animateTo(contentPos);
-
-                  int currentPage = _pageController.page!.round();
-
-                  if ((contentPos - currentPage).abs() > 1) {
-                    int neighborIndex = contentPos > currentPage ? contentPos - 1 : contentPos + 1;
-                    _pageController.jumpToPage(neighborIndex);
-
-                    await WidgetsBinding.instance.endOfFrame;
-                  }
-
-                  unawaited(_pageController.animateToPage(contentPos, duration: kTabScrollDuration, curve: Curves.easeInOut));
-
-                  if (_lastSentIndex != value) {
-                    unawaited(ICommandService().sendCommand(
-                      SelectTabCommand(componentName: model.name, index: value, reason: "Selects the tab."),
-                    ));
-
-                    _lastSentIndex = value;
-                  }
-                }
-                finally {
-                  _isManualTap = false;
-                }
-              },
-            ),
-          ),
-
+          header,
           if (heightOfTabPanel > 0)
-          Container(
-            color: model.background,
+            //we don't set the background color for content area, because background color
+            //of panels is only set manually and is transparent. So we use SizedBox instead
+            //of Container
+          SizedBox(
             width: widthOfTabPanel,
             height: heightOfTabPanel,
             child: //NotificationListener<ScrollEndNotification>(
@@ -496,50 +596,176 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     return 0.0;
   }
 
-  Widget createTab(BuildContext context, BaseCompWrapperWidget pComponent, int pIndex) {
+  _LayoutConstraints _parseConstraints(String? constraintString) {
+    final constraints = constraintString?.split(";") ?? [];
+
+    double? width;
+    double? height;
+
+    if (constraints.length > 3) {
+      List<String> split = constraints[3].split(",");
+
+      if (split.length >= 3) {
+        width = double.tryParse(split[1]);
+        height = double.tryParse(split[2]);
+      }
+    }
+
+    return (
+      enabled: constraints.isNotEmpty ? ParseUtil.parseBoolOrTrue(constraints[0]) : true,
+      closable: constraints.length > 1 ? ParseUtil.parseBoolOrFalse(constraints[1]) : false,
+      text: constraints.length > 2 ? constraints[2] : "",
+      imageString: constraints.length > 3 ? constraints[3] : "",
+      imageWithSize: width != null || height != null,
+      imageWidth: width,
+      imageHeight: height
+    );
+  }
+
+  Decoration _getBottomIndicator(double height) {
+    final ThemeData theme = Theme.of(context);
+    final TabBarThemeData tabBarTheme = TabBarTheme.of(context);
+
+    Color color = tabBarTheme.indicatorColor ?? theme.colorScheme.primary;
+
+    if (color.toARGB32() == Material.maybeOf(context)?.color?.toARGB32()) {
+      color = Colors.white;
+    }
+
+    final BorderRadius? effectiveBorderRadius = theme.useMaterial3
+      ? BorderRadius.only(
+          bottomLeft: Radius.circular(3),
+          bottomRight: Radius.circular(3),
+        )
+      : null;
+
+    return UnderlineTabIndicator(
+      borderRadius: effectiveBorderRadius,
+      borderSide: BorderSide(
+        width: 3,
+        color: color,
+      ),
+      //-1 because custom calculated height is without indicator
+      insets: EdgeInsets.only(bottom: height > maxTabHeight ? height - 1 : height - 3),
+    );
+  }
+
+  Tab _createTab(BuildContext context, BaseCompWrapperWidget pComponent, int pIndex, {bool scrollable = true, _LayoutConstraints? constraints}) {
     FlComponentModel childModel = pComponent.model;
 
-    List constraints = childModel.constraints!.split(";");
-
-    bool enabled = ParseUtil.parseBoolOrTrue(constraints[0]);
-    bool closable = ParseUtil.parseBoolOrFalse(constraints[1]);
-    String text = constraints[2] ?? "";
-    String imageString = constraints.length >= 4 ? constraints[3] : "";
+    constraints ??= _parseConstraints(childModel.constraints);
 
     Widget? image;
 
-    if (imageString.isNotEmpty) {
+    if (constraints.imageString.isNotEmpty) {
       image = ImageLoader.loadImage(
-        imageString,
-        width: 16,
-        height: 16,
-        color: enabled ? null : (JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER),
+        constraints.imageString,
+        //image definition contains size info!
+        width: !scrollable && constraints.imageWithSize ? null : 16,
+        height: !scrollable && constraints.imageWithSize ? null : 16,
+        color: constraints.enabled ? null : (JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER)
       );
     }
 
-    FlLabelModel labelModel = FlLabelModel()
-      ..text = text
-      ..font = childModel.font
-      ..foreground = childModel.foreground
-      ..verticalAlignment = VerticalAlignment.CENTER
-      ..isEnabled = enabled;
+    Widget? textChild;
 
-    Widget textChild = FlLabelWidget.createTextWidget(labelModel);
+    FlLabelModel? labelModel;
+
+    if (constraints.text.isNotEmpty) {
+      labelModel = FlLabelModel()
+        ..text = constraints.text
+        ..font = childModel.font ?? model.font
+        ..foreground = childModel.foreground ?? model.foreground
+        ..verticalAlignment = VerticalAlignment.CENTER
+        ..isEnabled = constraints.enabled;
+
+      textChild = FlLabelWidget.createTextWidget(labelModel, overflow: TextOverflow.fade, softwrap: false);
+    }
+
+    double? height;
+
+    if (!scrollable) {
+      height = maxTabHeight;
+
+      double heightNew = 0;
+
+      if (constraints.imageWithSize) {
+        heightNew += constraints.imageHeight ?? 16;
+      }
+      else if (image != null) {
+        heightNew += 16;
+      }
+      if (labelModel != null) {
+        heightNew += ParseUtil.getTextHeight(text: "a", style: labelModel.createTextStyle());
+      }
+
+      height = max(maxTabHeight, heightNew + 8);
+    }
+
+    List<Widget> imageText = [];
+
+    if (model.isTabAlignmentVertical) {
+      imageText.add(Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (image != null) image,
+          if (image != null && textChild != null) const SizedBox(height: 5),
+          if (textChild != null && !scrollable) Flexible(child: textChild),
+          if (textChild != null && scrollable) textChild
+        ]
+      ));
+
+      if (height != null) {
+        height += 5;
+      }
+    }
+    else {
+      if (!scrollable) {
+
+        if (image != null) {
+          imageText.add(image);
+        };
+
+        if (image != null && textChild != null) {
+          imageText.add(const SizedBox(width: 5));
+        }
+
+        if (textChild != null) {
+          imageText.add(Flexible(child: textChild));
+        }
+      }
+      else {
+        if (image != null) {
+          imageText.add(image);
+        }
+
+        if (image != null && textChild != null) {
+          imageText.add(const SizedBox(width: 5));
+        }
+
+        if (textChild != null) {
+          imageText.add(textChild);
+        }
+      }
+    }
+
+    if (imageText.isEmpty) {
+      imageText.add(ImageLoader.DEFAULT_IMAGE);
+    }
 
     return Tab(
+      height: height,
       iconMargin: const EdgeInsets.all(0),
-      child: closable || image != null
+      child: constraints.closable || image != null
         ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(width: 8),
-              if (image != null) image,
-              if (image != null) const SizedBox(width: 5),
-              textChild,
-              if (closable)
+              ...imageText,
+              if (constraints.closable)
                 InkWell(
                   borderRadius: BorderRadius.circular(20),
-                  onTap: enabled
+                  onTap: constraints.enabled
                       ? () => closeTab(pIndex)
                       : null,
                   child: Padding(
@@ -551,10 +777,10 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                     ),
                   ),
                 ),
-              if (!closable) const SizedBox(width: 8),
+              if (!constraints.closable) const SizedBox(width: 8),
             ],
           )
-        : textChild,
+        : textChild ?? ImageLoader.DEFAULT_IMAGE,
     );
   }
 

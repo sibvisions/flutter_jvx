@@ -86,7 +86,14 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     return Tooltip(message: model.toolTipText!, child: pChild);
   }
 
-  static Widget createTextWidget(FlLabelModel pModel, {TextStyle? pTextStyle, bool pSelectable = false, bool pDummy = false}) {
+  static Widget createTextWidget(FlLabelModel pModel, {
+    TextStyle? pTextStyle,
+    bool pSelectable = false,
+    bool pDummy = false,
+    bool? softwrap,
+    int? maxLines,
+    TextOverflow? overflow,
+  }) {
     Widget textWidget;
 
     if (!pDummy && ParseUtil.isHTML(pModel.text)) {
@@ -98,8 +105,11 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     }
     else {
       textWidget = Text(
+          softWrap: softwrap,
+          maxLines: maxLines,
           pModel.text.replaceAll("\n", ""),
           style: pTextStyle ?? pModel.createTextStyle(),
+          overflow: overflow,
           textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment));
     }
 
