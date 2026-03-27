@@ -53,7 +53,7 @@ abstract class ComponentsFactory {
       // Containers
       case FlContainerClassname.PANEL:
         if (FlComponentClassname.BUTTON_GROUP == model.classNameEventSourceRef) {
-          return FlButtonGroupWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider));
+          return FlButtonGroupWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
         }
 
         return FlPanelWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
@@ -64,7 +64,7 @@ abstract class ComponentsFactory {
         return FlGroupPanelWrapper(model: model as FlGroupPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
       case FlContainerClassname.SCROLL_PANEL:
         if (FlComponentClassname.BUTTON_GROUP == model.classNameEventSourceRef) {
-          return FlButtonGroupWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider));
+          return FlButtonGroupWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
         }
 
         return FlScrollPanelWrapper(model: model as FlPanelModel, key: _createKey(model.id, keyProvider), offstage: offstage);
@@ -111,15 +111,9 @@ abstract class ComponentsFactory {
         return FlGaugeWrapper(model: model as FlGaugeModel, key: _createKey(model.id, keyProvider));
       case FlComponentClassname.TREE:
         return FlTreeWrapper(model: model as FlTreeModel, key: _createKey(model.id, keyProvider));
-      case FlComponentClassname.POPUP_MENU:
-        continue defaultUnknown;
-      case FlComponentClassname.MENU_ITEM:
-        continue defaultUnknown;
-
       // Cell editors:
       case FlComponentClassname.EDITOR:
         return FlEditorWrapper(model: model as FlEditorModel, key: _createKey(model.id, keyProvider));
-
       // Custom
       case FlContainerClassname.CUSTOM_CONTAINER:
       case FlComponentClassname.CUSTOM_COMPONENT:
@@ -127,9 +121,9 @@ abstract class ComponentsFactory {
           case FlComponentClassname.SIGNATURE_PAD:
             return FlSignaturePadWrapper(model: model as FlCustomContainerModel, key: _createKey(model.id, keyProvider));
         }
-
         continue defaultUnknown;
-
+      case FlComponentClassname.POPUP_MENU:
+      case FlComponentClassname.MENU_ITEM:
       defaultUnknown:
       default:
         return FlDummyWrapper(model: model, key: _createKey(model.id, keyProvider), offstage: offstage);
@@ -140,8 +134,9 @@ abstract class ComponentsFactory {
   static Widget buildCustomWidget(
     FlComponentModel pModel,
     CustomComponent pCustomComponent,
-    {Key Function(String)? keyProvider}) {
-    return FlCustomWrapper(model: pModel, key: _createKey(pModel.id, keyProvider), customComponent: pCustomComponent);
+    {Key Function(String)? keyProvider,
+    bool offstage = false}) {
+    return FlCustomWrapper(model: pModel, key: _createKey(pModel.id, keyProvider), customComponent: pCustomComponent, offstage: offstage);
   }
 
   static Key _createKey(String id, Key Function(String)? keyProvider) {

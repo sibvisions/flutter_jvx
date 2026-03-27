@@ -31,7 +31,7 @@ import '../../editor/text_field/fl_text_field_widget.dart';
 import 'fl_button_group_widget.dart';
 
 class FlButtonGroupWrapper extends BaseCompWrapperWidget<FlPanelModel> {
-  const FlButtonGroupWrapper({super.key, required super.model});
+  const FlButtonGroupWrapper({super.key, required super.model, super.offstage});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlButtonGroupWrapperState();

@@ -34,7 +34,7 @@ class FlCustomWrapper<M extends FlComponentModel> extends BaseCompWrapperWidget<
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlCustomWrapper({super.key, required super.model, required this.customComponent});
+  const FlCustomWrapper({super.key, required super.model, super.offstage, required this.customComponent});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -83,10 +83,20 @@ class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperSt
 
   @override
   Widget build(BuildContext context) {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      postFrameCallback(context);
-    });
-    return wrapWidget(context, customComponent.componentBuilder.call(context, model));
+    Widget w;
+
+    if (widget.offstage) {
+      w = Offstage();
+    }
+    else {
+      w = customComponent.componentBuilder.call(context, model);
+
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        postFrameCallback(context);
+      });
+    }
+
+    return wrapWidget(context, w);
   }
 
 }
