@@ -64,7 +64,6 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-
     if (FlutterUI.logLayout.cl(Lvl.d)) {
       FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} reportLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
     }
@@ -129,7 +128,6 @@ class LayoutService implements ILayoutService {
       if (FlutterUI.logLayout.cl(Lvl.d)) {
         FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} not in legal state!");
       }
-
       return commands;
     }
 
@@ -166,6 +164,8 @@ class LayoutService implements ILayoutService {
       return commands;
     }
 
+    parentData.layoutState = LayoutState.VALID;
+
     return _performLayout(pLayoutData: parentData);
   }
 
@@ -183,6 +183,9 @@ class LayoutService implements ILayoutService {
       applyScreenSize(existingLayout);
 
       if (_isLegalState(pLayoutData: existingLayout, message: "setScreenSize of $pScreenComponentId")) {
+        //if legal-state -> everything is fine -> VALID
+        existingLayout.layoutState = LayoutState.VALID;
+
         return _performLayout(pLayoutData: existingLayout);
       }
     }
