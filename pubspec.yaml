@@ -165,6 +165,8 @@ dependencies:
 
   haptic_feedback: ^0.6.0
 
+  pdf: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -187,6 +189,8 @@ flutter:
     - assets/config/
     - assets/images/
     - assets/languages/
+    - assets/fonts/Roboto-Regular.ttf
+    - assets/fonts/Roboto-Bold.ttf
 
 flutter_launcher_icons:
   image_path: "assets/images/JVx.png"

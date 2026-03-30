@@ -22,28 +22,39 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:pdf/widgets.dart' as pdfw;
+import 'package:pdf/pdf.dart';
 
 import '../../flutter_ui.dart';
 import '../../mask/error/error_dialog.dart';
+import '../../model/command/api/fetch_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
+import '../../model/command/config/save_download_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/data/column_definition.dart';
+import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
+import '../../service/data/i_data_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/auth/auth_service.dart';
+import '../../util/i_types.dart';
+import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
@@ -203,7 +214,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   Future<bool> sendButtonPressed([String? overwrittenButtonPressId]) {
     if (model.isSecure) {
-
       return _authenticateUser().then((authenticated) {
         if (authenticated == null) {
           IUiService().showJVxDialog(ErrorDialog(title:
@@ -284,6 +294,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           openScanner();
         } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
           callNumber();
+        } else if (model.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_BUTTON) {
+          exportOnDevice();
         }
       }
 
@@ -395,6 +407,148 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     }
 
     return null;
+  }
+
+  Future<void> exportOnDevice() async {
+    DataBook? book = IDataService().getDataBook(model.dataProvider);
+
+    if (book != null) {
+      List<dynamic>? columnNames = model.jsonMerge[ApiObjectProperty.columnNames];
+
+      if (columnNames != null) {
+        if (!book.isAllFetched) {
+          await ICommandService().sendCommand(
+            FetchCommand(
+              reason: "Fetching data for export on device",
+              dataProvider: book.dataProvider,
+              fromRow: book.records.length,
+              rowCount: -1
+            )
+          );
+        }
+
+        String? title = model.jsonMerge[ApiObjectProperty.title];
+
+        // Header
+
+        List<dynamic> columnNamesCopy = List.of(columnNames);
+
+        List<String> headers = [];
+        Map<int, pdfw.Alignment> alignments = {};
+
+        int headerPos = 0;
+        for (String name in columnNamesCopy) {
+          if (book.metaData != null) {
+            ColumnDefinition? colDef = book.metaData!.columnDefinitions.byName(name);
+
+            if (colDef != null) {
+              headers.add(colDef.label);
+
+              alignments[headerPos++] = pdfw.Alignment.topLeft;
+              //if (colDef.id == Types.)
+            }
+            else {
+              //no column definition -> don't export
+              columnNames.remove(name);
+            }
+          }
+          else {
+            alignments[headerPos++] = pdfw.Alignment.topLeft;
+
+            //no metadata -> try to export
+            headers.add(name);
+          }
+        }
+
+        // Records
+        List<dynamic>? record;
+
+        List<List<dynamic>> exportData = [];
+        List<dynamic>? exportRecord;
+
+        for (int i = 0; i < book.records.length; i++) {
+          record = book.records[i];
+
+          if (record != null) {
+            exportRecord = [];
+            int? idx;
+
+            for (String name in columnNames) {
+
+              idx = book.metaData?.columnDefinitions.indexByName(name);
+
+              if (idx != null && idx >= 0) {
+                exportRecord.add(record[idx] ?? "");
+              }
+              else {
+                exportRecord.add("");
+              }
+            }
+
+            exportData.add(exportRecord);
+          }
+        }
+
+        final pdf = pdfw.Document();
+
+        final dataRegular = await rootBundle.load(ImageLoader.getAssetPath(FlutterUI.package, "assets/fonts/Roboto-Regular.ttf"));
+        final dataBold = await rootBundle.load(ImageLoader.getAssetPath(FlutterUI.package, "assets/fonts/Roboto-Bold.ttf"));
+
+        final ftRegular = pdfw.Font.ttf(dataRegular);
+        final ftBold = pdfw.Font.ttf(dataBold);
+
+        pdf.addPage(
+          pdfw.MultiPage(
+            theme: pdfw.ThemeData.withFont(
+              base: ftRegular,
+              bold: ftBold
+            ),
+            build: (pdfw.Context context) => [
+              if (title != null)
+                pdfw.Header(level: 0, child: pdfw.Text(FlutterUI.translate(title))),
+              pdfw.TableHelper.fromTextArray(
+                headers: headers,
+                data: exportData,
+                border: pdfw.TableBorder.all(width: 1),
+                headerStyle: pdfw.TextStyle(
+                  fontWeight: pdfw.FontWeight.bold,
+                  color: PdfColors.grey500,
+                ),
+                headerDecoration: const pdfw.BoxDecoration(color: PdfColors.grey300),
+                columnWidths: {
+                  for (int i = 0; i < columnNames.length; i++)
+                    i: const pdfw.FlexColumnWidth(1),
+                },
+                cellAlignments: alignments,
+                cellAlignment: pdfw.Alignment.centerLeft,
+                headerAlignment: pdfw.Alignment.centerLeft,
+              ),
+            ],
+          ),
+        );
+
+        // --> to bytes
+        final Uint8List bytes = await pdf.save();
+
+        String? fileName = model.jsonMerge[ApiObjectProperty.fileName];
+
+        String formattedDate = DateFormat('dd_MM_yyyy').format(DateTime.now());
+
+        fileName ??= "export_$formattedDate.pdf";
+
+        if (!fileName.contains(".")) {
+          fileName = "$fileName.pdf";
+        }
+
+        await ICommandService().sendCommand(SaveOrShowFileCommand(
+          fileId: "exportOnDevice",
+          fileName: fileName,
+          content: bytes,
+          showFile: false,
+          reason: "Export on device"
+        ));
+      }
+    }
   }
 
   /// Determine the current position of the device.

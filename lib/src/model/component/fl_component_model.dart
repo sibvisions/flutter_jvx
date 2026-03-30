@@ -109,6 +109,9 @@ abstract class FlComponentModel {
   /// The json base data
   Map<String, dynamic>? jsonBase;
 
+  // The merges json data
+  Map<String, dynamic> jsonMerge = {};
+
   /// The component id.
   String id = "";
 
@@ -260,6 +263,9 @@ abstract class FlComponentModel {
   /// otherwise uses their initiated default values.
   void applyFromJson(Map<String, dynamic> pJson) {
     jsonBase = pJson;
+
+    //merge to get all properties
+    jsonMerge.addAll(pJson);
 
     id = getPropertyValue(
       pJson: pJson,

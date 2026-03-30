@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../../flutter_ui.dart';
@@ -291,8 +290,9 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         heroTag: null,
         backgroundColor: Theme.of(context).colorScheme.primary,
         onPressed: widget.onFloatingPress,
-        child: FaIcon(
-          FontAwesomeIcons.squarePlus,
+        child: Icon(
+          Icons.add_box_outlined,
+          size: 27,
           color: widget.model.foreground ?? Theme.of(context).colorScheme.onPrimary,
         ),
       ),
@@ -455,36 +455,6 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
                   ),
                 ),
               )
-/*
-        SingleChildScrollView(child:
-              Column(
-                children: [
-                  const SizedBox(height: 80),
-                  Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                          borderRadius: BorderRadius.circular(40),
-                          onLongPress: widget.onRefresh != null ? () {
-                            widget.onRefresh!.call();
-                          }: null,
-                          onTap: widget.onRefresh != null ? () {
-                            widget.onRefresh!.call();
-                          }: null,
-                          child: Padding(
-                              padding: EdgeInsetsGeometry.all(8),
-                              child: Icon(Icons.notes, size: 50, color: Colors.grey)
-                          )
-                      )
-                  ),
-                  const SizedBox(height: 8),
-                  Center(child: Text(
-                    FlutterUI.translate("No records available"),
-                    style: TextStyle(fontSize: 16, color: Colors.black45),
-                  )),
-                ],
-              ))
-
- */
           ],
         ),
       ),

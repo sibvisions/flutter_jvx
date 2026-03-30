@@ -38,6 +38,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   static const String QR_SCANNER_BUTTON = "QRScannerButton";
   static const String CALL_BUTTON = "CallButton";
   static const String GEO_LOCATION_BUTTON = "GeoLocationButton";
+  static const String EXPORT_ON_DEVICE_BUTTON = "ExportOnDeviceButton";
 
   // ignore: non_constant_identifier_names
   static VoidCallback EMPTY_CALLBACK = () {};

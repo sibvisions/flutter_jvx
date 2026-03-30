@@ -101,7 +101,6 @@ abstract class IconUtil {
 
             switch (type) {
                 case IconType.Material:
-
                     Icon? icon = MaterialIconUtil.getIcon(iconName, size_, color_);
 
                     if (icon != null) {
