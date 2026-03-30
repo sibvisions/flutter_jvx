@@ -307,7 +307,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     // Is the table wider than it can be seen? -> Disables row swipes
     bool canScrollHorizontally = widget.tableSize.sumColumnWidth.toPrecision(1) > constraints.maxWidth.toPrecision(1);
 
-    Widget table = _createRecordList(canScrollHorizontally, maxWidth);
+    Widget table = _createRecordList(context, canScrollHorizontally, maxWidth);
 
     if (widget.onRefresh != null && widget.model.isEnabled) {
       table = wrapWithScrollConfiguration(context, RefreshIndicator(
@@ -381,7 +381,10 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   }
 
   /// Creates the list of records.
-  Widget _createRecordList(bool canScrollHorizontally, double maxWidth) {
+  Widget _createRecordList(BuildContext context, bool canScrollHorizontally, double maxWidth) {
+
+    ThemeData theme = Theme.of(context);
+
     return SingleChildScrollView(
       physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
       controller: widget.tableHorizontalController,
@@ -413,7 +416,75 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
                     )
                   ]
                 )
+              ),
+            if (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty)
+              Positioned(
+                top: 80,
+                left: 0,
+                right: 0,
+                child: Center(
+                  //avoid overflow
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(40),
+                            onTap: widget.onRefresh,
+                            onLongPress: widget.onRefresh,
+                            child: Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Stack(
+                                children: [Icon(Icons.notes, size: 50, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
+                                  Positioned(bottom: 0, right: 0, child: Icon(Icons.refresh, size: 20, color: theme.colorScheme.primary.withAlpha(150)))
+                              ])
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        IgnorePointer(
+                          child: Text(
+                            FlutterUI.translate("No records available"),
+                            style: TextStyle(fontSize: 16, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               )
+/*
+        SingleChildScrollView(child:
+              Column(
+                children: [
+                  const SizedBox(height: 80),
+                  Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                          borderRadius: BorderRadius.circular(40),
+                          onLongPress: widget.onRefresh != null ? () {
+                            widget.onRefresh!.call();
+                          }: null,
+                          onTap: widget.onRefresh != null ? () {
+                            widget.onRefresh!.call();
+                          }: null,
+                          child: Padding(
+                              padding: EdgeInsetsGeometry.all(8),
+                              child: Icon(Icons.notes, size: 50, color: Colors.grey)
+                          )
+                      )
+                  ),
+                  const SizedBox(height: 8),
+                  Center(child: Text(
+                    FlutterUI.translate("No records available"),
+                    style: TextStyle(fontSize: 16, color: Colors.black45),
+                  )),
+                ],
+              ))
+
+ */
           ],
         ),
       ),
@@ -507,14 +578,13 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
           widget.onHeaderTap!(column);
         }
       },
-    onDoubleTap: (column) {
-      _closeSlidablesImmediate();
+      onDoubleTap: (column) {
+        _closeSlidablesImmediate();
 
-      if (widget.onHeaderDoubleTap != null) {
-        widget.onHeaderDoubleTap!(column);
-      }
-
-    },
+        if (widget.onHeaderDoubleTap != null) {
+          widget.onHeaderDoubleTap!(column);
+        }
+      },
       tableSize: widget.tableSize,
       onLongPress: widget.onLongPress,
       sortDefinitions: widget.metaData?.sortDefinitions,
@@ -666,6 +736,12 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   }
 
   Future<void> _forwardLongPress(Offset globalPosition) async {
+    if (_sliverContext == null
+        || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty)) {
+      widget.onLongPress?.call(-2, "", FlDummyCellEditor(), globalPosition);
+      return;
+    }
+
     final result = await _observerController.dispatchOnceObserve(
       sliverContext: _sliverContext!,
       isDependObserveCallback: false,
@@ -722,8 +798,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
           sFoundColumn = widget.model.columnNames[i];
         }
       }
+
+      widget.onLongPress?.call(-1, sFoundColumn ?? "", FlDummyCellEditor(), globalPosition);
+      return;
     }
 
-    widget.onLongPress?.call(-1, sFoundColumn ?? "", FlDummyCellEditor(), globalPosition);
+    widget.onLongPress?.call(-2, "", FlDummyCellEditor(), globalPosition);
   }
 }

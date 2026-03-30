@@ -417,7 +417,11 @@
   },
   {
     "text": "No screens available",
-    "translation": "Keine Bearbeitungsmasken verfügbar"
+    "translation": "Keine Inhalte verfügbar"
+  },
+  {
+    "text": "No records available",
+    "translation": "Keine Daten verfügbar"
   },
   {
     "text": "Device access",

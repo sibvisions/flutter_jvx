@@ -187,16 +187,21 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               }
 
               if (body == null && menuModel.items.isEmpty) {
+                Color colIcon = Theme.of(context).textTheme.labelMedium?.color?.withAlpha(100) ?? Colors.grey;
+
                 body = Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (isOffline && !OfflineUtil.isGoingOffline) OfflineUtil.getOfflineBar(context),
                     const SizedBox(height: 80),
-                    Icon(Icons.notes, size: 80, color: Colors.grey),
+                    Icon(Icons.notes, size: 80, color: colIcon),
                     const SizedBox(height: 16),
                     Text(
                       FlutterUI.translate("No screens available"),
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: colIcon),
                     ),
                   ],
                 );
