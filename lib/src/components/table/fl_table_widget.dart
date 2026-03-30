@@ -783,10 +783,8 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       }
     }
 
-    //We try to find the column name
-    String? sFoundColumn;
-
     if (resultMap.isNotEmpty) {
+      //We try to find the column name
       double xPos = resultMap[0].renderObject.localToGlobal(Offset.zero).dx;
 
       String? sFoundColumn;

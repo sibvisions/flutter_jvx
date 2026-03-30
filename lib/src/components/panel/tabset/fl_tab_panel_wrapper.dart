@@ -724,7 +724,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
         if (image != null) {
           imageText.add(image);
-        };
+        }
 
         if (image != null && textChild != null) {
           imageText.add(const SizedBox(width: 5));
