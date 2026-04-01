@@ -2,6 +2,8 @@ assets/config/dev.conf.json
 creator/build
 creator/android
 node_modules/
+test/html/safe.html
+test/html/template_new.html
 
 # Miscellaneous
 *.class

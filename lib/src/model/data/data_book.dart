@@ -20,6 +20,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../components/editor/cell_editor/referenced_cell_editor.dart';
 import '../../flutter_ui.dart';
@@ -697,7 +698,7 @@ class DataBook {
 
       if (token == null) {
         try {
-          token ??= await IUiService().getInput("Encryption token", "Token", true);
+          token ??= await IUiService().getInput("Encryption token", "Token", true, faicon: FontAwesomeIcons.keycdn);
 
           if (token != null && token!.isNotEmpty) {
             await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", token);
@@ -792,7 +793,7 @@ class DataBook {
 
       if (token == null) {
         try {
-          token ??= await IUiService().getInput("Encryption token", "Token", true);
+          token ??= await IUiService().getInput("Encryption token", "Token", true, faicon: FontAwesomeIcons.keycdn);
 
           if (token != null && token!.isNotEmpty) {
             await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", token);

@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:action_slider/action_slider.dart';
@@ -22,16 +23,12 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:pdf/widgets.dart' as pdfw;
-import 'package:pdf/pdf.dart';
 
 import '../../flutter_ui.dart';
 import '../../mask/error/error_dialog.dart';
@@ -53,8 +50,8 @@ import '../../service/data/i_data_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/auth/auth_service.dart';
+import '../../util/html_vault.dart';
 import '../../util/i_types.dart';
-import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
@@ -82,6 +79,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   ActionSliderController actionSliderController = ActionSliderController();
 
   LocalAuthentication? _auth;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -130,12 +129,14 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
               });
         },
       );
-    } else {
+    }
+    else {
       buttonWidget = FlButtonWidget(
         onFocusGained: focus,
         onFocusLost: unfocus,
         model: model,
         focusNode: buttonFocusNode,
+        loading: _isLoading,
         onPress: () {
           sendButtonPressed();
         },
@@ -295,6 +296,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
           callNumber();
         } else if (model.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_BUTTON) {
+          setState(() => _isLoading = true);
+
           exportOnDevice();
         }
       }
@@ -410,144 +413,189 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   Future<void> exportOnDevice() async {
-    DataBook? book = IDataService().getDataBook(model.dataProvider);
+    try {
+      DataBook? book = IDataService().getDataBook(model.dataProvider);
 
-    if (book != null) {
-      List<dynamic>? columnNames = model.jsonMerge[ApiObjectProperty.columnNames];
+      if (book != null) {
+        String? password = await IUiService().getInput("File password", "Password", true, icon: Icons.key);
 
-      if (columnNames != null) {
-        if (!book.isAllFetched) {
-          await ICommandService().sendCommand(
-            FetchCommand(
-              reason: "Fetching data for export on device",
-              dataProvider: book.dataProvider,
-              fromRow: book.records.length,
-              rowCount: -1
-            )
+        if (password == null || password.isEmpty) {
+          return;
+        }
+
+        List<dynamic>? columnNames = model.jsonMerge[ApiObjectProperty.columnNames];
+
+        if (columnNames != null) {
+          if (!book.isAllFetched) {
+            await ICommandService().sendCommand(
+                FetchCommand(
+                    reason: "Fetching data for export on device",
+                    dataProvider: book.dataProvider,
+                    fromRow: book.records.length,
+                    rowCount: -1
+                )
+            );
+          }
+
+          StringBuffer html = StringBuffer();
+
+          html.write(
+              '''
+            <style>
+              .custom-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                border: 1px solid #d1d1d1;
+                border-radius: 12px;
+                overflow: hidden;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              }
+            
+              .custom-table th, 
+              .custom-table td {
+                padding: 14px;
+                text-align: left;
+                border-bottom: 1px solid #d1d1d1;
+                border-right: 1px solid #d1d1d1;
+              }
+            
+              /* remove right border of last column */
+              .custom-table th:last-child, 
+              .custom-table td:last-child {
+                border-right: none;
+              }
+            
+              /* remove bottom border or last row */
+              .custom-table tr:last-child td {
+                border-bottom: none;
+              }
+            
+              /* header */
+              .custom-table th {
+                background-color: #ececec;
+                color: #444;
+                font-weight: 600;
+              }
+            
+              /* odd/even background */
+              .custom-table tbody tr:nth-child(odd) {
+                background-color: #fcfcfc;
+              }
+            
+              /* hover for visibility */
+              .custom-table tbody tr:hover {
+                background-color: #f5f5f5;
+              }
+              
+              p.title {
+                margin-top: 0;
+                font-size: 17px;
+                font-weight: 600;
+                margin-bottom: 20px;
+              }
+            </style>
+            '''
           );
-        }
 
-        String? title = model.jsonMerge[ApiObjectProperty.title];
+          String? title = model.jsonMerge[ApiObjectProperty.title];
 
-        // Header
+          html.write("<p class='title'>$title</p>");
 
-        List<dynamic> columnNamesCopy = List.of(columnNames);
+          // Header
 
-        List<String> headers = [];
-        Map<int, pdfw.Alignment> alignments = {};
+          List<dynamic> columnNamesCopy = List.of(columnNames);
 
-        int headerPos = 0;
-        for (String name in columnNamesCopy) {
-          if (book.metaData != null) {
-            ColumnDefinition? colDef = book.metaData!.columnDefinitions.byName(name);
+          List<String> headers = [];
+          Map<String, String> alignments = {};
 
-            if (colDef != null) {
-              headers.add(colDef.label);
+          html.write("<table class='custom-table'><tr>");
 
-              alignments[headerPos++] = pdfw.Alignment.topLeft;
-              //if (colDef.id == Types.)
-            }
-            else {
-              //no column definition -> don't export
-              columnNames.remove(name);
-            }
-          }
-          else {
-            alignments[headerPos++] = pdfw.Alignment.topLeft;
+          for (String name in columnNamesCopy) {
+            if (book.metaData != null) {
+              ColumnDefinition? colDef = book.metaData!.columnDefinitions.byName(name);
 
-            //no metadata -> try to export
-            headers.add(name);
-          }
-        }
+              if (colDef != null) {
+                html.write("<th>${colDef.label}</th>");
 
-        // Records
-        List<dynamic>? record;
-
-        List<List<dynamic>> exportData = [];
-        List<dynamic>? exportRecord;
-
-        for (int i = 0; i < book.records.length; i++) {
-          record = book.records[i];
-
-          if (record != null) {
-            exportRecord = [];
-            int? idx;
-
-            for (String name in columnNames) {
-
-              idx = book.metaData?.columnDefinitions.indexByName(name);
-
-              if (idx != null && idx >= 0) {
-                exportRecord.add(record[idx] ?? "");
+                if (colDef.dataTypeIdentifier == Types.DECIMAL
+                    || colDef.dataTypeIdentifier == Types.BIGINT) {
+                  alignments[name] = "right";
+                }
+                else {
+                  alignments[name] = "right";
+                }
               }
               else {
-                exportRecord.add("");
+                //no column definition -> don't export
+                columnNames.remove(name);
               }
             }
+            else {
+              alignments[name] = "right";
 
-            exportData.add(exportRecord);
+              //no metadata -> try to export
+              headers.add(name);
+            }
           }
+
+          html.write("</tr>");
+
+          // Records
+          List<dynamic>? record;
+
+          for (int i = 0; i < book.records.length; i++) {
+            record = book.records[i];
+
+            if (record != null) {
+              int? idx;
+
+              html.write("<tr>");
+              for (String name in columnNames) {
+                html.write("<td style='text-align: ${alignments["name"]}'>");
+
+                idx = book.metaData?.columnDefinitions.indexByName(name);
+
+                if (idx != null && idx >= 0) {
+                  html.write(record[idx] ?? "");
+                }
+                else {
+                  html.write("");
+                }
+
+                html.write("</td>");
+              }
+
+              html.write("</tr>");
+            }
+          }
+
+          html.write("</table");
+
+          String htmlEncrypted = await HtmlVault.create(htmlContent: html.toString(), password: password);
+
+          String? fileName = model.jsonMerge[ApiObjectProperty.fileName];
+
+          String formattedDate = DateFormat('dd_MM_yyyy').format(DateTime.now());
+
+          fileName ??= "export_$formattedDate.html";
+
+          if (!fileName.contains(".")) {
+            fileName = "$fileName.html";
+          }
+
+          await ICommandService().sendCommand(SaveOrShowFileCommand(
+              fileId: "exportOnDevice",
+              fileName: fileName,
+              content: utf8.encode(htmlEncrypted),
+              showFile: false,
+              reason: "Export on device"
+          ));
         }
-
-        final pdf = pdfw.Document();
-
-        final dataRegular = await rootBundle.load(ImageLoader.getAssetPath(FlutterUI.package, "assets/fonts/Roboto-Regular.ttf"));
-        final dataBold = await rootBundle.load(ImageLoader.getAssetPath(FlutterUI.package, "assets/fonts/Roboto-Bold.ttf"));
-
-        final ftRegular = pdfw.Font.ttf(dataRegular);
-        final ftBold = pdfw.Font.ttf(dataBold);
-
-        pdf.addPage(
-          pdfw.MultiPage(
-            theme: pdfw.ThemeData.withFont(
-              base: ftRegular,
-              bold: ftBold
-            ),
-            build: (pdfw.Context context) => [
-              if (title != null)
-                pdfw.Header(level: 0, child: pdfw.Text(FlutterUI.translate(title))),
-              pdfw.TableHelper.fromTextArray(
-                headers: headers,
-                data: exportData,
-                border: pdfw.TableBorder.all(width: 1),
-                headerStyle: pdfw.TextStyle(
-                  fontWeight: pdfw.FontWeight.bold,
-                  color: PdfColors.grey500,
-                ),
-                headerDecoration: const pdfw.BoxDecoration(color: PdfColors.grey300),
-                columnWidths: {
-                  for (int i = 0; i < columnNames.length; i++)
-                    i: const pdfw.FlexColumnWidth(1),
-                },
-                cellAlignments: alignments,
-                cellAlignment: pdfw.Alignment.centerLeft,
-                headerAlignment: pdfw.Alignment.centerLeft,
-              ),
-            ],
-          ),
-        );
-
-        // --> to bytes
-        final Uint8List bytes = await pdf.save();
-
-        String? fileName = model.jsonMerge[ApiObjectProperty.fileName];
-
-        String formattedDate = DateFormat('dd_MM_yyyy').format(DateTime.now());
-
-        fileName ??= "export_$formattedDate.pdf";
-
-        if (!fileName.contains(".")) {
-          fileName = "$fileName.pdf";
-        }
-
-        await ICommandService().sendCommand(SaveOrShowFileCommand(
-          fileId: "exportOnDevice",
-          fileName: fileName,
-          content: bytes,
-          showFile: false,
-          reason: "Export on device"
-        ));
       }
+    }
+    finally {
+      setState(() => _isLoading = false);
     }
   }
 

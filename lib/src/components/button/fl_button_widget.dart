@@ -26,6 +26,7 @@ import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 import '../label/fl_label_widget.dart';
+import '../../util/widgets/elevated_progress_button.dart';
 
 /// The widget representing a button.
 class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
@@ -71,6 +72,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   /// Whether to use minimal size for widget and remove paddings and reduce tap target size
   final bool? shrinkSize;
 
+  /// Whether button is in loading state
+  final bool loading;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,6 +96,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     required this.focusNode,
     this.shrinkSize,
     this.tapTargetSize,
+    this.loading = false,
     this.onPress,
     this.onFocusGained,
     this.onFocusLost,
@@ -106,7 +111,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   @override
   Widget build(BuildContext context) {
     Function()? pressEvent = getOnPressed(context);
+
     if (pressEvent != null && pressEvent != EMPTY_CALLBACK) {
+      Function() pressEventOld = pressEvent;
+
       pressEvent = () {
         if (model.isHapticLight) {
           HapticUtil.light();
@@ -120,14 +128,34 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           HapticUtil.vibrate();
         }
 
-        getOnPressed(context)!.call();
+        pressEventOld.call();
       };
     }
 
     focusNode.canRequestFocus = isButtonFocusable;
 
-    if (model.isTextButton) {
-      return TextButton(
+    if (model.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_BUTTON) {
+      return ElevatedProgressButton(
+        focusNode: focusNode,
+        onFocusChange: _onFocusChange,
+        onPressed: pressEvent,
+        style: createButtonStyle(context),
+        loading: loading,
+        child: createDirectButtonChild(context),
+      );
+    }
+    else {
+      if (model.isTextButton) {
+        return TextButton(
+          focusNode: focusNode,
+          onFocusChange: _onFocusChange,
+          onPressed: pressEvent,
+          style: createButtonStyle(context),
+          child: createDirectButtonChild(context),
+        );
+      }
+
+      return ElevatedButton(
         focusNode: focusNode,
         onFocusChange: _onFocusChange,
         onPressed: pressEvent,
@@ -135,14 +163,6 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         child: createDirectButtonChild(context),
       );
     }
-
-    return ElevatedButton(
-      focusNode: focusNode,
-      onFocusChange: _onFocusChange,
-      onPressed: pressEvent,
-      style: createButtonStyle(context),
-      child: createDirectButtonChild(context),
-    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

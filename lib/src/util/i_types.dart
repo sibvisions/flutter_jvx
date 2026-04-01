@@ -91,6 +91,12 @@ abstract class Types {
 
   static const int SQLXML = 2009;
 
+  static const int REF_CURSOR = 2012;
+
+  static const int TIME_WITH_TIMEZONE = 2013;
+
+  static const int TIMESTAMP_WITH_TIMEZONE = 2014;
+
   static const int ENCODED_BINARY = -999999;
 
   /// Transforms a server given [dataType] to an SQLite-conform datatype.

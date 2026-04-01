@@ -49,7 +49,14 @@ abstract class WidgetUtil {
     }
   }
 
-  static Future<dynamic> showInputDialog(String title, String fieldTitle, bool confirm) async {
+  static Future<dynamic> showInputDialog(
+    String title,
+    String fieldTitle,
+    bool confirm, {
+      FaIconData? faicon,
+      IconData? icon
+    }
+  ) async {
     if (_overlayEntry != null) {
       return _inputCompleter!.future;
     }
@@ -95,8 +102,9 @@ abstract class WidgetUtil {
             mainAxisAlignment: MainAxisAlignment.start,
             spacing: 0,
             children: [
-              FaIcon(FontAwesomeIcons.keycdn),
-              SizedBox(width: 15),
+              if (icon != null) Icon(icon),
+              if (faicon != null) FaIcon(faicon),
+              if (icon != null || faicon != null) SizedBox(width: 15),
               Flexible(
                 fit: FlexFit.tight,
                 child: FittedBox(

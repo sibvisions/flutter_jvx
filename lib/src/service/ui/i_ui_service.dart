@@ -19,6 +19,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:universal_io/io.dart';
 
 import '../../custom/app_manager.dart';
@@ -113,7 +114,7 @@ abstract class IUiService implements Service {
   void updateProtection(List<ProtectConfig>? config);
 
   /// Gets UI input
-  Future<dynamic> getInput(String title, String fieldTitle, bool confirm);
+  Future<dynamic> getInput(String title, String fieldTitle, bool confirm, {FaIconData? faicon, IconData? icon});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing

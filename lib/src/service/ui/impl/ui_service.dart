@@ -216,8 +216,15 @@ class UiService implements IUiService {
   }
 
   @override
-  Future<dynamic> getInput(String title, String fieldTitle, bool confirm) async {
-    return WidgetUtil.showInputDialog(title, fieldTitle, confirm);
+  Future<dynamic> getInput(
+    String title,
+    String fieldTitle,
+    bool confirm, {
+      FaIconData? faicon,
+      IconData? icon
+    }
+  ) async {
+    return WidgetUtil.showInputDialog(title, fieldTitle, confirm, faicon: faicon, icon: icon);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

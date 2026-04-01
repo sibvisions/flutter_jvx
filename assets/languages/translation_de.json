@@ -438,5 +438,9 @@
   {
     "text": "Location permissions are permanently denied",
     "translation": "Zugriff auf Standort dauerhaft verweigert"
+  },
+  {
+    "text": "File password",
+    "translation": "Datei Passwort"
   }
 ]
