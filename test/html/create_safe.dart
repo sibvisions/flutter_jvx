@@ -20,7 +20,7 @@ import 'package:flutter_jvx/src/util/html_vault.dart';
 
 void main() async {
   try {
-    File sourceFile = File("test/html/template.html");
+    File sourceFile = File("test/html/template_new.html");
     File targetFile = File("test/html/safe.html");
 
     String template = await sourceFile.readAsString();
