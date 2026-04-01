@@ -523,7 +523,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
                   alignments[name] = "right";
                 }
                 else {
-                  alignments[name] = "right";
+                  alignments[name] = "left";
                 }
               }
               else {
@@ -532,7 +532,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
               }
             }
             else {
-              alignments[name] = "right";
+              alignments[name] = "left";
 
               //no metadata -> try to export
               headers.add(name);
@@ -552,7 +552,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
               html.write("<tr>");
               for (String name in columnNames) {
-                html.write("<td style='text-align: ${alignments["name"]}'>");
+                html.write("<td style='text-align: ${alignments[name]};'>");
 
                 idx = book.metaData?.columnDefinitions.indexByName(name);
 

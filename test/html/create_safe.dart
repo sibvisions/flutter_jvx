@@ -86,8 +86,8 @@ void main() async {
 <p class="title">Contacts</p>
 <table class="custom-table">
   <tr><th>First name</th><th>Last name</th><th>Last name</th><th>Last name</th><th>Last name</th></tr>
-  <tr><td>John</td><td>Doe</td><td>Doe</td><td>Doe</td><td>Doe</td></tr>
-  <tr><td>Jane</td><td>Doe</td><td>Doe</td><td>Doe</td><td>Doe</td></tr>
+  <tr><td>John</td><td>Doe</td><td>Doe</td><td>Doe</td><td style="text-align: right;">Doe John Doe John</td></tr>
+  <tr><td>Jane</td><td>Doe</td><td>Doe</td><td>Doe</td><td style="text-align: right;">Doe</td></tr>
   <tr><td>Marc</td><td>Marc</td><td>Marc</td><td>Marc</td><td>Marc</td></tr>
 </table>    
 ''';
