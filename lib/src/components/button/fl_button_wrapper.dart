@@ -440,9 +440,57 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           StringBuffer html = StringBuffer();
 
           html.write(
-              '''
+            '''
             <style>
+              .search-wrapper {
+                display: flex;
+                gap: 10px;
+                margin-top: 2rem;
+                margin-bottom: 1.5rem;
+                width: 100%;
+              }
+            
+              #searchInput {
+                flex: 5; 
+                background: #f1f5f9 !important; 
+                color: #1e293b !important;
+                border: 1px solid #cbd5e1 !important;
+                margin: 0; 
+                padding: 0.75rem;  
+                border-radius: 3px;
+              }
+              
+              #searchInput::placeholder {
+                color: #94a3b8;
+              }
+            
+              #searchClear {
+                flex: 1;
+                padding: 0.75rem;
+                background: #64748b;
+                color: white;
+                border: none;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                cursor: pointer;
+                white-space: nowrap;     
+              }
+              
+              #searchClear:hover {
+                background: #475569;
+              }  
+            
+              .custom-table th.searching {
+                background-color: #f0fdf4 !important; 
+                border-bottom: 3px solid #22c55e !important; 
+                color: #1e293b !important;
+                 
+                transition: all 0.3s ease;
+              }  
+            
               .custom-table {
+                -webkit-overflow-scrolling: touch; 
+                overflow-x: auto; 
                 width: 100%;
                 border-collapse: separate;
                 border-spacing: 0;
@@ -501,6 +549,17 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           String? title = model.jsonMerge[ApiObjectProperty.title];
 
           html.write("<p class='title'>$title</p>");
+
+          //Search
+
+          html.write(
+            '''
+            <div class="search-wrapper">
+            <input type="text" id="searchInput" class="table-search" placeholder="Enter search value">
+            <button id="searchClear" class="clear-btn">Clear</button>
+            </div>
+            '''
+          );
 
           // Header
 
@@ -570,7 +629,55 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
             }
           }
 
-          html.write("</table");
+          html.write("</table>");
+
+          html.write(
+            '''
+            <script>
+                (function() {
+                    const input = document.getElementById('searchInput');
+                    const btn = document.getElementById('searchClear');
+                    const table = document.querySelector(".custom-table");
+            
+                    // Alread initialized or missing elements -> stop
+                    if (!input || !table || input.dataset.initialized === "true") {
+                        return; 
+                    }
+            
+                    // Mark initialized and avoid multiple initialization
+                    input.dataset.initialized = "true";
+            
+                    const rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                    const headers = table.querySelectorAll("th");
+            
+                    const performFilter = () => {
+                        const filter = input.value.toLowerCase();
+                        const isSearching = filter.length > 0;
+            
+                        headers.forEach(th => {
+                            isSearching ? th.classList.add('searching') : th.classList.remove('searching');
+                        });
+            
+                        rows.forEach(row => {
+                            row.style.display = row.textContent.toLowerCase().includes(filter) ? "" : "none";
+                        });
+                    };
+            
+                    input.addEventListener('input', performFilter);
+                    
+                    if(btn) {
+                        btn.addEventListener('click', () => {
+                            input.value = '';
+                            performFilter();
+                            input.focus();
+                        });
+                    }
+                    
+                    console.log("Search successfully bound.");
+                })();
+            </script>             
+            '''
+          );
 
           String htmlEncrypted = await HtmlVault.create(htmlContent: html.toString(), password: password);
 

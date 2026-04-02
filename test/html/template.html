@@ -88,6 +88,17 @@
           padding: 2rem;
           box-sizing: border-box;
         }
+
+        #error-message {
+          color: #ef4444;
+          font-size: 0.875rem;
+          font-weight: 600;
+          margin-top: -0.5rem;
+          margin-bottom: 1rem;
+          min-height: 1.25rem;
+          visibility: hidden;
+          transition: opacity 0.3s;
+        }
     </style>
 </head>
 
@@ -99,65 +110,125 @@
         <div>Protected document</div>
     </h2>
     <p style="color: #94a3b8">Please enter the password</p>
-    <input type="password" id="passwordInput" placeholder="Password" autofocus>
+    <input type="password" id="passwordInput" placeholder="Password" autofocus></input>
+    <div id="error-message">- Wrong password -</div>
     <button onclick="unlock()">Unlock & Show</button>
 </div>
 
 <div id="viewer"></div>
 
 <script>
-    // We don't use onkeypress because it's deprecated, so use event listener for "Enter" key
-    document.getElementById('passwordInput').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            unlock();
+        let errorTimeout;
+
+        function showError() {
+            const errorEl = document.getElementById('error-message');
+            errorEl.style.visibility = 'visible';
+            errorEl.style.opacity = '1';
+
+            if (errorTimeout) clearTimeout(errorTimeout);
+
+            // show max. 5 seconds
+            errorTimeout = setTimeout(hideError, 5000);
         }
-    });
 
-    async function unlock() {
-        const password = document.getElementById('passwordInput').value;
-        const b64ToBuf = (b) => Uint8Array.from(atob(b), c => c.charCodeAt(0));
+        function hideError() {
+            if (errorTimeout) {
+                clearTimeout(errorTimeout);
+                errorTimeout = null;
+            }
 
-        try {
-            const salt = b64ToBuf("$salt");
-            const iv = b64ToBuf("$iv");
-            const mac = b64ToBuf("$mac");
-            const encrypted = b64ToBuf("$data");
+            const errorEl = document.getElementById('error-message');
+            errorEl.style.opacity = '0';
 
-            // password to key
-            const enc = new TextEncoder();
-            const baseKey = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
-
-            // derive AES-GCM key
-            const aesKey = await crypto.subtle.deriveKey(
-                { name: "PBKDF2", salt: salt, iterations: $_iterations, hash: "SHA-256" },
-                baseKey,
-                { name: "AES-GCM", length: $_bits },
-                false, ["decrypt"]
-            );
-
-            // merge data and mac (webCrypto API standard)
-            const combined = new Uint8Array(encrypted.length + mac.length);
-            combined.set(encrypted);
-            combined.set(mac, encrypted.length);
-
-            // decrypt
-            const decrypted = await crypto.subtle.decrypt(
-                { name: "AES-GCM", iv: iv, tagLength: 128 },
-                aesKey,
-                combined
-            );
-
-            // show decrypted content in "viewer"
-            document.getElementById('auth-ui').style.display = 'none';
-            const v = document.getElementById('viewer');
-            v.innerHTML = new TextDecoder().decode(decrypted);
-            v.style.display = 'block';
-
-            document.body.classList.add('viewer-active');
-        } catch (e) {
-            alert("Wrong password.");
+            //wait for transition before hiding
+            setTimeout(() => {
+                if(errorEl.style.opacity === '0') errorEl.style.visibility = 'hidden';
+            }, 300);
         }
-    }
+
+        // remove error when typing
+        document.getElementById('passwordInput').addEventListener('input', hideError);
+
+        // We don't use onkeypress because it's deprecated, so use event listener for "Enter" key
+        document.getElementById('passwordInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                unlock();
+            }
+        });
+
+        async function unlock() {
+            hideError();
+
+            const password = document.getElementById('passwordInput').value;
+            const b64ToBuf = (b) => Uint8Array.from(atob(b), c => c.charCodeAt(0));
+
+            try {
+                const salt = b64ToBuf("$salt");
+                const iv = b64ToBuf("$iv");
+                const mac = b64ToBuf("$mac");
+                const encrypted = b64ToBuf("$data");
+
+                // password to key
+                const enc = new TextEncoder();
+                const baseKey = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
+
+                // derive AES-GCM key
+                const aesKey = await crypto.subtle.deriveKey(
+                    { name: "PBKDF2", salt: salt, iterations: $_iterations, hash: "SHA-256" },
+                    baseKey,
+                    { name: "AES-GCM", length: $_bits },
+                    false, ["decrypt"]
+                );
+
+                // merge data and mac (webCrypto API standard)
+                const combined = new Uint8Array(encrypted.length + mac.length);
+                combined.set(encrypted);
+                combined.set(mac, encrypted.length);
+
+                // decrypt
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: iv, tagLength: 128 },
+                    aesKey,
+                    combined
+                );
+
+                // show decrypted content in "viewer"
+                document.getElementById('auth-ui').style.display = 'none';
+                const v = document.getElementById('viewer');
+                v.innerHTML = new TextDecoder().decode(decrypted);
+                v.style.display = 'block';
+
+                document.body.classList.add('viewer-active');
+
+                // Initialize scripts because some browsers won't do this (security!)
+
+                //REMOVE "old" scripts
+                const oldScripts = document.querySelectorAll('.vault-injected-script');
+                oldScripts.forEach(script => script.remove());
+
+                //Check for "new" scripts
+                const scripts = v.getElementsByTagName("script");
+
+                // allows safe manipulation
+                const scriptArray = Array.from(scripts);
+
+                scriptArray.forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    newScript.text = oldScript.innerText;
+                    //marker for "new" script
+                    newScript.className = 'vault-injected-script';
+
+                    document.body.appendChild(newScript);
+
+                    //remove script from content
+                    oldScript.remove();
+                });
+            } catch (e) {
+                showError();
+
+                console.error('Decryption failed:', e);
+            }
+        }
 </script>
 </body>
 </html>

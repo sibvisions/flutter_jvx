@@ -38,8 +38,11 @@ rm -r $pubCache/hosted/pub.dev/webview_flutter*
 rm -r $pubCache/hosted/pub.dev/android_id*
 rm -r $pubCache/hosted/pub.dev/app_links*
 rm -r $pubCache/hosted/pub.dev/screenshot*
-rm -r $pubCache/hosted/pub.dev/json_dynamic_widget*
 rm -r $pubCache/hosted/pub.dev/web-*
+rm -r $pubCache/hosted/pub.dev/flutter_secure_storage*
+rm -r $pubCache/hosted/pub.dev/local_auth*
+rm -r $pubCache/hosted/pub.dev/flutter_inappwebview*
+rm -r $pubCache/hosted/pub.dev/haptic_feedback*
 rm -r $pubCache/git/fix_html-editor-enhanced*
 rm -r $pubCache/git/flutter_keyboard_visibility-*
 
