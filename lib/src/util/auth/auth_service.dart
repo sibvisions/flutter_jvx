@@ -42,6 +42,9 @@ class AuthService extends ChangeNotifier {
   /// whether to use native channel communication
   static final bool _useChannel = Platform.isIOS || Platform.isAndroid;
 
+  /// short pause definition
+  static final Duration _shortPause = const Duration(seconds: 45);
+
   /// the authentication support
   final LocalAuthentication _auth = LocalAuthentication();
 
@@ -50,6 +53,9 @@ class AuthService extends ChangeNotifier {
 
   /// The timer for automatic stop of authentication
   Timer? _noAuthTimer;
+
+  ///Start with pause time
+  DateTime? _pauseTime;
 
   int _noAuthTimerSeconds = 0;
 
@@ -231,6 +237,9 @@ class AuthService extends ChangeNotifier {
 
   /// Notification about app resumed
   void resumed() {
+    bool isLongPause = _pauseTime != null && DateTime.now().difference(_pauseTime!) >= _shortPause;
+
+    _pauseTime = null;
     _isStopped = false;
 
     bool notify = false;
@@ -240,7 +249,7 @@ class AuthService extends ChangeNotifier {
       for (int i = 0; i < _config!.length; i++) {
         ProtectConfig entry = _config![i];
 
-        if (entry.reAuthOnlyAfterResume) {
+        if (entry.reAuthOnlyAfterResume && isLongPause) {
           _invalidConfigIndex = i;
           _isCanceled = false;
           _isAuthenticated = false;
@@ -254,14 +263,20 @@ class AuthService extends ChangeNotifier {
       }
     }
 
-    String appKey = "${IConfigService().currentApp.value ?? "<undefined>"}@";
+    if (isLongPause) {
+      String appKey = "${IConfigService().currentApp.value ?? "<undefined>"}@";
 
-    //remove all remaining entries which are marked as resumed (for the same app)
-    _globalAuthTime.removeWhere((key, value) => key.startsWith(appKey) && value.afterResume);
+      //remove all remaining entries which are marked as resumed (for the same app)
+      _globalAuthTime.removeWhere((key, value) => key.startsWith(appKey) && value.afterResume);
+    }
 
     if (notify) {
       notifyListeners();
     }
+  }
+
+  void pause() {
+    _pauseTime = DateTime.now();
   }
 
   Future<void> authenticate([bool checkTimeout = true]) async {

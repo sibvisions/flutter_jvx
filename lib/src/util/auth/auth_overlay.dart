@@ -155,6 +155,8 @@ class _AuthOverlayState extends State<AuthOverlay> with WidgetsBindingObserver {
       //immediate if possible
       setState(() {});
 
+      service.pause();
+
       //will send setState but with next frame
       service.cancel();
     }
