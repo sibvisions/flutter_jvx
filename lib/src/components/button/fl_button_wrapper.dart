@@ -56,7 +56,7 @@ import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
-import '../../util/widgets/jvx_scanner.dart';
+import '../../util/widgets/embedded_code_scanner.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_button_widget.dart';

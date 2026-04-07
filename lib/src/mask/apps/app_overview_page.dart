@@ -32,7 +32,7 @@ import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
-import '../../util/widgets/jvx_scanner.dart';
+import '../../util/widgets/embedded_code_scanner.dart';
 import '../camera/qr_parser.dart';
 import 'app_change_urls_dialog.dart';
 import 'app_edit_dialog.dart';

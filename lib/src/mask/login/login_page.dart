@@ -31,7 +31,7 @@ import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/jvx_colors.dart';
-import '../../util/widgets/jvx_webview.dart';
+import '../../util/widgets/embedded_webview.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
 import 'modern/modern_login.dart';
