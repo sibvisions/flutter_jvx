@@ -66,13 +66,13 @@ class ServerConfig {
 
   ServerConfig.fromJson(Map<String, dynamic> json)
       : this(
-          appName: ParseUtil.ensureNullOnEmpty(json['appName']),
-          baseUrl: json['baseUrl'] != null ? Uri.parse(json['baseUrl']) : null,
-          username: ParseUtil.ensureNullOnEmpty(json['username']),
-          password: ParseUtil.ensureNullOnEmpty(json['password']),
-          title: ParseUtil.ensureNullOnEmpty(json['title']),
-          icon: ParseUtil.ensureNullOnEmpty(json['icon']),
-          isDefault: json['default'],
+          appName: ParseUtil.ensureNullOnEmpty(json["appName"]),
+          baseUrl: json["baseUrl"] != null ? Uri.parse(json["baseUrl"]) : null,
+          username: ParseUtil.ensureNullOnEmpty(json["username"]),
+          password: ParseUtil.ensureNullOnEmpty(json["password"]),
+          title: ParseUtil.ensureNullOnEmpty(json["title"]),
+          icon: ParseUtil.ensureNullOnEmpty(json["icon"]),
+          isDefault: json["default"],
         );
 
   ServerConfig.fromQR(Map<String, dynamic> json)

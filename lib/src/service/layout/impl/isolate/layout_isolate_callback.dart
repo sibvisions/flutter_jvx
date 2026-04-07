@@ -33,18 +33,18 @@ import 'message/endpoint/report_preferred_size_message.dart';
 import 'message/endpoint/set_screen_size_message.dart';
 
 void layoutCallback(Map<String, dynamic> message) {
-  SendPort callerSendPort = message['sendPort'];
+  SendPort callerSendPort = message["sendPort"];
 
   //Isolates have own memory areas and don't share instances, so static fields are not same as expected!
 
   //We use the same log level!
-  FlutterUI.log.setLevel(message['log.level']);
-  FlutterUI.logLayout.setLevel(message['logLayout.level']);
-  FlutterUI.logUI.setLevel(message['logUI.level']);
-  FlutterUI.logAPI.setLevel(message['logAPI.level']);
-  FlutterUI.logCommand.setLevel(message['logCommand.level']);
+  FlutterUI.log.setLevel(message["log.level"]);
+  FlutterUI.logLayout.setLevel(message["logLayout.level"]);
+  FlutterUI.logUI.setLevel(message["logUI.level"]);
+  FlutterUI.logAPI.setLevel(message["logAPI.level"]);
+  FlutterUI.logCommand.setLevel(message["logCommand.level"]);
 
-  SimplePrinter.levelPrefixes.addAll(message['SimplePrinter.levelPrefixes']);
+  SimplePrinter.levelPrefixes.addAll(message["SimplePrinter.levelPrefixes"]);
 
   // Instantiate a SendPort to receive message from the caller
   ReceivePort isolateReceivePort = ReceivePort();

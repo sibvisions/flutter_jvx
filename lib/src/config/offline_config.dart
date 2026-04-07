@@ -44,7 +44,7 @@ class OfflineConfig {
 
   OfflineConfig.fromJson(Map<String, dynamic> json)
       : this(
-          checkConstraints: json['checkConstraints'],
+          checkConstraints: json["checkConstraints"],
         );
 
   OfflineConfig merge(OfflineConfig? other) {

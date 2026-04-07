@@ -864,7 +864,7 @@ class OnlineApiRepository extends IRepository {
     IUiService().getAppManager()?.modifyHeaders(pRequest, requestHeaders);
 
     if (compress) {
-      requestHeaders['content-type'] = ContentType.binary.mimeType;
+      requestHeaders["content-type"] = ContentType.binary.mimeType;
     }
 
     Uri uri = Uri(path: "/${route.route}");

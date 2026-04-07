@@ -56,10 +56,10 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // remote widget libraries
-  static const LibraryName _coreName = LibraryName(<String>['core', 'widgets']);
-  static const LibraryName _materialName = LibraryName(<String>['material', 'widgets']);
-  static const LibraryName _localName = LibraryName(<String>['local', 'widgets']);
-  static const LibraryName mainName = LibraryName(<String>['main']);
+  static const LibraryName _coreName = LibraryName(<String>["core", "widgets"]);
+  static const LibraryName _materialName = LibraryName(<String>["material", "widgets"]);
+  static const LibraryName _localName = LibraryName(<String>["local", "widgets"]);
+  static const LibraryName mainName = LibraryName(<String>["main"]);
 
   /// This style defines the marker for custom card templates
   static const String STYLE_TEMPLATE_MARKER = "f_template_";

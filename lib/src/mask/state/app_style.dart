@@ -84,7 +84,7 @@ class AppStyle extends InheritedWidget {
   /// Gets the style setting by name and recognizes dark mode setting
   String? style(BuildContext context, String propertyName) {
     if (!JVxColors.isLightTheme(context)) {
-      String? valueDark = applicationStyle?['dark.$propertyName'];
+      String? valueDark = applicationStyle?["dark.$propertyName"];
 
       if (valueDark != null) {
         return valueDark;

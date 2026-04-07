@@ -35,7 +35,7 @@ class LogConfig {
 
   LogConfig.fromJson(Map<String, dynamic> json)
       : this(
-          levels: json['levels'] != null ? LogLevelConfig.fromJson(json['levels']) : null,
+          levels: json["levels"] != null ? LogLevelConfig.fromJson(json["levels"]) : null,
         );
 
   LogConfig merge(LogConfig? other) {

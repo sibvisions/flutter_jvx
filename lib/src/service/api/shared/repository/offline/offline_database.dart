@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       if (appId != null) {
         List<Map<String, Object?>> rows = await txn.query(
           OFFLINE_METADATA_TABLE,
-          columns: ['TABLE_NAME'],
+          columns: ["TABLE_NAME"],
           where: "APP_ID = ?",
           whereArgs: [appId],
         );
@@ -234,13 +234,13 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return db
         .query(
           OFFLINE_METADATA_TABLE,
-          columns: ['META_DATA'],
+          columns: ["META_DATA"],
           where:
               "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)${pDataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""}",
           whereArgs: whereArgs,
         )
         .then((result) =>
-            result.map((e) => DalMetaData.fromJson(jsonDecode(e['META_DATA'] as String))).toList(growable: false));
+            result.map((e) => DalMetaData.fromJson(jsonDecode(e["META_DATA"] as String))).toList(growable: false));
   }
 
   /// Closes the database.
@@ -321,7 +321,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     String sql = 'SELECT COUNT(*) AS COUNT FROM sqlite_master WHERE TYPE = \'table\' AND NAME = ?;';
     return db.rawQuery(sql, [tableName])
         // Check if returned count in select is 1
-        .then((results) => results[0]['COUNT'] as int > 0);
+        .then((results) => results[0]["COUNT"] as int > 0);
   }
 
   /// Drops a table named [pTableName], if it exists.
@@ -392,7 +392,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       sql += ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
     }
 
-    return (txn ?? db).rawQuery(sql, [...?pFilter?.values]).then((results) => results[0]['COUNT'] as int > 0);
+    return (txn ?? db).rawQuery(sql, [...?pFilter?.values]).then((results) => results[0]["COUNT"] as int > 0);
   }
 
   /// Executes a SQL SELECT COUNT query for [pTableName] and returns the number of valid rows found, optionally with [pFilter] applied.
@@ -401,7 +401,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return (txn ?? db)
         .query(formatOfflineTableName(pTableName),
             columns: ["COUNT(*) AS COUNT"], where: where?[0], whereArgs: where?[1])
-        .then((results) => results[0]['COUNT'] as int);
+        .then((results) => results[0]["COUNT"] as int);
   }
 
   /// Executes a SQL SELECT query for [pTableName] and returns a list of the valid rows that were found.
@@ -685,6 +685,6 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         "$COLUMN_PREFIX%",
         STATE_COLUMN,
       ],
-    ).then((value) => value.map((e) => e['name'] as String).toList(growable: false));
+    ).then((value) => value.map((e) => e["name"] as String).toList(growable: false));
   }
 }

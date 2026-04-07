@@ -112,9 +112,9 @@ abstract class CryptoUtil {
       );
 
       final secretBox = SecretBox(
-        base64Decode(map['cipher']),
-        nonce: base64Decode(map['nonce']),
-        mac: Mac(base64Decode(map['mac'])),
+        base64Decode(map["cipher"]),
+        nonce: base64Decode(map["nonce"]),
+        mac: Mac(base64Decode(map["mac"])),
       );
 
       final decrypted = await algorithm.decrypt(

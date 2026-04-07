@@ -172,27 +172,27 @@ class AppConfig {
 
   AppConfig.fromJson(Map<String, dynamic> json)
   : this(
-      title: json['title'],
-      privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
-      connectTimeout: json['connectTimeout'] != null ? Duration(milliseconds: json['connectTimeout']) : null,
-      requestTimeout: json['requestTimeout'] != null ? Duration(milliseconds: json['requestTimeout']) : null,
-      aliveInterval: json['aliveInterval'] != null ? Duration(milliseconds: json['aliveInterval']) : null,
-      wsPingInterval: json['wsPingInterval'] != null ? Duration(milliseconds: json['wsPingInterval']) : null,
-      payloadCompress : json['payloadCompress'] != null ? (json['payloadCompress'] == true || json['payloadCompress'] == "true") : null,
-      autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
-      showAppOverviewWithoutDefault: json['showAppOverviewWithoutDefault'],
-      customAppsAllowed: json['customAppsAllowed'],
-      forceSingleAppMode: json['forceSingleAppMode'],
-      predefinedConfigsLocked: json['serverConfigsLocked'],
-      predefinedConfigsParametersHidden: json['serverConfigsParametersHidden'],
-      logConfig: json['logConfig'] != null ? LogConfig.fromJson(json['logConfig']) : null,
-      uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
+      title: json["title"],
+      privacyPolicy: json["privacyPolicy"] != null ? Uri.tryParse(json["privacyPolicy"]) : null,
+      connectTimeout: json["connectTimeout"] != null ? Duration(milliseconds: json["connectTimeout"]) : null,
+      requestTimeout: json["requestTimeout"] != null ? Duration(milliseconds: json["requestTimeout"]) : null,
+      aliveInterval: json["aliveInterval"] != null ? Duration(milliseconds: json["aliveInterval"]) : null,
+      wsPingInterval: json["wsPingInterval"] != null ? Duration(milliseconds: json["wsPingInterval"]) : null,
+      payloadCompress : json["payloadCompress"] != null ? (json["payloadCompress"] == true || json["payloadCompress"] == "true") : null,
+      autoRestartOnSessionExpired: json["autoRestartOnSessionExpired"],
+      showAppOverviewWithoutDefault: json["showAppOverviewWithoutDefault"],
+      customAppsAllowed: json["customAppsAllowed"],
+      forceSingleAppMode: json["forceSingleAppMode"],
+      predefinedConfigsLocked: json["serverConfigsLocked"],
+      predefinedConfigsParametersHidden: json["serverConfigsParametersHidden"],
+      logConfig: json["logConfig"] != null ? LogConfig.fromJson(json["logConfig"]) : null,
+      uiConfig: json["uiConfig"] != null ? UiConfig.fromJson(json["uiConfig"]) : null,
       serverConfigs:
-          (json['serverConfigs'] as List<dynamic>?)?.map((e) => PredefinedServerConfig.fromJson(e)).toList(),
-      versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json['versionConfig']) : null,
-      offlineConfig: json['offlineConfig'] != null ? OfflineConfig.fromJson(json['offlineConfig']) : null,
-      applicationParameters: json['applicationParameters'],
-      clearLocalStorage: json['clearLocalStorage']
+          (json["serverConfigs"] as List<dynamic>?)?.map((e) => PredefinedServerConfig.fromJson(e)).toList(),
+      versionConfig: json["versionConfig"] != null ? VersionConfig.fromJson(json["versionConfig"]) : null,
+      offlineConfig: json["offlineConfig"] != null ? OfflineConfig.fromJson(json["offlineConfig"]) : null,
+      applicationParameters: json["applicationParameters"],
+      clearLocalStorage: json["clearLocalStorage"]
     );
 
   AppConfig merge(AppConfig? other) {

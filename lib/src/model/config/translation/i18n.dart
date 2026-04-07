@@ -142,8 +142,8 @@ class I18n {
 
     Map<String, String> mapped = {};
     for (var a in translations) {
-      if (a['text'] != null) {
-        mapped[a['text']] = a['translation'] ?? "";
+      if (a["text"] != null) {
+        mapped[a["text"]] = a["translation"] ?? "";
       }
     }
     return mapped;

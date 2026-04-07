@@ -67,11 +67,11 @@ class UiConfig {
 
   UiConfig.fromJson(Map<String, dynamic> json)
       : this(
-          hideLanguageSetting: json['hideLanguageSetting'],
-          hidePictureSizeSetting: json['hidePictureSizeSetting'],
-          hideThemeSetting: json['hideThemeSetting'],
-          showRememberMe: json['showRememberMe'],
-          rememberMeChecked: json['rememberMeChecked'],
+          hideLanguageSetting: json["hideLanguageSetting"],
+          hidePictureSizeSetting: json["hidePictureSizeSetting"],
+          hideThemeSetting: json["hideThemeSetting"],
+          showRememberMe: json["showRememberMe"],
+          rememberMeChecked: json["rememberMeChecked"],
         );
 
   UiConfig merge(UiConfig? other) {

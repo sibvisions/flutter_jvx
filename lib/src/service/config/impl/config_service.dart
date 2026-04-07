@@ -681,7 +681,7 @@ class ConfigService implements IConfigService {
       return 1.0;
     }
 
-    return double.parse(_applicationStyle.value?['options.mobilescaling'] ?? '2.0');
+    return double.parse(_applicationStyle.value?["options.mobilescaling"] ?? '2.0');
   }
 
   @override
@@ -741,7 +741,7 @@ class ConfigService implements IConfigService {
 
   @override
   void imagesChanged() {
-    _callbacks['images']?.forEach((element) => element.call());
+    _callbacks["images"]?.forEach((element) => element.call());
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

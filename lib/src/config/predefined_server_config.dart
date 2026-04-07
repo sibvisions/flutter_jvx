@@ -74,15 +74,15 @@ class PredefinedServerConfig {
 
   PredefinedServerConfig.fromJson(Map<String, dynamic> json)
       : this(
-          appName: ParseUtil.ensureNullOnEmpty(json['appName']),
-          baseUrl: json['baseUrl'] != null ? Uri.parse(json['baseUrl']) : null,
-          username: ParseUtil.ensureNullOnEmpty(json['username']),
-          password: ParseUtil.ensureNullOnEmpty(json['password']),
-          title: ParseUtil.ensureNullOnEmpty(json['title']),
-          icon: ParseUtil.ensureNullOnEmpty(json['icon']),
-          isDefault: json['default'],
-          locked: json['locked'],
-          parametersHidden: json['parametersHidden'],
+          appName: ParseUtil.ensureNullOnEmpty(json["appName"]),
+          baseUrl: json["baseUrl"] != null ? Uri.parse(json["baseUrl"]) : null,
+          username: ParseUtil.ensureNullOnEmpty(json["username"]),
+          password: ParseUtil.ensureNullOnEmpty(json["password"]),
+          title: ParseUtil.ensureNullOnEmpty(json["title"]),
+          icon: ParseUtil.ensureNullOnEmpty(json["icon"]),
+          isDefault: json["default"],
+          locked: json["locked"],
+          parametersHidden: json["parametersHidden"],
         );
 
   /// Whether this config contains enough information to be valid.

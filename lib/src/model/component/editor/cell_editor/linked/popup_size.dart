@@ -21,11 +21,11 @@ class PopupSize {
   PopupSize();
 
   PopupSize.fromJson(Map<String, dynamic> json)
-      : width = json['width'],
-        height = json['height'];
+      : width = json["width"],
+        height = json["height"];
 
   Map<String, dynamic> toJson() => {
-        'width': width,
-        'height': height,
+        "width": width,
+        "height": height,
       };
 }

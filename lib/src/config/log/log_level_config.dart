@@ -70,11 +70,11 @@ class LogLevelConfig {
 
   LogLevelConfig.fromJson(Map<String, dynamic> json)
       : this(
-          general: parseLevel(json['general']),
-          api: parseLevel(json['api']),
-          command: parseLevel(json['command']),
-          ui: parseLevel(json['ui']),
-          layout: parseLevel(json['layout']),
+          general: parseLevel(json["general"]),
+          api: parseLevel(json["api"]),
+          command: parseLevel(json["command"]),
+          ui: parseLevel(json["ui"]),
+          layout: parseLevel(json["layout"]),
         );
 
   static Level? parseLevel(String? level) =>

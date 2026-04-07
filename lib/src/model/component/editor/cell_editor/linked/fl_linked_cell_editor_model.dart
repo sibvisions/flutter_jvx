@@ -212,8 +212,8 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
       return null;
     }
 
-    num width = pJson['width'];
-    num height = pJson['height'];
+    num width = pJson["width"];
+    num height = pJson["height"];
     return Size(width.toDouble(), height.toDouble()) * IConfigService().getScaling();
   }
 
