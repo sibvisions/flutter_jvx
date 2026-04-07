@@ -147,7 +147,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     for (int i = 0; i < widget.columnDefinitions.length; i++) {
       ColumnDefinition colDef = widget.columnDefinitions[i];
 
-      if (colDef.dataTypeIdentifier != Types.BINARY
+      if (colDef.dataTypeIdentifier != ITypes.BINARY
           || ICellEditor.isCellEditor(colDef, FlCellEditorClassname.IMAGE_VIEWER)) {
         columnDefinitions.add(colDef);
       }

@@ -378,7 +378,7 @@ class DataBook {
 
       int colIndex = _metaData?.columnDefinitions.indexByName(columnName) ?? -1;
       if (colIndex >= 0) {
-        if (_metaData?.columnDefinitions[colIndex].dataTypeIdentifier == Types.ENCODED_BINARY) {
+        if (_metaData?.columnDefinitions[colIndex].dataTypeIdentifier == ITypes.ENCODED_BINARY) {
           columnData = decryptValue(columnData);
         }
 
@@ -661,12 +661,12 @@ class DataBook {
       for (int i = 0; i < columnNames.length; i++) {
         colDef = metaData!.columnDefinitions.byName(columnNames[i]);
 
-        if (colDef?.dataTypeIdentifier == Types.ENCODED_BINARY) {
+        if (colDef?.dataTypeIdentifier == ITypes.ENCODED_BINARY) {
           valuesEncrypted ??= List.from(values);
 
           valuesEncrypted[i] = await _encryptValue(valuesEncrypted[i]);
         }
-        else if (colDef?.dataTypeIdentifier == Types.BINARY) {
+        else if (colDef?.dataTypeIdentifier == ITypes.BINARY) {
           if (values[i] != null
               && values[i] is! Uint8List
               && !CryptoUtil.isBase64(values[i])) {
@@ -734,7 +734,7 @@ class DataBook {
     DecryptedValue decValue;
 
     for (int i = 0; i < colList.length; i++) {
-      if (colList[i].dataTypeIdentifier == Types.ENCODED_BINARY) {
+      if (colList[i].dataTypeIdentifier == ITypes.ENCODED_BINARY) {
         newRecord ??= List.from(record);
         decValue = await decryptValue(newRecord[i]);
 
@@ -764,7 +764,7 @@ class DataBook {
           newRecord[i] = decValue.value;
         }
       }
-      else if (colList[i].dataTypeIdentifier == Types.BINARY) {
+      else if (colList[i].dataTypeIdentifier == ITypes.BINARY) {
         //converts a string to binary
         if (record[i] is String) {
           newRecord ??= List.from(record);

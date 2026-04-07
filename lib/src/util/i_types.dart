@@ -18,7 +18,7 @@
 /// SQL types, called JDBC types.
 ///
 /// This class is never instantiated.
-abstract class Types {
+abstract class ITypes {
   static const int BIT = -7;
 
   static const int TINYINT = -6;

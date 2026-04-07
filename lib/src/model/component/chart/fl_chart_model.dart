@@ -241,10 +241,10 @@ class FlChartModel extends FlComponentModel {
   }
 
   bool isCategoryChart(int dataType) =>
-      dataType == Types.CHAR ||
-      dataType == Types.LONGNVARCHAR ||
-      dataType == Types.LONGVARCHAR ||
-      dataType == Types.NCHAR ||
-      dataType == Types.NVARCHAR ||
-      dataType == Types.VARCHAR;
+      dataType == ITypes.CHAR ||
+      dataType == ITypes.LONGNVARCHAR ||
+      dataType == ITypes.LONGVARCHAR ||
+      dataType == ITypes.NCHAR ||
+      dataType == ITypes.NVARCHAR ||
+      dataType == ITypes.VARCHAR;
 }

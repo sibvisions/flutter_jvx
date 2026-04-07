@@ -139,7 +139,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       if (columnIndex >= 0) {
         ColumnDefinition colDef = columnDefinitions[columnIndex];
 
-        if (colDef.dataTypeIdentifier == Types.BINARY) {
+        if (colDef.dataTypeIdentifier == ITypes.BINARY) {
           //fifo
           imageColumn ??= model.columnNames[i];
         } else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != colDef.cellEditorClassName && FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != colDef.cellEditorClassName) {

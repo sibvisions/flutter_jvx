@@ -577,8 +577,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
               if (colDef != null) {
                 html.write("<th>${colDef.label}</th>");
 
-                if (colDef.dataTypeIdentifier == Types.DECIMAL
-                    || colDef.dataTypeIdentifier == Types.BIGINT) {
+                if (colDef.dataTypeIdentifier == ITypes.DECIMAL
+                    || colDef.dataTypeIdentifier == ITypes.BIGINT) {
                   alignments[name] = "right";
                 }
                 else {

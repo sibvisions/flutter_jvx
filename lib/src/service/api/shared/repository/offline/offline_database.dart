@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// [nullable] is currently ignored, therefore every column is nullable, could be completely dropped in a future release.
   String _buildCreateColumnSQL(String pColumnName, ColumnDefinition pColumn, {bool? nullable}) {
     var columnDef = StringBuffer('"$pColumnName" ');
-    columnDef.write(Types.convertToSQLite(pColumn.dataTypeIdentifier, scale: pColumn.scale));
+    columnDef.write(ITypes.convertToSQLite(pColumn.dataTypeIdentifier, scale: pColumn.scale));
 
     // TODO Check default value
 

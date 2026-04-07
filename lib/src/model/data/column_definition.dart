@@ -31,7 +31,7 @@ class ColumnDefinition {
   final String name;
 
   /// Identifier of the columns datatype
-  /// See [Types]
+  /// See [ITypes]
   int dataTypeIdentifier;
 
   /// Label of the column
@@ -112,7 +112,7 @@ class ColumnDefinition {
   ColumnDefinition.fromJson(Map<String, dynamic> json)
       : name = json[ApiObjectProperty.name] ?? "",
         label = json[ApiObjectProperty.label] ?? "",
-        dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? Types.VARCHAR,
+        dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? ITypes.VARCHAR,
         width = (json[ApiObjectProperty.width] ?? 0) != 0 ? (json[ApiObjectProperty.width] as int).toDouble() : null,
         readOnly = json[ApiObjectProperty.readOnly] ?? false,
         forcedStateless = json[ApiObjectProperty.forcedStateless] ?? false,
