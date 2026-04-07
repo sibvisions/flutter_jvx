@@ -20,7 +20,6 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../config/server_config.dart';
 import '../flutter_ui.dart';
 import '../model/layout/layout_position.dart';
-import '../model/response/application_settings_response.dart';
 import '../service/api/shared/api_object_property.dart';
 
 abstract class ParseUtil {
@@ -66,6 +65,19 @@ abstract class ParseUtil {
     }
     return null;
   }
+
+  /// Will return the double, parse a string otherwise returns null.
+  static double? parseDouble(dynamic value) {
+    if (value != null) {
+      if (value is double) {
+        return value;
+      } else {
+        return double.tryParse(value.toString());
+      }
+    }
+    return null;
+  }
+
   /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
   /// otherwise returns null.
   static bool? parseBool(dynamic value) {
@@ -104,7 +116,22 @@ abstract class ParseUtil {
   }
 
   static Color? parseColor(dynamic value) {
-    return ColorConverter.fromJson(value?.toString());
+    if (value == null) {
+      return null;
+    }
+
+    if (value is Color) {
+      return value;
+    }
+    else {
+      String valueAsString = value.toString();
+
+      if (valueAsString.contains(";")) {
+        valueAsString = valueAsString.split(";").first;
+      }
+
+      return parseHexColor(valueAsString);
+    }
   }
 
   /// Parses 6 or 8 digit hex-integers to colors.
@@ -150,6 +177,10 @@ abstract class ParseUtil {
         );
       }
     }
+    else if (value == "transparent") {
+      return Colors.transparent;
+    }
+
     return null;
   }
 

@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
-import '../../util/extensions/color_extensions.dart';
 import '../../util/parse_util.dart';
 import 'api_response.dart';
 
@@ -154,9 +153,9 @@ class ApplicationColors {
 
     if (pIsDark) {
       if (json.keys.contains(darkPropertyName)) {
-        return ColorConverter.fromJson(json[darkPropertyName]);
+        return ParseUtil.parseColor(json[darkPropertyName]);
       } else {
-        Color? lightColor = ColorConverter.fromJson(json[pPropertyName]);
+        Color? lightColor = ParseUtil.parseColor(json[pPropertyName]);
         Color? darkColor;
         if (lightColor != null) {
           HSVColor hsvColor = HSVColor.fromColor(lightColor);
@@ -167,7 +166,7 @@ class ApplicationColors {
         return darkColor;
       }
     } else {
-      return ColorConverter.fromJson(json[pPropertyName]);
+      return ParseUtil.parseColor(json[pPropertyName]);
     }
   }
 
@@ -184,16 +183,4 @@ class ApplicationColors {
            "invalidEditorBackground: $invalidEditorBackground}";
   }
 
-}
-
-abstract class ColorConverter {
-  static Color? fromJson(String? value) {
-    if (value == null) return null;
-    String sColor = value.toString();
-
-    sColor = sColor.split(";").first;
-    return ParseUtil.parseHexColor(sColor);
-  }
-
-  static String toJson(Color object) => "#${object.toInt().toRadixString(16)}";
 }
