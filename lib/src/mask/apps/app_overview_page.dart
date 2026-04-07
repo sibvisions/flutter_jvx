@@ -62,7 +62,7 @@ class AppOverviewPage extends StatefulWidget {
   }) {
     return IUiService().openDialog(
       context: context,
-      pBuilder: (context) => JVxScanner(
+      pBuilder: (context) => EmbeddedCodeScanner(
         allowMultiScan: allowMultiScan,
         title: "QR Scanner",
         formats: const [BarcodeFormat.qrCode],

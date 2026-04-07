@@ -22,8 +22,8 @@ abstract class ICommandProgressHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Notifies the handler that this command is starting to be processed.
-  void notifyProgressStart(BaseCommand pCommand);
+  void notifyProgressStart(BaseCommand command);
 
   /// Notifies the handler that this command is finished processing.
-  void notifyProgressEnd(BaseCommand pCommand);
+  void notifyProgressEnd(BaseCommand command);
 }

@@ -342,7 +342,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     IUiService().openDialogFullScreen(
       transitionDuration: Duration.zero,
       pIsDismissible: true,
-      pBuilder: (_) => JVxScanner(formats: model.scanFormats ?? const [BarcodeFormat.all], callback: sendScannerResult),
+      pBuilder: (_) => EmbeddedCodeScanner(formats: model.scanFormats ?? const [BarcodeFormat.all], callback: sendScannerResult),
     );
   }
 

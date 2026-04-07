@@ -35,16 +35,16 @@ class LoadingProgressHandler implements ICommandProgressHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void notifyProgressStart(BaseCommand pCommand) {
-    if (isSupported(pCommand) && !IConfigService().offline.value) {
+  void notifyProgressStart(BaseCommand command) {
+    if (isSupported(command) && !IConfigService().offline.value) {
       _loadingCommandAmount++;
-      JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.showLoading(pCommand.loadingDelay, pCommand.delayUILocking);
+      JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.showLoading(command.loadingDelay, command.delayUILocking);
     }
   }
 
   @override
-  void notifyProgressEnd(BaseCommand pCommand) {
-    if (isSupported(pCommand)) {
+  void notifyProgressEnd(BaseCommand command) {
+    if (isSupported(command)) {
       if (_loadingCommandAmount > 0) {
         _loadingCommandAmount--;
       }

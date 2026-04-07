@@ -193,13 +193,13 @@ class BadgeConfig {
   /// The default padding gap
   int? paddingGap;
 
-  /// Creates a new config from styles
-  BadgeConfig._(Set<String> pStyles) {
-    if (pStyles.isNotEmpty) {
+  /// Creates a new config from [styles]
+  BadgeConfig._(Set<String> styles) {
+    if (styles.isNotEmpty) {
       String? styleDef;
 
-      for (int i = 0; i < pStyles.length; i++) {
-        styleDef = pStyles.elementAt(i);
+      for (int i = 0; i < styles.length; i++) {
+        styleDef = styles.elementAt(i);
 
         if (styleDef.startsWith(STYLE_BADGE_TEXT)) {
           styleDef = styleDef.substring(STYLE_BADGE_TEXT.length);

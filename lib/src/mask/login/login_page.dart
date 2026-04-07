@@ -140,7 +140,7 @@ class LoginPage extends StatefulWidget {
             backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 0,
           ),
-          body: JVxWebView(
+          body: EmbeddedWebView(
             initialUrl: uri,
           ),
         ),

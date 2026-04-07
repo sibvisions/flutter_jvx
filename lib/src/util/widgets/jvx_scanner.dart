@@ -26,11 +26,11 @@ import '../jvx_colors.dart';
 
 /// Definition of the callback for the Scanner.
 ///
-/// In case of [JVxScanner.allowMultiScan], this can returns multiple barcodes.
+/// In case of [EmbeddedCodeScanner.allowMultiScan], this can returns multiple barcodes.
 typedef ScannerCallback = FutureOr<void> Function(List<Barcode> barcode);
 
 /// Displays a Scanner with an additional control bar on top.
-class JVxScanner extends StatefulWidget {
+class EmbeddedCodeScanner extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +45,7 @@ class JVxScanner extends StatefulWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const JVxScanner({
+  const EmbeddedCodeScanner({
     super.key,
     required this.callback,
     this.allowMultiScan = true,
@@ -58,10 +58,10 @@ class JVxScanner extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  State<JVxScanner> createState() => _JVxScannerState();
+  State<EmbeddedCodeScanner> createState() => _EmbeddedCodeScannerState();
 }
 
-class _JVxScannerState extends State<JVxScanner> with SingleTickerProviderStateMixin {
+class _EmbeddedCodeScannerState extends State<EmbeddedCodeScanner> with SingleTickerProviderStateMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -24,14 +24,14 @@ mixin TtsCapability<T extends StatefulWidget> on State<T> {
   final FlutterTts tts = FlutterTts();
   Future<void>? ttsInit;
 
-  Future<void> initTts({String? pLanguageCode}) {
+  Future<void> initTts({String? languageCode}) {
     return ttsInit ??= () async {
       await tts.awaitSpeakCompletion(true);
       if (Platform.isIOS || Platform.isMacOS) {
         await tts.autoStopSharedSession(true);
       }
 
-      await tts.setLanguage(pLanguageCode ?? IConfigService().getLanguage());
+      await tts.setLanguage(languageCode ?? IConfigService().getLanguage());
       await tts.setIosAudioCategory(
         IosTextToSpeechAudioCategory.playback,
         [

@@ -19,21 +19,21 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../flutter_ui.dart';
 
-class JVxWebView extends StatefulWidget {
+class EmbeddedWebView extends StatefulWidget {
   final Uri initialUrl;
   final bool dismissible;
 
-  const JVxWebView({
+  const EmbeddedWebView({
     super.key,
     required this.initialUrl,
     this.dismissible = true,
   });
 
   @override
-  JVxWebViewState createState() => JVxWebViewState();
+  EmbeddedWebViewState createState() => EmbeddedWebViewState();
 }
 
-class JVxWebViewState extends State<JVxWebView> {
+class EmbeddedWebViewState extends State<EmbeddedWebView> {
   late final WebViewController _controller;
 
   @override
