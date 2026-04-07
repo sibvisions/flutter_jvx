@@ -56,24 +56,24 @@ abstract class ParseUtil {
       duration == null || duration == Duration.zero || duration.isNegative ? null : duration;
 
   /// Will return the int, parse a string otherwise returns null.
-  static int? parseInt(dynamic pNumber) {
-    if (pNumber != null) {
-      if (pNumber is int) {
-        return pNumber;
+  static int? parseInt(dynamic value) {
+    if (value != null) {
+      if (value is int) {
+        return value;
       } else {
-        return int.tryParse(pNumber.toString());
+        return int.tryParse(value.toString());
       }
     }
     return null;
   }
   /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
   /// otherwise returns null.
-  static bool? parseBool(dynamic pBool) {
-    if (pBool != null) {
-      if (pBool is bool) {
-        return pBool;
+  static bool? parseBool(dynamic value) {
+    if (value != null) {
+      if (value is bool) {
+        return value;
       } else {
-        return bool.tryParse(pBool.toString(), caseSensitive: false);
+        return bool.tryParse(value.toString(), caseSensitive: false);
       }
     }
     return null;
@@ -81,18 +81,18 @@ abstract class ParseUtil {
 
   /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
   /// otherwise returns false.
-  static bool parseBoolOrFalse(dynamic pBool) {
-    return parseBool(pBool) ?? false;
+  static bool parseBoolOrFalse(dynamic value) {
+    return parseBool(value) ?? false;
   }
 
   /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
   /// otherwise returns true.
-  static bool parseBoolOrTrue(dynamic pBool) {
-    return parseBool(pBool) ?? true;
+  static bool parseBoolOrTrue(dynamic value) {
+    return parseBool(value) ?? true;
   }
 
-  static Color? parseBackgroundColor(dynamic pValue) {
-    String? jsonBackground = pValue?.toString();
+  static Color? parseBackgroundColor(dynamic value) {
+    String? jsonBackground = value?.toString();
     List<String> listBackgroundValues = jsonBackground?.split(";") ?? [];
 
     List<String> excludedBackgroundColors = [ApiObjectProperty.mandatoryBackground];
@@ -100,11 +100,11 @@ abstract class ParseUtil {
     if (listBackgroundValues.length >= 2 && excludedBackgroundColors.contains(listBackgroundValues[1])) {
       return null;
     }
-    return parseColor(pValue);
+    return parseColor(value);
   }
 
-  static Color? parseColor(dynamic pValue) {
-    return ColorConverter.fromJson(pValue?.toString());
+  static Color? parseColor(dynamic value) {
+    return ColorConverter.fromJson(value?.toString());
   }
 
   /// Parses 6 or 8 digit hex-integers to colors.
@@ -114,48 +114,48 @@ abstract class ParseUtil {
   ///   <li>0x or 0X in AARRGGBB or RRGGBB.</li>
   ///   <li>#RRGGBBAA or #RRGGBB.</li>
   /// <ul>
-  static Color? parseHexColor(String? pValue) {
-    if (pValue == null) {
+  static Color? parseHexColor(String? value) {
+    if (value == null) {
       return null;
-    } else if (pValue.startsWith("#")) {
-      if (pValue.characters.length == 9) {
+    } else if (value.startsWith("#")) {
+      if (value.characters.length == 9) {
         return Color.fromARGB(
-          int.parse(pValue.substring(7, 9), radix: 16),
-          int.parse(pValue.substring(3, 5), radix: 16),
-          int.parse(pValue.substring(5, 7), radix: 16),
-          int.parse(pValue.substring(1, 3), radix: 16),
+          int.parse(value.substring(7, 9), radix: 16),
+          int.parse(value.substring(3, 5), radix: 16),
+          int.parse(value.substring(5, 7), radix: 16),
+          int.parse(value.substring(1, 3), radix: 16),
         );
-      } else if (pValue.characters.length == 7) {
+      } else if (value.characters.length == 7) {
         return Color.fromARGB(
           0xFF,
-          int.parse(pValue.substring(1, 3), radix: 16),
-          int.parse(pValue.substring(3, 5), radix: 16),
-          int.parse(pValue.substring(5, 7), radix: 16),
+          int.parse(value.substring(1, 3), radix: 16),
+          int.parse(value.substring(3, 5), radix: 16),
+          int.parse(value.substring(5, 7), radix: 16),
         );
       }
-    } else if (pValue.startsWith("0x") || pValue.startsWith("0X")) {
-      if (pValue.characters.length == 10) {
+    } else if (value.startsWith("0x") || value.startsWith("0X")) {
+      if (value.characters.length == 10) {
         return Color.fromARGB(
-          int.parse(pValue.substring(2, 4), radix: 16),
-          int.parse(pValue.substring(4, 6), radix: 16),
-          int.parse(pValue.substring(6, 8), radix: 16),
-          int.parse(pValue.substring(8, 10), radix: 16),
+          int.parse(value.substring(2, 4), radix: 16),
+          int.parse(value.substring(4, 6), radix: 16),
+          int.parse(value.substring(6, 8), radix: 16),
+          int.parse(value.substring(8, 10), radix: 16),
         );
-      } else if (pValue.characters.length == 8) {
+      } else if (value.characters.length == 8) {
         return Color.fromARGB(
           0xFF,
-          int.parse(pValue.substring(2, 4), radix: 16),
-          int.parse(pValue.substring(4, 6), radix: 16),
-          int.parse(pValue.substring(6, 8), radix: 16),
+          int.parse(value.substring(2, 4), radix: 16),
+          int.parse(value.substring(4, 6), radix: 16),
+          int.parse(value.substring(6, 8), radix: 16),
         );
       }
     }
     return null;
   }
 
-  static EdgeInsets? parseMargins(String? pValue) {
-    if (pValue != null) {
-      var splitString = pValue.split(",");
+  static EdgeInsets? parseMargins(String? value) {
+    if (value != null) {
+      var splitString = value.split(",");
       if (splitString.isNotEmpty && splitString.length == 4) {
         int top = int.tryParse(splitString[0]) ?? 0;
         int left = int.tryParse(splitString[1]) ?? 0;
@@ -168,9 +168,9 @@ abstract class ParseUtil {
     return null;
   }
 
-  static LayoutPosition? parseBounds(dynamic pValue) {
-    if (pValue != null && pValue is String) {
-      var splitString = pValue.split(",");
+  static LayoutPosition? parseBounds(dynamic value) {
+    if (value != null && value is String) {
+      var splitString = value.split(",");
       if (splitString.isNotEmpty && splitString.length == 4) {
         int? left = int.tryParse(splitString[0]);
         int? top = int.tryParse(splitString[1]);
@@ -193,7 +193,7 @@ abstract class ParseUtil {
   static TextPainter getTextPainter({
     required String text,
     required TextStyle style,
-    double? pTextScaleFactor,
+    double? textScaleFactor,
     TextAlign align = TextAlign.left,
     TextDirection textDirection = TextDirection.ltr,
     double maxWidth = double.infinity,
@@ -204,7 +204,7 @@ abstract class ParseUtil {
       textDirection: textDirection,
       maxLines: maxLines,
       textAlign: align,
-      textScaler: TextScaler.linear(pTextScaleFactor ?? MediaQuery.textScalerOf(FlutterUI.getCurrentContext()!).scale(1))
+      textScaler: TextScaler.linear(textScaleFactor ?? MediaQuery.textScalerOf(FlutterUI.getCurrentContext()!).scale(1))
     )..layout(minWidth: 0, maxWidth: maxWidth);
 
     return textPainter;
@@ -213,7 +213,7 @@ abstract class ParseUtil {
   static Size getTextSize({
     required String text,
     required TextStyle style,
-    double? pTextScaleFactor,
+    double? textScaleFactor,
     TextAlign align = TextAlign.left,
     TextDirection textDirection = TextDirection.ltr,
     double maxWidth = double.infinity,
@@ -222,7 +222,7 @@ abstract class ParseUtil {
     return getTextPainter(
             text: text,
             style: style,
-            pTextScaleFactor: pTextScaleFactor,
+            textScaleFactor: textScaleFactor,
             align: align,
             textDirection: textDirection,
             maxWidth: maxWidth,
@@ -233,7 +233,7 @@ abstract class ParseUtil {
   static double getTextHeight({
     required String text,
     required TextStyle style,
-    double? pTextScaleFactor,
+    double? textScaleFactor,
     TextAlign align = TextAlign.left,
     TextDirection textDirection = TextDirection.ltr,
     double maxWidth = double.infinity,
@@ -242,7 +242,7 @@ abstract class ParseUtil {
     return getTextPainter(
             text: text,
             style: style,
-            pTextScaleFactor: pTextScaleFactor,
+            textScaleFactor: textScaleFactor,
             align: align,
             textDirection: textDirection,
             maxWidth: maxWidth,
@@ -253,7 +253,7 @@ abstract class ParseUtil {
   static double getTextWidth({
     required String text,
     required TextStyle style,
-    double? pTextScaleFactor,
+    double? textScaleFactor,
     TextAlign align = TextAlign.left,
     TextDirection textDirection = TextDirection.ltr,
     double maxWidth = double.infinity,
@@ -262,7 +262,7 @@ abstract class ParseUtil {
     return getTextPainter(
             text: text,
             style: style,
-            pTextScaleFactor: pTextScaleFactor,
+            textScaleFactor: textScaleFactor,
             align: align,
             textDirection: textDirection,
             maxWidth: maxWidth,
@@ -271,53 +271,53 @@ abstract class ParseUtil {
   }
 
   static T getPropertyValue<T>({
-    required Map<String, dynamic> pJson,
-    required String pKey,
-    required T pDefault,
-    required T pCurrent,
-    T Function(dynamic)? pConversion,
-    bool Function(dynamic)? pCondition,
+    required Map<String, dynamic> json,
+    required String key,
+    required T defaultValue,
+    required T currentValue,
+    T Function(dynamic)? valueConversion,
+    bool Function(dynamic)? condition,
   }) {
-    if (!pJson.containsKey(pKey)) {
-      return pCurrent;
+    if (!json.containsKey(key)) {
+      return currentValue;
     }
 
-    dynamic value = pJson[pKey];
+    dynamic value = json[key];
 
     // Explicitly null values reset the value back to the default.
     if (value == null) {
-      return pDefault;
+      return defaultValue;
     }
 
-    if (pCondition != null && pCondition.call(value) == false) {
-      return pDefault;
+    if (condition != null && condition.call(value) == false) {
+      return defaultValue;
     }
 
-    if (pConversion != null) {
-      return pConversion.call(value);
+    if (valueConversion != null) {
+      return valueConversion.call(value);
     } else {
       return value;
     }
   }
 
-  static bool applyJsonToJson(Map<String, dynamic> pSource, Map<String, dynamic> pDestination) {
+  static bool applyJsonToJson(Map<String, dynamic> source, Map<String, dynamic> target) {
 
     bool isChanged = false;
 
-    for (String sourceKey in pSource.keys) {
-      dynamic value = pSource[sourceKey];
+    for (String sourceKey in source.keys) {
+      dynamic value = source[sourceKey];
 
       if (value is Map<String, dynamic>) {
-        if (pDestination[sourceKey] == null) {
-          pDestination[sourceKey] = Map.of(value);
+        if (target[sourceKey] == null) {
+          target[sourceKey] = Map.of(value);
 
           isChanged = true;
         } else {
-          isChanged |= applyJsonToJson(value, pDestination[sourceKey]);
+          isChanged |= applyJsonToJson(value, target[sourceKey]);
         }
       } else {
-        if (pDestination[sourceKey] != value) {
-          pDestination[sourceKey] = value;
+        if (target[sourceKey] != value) {
+          target[sourceKey] = value;
 
           isChanged = true;
         }
@@ -356,15 +356,15 @@ abstract class ParseUtil {
     return result;
   }
 
-  static String _enumToCamelCase(String string) {
-    string.split("_").asMap().forEach((i, p) {
+  static String _enumToCamelCase(String value) {
+    value.split("_").asMap().forEach((i, p) {
       if (i == 0) {
-        string = p;
+        value = p;
       } else if (p.isNotEmpty) {
-        string += "${p[0].toUpperCase()}${p.substring(1)}";
+        value += "${p[0].toUpperCase()}${p.substring(1)}";
       }
     });
-    return string;
+    return value;
   }
 
   static String? ensureNullOnEmpty(String? value) {
@@ -394,9 +394,10 @@ abstract class ParseUtil {
     );
   }
 
-  static List<BarcodeFormat>? parseScanFormat(String s) {
+  static List<BarcodeFormat>? parseScanFormat(String format) {
     List<BarcodeFormat> formats = [];
-    switch (s) {
+
+    switch (format) {
       case "All":
         return [BarcodeFormat.all];
       case "CodeAll":

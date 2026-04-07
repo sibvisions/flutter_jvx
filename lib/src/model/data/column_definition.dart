@@ -99,12 +99,12 @@ class ColumnDefinition {
 
   HorizontalAlignment get cellEditorHorizontalAlignment {
     return ParseUtil.getPropertyValue(
-      pJson: cellEditorJson,
-      pKey: ApiObjectProperty.horizontalAlignment,
-      pDefault: HorizontalAlignment.LEFT,
-      pCurrent: HorizontalAlignment.LEFT,
-      pCondition: (pValue) => pValue < HorizontalAlignment.values.length && pValue >= 0,
-      pConversion: HorizontalAlignmentE.fromDynamic,
+      json: cellEditorJson,
+      key: ApiObjectProperty.horizontalAlignment,
+      defaultValue: HorizontalAlignment.LEFT,
+      currentValue: HorizontalAlignment.LEFT,
+      condition: (pValue) => pValue < HorizontalAlignment.values.length && pValue >= 0,
+      valueConversion: HorizontalAlignmentE.fromDynamic,
     );
   }
 

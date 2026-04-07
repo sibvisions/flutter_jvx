@@ -67,18 +67,18 @@ class FilterCondition {
     not = pJson[ApiObjectProperty.not] ?? false;
 
     operatorType = ParseUtil.getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.operatorType,
-      pDefault: OperatorType.And,
-      pCurrent: operatorType,
-      pConversion: (value) => OperatorType.values.firstWhere((e) => e.name == value),
+      json: pJson,
+      key: ApiObjectProperty.operatorType,
+      defaultValue: OperatorType.And,
+      currentValue: operatorType,
+      valueConversion: (value) => OperatorType.values.firstWhere((e) => e.name == value),
     );
     compareType = ParseUtil.getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.compareType,
-      pDefault: CompareType.Equals,
-      pCurrent: compareType,
-      pConversion: (value) => CompareType.values.firstWhere((e) => e.name == value),
+      json: pJson,
+      key: ApiObjectProperty.compareType,
+      defaultValue: CompareType.Equals,
+      currentValue: compareType,
+      valueConversion: (value) => CompareType.values.firstWhere((e) => e.name == value),
     );
 
     if (pJson.containsKey(ApiObjectProperty.condition)) {

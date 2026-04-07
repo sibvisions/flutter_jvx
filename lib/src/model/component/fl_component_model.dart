@@ -523,12 +523,12 @@ abstract class FlComponentModel {
     bool Function(dynamic)? pCondition,
   }) {
     return ParseUtil.getPropertyValue(
-      pJson: pJson,
-      pKey: pKey,
-      pDefault: pDefault,
-      pCurrent: pCurrent,
-      pConversion: pConversion,
-      pCondition: pCondition,
+      json: pJson,
+      key: pKey,
+      defaultValue: pDefault,
+      currentValue: pCurrent,
+      valueConversion: pConversion,
+      condition: pCondition,
     );
   }
 

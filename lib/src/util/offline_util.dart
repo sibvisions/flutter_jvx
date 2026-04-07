@@ -83,7 +83,7 @@ abstract class OfflineUtil {
     );
   }
 
-  static Future<void> initOnline([bool pDiscardChanges = false]) async {
+  static Future<void> initOnline([bool discardChanges = false]) async {
     isGoingOnline = true;
 
     bool? oldLoadingEnabled;
@@ -116,7 +116,7 @@ abstract class OfflineUtil {
         String? offlinePassword = await cfgHandler.getValueSecure("$appId.offlinePassword");
 
         ProgressDialogService.show(Config(
-          message: FlutterUI.translate(pDiscardChanges ? "Discarding changes" : "Synchronizing data"),
+          message: FlutterUI.translate(discardChanges ? "Discarding changes" : "Synchronizing data"),
           barrierDismissible: false,
         ));
 
@@ -133,7 +133,7 @@ abstract class OfflineUtil {
 
         bool startUpForUserInteraction = false;
 
-        if (!pDiscardChanges) {
+        if (!discardChanges) {
           if ((offlineUsername == null || offlinePassword == null) && servCfg.authKey.value == null) {
             throw "Switching to online mode not possible because of missing credentials!";
           }
@@ -659,7 +659,7 @@ abstract class OfflineUtil {
     FlutterUI.logAPI.i("Finished fetching data");
   }
 
-  static Future<void> initOffline(String pScreenName) async {
+  static Future<void> initOffline(String screenName) async {
     isGoingOffline = true;
 
     IApiService servApi = IApiService();
@@ -695,7 +695,7 @@ abstract class OfflineUtil {
 
         IStorageService servStorage = IStorageService();
 
-        var panelModel = servStorage.getComponentByName(pComponentName: pScreenName) as FlPanelModel;
+        var panelModel = servStorage.getComponentByName(pComponentName: screenName) as FlPanelModel;
 
         await servCfg.updateOfflineScreen(panelModel.screenClassName!);
 
@@ -712,7 +712,7 @@ abstract class OfflineUtil {
         oldLoadingEnabled = ols?.isLoadingEnabled();
         ols?.setLoadingEnabled(false);
 
-        Set<String> relevantDataProviders = getActiveDataProviders(pScreenName);
+        Set<String> relevantDataProviders = getActiveDataProviders(screenName);
 
         IDataService servData = IDataService();
 
