@@ -137,38 +137,39 @@ class AppDebug extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text(
-              "Web Socket",
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            trailing: ControlButtons(
-              onPressed: (index) async {
-                switch (index) {
-                  case 0:
-                    await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
-                    break;
-                  case 1:
-                    await (IApiService().getRepository() as OnlineApiRepository?)?.stopWebSocket();
-                    break;
-                }
-              },
-              labels: const [
-                "Start",
-                "Stop",
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text("Web Socket", style: Theme.of(context).textTheme.titleMedium),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ControlButtons(
+                      onPressed: (index) async {
+                        switch (index) {
+                          case 0:
+                            await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
+                            break;
+                          case 1:
+                            await (IApiService().getRepository() as OnlineApiRepository?)?.stopWebSocket();
+                            break;
+                          case 2:
+                            cast<OnlineApiRepository>(IApiService().getRepository())?.jvxWebSocket?.reconnectWebSocket();
+                            break;
+                        }
+                      },
+                      labels: const [
+                        "Start",
+                        "Stop",
+                        "Reconnect"
+                      ],
+                    ),
+                  ]
+                )
               ],
-            ),
-          ),
-          ListTile(
-            title: Text(
-              "Web Socket",
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            trailing: OutlinedButton(
-              onPressed: () async {
-                cast<OnlineApiRepository>(IApiService().getRepository())?.jvxWebSocket?.reconnectWebSocket();
-              },
-              child: const Text("Reconnect"),
-            ),
+            )
           ),
           ListTile(
             title: Text(
@@ -254,31 +255,43 @@ class AppDebug extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text(
-              "Connection State",
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            trailing: ControlButtons(
-              hPadding: 18,
-              onPressed: (index) async {
-                switch (index) {
-                  case 0:
-                    JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(true);
-                    break;
-                  case 1:
-                    JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(false);
-                    break;
-                  case 2:
-                    JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.resetConnectionState();
-                    break;
-                }
-              },
-              labels: const [
-                "On",
-                "Off",
-                "Reset",
-              ],
-            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Connection State",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ControlButtons(
+                      hPadding: 18,
+                      onPressed: (index) async {
+                        switch (index) {
+                          case 0:
+                            JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(true);
+                            break;
+                          case 1:
+                            JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(false);
+                            break;
+                          case 2:
+                            JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.resetConnectionState();
+                            break;
+                        }
+                      },
+                      labels: const [
+                        "On",
+                        "Off",
+                        "Reset",
+                      ],
+                    ),
+                  ]
+                )
+              ]
+            )
           ),
           if (kDebugMode)
             ListTile(
@@ -455,23 +468,36 @@ class UIDebug extends StatelessWidget {
               ],
             ),
           ),
-          StatefulBuilder(builder: (context, setState) {
-            return DropdownButton<LoginMode>(
-              hint: const Text("Route to Login"),
-              value: cast<MainLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.loginDataNotifier.value.mode,
-              items: LoginMode.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.name),
-                      ))
-                  .toList(),
-              onChanged: (LoginMode? value) {
-                LoginPage.update(LoginData(mode: value!));
-                setState(() {});
-              },
-              isExpanded: true,
-            );
-          }),
+          ListTile(
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Show login with mode",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                SizedBox(height: 8),
+                StatefulBuilder(builder: (context, setState) {
+                  return DropdownButton<LoginMode>(
+                    hint: const Text("Route to Login"),
+                    value: cast<MainLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.loginDataNotifier.value.mode,
+                    items: LoginMode.values
+                        .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e.name),
+                    ))
+                        .toList(),
+                    onChanged: (LoginMode? value) {
+                      LoginPage.update(LoginData(mode: value!));
+                      setState(() {});
+                    },
+                    isExpanded: true,
+                  );
+                })
+              ]
+            )
+          )
         ],
       ),
     );
@@ -494,14 +520,27 @@ class ControlButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ButtonStyle? style = Theme.of(context).outlinedButtonTheme.style;
+
+    OutlinedBorder? border = style?.shape?.resolve({});
+
+    double? borderRadius;
+
+    if (border is RoundedRectangleBorder) {
+      borderRadius = border.borderRadius.resolve(Directionality.of(context)).topLeft.x;
+    }
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: maxHeight),
       child: ToggleButtons(
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        constraints: BoxConstraints(minHeight: 38),
         onPressed: onPressed,
         isSelected: [
           for (String _ in labels) false,
         ],
         borderRadius: BorderRadius.circular(20),
+        borderColor: style?.side?.resolve({})?.color ?? Theme.of(context).colorScheme.outline,
         children: [
           for (String label in labels)
             Padding(
