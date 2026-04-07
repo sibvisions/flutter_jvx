@@ -86,6 +86,7 @@ abstract class JVxColors {
     Color seedColor,
     Brightness selectedBrightness, {
     bool useFixedPrimary = false,
+    Map<String, String>? style
   }) {
     ColorScheme colorScheme;
 
@@ -118,12 +119,16 @@ abstract class JVxColors {
       );
     }
 
+    if (style != null) {
+      style["theme.data.button.borderradius"];
+    }
+
     var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: true);
 
     ElevatedButtonThemeData evbTheme = ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         backgroundColor: colorScheme.primary,
         iconColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(BORDER_RADIUS)))));
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular( BORDER_RADIUS)))));
 
     OutlinedButtonThemeData otbTheme = OutlinedButtonThemeData(style: OutlinedButton.styleFrom(
         foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,

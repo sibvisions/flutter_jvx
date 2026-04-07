@@ -82,7 +82,7 @@ import 'service/ui/protect_config.dart';
 import 'util/auth/auth_overlay.dart';
 import 'util/auth/auth_service.dart';
 import 'util/config_util.dart';
-import 'util/debug/jvx_debug.dart';
+import 'util/debug/app_debug.dart';
 import 'util/ui_template_manager.dart';
 import 'util/jvx_logger.dart';
 import 'util/extensions/list_extensions.dart';
@@ -263,8 +263,10 @@ class FlutterUI extends StatefulWidget {
   /// Builder function for custom menu implementation.
   final MenuBuilder? menuBuilder;
 
+  /// Builder function for theme.
   final ThemeBuilder? themeBuilder;
 
+  /// Default debug overlay entries.
   final List<Widget> debugOverlayEntries;
 
   /// show or hide the debug banner in dev mode
@@ -1398,7 +1400,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           logBucket: FlutterUI.logBucket,
           httpBucket: FlutterUI.httpBucket,
           debugEntries: [
-            const JVxDebug(),
+            const AppDebug(),
             ...widget.debugOverlayEntries,
             const UIDebug(),
           ],
@@ -1663,20 +1665,20 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     Map<String, String>? styleMap = IConfigService().applicationStyle.value;
 
     if (styleMap != null) {
-      Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
-      styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
+      Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap["web.topmenu.color"]) : null;
+      styleColor ??= ParseUtil.parseHexColor(styleMap["theme.color"]);
 
-      changeTheme(styleColor);
+      changeTheme(styleColor, style: styleMap);
     }
     else {
       refresh();
     }
   }
 
-  void changeTheme(Color? pColor) {
+  void changeTheme(Color? pColor, {Map<String, String>? style}) {
     if (pColor != null) {
-      themeData = JVxColors.createTheme(pColor, Brightness.light, useFixedPrimary: true);
-      darkThemeData = JVxColors.createTheme(pColor, Brightness.dark, useFixedPrimary: true);
+      themeData = JVxColors.createTheme(pColor, Brightness.light, useFixedPrimary: true, style: style);
+      darkThemeData = JVxColors.createTheme(pColor, Brightness.dark, useFixedPrimary: true, style: style);
 
       if (widget.themeBuilder != null) {
         themeData = widget.themeBuilder!(themeData, pColor, Brightness.light, true);
@@ -1685,8 +1687,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     } else {
       Color color = Colors.blue;
 
-      themeData = JVxColors.createTheme(color, Brightness.light);
-      darkThemeData = JVxColors.createTheme(color, Brightness.dark);
+      themeData = JVxColors.createTheme(color, Brightness.light, style: style);
+      darkThemeData = JVxColors.createTheme(color, Brightness.dark, style: style);
 
       if (widget.themeBuilder != null) {
         themeData = widget.themeBuilder!(themeData, color, Brightness.light, false);
