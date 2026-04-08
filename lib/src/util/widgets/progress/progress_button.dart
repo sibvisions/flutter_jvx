@@ -179,7 +179,8 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
             minWidth: 0,
             height: widget.height,
             padding: stateButton?.padding ?? widget.padding,
-            elevation: stateButton?.elevation ?? widget.elevation,
+            elevation: stateButton?.elevation ?? widget.elevation ?? 2,
+            highlightElevation: stateButton?.elevation ?? widget.elevation ?? 2,
             shape: stateButton?.shape ??
                 widget.shape ??
                 RoundedRectangleBorder(
