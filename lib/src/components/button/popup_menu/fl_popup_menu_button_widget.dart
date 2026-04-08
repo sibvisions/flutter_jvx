@@ -34,11 +34,14 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   /// The menu entries for the popup menu.
   final List<PopupMenuEntry<String>> popupItems;
 
+  /// The notifier for menu is open
+  final ValueNotifier<bool> isOpen = ValueNotifier(false);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlPopupMenuButtonWidget({
+  FlPopupMenuButtonWidget({
     super.key,
     required super.model,
     required super.focusNode,
@@ -98,11 +101,21 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
       child: Container(
         alignment: Alignment.center,
         width: 24,
-        child: FaIcon(
-          FontAwesomeIcons.caretDown,
-          size: 24.0,
-          color: model.createTextStyle().color,
-        ),
+        child: ValueListenableBuilder<bool>(
+          valueListenable: isOpen,
+          builder: (context, open, _) {
+            return AnimatedRotation(
+              turns: open ? -0.5 : 0.0, // 0.5 = 180° → oben / unten korrekt
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              child: Icon(
+                Icons.expand_more, // Basis: nach unten
+                size: 24.0,
+                color: model.createTextStyle().color,
+              ),
+            );
+          }
+        )
       ),
     );
   }
@@ -122,14 +135,29 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
         Offset.zero & overlay.size,
       );
 
+      ElevatedButtonThemeData data = Theme.of(context).elevatedButtonTheme;
+      OutlinedBorder? border = data.style?.shape?.resolve({});
+
+      double? borderRadius;
+
+      if (border is RoundedRectangleBorder) {
+        borderRadius = border.borderRadius.resolve(Directionality.of(context)).topLeft.x;
+      }
+
+      Future.microtask(() => isOpen.value = true);
+
       showMenu<String>(
         context: context,
         items: popupItems,
         position: position,
-        shape: popupMenuTheme.shape,
+        shape: borderRadius != null ? RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius),
+        )
+        : popupMenuTheme.shape,
         color: popupMenuTheme.color,
-      ).then<void>(
-        (String? newValue) {
+      ).then<void>((String? newValue) {
+          isOpen.value = false;
+
           if (newValue != null) {
             onItemPress?.call(newValue);
           }
