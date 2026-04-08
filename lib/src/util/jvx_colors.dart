@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 
 import '../flutter_ui.dart';
 import '../service/ui/i_ui_service.dart';
+import 'parse_util.dart';
 
 abstract class JVxColors {
   static Color blue = ColorScheme.fromSeed(seedColor: Colors.blue).primary;
@@ -119,20 +120,33 @@ abstract class JVxColors {
       );
     }
 
+    double? buttonBorderRadius;
+    Color? buttonBackground;
+    Color? buttonForeground;
+
+    Color? textButtonForeground;
+    Color? outlinedButtonForeground;
+
     if (style != null) {
-      style["theme.data.button.borderradius"];
+      buttonBorderRadius = ParseUtil.parseDouble(style["theme.data.button.borderradius"]);
+      buttonBackground = ParseUtil.parseHexColor(style["theme.data.button.background"]);
+      buttonForeground = ParseUtil.parseHexColor(style["theme.data.button.foreground"]);
+      textButtonForeground = ParseUtil.parseHexColor(style["theme.data.textbutton.foreground"]);
+      outlinedButtonForeground = ParseUtil.parseHexColor(style["theme.data.outlinedbutton.foreground"]);
     }
 
     var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: true);
 
-    ElevatedButtonThemeData evbTheme = ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        backgroundColor: colorScheme.primary,
-        iconColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular( BORDER_RADIUS)))));
+    ElevatedButtonThemeData evbTheme = ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: buttonForeground ?? (isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white),
+      backgroundColor: buttonBackground ?? colorScheme.primary,
+      iconColor: buttonForeground ?? (isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(buttonBorderRadius ?? BORDER_RADIUS)))));
 
     OutlinedButtonThemeData otbTheme = OutlinedButtonThemeData(style: OutlinedButton.styleFrom(
-        foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        iconColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white));
+      foregroundColor: outlinedButtonForeground ?? (isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white),
+      iconColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white));
+
+    SegmentedButtonThemeData sbTheme = SegmentedButtonThemeData(style: SegmentedButton.styleFrom(foregroundColor: Colors.red));
 
     themeData = themeData.copyWith(
         appBarTheme: AppBarTheme(backgroundColor: isSelectedLight ? colorScheme.primary : colorScheme.surface,
@@ -153,7 +167,7 @@ abstract class JVxColors {
                   return null;
                 }
 
-                return isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color;
+                return textButtonForeground ?? (isSelectedLight ? colorScheme.primary : themeData.textTheme.labelSmall!.color);
               },
             ),
             overlayColor: // WidgetStateProperty.all(isSelectedLight ? null : JVxColors.WHITE)
@@ -167,6 +181,7 @@ abstract class JVxColors {
             ),
           ),
         ),
+        segmentedButtonTheme: sbTheme,
         floatingActionButtonTheme: const FloatingActionButtonThemeData(shape: CircleBorder(side: BorderSide(width: 0, style: BorderStyle.none))),
         elevatedButtonTheme: evbTheme,
         outlinedButtonTheme: otbTheme,
@@ -306,9 +321,9 @@ abstract class JVxColors {
 
   static Color toggleColor(Color pSource) {
     if (pSource.computeLuminance() > 0.5) {
-      return darken(pSource);
+      return darken(pSource, 0.15);
     }
-    return lighten(pSource);
+    return lighten(pSource, 0.15);
   }
 
   static double componentHeight() {
