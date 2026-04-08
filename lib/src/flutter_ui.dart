@@ -45,6 +45,8 @@ import 'mask/menu/skeleton_menu.dart';
 import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/jvx_splash.dart';
 import 'mask/splash/splash.dart';
+import 'mask/state/app_style.dart';
+import 'mask/state/app_style_direct.dart';
 import 'mask/work_screen/skeleton_screen.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/command/api/feedback_command.dart';
@@ -1662,20 +1664,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   void changedTheme() {
-    Map<String, String>? styleMap = IConfigService().applicationStyle.value;
+    AppStyleDirect style = AppStyle.directFromConfig();
 
-    if (styleMap != null) {
-      Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap["web.topmenu.color"]) : null;
-      styleColor ??= ParseUtil.parseHexColor(styleMap["theme.color"]);
-
-      changeTheme(styleColor, style: styleMap);
+    if (style.isValid()) {
+      changeTheme(style.themeColor(), style: style);
     }
     else {
       refresh();
     }
   }
 
-  void changeTheme(Color? pColor, {Map<String, String>? style}) {
+  void changeTheme(Color? pColor, {AppStyleDirect? style}) {
     if (pColor != null) {
       themeData = JVxColors.createTheme(pColor, Brightness.light, useFixedPrimary: true, style: style);
       darkThemeData = JVxColors.createTheme(pColor, Brightness.dark, useFixedPrimary: true, style: style);

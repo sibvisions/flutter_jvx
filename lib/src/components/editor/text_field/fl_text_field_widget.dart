@@ -154,7 +154,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   Widget build(BuildContext context) {
     focusNode.canRequestFocus = model.isFocusable && model.isEditable && model.isEnabled;
 
-    InputBorder? borDisabled = createBorder(FlTextBorderType.disabledBorder);
+    InputBorder? borDisabled = createBorder(context, FlTextBorderType.disabledBorder);
 
     return TextField(
       controller: textController,
@@ -170,12 +170,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           pForeground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
         ),
         contentPadding: contentPadding,
-        border: createBorder(FlTextBorderType.border),
-        errorBorder: createBorder(FlTextBorderType.errorBorder),
-        enabledBorder: model.isEditable ? createBorder(FlTextBorderType.enabledBorder) : borDisabled,
-        focusedBorder: createBorder(FlTextBorderType.focusedBorder),
+        border: createBorder(context, FlTextBorderType.border),
+        errorBorder: createBorder(context, FlTextBorderType.errorBorder),
+        enabledBorder: model.isEditable ? createBorder(context, FlTextBorderType.enabledBorder) : borDisabled,
+        focusedBorder: createBorder(context, FlTextBorderType.focusedBorder),
         disabledBorder: borDisabled,
-        focusedErrorBorder: createBorder(FlTextBorderType.focusedErrorBorder),
+        focusedErrorBorder: createBorder(context, FlTextBorderType.focusedErrorBorder),
         suffixIcon: hideSuffixIcons ? null : createSuffixIcon(context),
         suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
         prefixIcon: createPrefixIcon(context),
@@ -365,7 +365,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return _createXFixWidget(createPrefixIconItems(context));
   }
 
-  InputBorder? createBorder(FlTextBorderType pBorderType) {
+  InputBorder? createBorder(BuildContext context, FlTextBorderType pBorderType) {
     Color borderEnabledColor;
     Color? borderDisabledColor;
     Color? borderFocusedColor;
@@ -380,11 +380,14 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       borderFocusedColor = Colors.transparent;
     }
 
+    double editorBorderRadius = AppStyle.of(context).direct.editorBorderRadius();
+
     switch (pBorderType) {
       case FlTextBorderType.border:
       case FlTextBorderType.errorBorder:
       case FlTextBorderType.enabledBorder:
         return OutlineInputBorder(
+          borderRadius: BorderRadius.circular(editorBorderRadius),
           borderSide: BorderSide(
             color: borderEnabledColor,
           ),
@@ -392,6 +395,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
       case FlTextBorderType.disabledBorder:
         return OutlineInputBorder(
+          borderRadius: BorderRadius.circular(editorBorderRadius),
           borderSide: BorderSide(
             color: model.isBorderVisible ? borderDisabledColor ?? JVxColors.COMPONENT_DISABLED : Colors.transparent,
           ),
@@ -400,6 +404,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       case FlTextBorderType.focusedErrorBorder:
         return borderFocusedColor != null
             ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(editorBorderRadius),
                 borderSide: BorderSide(
                   color: borderFocusedColor,
                 ),

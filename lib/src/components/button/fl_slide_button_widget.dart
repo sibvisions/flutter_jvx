@@ -19,6 +19,8 @@ import 'dart:math';
 import 'package:action_slider/action_slider.dart';
 import 'package:flutter/material.dart';
 
+import '../../mask/state/app_style.dart';
+import '../../mask/state/app_style_direct.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
@@ -90,6 +92,11 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
           return const SizedBox();
         }
 
+        AppStyleDirect style = AppStyle.of(context).direct;
+
+        double? border = style.slideButtonBorderRadius();
+        double? handle = style.slideButtonHandleRadius();
+
         return OverflowBox(
           minWidth: minimumSize.width,
           maxWidth: max(minimumSize.width, constraints.maxWidth),
@@ -100,6 +107,8 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
             child: GestureDetector(
               onDoubleTap: model.isSliderResetable ? _handleDoubleTap : null,
               child: ActionSlider.standard(
+                backgroundBorderRadius: BorderRadius.circular(border ?? 100),
+                foregroundBorderRadius: handle != null ? BorderRadius.circular(handle) : null,
                 controller: controller,
                 action: onSlide,
                 width: max(minimumSize.width, constraints.maxWidth),

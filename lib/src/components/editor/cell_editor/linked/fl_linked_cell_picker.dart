@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_ui.dart';
+import '../../../../mask/state/app_style.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/reload_data_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
@@ -217,10 +218,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     ThemeData theme = Theme.of(context);
 
-    return _wrapAsDialog(Container(
+    return _wrapAsDialog(context, Container(
         clipBehavior: Clip.hardEdge,
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(AppStyle.of(context).direct.dialogBorderRadius()))),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -285,7 +286,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     );
   }
 
-  Widget _wrapAsDialog(Widget child) {
+  Widget _wrapAsDialog(BuildContext context, Widget child) {
     if (widget.embeddable == true) {
       return child;
     }
@@ -304,7 +305,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       return Dialog(
           insetPadding: paddingInsets,
           elevation: 10.0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppStyle.of(context).direct.dialogBorderRadius())),
           child: child
       );
     }

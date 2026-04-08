@@ -65,6 +65,7 @@ export 'src/mask/menu/tab/tab_menu.dart';
 export 'src/mask/splash/jvx_exit_splash.dart';
 export 'src/mask/splash/jvx_splash.dart';
 export 'src/mask/state/app_style.dart';
+export 'src/mask/state/app_style_direct.dart';
 export 'src/mask/state/loading_bar.dart';
 export 'src/model/api_interaction.dart';
 // Model

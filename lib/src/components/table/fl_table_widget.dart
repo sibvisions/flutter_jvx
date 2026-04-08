@@ -25,6 +25,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../../flutter_ui.dart';
+import '../../mask/state/app_style.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -260,9 +261,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       return Stack(children: children);
     }
     else {
+      double borderRadius = AppStyle.of(context).direct.tableBorderRadius();
+
       return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
             width: widget.tableSize.borderWidth,
             color: JVxColors.COMPONENT_BORDER,
@@ -272,7 +275,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         child: ClipRRect(
           // The clip rect is there to stop the rendering of the children.
           // Otherwise the children would clip the border of the parent container.
-          borderRadius: BorderRadius.circular(4.0 - widget.tableSize.borderWidth),
+          borderRadius: BorderRadius.circular(borderRadius - widget.tableSize.borderWidth),
           child: Stack(
             children: children,
           ),
@@ -288,12 +291,12 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       bottom: 10,
       child: FloatingActionButton(
         heroTag: null,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: AppStyle.of(context).direct.tableFloatingButtonBackground() ?? Theme.of(context).colorScheme.primary,
         onPressed: widget.onFloatingPress,
         child: Icon(
           Icons.add_box_outlined,
           size: 27,
-          color: widget.model.foreground ?? Theme.of(context).colorScheme.onPrimary,
+          color: widget.model.foreground ?? AppStyle.of(context).direct.tableFloatingButtonForeground() ?? Theme.of(context).colorScheme.onPrimary,
         ),
       ),
     );

@@ -18,8 +18,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../flutter_ui.dart';
+import '../mask/state/app_style_direct.dart';
 import '../service/ui/i_ui_service.dart';
-import 'parse_util.dart';
 
 abstract class JVxColors {
   static Color blue = ColorScheme.fromSeed(seedColor: Colors.blue).primary;
@@ -87,7 +87,7 @@ abstract class JVxColors {
     Color seedColor,
     Brightness selectedBrightness, {
     bool useFixedPrimary = false,
-    Map<String, String>? style
+    AppStyleDirect? style
   }) {
     ColorScheme colorScheme;
 
@@ -121,6 +121,7 @@ abstract class JVxColors {
     }
 
     double? buttonBorderRadius;
+    double? dialogBorderRadius;
     Color? buttonBackground;
     Color? buttonForeground;
 
@@ -128,11 +129,12 @@ abstract class JVxColors {
     Color? outlinedButtonForeground;
 
     if (style != null) {
-      buttonBorderRadius = ParseUtil.parseDouble(style["theme.data.button.borderradius"]);
-      buttonBackground = ParseUtil.parseHexColor(style["theme.data.button.background"]);
-      buttonForeground = ParseUtil.parseHexColor(style["theme.data.button.foreground"]);
-      textButtonForeground = ParseUtil.parseHexColor(style["theme.data.textbutton.foreground"]);
-      outlinedButtonForeground = ParseUtil.parseHexColor(style["theme.data.outlinedbutton.foreground"]);
+      buttonBorderRadius = style.buttonBorderRadius();
+      buttonBackground = style.buttonBackground();
+      buttonForeground = style.buttonForeground();
+      textButtonForeground = style.textButtonForeground();
+      outlinedButtonForeground = style.outlinedButtonForeground();
+      dialogBorderRadius = style.dialogBorderRadius();
     }
 
     var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: true);
@@ -156,7 +158,7 @@ abstract class JVxColors {
         dialogTheme: DialogThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
           surfaceTintColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(BORDER_RADIUS)
+            borderRadius: BorderRadius.circular(dialogBorderRadius ?? BORDER_RADIUS)
           )
         ),
         textButtonTheme: TextButtonThemeData(
@@ -186,7 +188,7 @@ abstract class JVxColors {
         elevatedButtonTheme: evbTheme,
         outlinedButtonTheme: otbTheme,
         datePickerTheme: DatePickerThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BORDER_RADIUS))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(dialogBorderRadius ?? BORDER_RADIUS))),
         timePickerTheme: TimePickerThemeData(backgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             dialBackgroundColor: isSelectedLight ? Colors.grey.shade50 : Colors.grey[850],
             hourMinuteShape: const OutlineInputBorder(
@@ -196,7 +198,7 @@ abstract class JVxColors {
                 )),
             hourMinuteColor: themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.surface,
             dayPeriodColor: isSelectedLight ? JVxColors.lighten(seedColor, 0.3) : JVxColors.darken(seedColor, 0.3),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BORDER_RADIUS))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(dialogBorderRadius ?? BORDER_RADIUS))),
         checkboxTheme: const CheckboxThemeData(side: BorderSide(color: Colors.black54, width: 2)),
         radioTheme: const RadioThemeData(fillColor: WidgetStatePropertyAll(Colors.black54)),
         typography: Typography.material2014()

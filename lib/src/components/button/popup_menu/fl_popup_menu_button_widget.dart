@@ -18,6 +18,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../mask/state/app_style.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../fl_button_widget.dart';
 import 'fl_popup_menu_item_widget.dart';
@@ -95,6 +96,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   /// Creates a [FontAwesomeIcons.caretDown] icon which, when pressed, opens a menu showing the [popupItems].
   Widget createPopupIcon(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(AppStyle.of(context).direct.buttonBorderRadius()),
       canRequestFocus: false,
       enableFeedback: model.isEnabled,
       onTap: () => openMenu(context),

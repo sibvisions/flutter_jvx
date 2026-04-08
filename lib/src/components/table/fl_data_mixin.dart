@@ -18,6 +18,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
+import '../../mask/state/app_style.dart';
 import '../../model/command/api/delete_record_command.dart';
 import '../../model/command/api/insert_record_command.dart';
 import '../../model/command/api/reload_data_command.dart';
@@ -37,7 +38,6 @@ import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/column_list.dart';
-import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
 import 'table_size.dart';
@@ -401,9 +401,9 @@ mixin FlDataMixin {
         size.width,
         size.height
       ),
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(JVxColors.BORDER_RADIUS),
+          Radius.circular(AppStyle.of(context).direct.menuBorderRadius()),
         ),
       ),
       context: context,

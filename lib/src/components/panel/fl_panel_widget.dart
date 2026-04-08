@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../mask/state/app_style.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
@@ -48,16 +49,20 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
     }
 
     if (model.hasStandardBorder) {
-      return wrapWithStandardBorder(panelWidget);
+      return wrapWithStandardBorder(context, panelWidget);
     }
 
     return panelWidget;
   }
 
-  static Widget wrapWithStandardBorder(Widget pPanelWidget) {
+  static Widget wrapWithStandardBorder(BuildContext context, Widget pPanelWidget) {
+    AppStyle style = AppStyle.of(context);
+
+    double borderRadius = style.direct.panelBorderRadius();
+
     return Container(
       foregroundDecoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS - JVxColors.BORDER_WIDTH_DEFAULT),
+        borderRadius: BorderRadius.circular(borderRadius - JVxColors.BORDER_WIDTH_DEFAULT),
         border: Border.all(
           width: JVxColors.BORDER_WIDTH_DEFAULT,
           color: JVxColors.STANDARD_BORDER,
@@ -65,7 +70,7 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
       ),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: pPanelWidget,
     );

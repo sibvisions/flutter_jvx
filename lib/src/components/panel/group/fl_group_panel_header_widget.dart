@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../../mask/state/app_style.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/device_status_response.dart';
@@ -53,7 +54,7 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
       );
     } else {
       labelWidget = Material(
-        color: model.background ?? Theme.of(context).colorScheme.primary,
+        color: model.background ?? AppStyle.of(context).direct.groupHeaderBackground() ?? Theme.of(context).colorScheme.primary,
         elevation: 2.0,
         borderRadius: BorderRadius.circular(8),
         child: Padding(

@@ -107,7 +107,7 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
     );
 
     if (model.hasStandardBorder) {
-      return FlPanelWidget.wrapWithStandardBorder(panelWidget);
+      return FlPanelWidget.wrapWithStandardBorder(context, panelWidget);
     }
 
     return panelWidget;

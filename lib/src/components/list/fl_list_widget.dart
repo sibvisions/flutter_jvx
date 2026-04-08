@@ -501,6 +501,9 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     bool asCard,
     bool withBorder,
     bool withArrow) {
+
+    double cardBorderRadius = AppStyle.of(context).direct.listCardBorderRadius();
+
     Widget list = _wrapList(context, _wrapSlider(context,
       NotificationListener<ScrollNotification>(
           onNotification: (notification) => _onInternalEndScroll(notification),
@@ -671,13 +674,13 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                         if (asCard) {
                           listEntry = Card(
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
+                                borderRadius: BorderRadius.circular(cardBorderRadius),
                               ),
                               color: Colors.white,
                               margin: const EdgeInsets.all(2),
                               child: ClipPath(
                                   clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS))),
+                                      borderRadius: BorderRadius.circular(cardBorderRadius))),
                                   child: listEntry
                               )
                           );
@@ -721,7 +724,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     ));
 
     if (withBorder) {
-      list = _withBorder(list);
+      list = _withBorder(context, list);
     }
 
     return list;
@@ -766,10 +769,13 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     return list;
   }
 
-  Widget _withBorder(Widget list) {
+  Widget _withBorder(BuildContext context, Widget list) {
+    double borderRadius = AppStyle.of(context).direct.listBorderRadius();
+
+
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS),
+        borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
           width: JVxColors.BORDER_WIDTH_DEFAULT,
           color: JVxColors.COMPONENT_BORDER,
@@ -779,7 +785,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       child: ClipRRect(
         // The clip rect is there to stop the rendering of the children.
         // Otherwise the children would clip the border of the parent container.
-        borderRadius: BorderRadius.circular(JVxColors.BORDER_RADIUS - JVxColors.BORDER_WIDTH_DEFAULT),
+        borderRadius: BorderRadius.circular(borderRadius - JVxColors.BORDER_WIDTH_DEFAULT),
         child: list,
       ),
     );
@@ -854,11 +860,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       bottom: 10,
       child: FloatingActionButton(
         heroTag: null,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: AppStyle.of(context).direct.listFloatingButtonBackground() ?? Theme.of(context).colorScheme.primary,
         onPressed: widget.onFloatingPress,
         child: FaIcon(
           FontAwesomeIcons.squarePlus,
-          color: widget.model.foreground ?? Theme.of(context).colorScheme.onPrimary,
+          color: widget.model.foreground ?? AppStyle.of(context).direct.listFloatingButtonForeground() ?? Theme.of(context).colorScheme.onPrimary,
         ),
       ),
     );

@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../mask/state/app_style.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../util/haptic_util.dart';
@@ -66,13 +67,15 @@ class FlButtonGroupWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
       }
     }
 
+    double borderRadius = AppStyle.of(context).direct.buttonGroupBorderRadius();
+
     Widget buttonWidget = Column(
       mainAxisAlignment: MainAxisAlignment.start,
         children: [LayoutBuilder(builder: (context, constraints) {
           return SingleChildScrollView(scrollDirection: Axis.horizontal,
               child: ToggleButtons(
                 key: buttonsKey,
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
                 onPressed: (int index) {
                   FlButtonModel butmod = (children[index] as FlButtonWrapper).model;
 
@@ -119,7 +122,7 @@ class FlButtonGroupWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
     }
 
     if (model.hasStandardBorder) {
-      return FlPanelWidget.wrapWithStandardBorder(buttonWidget);
+      return FlPanelWidget.wrapWithStandardBorder(context, buttonWidget);
     }
 
     return buttonWidget;

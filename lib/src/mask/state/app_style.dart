@@ -17,7 +17,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../model/response/application_settings_response.dart';
-import '../../util/jvx_colors.dart';
+import '../../service/config/i_config_service.dart';
 import 'app_style_direct.dart';
 
 class AppStyle extends InheritedWidget {
@@ -32,6 +32,8 @@ class AppStyle extends InheritedWidget {
   static const String loginColorGradient = "login.colorGradient";
   static const String loginInverseColor = "login.inverseColor";
   static const String menuTitleColor = "menu.titleColor";
+  static const String menuDrawerBackground = "menu.drawer.background";
+  static const String menuDrawerTopColor = "menu.drawer.topColor";
   static const String screenTitleColor = "screen.titleColor";
   static const String desktopIcon = "desktop.icon";
   static const String desktopColor = "desktop.color";
@@ -46,16 +48,40 @@ class AppStyle extends InheritedWidget {
   static const String opacitySideMenu = "opacity.sidemenu";
   static const String opacityMenu = "opacity.menu";
 
-  final Map<String, String>? applicationStyle;
+  //Themes
+  static const String themeColor = "theme.color";
+  static const String themeBorderRadius = "theme.data.borderRadius";
+  static const String themeEditorBorderRadius = "theme.data.editor.borderRadius";
+  static const String themeMenuBorderRadius = "theme.data.menu.borderRadius";
+  static const String themeTableBorderRadius = "theme.data.table.borderRadius";
+  static const String themeTableFloatingButtonBackground = "theme.data.table.floatingbutton.background";
+  static const String themeTableFloatingButtonForeground = "theme.data.table.floatingbutton.foreground";
+  static const String themeListBorderRadius = "theme.data.list.borderRadius";
+  static const String themeListCardBorderRadius = "theme.data.list.card.borderRadius";
+  static const String themeListFloatingButtonBackground = "theme.data.list.floatingbutton.background";
+  static const String themeListFloatingButtonForeground = "theme.data.list.floatingbutton.foreground";
+  static const String themePanelBorderRadius = "theme.data.panel.borderRadius";
+  static const String themeDialogBorderRadius = "theme.data.dialog.borderRadius";
+  static const String themeSlideButtonBorderRadius = "theme.data.slidebutton.borderRadius";
+  static const String themeSlideButtonHandleRadius = "theme.data.slidebutton.handleRadius";
+  static const String themeButtonBorderRadius = "theme.data.button.borderRadius";
+  static const String themeButtonGroupBorderRadius = "theme.data.buttongroup.borderRadius";
+  static const String themeButtonBackground = "theme.data.button.background";
+  static const String themeButtonForeground = "theme.data.button.foreground";
+  static const String themeTextButtonForeground = "theme.data.textbutton.foreground";
+  static const String themeOutlinedButtonForeground = "theme.data.outlinedbutton.foreground";
+  static const String themeGroupHeaderBackground = "theme.data.group.header.background";
+
+  final AppStyleDirect direct;
 
   final ApplicationSettingsResponse applicationSettings;
 
-  const AppStyle({
+  AppStyle({
     super.key,
-    required this.applicationStyle,
+    Map<String, String>? applicationStyle,
     required this.applicationSettings,
     required super.child,
-  });
+  }) : direct = AppStyleDirect(applicationStyle);
 
   /// The closest instance of this class that encloses the given context.
   static AppStyle of(BuildContext context) {
@@ -64,9 +90,9 @@ class AppStyle extends InheritedWidget {
     return result!;
   }
 
-  /// Gets direct access
-  static AppStyleDirect direct() {
-    return AppStyleDirect();
+  /// Gets direct access from configuration style
+  static AppStyleDirect directFromConfig() {
+    return AppStyleDirect(IConfigService().applicationStyle.value);
   }
 
   /// The closest instance of this class that encloses the given context.
@@ -79,30 +105,16 @@ class AppStyle extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant AppStyle oldWidget) =>
-      applicationStyle != oldWidget.applicationStyle && applicationSettings != oldWidget.applicationSettings;
+      !direct.isSame(oldWidget.direct) && applicationSettings != oldWidget.applicationSettings;
 
-  /// Gets the style setting by name and recognizes dark mode setting
+  /// Gets the style setting by name
   String? style(BuildContext context, String propertyName) {
-    if (!JVxColors.isLightTheme(context)) {
-      String? valueDark = applicationStyle?["dark.$propertyName"];
-
-      if (valueDark != null) {
-        return valueDark;
-      }
-    }
-
-    return applicationStyle?[propertyName];
+    return direct.style(propertyName, context: context);
   }
 
   /// Gets the style setting as bool
   bool styleAsBool(BuildContext context, String propertyName, [bool defaultValue = false]) {
-    String? value = style(context, propertyName);
-
-    if (value == null) {
-      return defaultValue;
-    }
-
-    return bool.tryParse(value, caseSensitive: false) ?? defaultValue;
+    return direct.styleAsBool(propertyName, context: context);
   }
 
 }
