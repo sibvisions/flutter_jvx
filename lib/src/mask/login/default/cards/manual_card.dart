@@ -101,6 +101,17 @@ class _ManualCardState extends State<ManualCard> {
 
   @override
   Widget build(BuildContext context) {
+    ButtonStyle? buttonStyle = Theme.of(context).elevatedButtonTheme.style;
+    OutlinedBorder? border = buttonStyle?.shape?.resolve({});
+
+    double? borderRadius;
+    Color? backgroundColor = buttonStyle?.backgroundColor?.resolve({});
+    Color? foregroundColor = buttonStyle?.foregroundColor?.resolve({});
+
+    if (border is RoundedRectangleBorder) {
+      borderRadius = border.borderRadius.resolve(Directionality.of(context)).topLeft.x;
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -170,13 +181,15 @@ class _ManualCardState extends State<ManualCard> {
           const SizedBox(height: 25),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         ProgressButton.icon(
-          radius: 4.0,
+          radius: borderRadius ?? JVxColors.BORDER_RADIUS,
           progressIndicator: CircularProgressIndicator.adaptive(
             backgroundColor: JVxColors.toggleColor(Theme.of(context).colorScheme.onPrimary),
             valueColor: const AlwaysStoppedAnimation(Colors.white),
           ),
           stateButtons: {
             ButtonState.idle: StateButton(
+              color: backgroundColor,
+              textStyle: foregroundColor != null ? TextStyle(color: foregroundColor) : null,
               child: IconedButton(
                 text: FlutterUI.translate("Login"),
                 icon: const Icon(Icons.login),
