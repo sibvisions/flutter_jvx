@@ -301,7 +301,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
     return ButtonStyle(
       textStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
-        if (states.contains(WidgetState.pressed)) {
+        if (model.isHyperLink && states.contains(WidgetState.pressed)) {
           return TextStyle(decoration: TextDecoration.underline);
         }
         return TextStyle(decoration: TextDecoration.none);
