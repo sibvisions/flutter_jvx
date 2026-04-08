@@ -469,34 +469,49 @@ class UIDebug extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Show login with mode",
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                SizedBox(height: 8),
-                StatefulBuilder(builder: (context, setState) {
-                  return DropdownButton<LoginMode>(
-                    hint: const Text("Route to Login"),
-                    value: cast<MainLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.loginDataNotifier.value.mode,
-                    items: LoginMode.values
-                        .map((e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e.name),
-                    ))
-                        .toList(),
-                    onChanged: (LoginMode? value) {
-                      LoginPage.update(LoginData(mode: value!));
+            title: StatefulBuilder(
+              builder: (context, setState) {
+                final currentMode = cast<MainLocation>(
+                  FlutterUI.getBeamerDelegate().currentBeamLocation,
+                )?.loginDataNotifier.value.mode;
+
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: DropdownMenu<LoginMode>(
+                  menuStyle: MenuStyle(
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                  inputDecorationTheme: const InputDecorationTheme(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    )
+                  ),
+                  expandedInsets: EdgeInsets.zero,
+                  initialSelection: currentMode,
+                  label: const Text("Show login with mode"),
+                  onSelected: (value) {
+                    if (value != null) {
+                      LoginPage.update(LoginData(mode: value));
                       setState(() {});
-                    },
-                    isExpanded: true,
-                  );
-                })
-              ]
-            )
+                    }
+                  },
+                  dropdownMenuEntries: LoginMode.values
+                      .map(
+                        (e) => DropdownMenuEntry<LoginMode>(
+                      value: e,
+                      label: e.name,
+                    ),
+                  )
+                      .toList(),
+                ));
+              },
+            ),
           )
         ],
       ),
@@ -521,14 +536,6 @@ class ControlButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ButtonStyle? style = Theme.of(context).outlinedButtonTheme.style;
-
-    OutlinedBorder? border = style?.shape?.resolve({});
-
-    double? borderRadius;
-
-    if (border is RoundedRectangleBorder) {
-      borderRadius = border.borderRadius.resolve(Directionality.of(context)).topLeft.x;
-    }
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: maxHeight),
