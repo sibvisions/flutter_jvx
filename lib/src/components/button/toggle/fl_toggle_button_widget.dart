@@ -54,10 +54,12 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
       backgroundColor = model.background;
     }
 
+    ElevatedButtonThemeData data = ElevatedButtonTheme.of(context);
+
     if (model.isEnabled && model.selected) {
       buttonStyle = buttonStyle.copyWith(
         backgroundColor: WidgetStateProperty.all(
-          JVxColors.toggleColor(backgroundColor ?? Theme.of(context).colorScheme.primary),
+          JVxColors.toggleColor(backgroundColor ?? data.style?.backgroundColor?.resolve({}) ?? Theme.of(context).colorScheme.primary),
         ),
       );
     }
