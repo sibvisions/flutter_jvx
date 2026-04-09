@@ -40,6 +40,12 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   final bool inTable;
 
+  /// whether to show image as avatar
+  final bool showAsAvatar;
+
+  /// whether to use full-size for avatar calculation instead of image size
+  final bool showAvatarFullSize;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,12 +57,16 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     this.imageStreamListener,
     this.onPress,
     this.inTable = false,
-    this.wrapper
+    this.wrapper,
+    this.showAsAvatar = false,
+    this.showAvatarFullSize = false
   });
 
   @override
   Widget build(BuildContext context) {
     Widget? child;
+
+    Size? imageSize;
 
     if (image != null) {
       if (wrapper != null) {
@@ -67,20 +77,37 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       }
     }
     else{
-      child = _loadImage();
+      if (!showAvatarFullSize && !model.showAvatarFullSize) {
+        listener(Size size, bool b) {
+          imageSize = size;
+
+          imageStreamListener?.call(size, b);
+        }
+
+        child = _loadImage(listener);
+      }
+      else {
+        child = _loadImage(imageStreamListener);
+      }
     }
 
     if (model.toolTipText != null) {
       child = Tooltip(message: model.toolTipText!, child: child);
     }
 
+    child = DecoratedBox(
+      decoration: BoxDecoration(color: model.background),
+      child: child,
+    );
+
+    if (model.showAsAvatar || showAsAvatar) {
+      child = ClipPath(clipper: CircleClipper(areaSize: imageSize), child: child);
+    }
+
     if (onPress != null) {
       return GestureDetector(
         onTap: model.isEnabled ? onPress : null,
-        child: DecoratedBox(
-          decoration: BoxDecoration(color: model.background),
-          child: child,
-        ),
+        child: child
       );
     } else {
       return GestureDetector(
@@ -102,10 +129,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
                   },
                 )
             : null,
-        child: DecoratedBox(
-          decoration: BoxDecoration(color: model.background),
-          child: child,
-        ),
+        child: child
       );
     }
   }
@@ -136,7 +160,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     return BoxFit.none;
   }
 
-  Widget? _loadImage() {
+  Widget? _loadImage(Function(Size, bool)? listener) {
     if (!model.hasImage()) {
       return null;
     }
@@ -164,7 +188,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
             height: height,
             child: ImageLoader.loadImage(
               model.image!,
-              imageStreamListener: imageStreamListener,
+              imageStreamListener: listener,
               color: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
               fit: BoxFit.fill,
               wrapper: wrapper
@@ -175,7 +199,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     } else {
       return ImageLoader.loadImage(
         model.image!,
-        imageStreamListener: imageStreamListener,
+        imageStreamListener: listener,
         color: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
         fit: boxFit,
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
@@ -183,4 +207,28 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       );
     }
   }
+}
+
+class CircleClipper extends CustomClipper<Path> {
+  Size? areaSize;
+
+  CircleClipper({
+    this.areaSize
+  });
+
+  @override
+  Path getClip(Size size) {
+    Size usedSize = areaSize ?? size;
+
+    final radius = (usedSize.width < usedSize.height ? usedSize.width : usedSize.height) / 2;
+    final center = Offset(size.width / 2, size.height / 2);
+
+    return Path()
+      ..addOval(
+        Rect.fromCircle(center: center, radius: radius),
+      );
+  }
+
+  @override
+  bool shouldReclip(covariant CircleClipper oldClipper) => areaSize != oldClipper.areaSize;
 }

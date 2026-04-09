@@ -34,6 +34,7 @@ import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
 import '../response/record_format.dart';
+import 'editor/cell_editor/cell_editor_model.dart';
 import 'i_font_style.dart';
 
 part 'button/fl_button_model.dart';
@@ -48,6 +49,7 @@ part 'check_box/fl_check_box_model.dart';
 part 'custom/fl_custom_container_model.dart';
 part 'dummy/fl_dummy_model.dart';
 part 'editor/cell_editor/date/fl_date_editor_model.dart';
+part 'editor/cell_editor/fl_image_cell_editor_model.dart';
 part 'editor/cell_editor/linked/fl_linked_editor_model.dart';
 part 'editor/fl_editor_model.dart';
 part 'editor/text_area/fl_text_area_model.dart';

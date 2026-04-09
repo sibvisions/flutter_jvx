@@ -16,13 +16,13 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../../model/component/editor/cell_editor/fl_image_cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../util/icon_util.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../icon/fl_icon_widget.dart';
+import '../../panel/fl_panel_widget.dart';
 import 'i_cell_editor.dart';
 
 class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel, dynamic> {
@@ -64,32 +64,40 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setValue(dynamic pValue) {
-    _value = pValue;
+  void setValue(dynamic value) {
+    _value = value;
 
     recalculateSizeCallback?.call(true);
   }
 
   @override
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    super.setColumnDefinition(pColumnDefinition);
+  void setColumnDefinition(ColumnDefinition? columnDefinition) {
+    super.setColumnDefinition(columnDefinition);
 
     recalculateSizeCallback?.call(true);
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
+  createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context}) {
     FlIconModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
     widgetModel.originalSize = imageSize;
 
-    return FlIconWidget(
+    Widget w = FlIconWidget(
       model: widgetModel,
       imageStreamListener: onImage,
       inTable: isInTable,
-      wrapper: pWrapper,
+      wrapper: wrapper,
+      showAsAvatar: model.showAsAvatar,
+      showAvatarFullSize: model.showAvatarFullSize,
     );
+
+    if (model.hasStandardBorder && context != null) {
+      w = FlPanelWidget.wrapWithStandardBorder(context, w);
+    }
+
+    return w;
   }
 
   @override
@@ -117,32 +125,32 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
   }
 
   @override
-  String formatValue(dynamic pValue) {
-    return pValue?.toString() ?? "";
+  String formatValue(dynamic value) {
+    return value?.toString() ?? "";
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson) {
+  double getEditorWidth(Map<String, dynamic>? json) {
     return imageSize.width;
   }
 
   @override
-  double getEditorHeight(Map<String, dynamic>? pJson) {
+  double getEditorHeight(Map<String, dynamic>? json) {
     return imageSize.height;
   }
 
   @override
   bool get allowedInTable => true;
 
-  void onImage(Size pImageInfo, bool pSynchronousCall) {
+  void onImage(Size imageInfo, bool synchronousCall) {
     bool newSize = false;
 
-    if (imageSize.height.toDouble() != pImageInfo.height || imageSize.width.toDouble() != pImageInfo.width) {
-      imageSize = Size(pImageInfo.width.toDouble(), pImageInfo.height.toDouble());
+    if (imageSize.height.toDouble() != imageInfo.height || imageSize.width.toDouble() != imageInfo.width) {
+      imageSize = Size(imageInfo.width.toDouble(), imageInfo.height.toDouble());
       newSize = true;
     }
 
-    if (!pSynchronousCall && newSize) {
+    if (!synchronousCall && newSize) {
       recalculateSizeCallback?.call(true);
     }
   }

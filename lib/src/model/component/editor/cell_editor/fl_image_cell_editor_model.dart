@@ -14,18 +14,37 @@
  * the License.
  */
 
-import '../../../../service/api/shared/api_object_property.dart';
-import 'cell_editor_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlImageCellEditorModel extends ICellEditorModel {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The style if the image should be shown as avatar
+  static const String STYLE_AS_AVATAR = "f_as_avatar";
+
+  /// The style if the avatar should use full size instead of image size
+  static const String STYLE_AVATAR_FULL_SIZE = "f_avatar_full_size";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The name of the default image
   String defaultImageName = "";
 
   /// If the aspect ratio of the image should be preserved.
   bool preserveAspectRatio = true;
+
+  /// If image should be shown as avatar
+  bool get showAsAvatar => styles.contains(STYLE_AS_AVATAR);
+
+  /// If avatar should use available size not just the image size
+  bool get showAvatarFullSize => styles.contains(STYLE_AVATAR_FULL_SIZE);
+
+  /// If image should show a standard border
+  bool get hasStandardBorder => styles.contains(FlPanelModel.STYLE_STANDARD_BORDER);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

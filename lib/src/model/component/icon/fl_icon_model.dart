@@ -47,6 +47,12 @@ class FlIconModel extends FlComponentModel {
     return image != null && (image is! String || (image as String).isNotEmpty);
   }
 
+  /// If image should be shown as avatar
+  bool get showAsAvatar => styles.contains(FlImageCellEditorModel.STYLE_AS_AVATAR);
+
+  /// If avatar should use available size not just the image size
+  bool get showAvatarFullSize => styles.contains(FlImageCellEditorModel.STYLE_AVATAR_FULL_SIZE);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
