@@ -86,7 +86,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   /// The onChangeTimer that is used to send the value to the server if saving [savingImmediate] is true.
   Timer? onChangeTimer;
 
-  DalMetaData? metaData;
+  DalMetaData? _metaData;
 
   /// The crypto-lock mode
   bool cryptoLock = false;
@@ -152,7 +152,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       editorWidget = FlCryptoLockWidget(model: model, cellEditor: cellEditor);
     }
 
-    editorWidget ??= cellEditor.createWidget(model.json, wrapper);
+    editorWidget ??= cellEditor.createWidget(model.json, wrapper: wrapper, context: context);
 
     return wrapWidget(
       context,
@@ -204,7 +204,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ///Replaces the cell editor with another instance but keep the value(s)
-  Future<void> _replaceCellEditor([bool pReSubscribe = true]) async {
+  Future<void> _replaceCellEditor([bool reSubscribe = true]) async {
 
     bool oldFocus = false;
 
@@ -220,11 +220,11 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       oldValues = (cellEditor as FlLinkedCellEditor).getValues();
     }
 
-    if (pReSubscribe) {
+    if (reSubscribe) {
       _unsubscribe();
     }
 
-    recreateCellEditor(pReSubscribe);
+    recreateCellEditor(reSubscribe);
 
     model.applyComponentInformation(cellEditor.createWidgetModel());
 
@@ -243,7 +243,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Subscribes to the service and registers the set value call back.
-  void _subscribe([bool pImmediatelyRetrieveData = true]) {
+  void _subscribe([bool immediatelyRetrieveData = true]) {
     if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -253,7 +253,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           onMetaData: receiveMetaData,
           dataColumns: isLinkedEditor() ? null : [model.columnName],
         ),
-          pImmediatelyRetrieveData: pImmediatelyRetrieveData
+          pImmediatelyRetrieveData: immediatelyRetrieveData
       );
     }
   }
@@ -270,46 +270,45 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
-  void onChange(dynamic pValue) {
+  void onChange(dynamic value) {
     onChangeTimer?.cancel();
 
     if (model.savingImmediate) {
-      onChangeTimer = Timer(const Duration(milliseconds: 300), () => _onValueChanged(pValue));
+      onChangeTimer = Timer(const Duration(milliseconds: 300), () => _onValueChanged(value));
 
       // TextField wont update immediately, so we need to force it to update.
     }
     setState(() {});
   }
 
-  void _onValueChanged(dynamic pValue) {
+  void _onValueChanged(dynamic value) {
     IUiService()
         .saveAllEditors(
       pId: model.id,
-      pReason: "Value of ${model.id} set to $pValue",
-    )
-        .then((success) {
+      pReason: "Value of ${model.id} set to $value",
+    ).then((success) {
       if (!success) {
         return false;
       }
 
-      ICommandService().sendCommand(_sendValueToServer(pValue));
+      ICommandService().sendCommand(_sendValueToServer(value));
     });
 
     setState(() {});
   }
 
-  Future<void> setValue(DataRecord? pDataRecord) async {
+  Future<void> setValue(DataRecord? dataRecord) async {
     dynamic oldValue = _currentValue;
 
-    if (pDataRecord != null && pDataRecord.values.isNotEmpty && pDataRecord.columnDefinitions.isNotEmpty) {
-      _currentValue = pDataRecord.values[pDataRecord.columnDefinitions.indexByName(model.columnName)];
+    if (dataRecord != null && dataRecord.values.isNotEmpty && dataRecord.columnDefinitions.isNotEmpty) {
+      _currentValue = dataRecord.values[dataRecord.columnDefinitions.indexByName(model.columnName)];
     } else {
       _currentValue = null;
     }
 
-    _currentValues = pDataRecord?.values;
+    _currentValues = dataRecord?.values;
 
-    cryptoLock = pDataRecord != null && (IDataService().getDataBook(model.dataProvider)?.hasCryptoLock(pDataRecord.index, model.columnName) ?? false);
+    cryptoLock = dataRecord != null && (IDataService().getDataBook(model.dataProvider)?.hasCryptoLock(dataRecord.index, model.columnName) ?? false);
 
     if (isLinkedEditor()) {
       cellEditor.setValue((_currentValue, _currentValues));
@@ -326,25 +325,25 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
   }
 
-  void receiveMetaData(DalMetaData pMetaData) {
-    metaData = pMetaData;
+  void receiveMetaData(DalMetaData metaData) {
+    _metaData = metaData;
 
-    cellEditor.setColumnDefinition(metaData!.columnDefinitions.byName(model.columnName));
+    cellEditor.setColumnDefinition(_metaData!.columnDefinitions.byName(model.columnName));
 
     setState(() {});
   }
 
   /// Sets the state of the widget and sends a set value command.
-  Future<void> onEndEditing(dynamic pValue, [String? pAction]) async {
+  Future<void> onEndEditing(dynamic value, [String? action]) async {
     onChangeTimer?.cancel();
-    if (_isSameValue(pValue) || !model.isEnabled) {
+    if (_isSameValue(value) || !model.isEnabled) {
       setState(() {});
       return;
     }
 
     await IUiService().saveAllEditors(
       pId: model.id,
-      pReason: "Value of ${model.id} set to $pValue",
+      pReason: "Value of ${model.id} set to $value",
     ).then((success) {
       if (!success) {
         return false;
@@ -355,7 +354,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       var oldFocus = IUiService().getFocus();
       commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit focus"));
 
-      commands.add(_sendValueToServer(pValue));
+      commands.add(_sendValueToServer(value));
 
       if (cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) {
         SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit unfocus");
@@ -371,36 +370,36 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  SetValuesCommand _sendValueToServer(dynamic pValue) {
-    if (pValue is HashMap<String, dynamic>) {
+  SetValuesCommand _sendValueToServer(dynamic value) {
+    if (value is HashMap<String, dynamic>) {
       if (FlutterUI.logUI.cl(Lvl.d)) {
-        FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
+        FlutterUI.logUI.d("Values of ${model.id} set to $value");
       }
 
       return SetValuesCommand(
         editorColumnName: model.columnName,
         dataProvider: model.dataProvider,
-        columnNames: pValue.keys.toList(),
-        values: pValue.values.toList(),
-        reason: "Value of ${model.id} set to $pValue",
+        columnNames: value.keys.toList(),
+        values: value.values.toList(),
+        reason: "Value of ${model.id} set to $value",
       );
     } else {
       if (FlutterUI.logUI.cl(Lvl.d)) {
-        FlutterUI.logUI.d("Value of ${model.id} set to $pValue");
+        FlutterUI.logUI.d("Value of ${model.id} set to $value");
       }
 
       return SetValuesCommand(
         dataProvider: model.dataProvider,
         editorColumnName: model.columnName,
         columnNames: [model.columnName],
-        values: [pValue],
-        reason: "Value of ${model.id} set to $pValue",
+        values: [value],
+        reason: "Value of ${model.id} set to $value",
       );
     }
   }
 
-  void recalculateSize([bool pRecalculate = true]) {
-    if (pRecalculate) {
+  void recalculateSize([bool recalculate = true]) {
+    if (recalculate) {
       sentLayoutData = false;
     }
 
@@ -408,7 +407,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Recreates the cell editor.
-  void recreateCellEditor([bool pSubscribe = true]) {
+  void recreateCellEditor([bool subscribe = true]) {
     cellEditor.dispose();
 
     Map<String, dynamic> jsonCellEditor = Map.of(model.json[ApiObjectProperty.cellEditor]);
@@ -428,14 +427,14 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     cellEditor.model.styles.addAll(model.styles);
 
-    if (pSubscribe) {
+    if (subscribe) {
       _subscribe();
     }
   }
 
   @override
-  Future<BaseCommand?> createSaveCommand(String pReason) async {
-    if (!model.isEnabled || metaData == null || !metaData!.updateEnabled) {
+  Future<BaseCommand?> createSaveCommand(String reason) async {
+    if (!model.isEnabled || _metaData == null || !_metaData!.updateEnabled) {
       return null;
     }
 
@@ -450,7 +449,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       editorColumnName: model.columnName,
       columnNames: [model.columnName],
       values: [value],
-      reason: "$pReason; Value of ${model.id} set to $value",
+      reason: "$reason; Value of ${model.id} set to $value",
     );
   }
 
@@ -458,8 +457,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     return cellEditor.formatValue(value) == cellEditor.formatValue(_currentValue);
   }
 
-  void _onFocusChange(bool pFocus) {
-    if (pFocus) {
+  void _onFocusChange(bool hasFocus) {
+    if (hasFocus) {
       focus();
     } else {
       unfocus();

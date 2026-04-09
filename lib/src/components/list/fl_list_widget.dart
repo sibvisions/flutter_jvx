@@ -83,7 +83,7 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   static const String STYLE_COLUMN_SEPARATOR = "f_list_columnseparator_";
 
   /// With this style the list will have a standard border
-  static const String STYLE_STANDARD_BORDER = "f_standard_border";
+  static const String STYLE_STANDARD_BORDER = FlPanelModel.STYLE_STANDARD_BORDER;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Callbacks

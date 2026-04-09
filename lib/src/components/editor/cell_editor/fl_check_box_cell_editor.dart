@@ -68,15 +68,15 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setValue(dynamic pValue) {
-    _value = pValue;
+  void setValue(dynamic value) {
+    _value = value;
   }
 
   @override
-  Widget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
+  Widget createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context}) {
     FlCheckBoxModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     bool isButton = model.styles.contains(FlCheckBoxModel.STYLE_UI_BUTTON);
     bool isToggle = model.styles.contains(FlCheckBoxModel.STYLE_UI_TOGGLEBUTTON);
@@ -96,8 +96,8 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
     lastWidgetModel = widgetModel;
 
     bool isEditable = true;
-    if (pJson?.containsKey(ApiObjectProperty.cellEditorEditable) == true) {
-      isEditable = pJson![ApiObjectProperty.cellEditorEditable];
+    if (json?.containsKey(ApiObjectProperty.cellEditorEditable) == true) {
+      isEditable = json![ApiObjectProperty.cellEditorEditable];
     }
 
     if (isButton || isHyperLink) {
@@ -125,7 +125,7 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
         radioFocusNode: focusNode,
         onPress: isEditable ? _onPress : null,
         shrinkSize: shrinkSize,
-        wrapper: pWrapper,
+        wrapper: wrapper,
       );
     } else if (isToggle) {
       Widget w = FlToggleButtonWidget(
@@ -152,7 +152,7 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
       model: widgetModel,
       onPress: isEditable ? _onPress : null,
       shrinkSize: shrinkSize,
-      wrapper: pWrapper
+      wrapper: wrapper
     );
   }
 
@@ -179,17 +179,17 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
   }
 
   @override
-  String formatValue(dynamic pValue) {
-    return pValue?.toString() ?? "";
+  String formatValue(dynamic value) {
+    return value?.toString() ?? "";
   }
 
   @override
-  double? getEditorWidth(Map<String, dynamic>? pJson) {
+  double? getEditorWidth(Map<String, dynamic>? json) {
     return null;
   }
 
   @override
-  double? getEditorHeight(Map<String, dynamic>? pJson) {
+  double? getEditorHeight(Map<String, dynamic>? json) {
     return null;
   }
 

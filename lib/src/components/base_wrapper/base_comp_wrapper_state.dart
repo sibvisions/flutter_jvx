@@ -172,11 +172,11 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     );
   }
 
-  Widget wrapWithBadge(BuildContext context, Widget pChild, {bool? expand = false, EdgeInsets? padding}) {
-    return BadgeUtil.wrapWithBadge(context, pChild, _badgeConfig, expand: expand, padding: padding);
+  Widget wrapWithBadge(BuildContext context, Widget child, {bool? expand = false, EdgeInsets? padding}) {
+    return BadgeUtil.wrapWithBadge(context, child, _badgeConfig, expand: expand, padding: padding);
   }
 
-  Widget wrapWithOpacity(Widget pChild) {
+  Widget wrapWithOpacity(Widget child) {
     return ValueListenableBuilder(
       valueListenable: IConfigService().applicationStyle,
       builder: (context, value, builderChild) {
@@ -185,24 +185,24 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
           child: builderChild,
         );
       },
-      child: pChild,
+      child: child,
     );
   }
 
-  Widget wrapWithSemantic(Widget pChild) {
+  Widget wrapWithSemantic(Widget child) {
     return Semantics(
       enabled: model.ariaLabel.isNotEmpty,
       container: true,
       explicitChildNodes: true,
       label: model.ariaLabel,
-      child: pChild,
+      child: child,
     );
   }
 
-  Widget wrapWithDesignListener(Widget pChild) {
+  Widget wrapWithDesignListener(Widget child) {
     return ValueListenableBuilder(
       valueListenable: IUiService().applicationParameters,
-      child: pChild,
+      child: child,
       builder: (context, applicationParameters, builderChild) {
         if (!applicationParameters.designModeAllowed) {
           return builderChild!;
@@ -244,10 +244,10 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     return true;
   }
 
-  Widget wrapWithDesignSelection(Widget pChild) {
+  Widget wrapWithDesignSelection(Widget child) {
     return ValueListenableBuilder(
       valueListenable: IUiService().designModeElement,
-      child: pChild,
+      child: child,
       builder: (context, designModeElement, builderChild) {
         if (designModeElement != model.id) {
           return builderChild!;
@@ -299,7 +299,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         layoutData.calculatedSize = layoutData.preferredSize;
       }
 
-      sendCalcSize(pLayoutData: layoutData.clone(), pReason: "Component has been rendered");
+      sendCalcSize(layoutData: layoutData.clone(), reason: "Component has been rendered");
       sentLayoutData = true;
     }
   }
@@ -338,32 +338,32 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Is called when a new [LayoutData] is sent from the [ILayoutService].
-  void receiveNewLayoutData(LayoutData pLayoutData) {
+  void receiveNewLayoutData(LayoutData newLayoutData) {
     //mark layout data "received"
-    pLayoutData.receivedDate = DateTime.now();
+    newLayoutData.receivedDate = DateTime.now();
 
-    if (pLayoutData.hasPosition && pLayoutData.layoutPosition!.isConstraintCalc) {
-      LayoutPosition newPosition = pLayoutData.layoutPosition!;
+    if (newLayoutData.hasPosition && newLayoutData.layoutPosition!.isConstraintCalc) {
+      LayoutPosition newPosition = newLayoutData.layoutPosition!;
 
       //try to use old position
-      pLayoutData.layoutPosition = layoutData.layoutPosition;
-      layoutData = pLayoutData;
+      newLayoutData.layoutPosition = layoutData.layoutPosition;
+      layoutData = newLayoutData;
 
       // Check if new position constrains component. Only sends command if constraint is new.
       if (lastContext != null) {
-        LayoutData layoutDataNew = calculateConstrainedSize(newPosition);
+        LayoutData layoutDataCalc = calculateConstrainedSize(newPosition);
 
-        if (!identical(layoutDataNew, layoutData))
+        if (!identical(layoutDataCalc, layoutData))
         {
-          sendCalcSize(pLayoutData: layoutDataNew, pReason: "Component has been constrained");
+          sendCalcSize(layoutData: layoutDataCalc, reason: "Component has been constrained");
         }
       }
     } else {
-      layoutData = pLayoutData;
+      layoutData = newLayoutData;
     }
 
     if (FlutterUI.logLayout.cl(Lvl.d)) {
-      FlutterUI.logLayout.d("${model.name}|${model.id} receiveNewLayoutData ${pLayoutData.layoutPosition}");
+      FlutterUI.logLayout.d("${model.name}|${model.id} receiveNewLayoutData ${newLayoutData.layoutPosition}");
     }
 
     setState(() {});
@@ -450,14 +450,14 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sends the calc size to the [ILayoutService] and, if possible, triggers a layout cycle.
-  void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
-    ICommandService().sendCommand(PreferredSizeCommand(layoutData: pLayoutData, reason: pReason));
+  void sendCalcSize({required LayoutData layoutData, required String reason}) {
+    ICommandService().sendCommand(PreferredSizeCommand(layoutData: layoutData, reason: reason));
   }
 
   /// Creates a save command.
   ///
   /// Will return null if there is nothing to save.
-  Future<BaseCommand?> createSaveCommand(String pReason) async {
+  Future<BaseCommand?> createSaveCommand(String reason) async {
     return null;
   }
 

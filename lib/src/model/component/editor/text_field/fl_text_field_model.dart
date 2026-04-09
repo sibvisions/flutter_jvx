@@ -18,7 +18,7 @@ part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlTextFieldModel extends FlLabelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
+  // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The style if the text editor should copy option
@@ -31,6 +31,9 @@ class FlTextFieldModel extends FlLabelModel {
   /// the focus lost completion
   static const String FOCUS_LOST = "FOCUS_LOST";
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The placeholder text inside the text field if it is empty.
   String? placeholder;

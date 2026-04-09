@@ -332,8 +332,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<void> _receiveTableData(DataChunk pChunkData) async {
-    _chunkData = pChunkData;
+  Future<void> _receiveTableData(DataChunk chunkData) async {
+    _chunkData = chunkData;
 
     _createTableColumnView();
 
@@ -426,8 +426,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
   }
 
-  void _receiveMetaData(DalMetaData pMetaData) {
-    _metaData = pMetaData;
+  void _receiveMetaData(DalMetaData metaData) {
+    _metaData = metaData;
 
     _createTableColumnView();
 
@@ -440,17 +440,17 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
   }
 
-  void _onRowTapped(int pIndex, String pColumnName, ICellEditor pCellEditor) {
-    if (_currentlyFiltering || pIndex < 0) {
+  void _onRowTapped(int index, String columnName, ICellEditor cellEditor) {
+    if (_currentlyFiltering || index < 0) {
       return;
     }
 
-    selectRecord(pIndex).then((success) {
+    selectRecord(index).then((success) {
       if (!success) {
         return;
       }
 
-      List<dynamic>? data = _chunkData!.data[pIndex];
+      List<dynamic>? data = _chunkData!.data[index];
       if (data == null) {
         return;
       }
@@ -483,7 +483,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   }
 
   /// Selects the record.
-  Future<bool> selectRecord(int pRowIndex) async {
+  Future<bool> selectRecord(int rowIndex) async {
     if (_metaData == null && _chunkData == null) {
       return false;
     }
@@ -498,7 +498,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
 
     for (String column in listColumnNames) {
-      listValues.add(_getValue(pColumnName: column, pRowIndex: pRowIndex));
+      listValues.add(_getValue(columnName: column, rowIndex: rowIndex));
     }
 
     var filter = Filter(values: listValues, columnNames: listColumnNames);
@@ -506,21 +506,21 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     return ICommandService().sendCommand(
       SelectRecordCommand(
         dataProvider: model.linkReference.referencedDataBook,
-        rowNumber: pRowIndex,
+        rowNumber: rowIndex,
         reason: "Tapped",
         filter: filter,
       ),
     );
   }
 
-  dynamic _getValue({required String pColumnName, required int pRowIndex}) {
-    int colIndex = _chunkData!.columnDefinitions.indexWhere((element) => element.name == pColumnName);
+  dynamic _getValue({required String columnName, required int rowIndex}) {
+    int colIndex = _chunkData!.columnDefinitions.indexByName(columnName);
 
     if (colIndex == -1) {
       return null;
     }
 
-    return _chunkData!.data[pRowIndex]![colIndex];
+    return _chunkData!.data[rowIndex]![colIndex];
   }
 
   void _startTimerValueChanged(String value) {

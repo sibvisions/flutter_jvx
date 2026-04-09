@@ -68,8 +68,8 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setValue(dynamic pValue) {
-    _value = pValue;
+  void setValue(dynamic value) {
+    _value = value;
 
     currentIndex = model.listValues.indexOf(_value);
 
@@ -77,14 +77,14 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
   }
 
   @override
-  Widget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
+  Widget createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context}) {
     FlIconModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     bool isEditable = true;
-    if (pJson?.containsKey(ApiObjectProperty.cellEditorEditable) == true) {
-      isEditable = pJson![ApiObjectProperty.cellEditorEditable];
+    if (json?.containsKey(ApiObjectProperty.cellEditorEditable) == true) {
+      isEditable = json![ApiObjectProperty.cellEditorEditable];
     }
 
     return SizedBox(
@@ -122,17 +122,17 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
   }
 
   @override
-  String formatValue(dynamic pValue) {
-    return pValue?.toString() ?? "";
+  String formatValue(dynamic value) {
+    return value?.toString() ?? "";
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson) {
+  double getEditorWidth(Map<String, dynamic>? json) {
     return model.imageSize;
   }
 
   @override
-  double getEditorHeight(Map<String, dynamic>? pJson) {
+  double getEditorHeight(Map<String, dynamic>? json) {
     return model.imageSize;
   }
 }

@@ -169,7 +169,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       entryBuilder: IUiService().getAppManager()?.customListEntryBuilder[model.name],
       onRefresh: refresh,
       onEndScroll: _loadMore,
-      onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
+      onScroll: (scrollNotification) => lastScrollNotification = scrollNotification,
       onTap: _onListTap,
       onLongPress: _onLongPress,
       onFloatingPress: showFloatingButton ? insertRecord : null,
@@ -273,10 +273,10 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   }
 
   /// Loads data from the server.
-  void _receiveListData(DataChunk pDataChunk) {
+  void _receiveListData(DataChunk newDataChunk) {
     currentState |= LOADED_DATA;
 
-    dataChunk = pDataChunk;
+    dataChunk = newDataChunk;
 
     if (isDataRow(selectedRow)) {
       Map<String, dynamic> selectionValues = {};
@@ -294,13 +294,13 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   }
 
   /// Receives which row is selected.
-  void _receiveSelectedRecord(DataRecord? pRecord) {
+  void _receiveSelectedRecord(DataRecord? record) {
     currentState |= LOADED_SELECTED_RECORD;
 
     var currentSelectedRow = selectedRow;
 
-    if (pRecord != null) {
-      selectedRow = pRecord.index;
+    if (record != null) {
+      selectedRow = record.index;
     } else {
       DataBook? dataBook = IDataService().getDataBook(model.dataProvider);
       if (dataBook != null) {
@@ -328,10 +328,10 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   }
 
   /// Receives the meta data of the table.
-  void _receiveMetaData(DalMetaData pMetaData) {
+  void _receiveMetaData(DalMetaData newMetaData) {
     currentState |= LOADED_META_DATA;
 
-    metaData = pMetaData;
+    metaData = newMetaData;
 
     _rebuildCellEditors();
 
@@ -468,57 +468,12 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   void _onListTap(int index) {
       if (FlutterUI.logUI.cl(Lvl.d)) {
         FlutterUI.logUI.d("List cell tapped: $index");
-//        FlutterUI.logUI.d("Active last single tap timer: ${lastSingleTapTimer?.isActive}");
       }
 
       selectRecord(index, force: true);
-/*
-      if (lastTappedColumn == pColumnName && lastTappedRow == pRowIndex && lastSingleTapTimer?.isActive == true) {
-        if (FlutterUI.logUI.cl(Lvl.d)) {
-          FlutterUI.logUI.d("Tap type: double");
-        }
-        lastTappedColumn = null;
-        lastTappedRow = null;
-        lastSingleTapTimer?.cancel();
-        lastSelectionTapFuture?.then((value) {
-          if (FlutterUI.logUI.cl(Lvl.d)) {
-            FlutterUI.logUI.d("Selecting was: $value");
-          }
-
-          if (value) {
-            if (FlutterUI.logUI.cl(Lvl.d)) {
-              FlutterUI.logUI.d("Double tap action");
-            }
-
-            _onDoubleTap(pRowIndex, pColumnName, pCellEditor);
-          }
-        });
-      } else {
-        if (FlutterUI.logUI.cl(Lvl.d)) {
-          FlutterUI.logUI.d("Tap type: single");
-        }
-        lastTappedColumn = pColumnName;
-        lastTappedRow = pRowIndex;
-        lastSingleTapTimer?.cancel();
-        lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
-        lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
-          lastSelectionTapFuture?.then((value) {
-            if (FlutterUI.logUI.cl(Lvl.d)) {
-              FlutterUI.logUI.d("Selecting was: $value");
-            }
-
-            if (value) {
-              FlutterUI.logUI.d("Single tap action");
-
-              _onSingleTap(pRowIndex, pColumnName, pCellEditor);
-            }
-          });
-        });
-      }
- */
   }
 
-  void _onLongPress(int index, Offset pGlobalPosition) {
+  void _onLongPress(int index, Offset globalPosition) {
     List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
 
     int separator = 0;
@@ -550,7 +505,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     }
 
     if (popupMenuEntries.isNotEmpty) {
-      showPopupMenu(context, pGlobalPosition, popupMenuEntries).then((type) {
+      showPopupMenu(context, globalPosition, popupMenuEntries).then((type) {
         if (type != null) {
           _menuItemPressed(type, index);
         }

@@ -54,12 +54,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   /// The height of a text.
   // ignore: non_constant_identifier_names
-  static double TEXT_HEIGHT(TextStyle pStyle) => ParseUtil.getTextHeight(text: "a", style: pStyle);
+  static double TEXT_HEIGHT(TextStyle style) => ParseUtil.getTextHeight(text: "a", style: style);
 
   /// The padding of a text field.
   // ignore: non_constant_identifier_names
-  static EdgeInsets TEXT_FIELD_PADDING(TextStyle pStyle) {
-    double verticalPadding = max(0, (TEXT_FIELD_HEIGHT - ParseUtil.getTextHeight(text: "a", style: pStyle)) / 2);
+  static EdgeInsets TEXT_FIELD_PADDING(TextStyle style) {
+    double verticalPadding = max(0, (TEXT_FIELD_HEIGHT - ParseUtil.getTextHeight(text: "a", style: style)) / 2);
 
     return EdgeInsets.fromLTRB(10, verticalPadding, 0, verticalPadding);
   }
@@ -365,7 +365,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return _createXFixWidget(createPrefixIconItems(context));
   }
 
-  InputBorder? createBorder(BuildContext context, FlTextBorderType pBorderType) {
+  InputBorder? createBorder(BuildContext context, FlTextBorderType borderType) {
     Color borderEnabledColor;
     Color? borderDisabledColor;
     Color? borderFocusedColor;
@@ -382,7 +382,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     double editorBorderRadius = AppStyle.of(context).direct.editorBorderRadius();
 
-    switch (pBorderType) {
+    switch (borderType) {
       case FlTextBorderType.border:
       case FlTextBorderType.errorBorder:
       case FlTextBorderType.enabledBorder:
@@ -424,8 +424,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return width;
   }
 
-  Color? _extractColor(String pStylePrefix) {
-    List<String> styles = _extractStringsFromStyle(pStylePrefix);
+  Color? _extractColor(String stylePrefix) {
+    List<String> styles = _extractStringsFromStyle(stylePrefix);
     if (styles.isEmpty) {
       return null;
     } else {

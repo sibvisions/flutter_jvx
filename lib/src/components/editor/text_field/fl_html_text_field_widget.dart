@@ -29,7 +29,7 @@ class FlHtmlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataW
   final HtmlEditorController htmlController;
 
   /// The [Function] that is called when the focus of the [HtmlEditor] widget changes.
-  final Function(bool pNewFocus) onFocusChanged;
+  final Function(bool newFocus) onFocusChanged;
 
   /// The maximum number of characters that can be entered in the [HtmlEditor] widget.
   final int? characterLimit;

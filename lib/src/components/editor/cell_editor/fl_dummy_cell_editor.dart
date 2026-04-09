@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'package:flutter/widgets.dart';
+
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
@@ -37,7 +39,7 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dyna
   void dispose() {}
 
   @override
-  createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
+  createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context}) {
     return FlDummyWidget(model: createWidgetModel());
   }
 
@@ -45,8 +47,8 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dyna
   FlDummyModel createWidgetModel() => FlDummyModel();
 
   @override
-  void setValue(pValue) {
-    _value = pValue;
+  void setValue(value) {
+    _value = value;
   }
 
   @override
@@ -55,17 +57,17 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dyna
   }
 
   @override
-  String formatValue(dynamic pValue) {
-    return pValue?.toString() ?? "";
+  String formatValue(dynamic value) {
+    return value?.toString() ?? "";
   }
 
   @override
-  double? getEditorWidth(Map<String, dynamic>? pJson) {
+  double? getEditorWidth(Map<String, dynamic>? json) {
     return null;
   }
 
   @override
-  double? getEditorHeight(Map<String, dynamic>? pJson) {
+  double? getEditorHeight(Map<String, dynamic>? json) {
     return null;
   }
 

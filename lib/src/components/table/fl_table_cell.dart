@@ -191,7 +191,7 @@ class _FlTableCellState extends State<FlTableCell> {
 
     _setCellEditorValue(widget.value);
 
-    cellChild = _createCellEditorWidget();
+    cellChild = _createCellEditorWidget(context);
 
     cellChild ??= _createTextWidget();
 
@@ -316,12 +316,12 @@ class _FlTableCellState extends State<FlTableCell> {
   }
 
   /// Creates the cell editor widget for the cell if possible
-  Widget? _createCellEditorWidget() {
+  Widget? _createCellEditorWidget(BuildContext context) {
     if (!cellEditor.allowedInTable) {
       return null;
     }
 
-    Widget cellWidget = cellEditor.createWidget(widget.model.json);
+    Widget cellWidget = cellEditor.createWidget(widget.model.json, context: context);
 
     return AbsorbPointer(
       absorbing: !widget.model.isEnabled || (!widget.model.editable && !widget.columnDefinition.forcedStateless) || widget.readOnly,

@@ -107,27 +107,27 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
 
   Future<ReturnValueType?> getValue();
 
-  void setValue(dynamic pValue);
+  void setValue(dynamic value);
 
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) => columnDefinition = pColumnDefinition;
+  void setColumnDefinition(ColumnDefinition? columnDefinition) => this.columnDefinition = columnDefinition;
 
   ColumnDefinition? getColumnDefinition() => columnDefinition;
 
   /// Returns the widget representing the cell editor.
-  Widget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]);
+  Widget createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context});
 
   /// Returns the model of the widget representing the cell editor.
   WidgetModelType createWidgetModel();
 
-  String formatValue(dynamic pValue);
+  String formatValue(dynamic value);
 
-  double getContentPadding(Map<String, dynamic>? pJson) {
+  double getContentPadding(Map<String, dynamic>? json) {
     return 0.0;
   }
 
-  double? getEditorWidth(Map<String, dynamic>? pJson);
+  double? getEditorWidth(Map<String, dynamic>? json);
 
-  double? getEditorHeight(Map<String, dynamic>? pJson);
+  double? getEditorHeight(Map<String, dynamic>? json);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Static methods
@@ -250,19 +250,19 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
     }
   }
 
-  void applyEditorJson(FlComponentModel pModel, Map<String, dynamic>? pJson) {
-    if (pJson?.isNotEmpty == true) {
-      pModel.applyFromJson(pJson!);
+  void applyEditorJson(FlComponentModel model, Map<String, dynamic>? json) {
+    if (json?.isNotEmpty == true) {
+      model.applyFromJson(json!);
     }
 
-    pModel.applyFromJson(cellEditorJson);
+    model.applyFromJson(cellEditorJson);
 
-    if (pJson?.isNotEmpty == true) {
-      pModel.applyCellEditorOverrides(pJson!);
+    if (json?.isNotEmpty == true) {
+      model.applyCellEditorOverrides(json!);
     }
 
     if (cellFormat != null) {
-      pModel.applyCellFormat(cellFormat!);
+      model.applyCellFormat(cellFormat!);
     }
   }
 }
@@ -316,7 +316,7 @@ abstract class IFocusableCellEditor<
 
   /// Is called when the focus changes.
   @nonVirtual
-  void focusChanged(bool pHasFocus) {
+  void focusChanged(bool hasFocus) {
     //If there's a local focus checker, don't handle focus if it's not expected
     if (focusChecker != null) {
       if (!focusChecker!(this)) {
@@ -325,12 +325,12 @@ abstract class IFocusableCellEditor<
       }
     }
 
-    handleFocusChanged(pHasFocus);
+    handleFocusChanged(hasFocus);
   }
 
-  void handleFocusChanged(bool pHasFocus) {
+  void handleFocusChanged(bool hasFocus) {
     if (onFocusChanged != null && firesFocusCallback()) {
-        onFocusChanged!(pHasFocus);
+        onFocusChanged!(hasFocus);
     }
   }
 
@@ -358,9 +358,9 @@ abstract class IFocusableCellEditor<
   }
 
   /// Sets the focus node of this cell editor.
-  void setFocusNode(FocusNode pFocusNode) {
+  void setFocusNode(FocusNode focusNode) {
     focusNode.dispose();
-    focusNode = pFocusNode;
+    focusNode = focusNode;
   }
 
   /// Returns the focus node of this cell editor.

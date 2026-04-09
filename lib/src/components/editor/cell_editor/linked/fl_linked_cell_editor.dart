@@ -100,12 +100,12 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setValue(dynamic pValue) {
-    if (pValue is (dynamic, List<dynamic>?)) {
-      _record = pValue;
+  void setValue(dynamic value) {
+    if (value is (dynamic, List<dynamic>?)) {
+      _record = value;
     }
     else {
-      FlutterUI.logUI.e("Value $pValue is not a record -> set null");
+      FlutterUI.logUI.e("Value $value is not a record -> set null");
 
       _record = null;
     }
@@ -114,10 +114,10 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   @override
-  FlLinkedEditorWidget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
+  FlLinkedEditorWidget createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context}) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     lastWidgetModel = widgetModel;
 
@@ -149,12 +149,12 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   @override
-  String formatValue(Object? pValue) {
-    if (pValue == null) {
+  String formatValue(Object? value) {
+    if (value == null) {
       return "";
     }
 
-    Object? showValue = pValue;
+    Object? showValue = value;
 
     if (model.displayConcatMask != null || model.displayReferencedColumnName != null) {
       ReferenceDefinition linkReference = effectiveLinkReference;
@@ -196,15 +196,15 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson) {
-    return createWidget(pJson).extraWidthPaddings();
+  double getContentPadding(Map<String, dynamic>? json) {
+    return createWidget(json).extraWidthPaddings();
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson) {
+  double getEditorWidth(Map<String, dynamic>? json) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
 
@@ -215,12 +215,12 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   @override
-  double getEditorHeight(Map<String, dynamic>? pJson) {
+  double getEditorHeight(Map<String, dynamic>? json) {
     return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
   }
 
   @override
-  void handleFocusChanged(bool pHasFocus) {
+  void handleFocusChanged(bool hasFocus) {
     if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
       if (!lastWidgetModel!.isFocusable) {
         focusNode.unfocus();

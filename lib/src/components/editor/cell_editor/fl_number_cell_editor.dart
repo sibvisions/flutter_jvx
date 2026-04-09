@@ -63,25 +63,25 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setValue(dynamic pValue) {
-    if (pValue == null) {
+  void setValue(dynamic value) {
+    if (value == null) {
       textController.clear();
     } else {
-      String value = numberFormatter.getFormattedString(pValue);
+      String valueAsString = numberFormatter.getFormattedString(value);
 
       textController.value = textController.value.copyWith(
-        text: value,
-        selection: TextSelection.collapsed(offset: value.characters.length),
+        text: valueAsString,
+        selection: TextSelection.collapsed(offset: valueAsString.characters.length),
         composing: null,
       );
     }
   }
 
   @override
-  FlTextFieldWidget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
+  FlTextFieldWidget createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context}) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     lastWidgetModel = widgetModel;
 
@@ -115,34 +115,34 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
   }
 
   @override
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    super.setColumnDefinition(pColumnDefinition);
+  void setColumnDefinition(ColumnDefinition? columnDefinition) {
+    super.setColumnDefinition(columnDefinition);
 
     _recreateNumericFormatter();
   }
 
   @override
-  String formatValue(dynamic pValue) {
-    return numberFormatter.getFormattedString(pValue);
+  String formatValue(dynamic value) {
+    return numberFormatter.getFormattedString(value);
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson) {
+  double getEditorWidth(Map<String, dynamic>? json) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
   }
 
   @override
-  double getEditorHeight(Map<String, dynamic>? pJson) {
+  double getEditorHeight(Map<String, dynamic>? json) {
     return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson) {
-    return createWidget(pJson).extraWidthPaddings();
+  double getContentPadding(Map<String, dynamic>? json) {
+    return createWidget(json).extraWidthPaddings();
   }
 
   void _recreateNumericFormatter() {
@@ -176,7 +176,7 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
   }
 
   @override
-  void handleFocusChanged(bool pHasFocus) {
+  void handleFocusChanged(bool hasFocus) {
     if (lastWidgetModel == null) {
       return;
     }
@@ -188,6 +188,6 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
       }
     }
 
-    super.handleFocusChanged(pHasFocus);
+    super.handleFocusChanged(hasFocus);
   }
 }

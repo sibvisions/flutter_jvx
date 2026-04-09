@@ -134,13 +134,13 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     });
   }
 
-  static double calculateTextAreaHeight(FlTextAreaModel pModel) {
+  static double calculateTextAreaHeight(FlTextAreaModel model) {
     double height = FlTextFieldWidget.TEXT_FIELD_HEIGHT;
 
-    if (pModel.rows > 1) {
-      EdgeInsets paddings = FlTextFieldWidget.TEXT_FIELD_PADDING(pModel.createTextStyle());
+    if (model.rows > 1) {
+      EdgeInsets paddings = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle());
       height -= paddings.vertical;
-      height *= pModel.rows;
+      height *= model.rows;
       height += paddings.vertical;
     }
 

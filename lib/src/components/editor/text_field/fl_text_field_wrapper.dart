@@ -144,11 +144,11 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     return textFieldWidget;
   }
 
-  void valueChanged(String pValue, [bool? pImmediate]) {
+  void valueChanged(String value, [bool? immediate]) {
     valueChangedTimer?.cancel();
 
-    if (pImmediate == true) {
-      endEditing(pValue);
+    if (immediate == true) {
+      endEditing(value);
     }
     else {
       valueChangedTimer = Timer(const Duration(milliseconds: 300), () {
@@ -159,11 +159,11 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     setState(() {});
   }
 
-  void endEditing(String pValue, [String? pAction]) {
+  void endEditing(String value, [String? action]) {
     valueChangedTimer?.cancel();
 
     if (!model.isReadOnly
-        && (lastSentValue != pValue || pAction != null)) {
+        && (lastSentValue != value || action != null)) {
 
       //this could happen if screen will be closed
       FlComponentModel? comp = IStorageService().getComponentModel(pComponentId: model.id);
@@ -173,21 +173,21 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
       }
 
       ICommandService().sendCommand(
-        pAction != null ?
+        action != null ?
           ActionCommand(
             componentName: model.name,
-            value: pValue,
-            action: pAction,
+            value: value,
+            action: action,
             reason: "Editing has ended on ${model.id}",
           ) :
           SetValueCommand(
             componentName: model.name,
-            value: pValue,
+            value: value,
             reason: "Editing has ended on ${model.name}",
           )
       ).then((success) {
         if (success) {
-          lastSentValue = pValue;
+          lastSentValue = value;
         }
       });
 
@@ -206,7 +206,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   @override
-  Future<BaseCommand?> createSaveCommand(String pReason) async {
+  Future<BaseCommand?> createSaveCommand(String reason) async {
     if (lastSentValue == textController.value.text) {
       return null;
     }
@@ -215,7 +215,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     return SetValueCommand(
       componentName: model.name,
       value: textController.value.text,
-      reason: "$pReason; Editing has ended on ${model.id}",
+      reason: "$reason; Editing has ended on ${model.id}",
     );
   }
 }

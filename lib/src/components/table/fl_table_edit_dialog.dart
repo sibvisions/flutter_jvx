@@ -211,7 +211,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       dialogLabel = columnDefinitions[0].label;
 
       ICellEditor cellEditor = cellEditors[0];
-      Widget editorWidget = cellEditor.createWidget(widget.model.json);
+      Widget editorWidget = cellEditor.createWidget(widget.model.json, context: context);
 
       if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
         editorWidget = SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget);
@@ -244,7 +244,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
       for (int i = 0; i < columnDefinitions.length; i++) {
         ICellEditor cellEditor = cellEditors[i];
-        Widget editorWidget = cellEditor.createWidget(widget.model.json);
+        Widget editorWidget = cellEditor.createWidget(widget.model.json, context: context);
 
         if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
           editorWidget = Align(

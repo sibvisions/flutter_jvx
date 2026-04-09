@@ -25,8 +25,14 @@ class NumericTextFormatter extends TextInputFormatter {
   final bool? signed;
   final NumberFormat numberFormatter;
 
-  NumericTextFormatter({String? numberFormat, this.locale, this.precision, this.length, this.scale, this.signed})
-      : numberFormatter = NumberFormat(numberFormat, locale);
+  NumericTextFormatter({
+    String? numberFormat,
+    this.locale,
+    this.precision,
+    this.length,
+    this.scale,
+    this.signed
+  }) : numberFormatter = NumberFormat(numberFormat, locale);
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
@@ -76,15 +82,15 @@ class NumericTextFormatter extends TextInputFormatter {
     return "";
   }
 
-  num? convertToNumber(dynamic pValue) {
+  num? convertToNumber(dynamic value) {
     num? number;
-    if (pValue is String) {
-      if (pValue.isEmpty) return null;
+    if (value is String) {
+      if (value.isEmpty) return null;
       // Append zeroes to allow the user to enter a comma only
-      if (pValue.endsWith(numberFormatter.symbols.DECIMAL_SEP)) {
-        pValue += "0";
+      if (value.endsWith(numberFormatter.symbols.DECIMAL_SEP)) {
+        value += "0";
       }
-      number = double.tryParse("0$pValue") ?? numberFormatter.parse("0$pValue");
+      number = double.tryParse("0$value") ?? numberFormatter.parse("0$value");
     }
     return number;
   }

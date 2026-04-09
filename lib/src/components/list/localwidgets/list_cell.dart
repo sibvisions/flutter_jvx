@@ -47,7 +47,7 @@ class ListCell extends StatelessWidget {
       if (dc != null) {
         FlListEntry entry = dc.data;
 
-        Widget? w = entry.formatListCell(this);
+        Widget? w = entry.formatListCell(context, this);
 
         if (w != null) {
           return w;

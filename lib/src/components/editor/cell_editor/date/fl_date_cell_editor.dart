@@ -77,29 +77,29 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setValue(dynamic pValue) {
-    _value = pValue;
+  void setValue(dynamic value) {
+    _value = value;
 
-    if (pValue == null) {
+    if (value == null) {
       textController.clear();
     } else {
-      if (pValue is! String) {
-        pValue = formatValue(pValue);
+      if (value is! String) {
+        value = formatValue(value);
       }
 
       textController.value = textController.value.copyWith(
-        text: pValue,
-        selection: TextSelection.collapsed(offset: pValue.characters.length),
+        text: value,
+        selection: TextSelection.collapsed(offset: value.characters.length),
         composing: null,
       );
     }
   }
 
   @override
-  FlDateEditorWidget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
+  FlDateEditorWidget createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context}) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     lastWidgetModel = widgetModel;
 
@@ -128,7 +128,7 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   }
 
   @override
-  void handleFocusChanged(bool pHasFocus) {
+  void handleFocusChanged(bool hasFocus) {
     if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
       if (!lastWidgetModel!.isFocusable) {
         focusNode.unfocus();
@@ -181,14 +181,14 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
     return null;
   }
 
-  Future<void> _openDateAndTimeEditors(DateTime pInitialDate, TimeOfDay pInitialTime) {
+  Future<void> _openDateAndTimeEditors(DateTime initialDate, TimeOfDay initialTime) {
     dynamic originalValue = _value;
 
     return IUiService()
         .openDialog(
             pBuilder: (context) {
               return FlDatePickerDialog(
-                initialDate: pInitialDate,
+                initialDate: initialDate,
                 firstDate: DateTime(1900),
                 lastDate: DateTime(2100),
                 showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
@@ -206,7 +206,7 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
         return IUiService()
             .openDialog(
                 pBuilder: (_) => FlTimePickerDialog(
-                      initialTime: pInitialTime,
+                      initialTime: initialTime,
                       showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
                     ),
                 pIsDismissible: true)
@@ -227,11 +227,11 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
     });
   }
 
-  Future<void> _openDateEditor(DateTime pInitialDate) {
+  Future<void> _openDateEditor(DateTime initialDate) {
     return IUiService()
         .openDialog(
             pBuilder: (_) => FlDatePickerDialog(
-                  initialDate: pInitialDate,
+                  initialDate: initialDate,
                   firstDate: DateTime(1900),
                   lastDate: DateTime(2100),
                   showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
@@ -252,11 +252,11 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
     });
   }
 
-  Future<void> _openTimeEditor(TimeOfDay pInitialTime) {
+  Future<void> _openTimeEditor(TimeOfDay initialTime) {
     return IUiService()
         .openDialog(
             pBuilder: (_) => FlTimePickerDialog(
-                  initialTime: pInitialTime,
+                  initialTime: initialTime,
                   showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
                 ),
             pIsDismissible: true)
@@ -287,14 +287,14 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
     _setDateTime(date, timePart);
   }
 
-  void _setDateTime(DateTime pDate, TimeOfDay pTimePart) {
+  void _setDateTime(DateTime date, TimeOfDay timePart) {
     _value = tz.TZDateTime(
       _getLocation(),
-      pDate.year,
-      pDate.month,
-      pDate.day,
-      model.isHourEditor ? pTimePart.hour : 0,
-      model.isMinuteEditor ? pTimePart.minute : 0,
+      date.year,
+      date.month,
+      date.day,
+      model.isHourEditor ? timePart.hour : 0,
+      model.isMinuteEditor ? timePart.minute : 0,
       0,
       0,
       0,
@@ -302,26 +302,26 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   }
 
   @override
-  String formatValue(dynamic pValue) {
-    if (pValue is int) {
+  String formatValue(dynamic value) {
+    if (value is int) {
       return DateFormat(
         model.dateFormat,
         model.locale ?? IConfigService().getLanguage(),
-      ).format(_createDateTime(pValue));
+      ).format(_createDateTime(value));
     }
-    return pValue?.toString() ?? "";
+    return value?.toString() ?? "";
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson) {
-    return createWidget(pJson).extraWidthPaddings();
+  double getContentPadding(Map<String, dynamic>? json) {
+    return createWidget(json).extraWidthPaddings();
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson) {
+  double getEditorWidth(Map<String, dynamic>? json) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
 
@@ -332,7 +332,7 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   }
 
   @override
-  double getEditorHeight(Map<String, dynamic>? pJson) {
+  double getEditorHeight(Map<String, dynamic>? json) {
     return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
   }
 }

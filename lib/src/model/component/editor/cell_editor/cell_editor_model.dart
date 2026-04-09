@@ -22,7 +22,6 @@ import '../../fl_component_model.dart';
 import 'date/fl_date_cell_editor_model.dart';
 import 'fl_check_box_cell_editor_model.dart';
 import 'fl_choice_cell_editor_model.dart';
-import 'fl_image_cell_editor_model.dart';
 import 'fl_number_cell_editor_model.dart';
 import 'linked/fl_linked_cell_editor_model.dart';
 

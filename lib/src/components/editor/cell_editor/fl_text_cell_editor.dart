@@ -106,17 +106,17 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setValue(dynamic pValue) {
-    lastReceivedValue = pValue;
+  void setValue(dynamic value) {
+    lastReceivedValue = value;
 
-    _setValueIntern(pValue);
+    _setValueIntern(value);
   }
 
   @override
-  Widget createWidget(Map<String, dynamic>? pJson, [WidgetWrapper? pWrapper]) {
+  Widget createWidget(Map<String, dynamic>? json, {WidgetWrapper? wrapper, BuildContext? context}) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     lastWidgetModel = widgetModel;
 
@@ -241,19 +241,19 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   }
 
   @override
-  String formatValue(dynamic pValue) {
-    return pValue?.toString() ?? "";
+  String formatValue(dynamic value) {
+    return value?.toString() ?? "";
   }
 
   @override
-  double getEditorHeight(Map<String, dynamic>? pJson) {
+  double getEditorHeight(Map<String, dynamic>? json) {
     switch (model.contentType) {
       case (TEXT_HTML):
         return 250;
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
         FlTextAreaModel widgetModel = FlTextAreaModel();
-        applyEditorJson(widgetModel, pJson);
+        applyEditorJson(widgetModel, json);
         return FlTextAreaWidget.calculateTextAreaHeight(widgetModel);
       case (TEXT_PLAIN_PASSWORD):
         return FlTextFieldWidget.TEXT_FIELD_HEIGHT + (model.showPasswordStrength ? FlPasswordWidget.PASSWORD_STRENGTH_HEIGHT : 0);
@@ -264,24 +264,24 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson) {
+  double getEditorWidth(Map<String, dynamic>? json) {
     if (isHtml) {
       return 250;
     }
 
     FlTextFieldModel widgetModel = createWidgetModel();
 
-    applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, json);
 
     return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson) {
+  double getContentPadding(Map<String, dynamic>? json) {
     if (isHtml) {
       return 0;
     } else {
-      return (createWidget(pJson) as FlTextFieldWidget).extraWidthPaddings();
+      return (createWidget(json) as FlTextFieldWidget).extraWidthPaddings();
     }
   }
 
@@ -295,7 +295,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   }
 
   @override
-  Future<void> handleFocusChanged(bool pHasFocus) async {
+  Future<void> handleFocusChanged(bool hasFocus) async {
     if (lastWidgetModel == null || !isInitialized) {
       return;
     }
@@ -303,43 +303,43 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
     var widgetModel = lastWidgetModel!;
 
     if (!widgetModel.isReadOnly) {
-      if (!pHasFocus) {
+      if (!hasFocus) {
         lastSentValue = await getValue();
         onEndEditing(lastSentValue);
       }
     }
 
-    super.handleFocusChanged(pHasFocus);
+    super.handleFocusChanged(hasFocus);
   }
 
   ///Sets value async because getValue is an async method and we can't access old value without
   ///async handling
-  Future<void> _setValueIntern(dynamic pValue) async {
-    if (isInitialized && await getValue() != pValue) {
-      hasValue = true && pValue != null;
+  Future<void> _setValueIntern(dynamic value) async {
+    if (isInitialized && await getValue() != value) {
+      hasValue = true && value != null;
 
-      if (pValue == null) {
+      if (value == null) {
         if (isHtml) {
           htmlController.clear();
         } else {
           textController.clear();
         }
       } else {
-        if (pValue is Uint8List) {
+        if (value is Uint8List) {
           //try to show a text instead of bytes
-          pValue = utf8.decode(pValue);
+          value = utf8.decode(value);
         }
-        else if (pValue is! String) {
-          pValue = pValue.toString();
+        else if (value is! String) {
+          value = value.toString();
         }
 
         if (isHtml) {
-          htmlController.setText(pValue);
+          htmlController.setText(value);
         } else {
           textController.value = TextEditingValue(
-            text: pValue,
+            text: value,
             selection: TextSelection.collapsed(
-              offset: pValue.runes.length,
+              offset: value.runes.length,
             ),
           );
         }

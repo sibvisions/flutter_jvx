@@ -265,7 +265,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         liCheckBoxes.add(Text(separator ?? " "));
       }
 
-      liCheckBoxes.addAll(_getCheckBoxWidget(checkBoxColumns[i]));
+      liCheckBoxes.addAll(_getCheckBoxWidget(context, checkBoxColumns[i]));
     }
 
     if (liCheckBoxes.isNotEmpty) {
@@ -396,14 +396,14 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
 
   /// Gets a checkbox widget (choice or checkbox - with different styles). The widget may contain
   /// a label
-  List<Widget> _getCheckBoxWidget(String columnName, [String? prefix, String? postfix]) {
+  List<Widget> _getCheckBoxWidget(BuildContext context, String columnName, [String? prefix, String? postfix]) {
     ICellEditor ced = cellEditors[columnName]!;
 
     ced.setValue(values[columnDefinitions.indexByName(columnName)]);
 
     List<Widget> widgets = [];
 
-    Widget w = ced.createWidget(model.json);
+    Widget w = ced.createWidget(model.json, context: context);
 
     //no changes possible
     w = AbsorbPointer(absorbing: true, child: w);
@@ -458,7 +458,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     }
   }
 
-  Widget? formatListCell(ListCell cell) {
+  Widget? formatListCell(BuildContext context, ListCell cell) {
     if (cell.columnName != null) {
       int columnIndex = columnDefinitions.indexByName(cell.columnName!);
 
@@ -468,7 +468,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         ColumnDefinition colDef = columnDefinitions.byName(cell.columnName!)!;
 
         if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName || FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
-          w = IntrinsicWidth(child: Row(mainAxisAlignment: MainAxisAlignment.start, children: _getCheckBoxWidget(cell.columnName!, cell.prefix, cell.postfix)));
+          w = IntrinsicWidth(child: Row(mainAxisAlignment: MainAxisAlignment.start, children: _getCheckBoxWidget(context, cell.columnName!, cell.prefix, cell.postfix)));
         }
       }
 
