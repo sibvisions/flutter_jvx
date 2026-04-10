@@ -92,7 +92,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
           return const SizedBox();
         }
 
-        AppStyleDirect style = AppStyle.of(context).direct;
+        AppStyleDirect style = AppStyle.directOf(context);
 
         double? border = style.slideButtonBorderRadius();
         double? handle = style.slideButtonHandleRadius();

@@ -221,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
     if (customWidget != null) return customWidget;
 
     AppStyle appStyle = AppStyle.of(context);
-    String? loginLayout = appStyle.style(context, AppStyle.loginLayout);
+    String? loginLayout = appStyle.direct.style(AppStyle.loginLayout);
 
     Widget login;
 

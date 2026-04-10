@@ -14,21 +14,32 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../model/menu/menu_item_model.dart';
 import '../menu.dart';
 import 'widget/grid_menu_group.dart';
-import 'widget/grid_menu_item.dart';
 
 class GridMenu extends Menu {
+  final Color? groupColor;
+  final Color? groupBackground;
+  final Color? tileColor;
+  final Color? tileBackground;
+  final Color? tileTitleColor;
+  final Color? tileTitleBackground;
+
+  final EdgeInsets? padding;
+
   final bool grouped;
   final bool sticky;
   final bool groupOnlyOnMultiple;
+
   final double maxCrossAxisExtent;
-  final double mainAxisSpacing;
-  final double crossAxisSpacing;
+  final double? mainAxisSpacing;
+  final double? crossAxisSpacing;
   final double childAspectRatio;
+  final double? borderRadius;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -42,9 +53,17 @@ class GridMenu extends Menu {
     this.sticky = true,
     this.groupOnlyOnMultiple = false,
     this.maxCrossAxisExtent = 210.0,
-    this.mainAxisSpacing = 1.0,
-    this.crossAxisSpacing = 1.0,
+    this.mainAxisSpacing,
+    this.crossAxisSpacing,
     this.childAspectRatio = 1.0,
+    this.borderRadius,
+    this.padding,
+    this.groupColor,
+    this.groupBackground,
+    this.tileColor,
+    this.tileBackground,
+    this.tileTitleColor,
+    this.tileTitleBackground
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,29 +74,39 @@ class GridMenu extends Menu {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: grouped && (!groupOnlyOnMultiple || menuModel.menuGroups.length == 1)
-          ? menuModel.menuGroups
-              .map((e) => GridMenuGroup(
-                    menuGroupModel: e,
-                    onClick: onClick,
-                    sticky: sticky,
-                    maxCrossAxisExtent: maxCrossAxisExtent,
-                    mainAxisSpacing: mainAxisSpacing,
-                    crossAxisSpacing: crossAxisSpacing,
-                    childAspectRatio: childAspectRatio,
-                  ))
-              .toList()
+          ? menuModel.menuGroups.mapIndexed((index, e) => GridMenuGroup(
+              menuGroupModel: e,
+              onClick: onClick,
+              sticky: sticky,
+              maxCrossAxisExtent: maxCrossAxisExtent,
+              mainAxisSpacing: mainAxisSpacing ?? 1,
+              crossAxisSpacing: crossAxisSpacing ?? 1,
+              childAspectRatio: childAspectRatio,
+              padding: index == menuModel.menuGroups.length - 1 ? _lastGroupPadding(context) : padding,
+              borderRadius: borderRadius,
+              groupBackground: groupBackground,
+              groupColor: groupColor,
+              tileColor: tileColor,
+              tileBackground: tileBackground,
+              tileTitleColor: tileTitleColor,
+              tileTitleBackground: tileTitleBackground
+            )).toList()
           : [
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: maxCrossAxisExtent,
-                  mainAxisSpacing: mainAxisSpacing,
-                  crossAxisSpacing: crossAxisSpacing,
-                  childAspectRatio: childAspectRatio,
-                ),
-                delegate: SliverChildListDelegate.fixed(
-                  _getAllMenuItems().map((e) => GridMenuItem(onClick: onClick, menuItemModel: e)).toList(),
-                ),
-              ),
+              GridMenuGroup.buildGrid(
+                context,
+                _getAllMenuItems(),
+                onClick,
+                maxCrossAxisExtent,
+                mainAxisSpacing ?? 1,
+                crossAxisSpacing ?? 1,
+                childAspectRatio,
+                padding,
+                borderRadius,
+                tileColor,
+                tileBackground,
+                tileTitleColor,
+                tileTitleBackground
+              )
             ],
     );
   }
@@ -95,5 +124,23 @@ class GridMenu extends Menu {
     }
 
     return menuItems;
+  }
+
+  EdgeInsets? _lastGroupPadding(BuildContext context) {
+    EdgeInsets insView = MediaQuery.of(context).viewPadding;
+
+    if (insView.bottom > 0) {
+      if (padding != null) {
+        //enough space for safe-area -> don't change padding
+        if (padding!.bottom < insView.bottom) {
+          return padding!.copyWith(bottom: insView.bottom);
+        }
+      }
+      else {
+        return EdgeInsets.only(bottom: insView.bottom);
+      }
+    }
+
+    return padding;
   }
 }

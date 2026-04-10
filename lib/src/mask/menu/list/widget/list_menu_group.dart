@@ -47,6 +47,9 @@ class ListMenuGroup extends StatelessWidget {
   /// Text color for header.
   final Color? headerColor;
 
+  /// The icon color
+  final Color? iconColor;
+
   final bool decreasedDensity;
   final bool useAlternativeLabel;
 
@@ -67,6 +70,7 @@ class ListMenuGroup extends StatelessWidget {
     this.layoutMode,
     this.textStyle,
     this.headerColor,
+    this.iconColor,
     this.decreasedDensity = false,
     this.useAlternativeLabel = false,
     this.embedded = false,
@@ -94,6 +98,7 @@ class ListMenuGroup extends StatelessWidget {
         useAlternativeLabel: useAlternativeLabel,
         embedded: embedded,
         smallBadge: smallBadge,
+        iconColor: iconColor
       ));
     }
 
@@ -104,7 +109,7 @@ class ListMenuGroup extends StatelessWidget {
           pinned: sticky,
           delegate: GridMenuHeader(
             headerText: FlutterUI.translate(menuGroupModel.name),
-            headerColor: headerColor,
+            color: headerColor,
             height: (ListTileTheme
                   .of(context)
                   .dense ?? false) ? 40 : 48,

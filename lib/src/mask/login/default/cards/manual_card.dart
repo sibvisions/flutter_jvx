@@ -117,7 +117,7 @@ class _ManualCardState extends State<ManualCard> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          AppStyle.of(context).style(context, 'login.title') ?? IConfigService().appName.value?.toUpperCase() ?? "",
+          AppStyle.of(context).direct.style('login.title') ?? IConfigService().appName.value?.toUpperCase() ?? "",
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),

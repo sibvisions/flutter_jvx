@@ -27,7 +27,10 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
   final String headerText;
 
   /// Text color
-  final Color? headerColor;
+  final Color? color;
+
+  /// background color
+  final Color? background;
 
   /// The height of the header
   final double height;
@@ -46,7 +49,8 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
 
   GridMenuHeader({
     required this.height,
-    this.headerColor,
+    this.color,
+    this.background,
     required this.headerText,
     this.textStyle,
     this.embedded = false,
@@ -82,7 +86,7 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
             child: Container(
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: headerColor ?? ListTileTheme.of(context).iconColor,
+                color: color ?? ListTileTheme.of(context).iconColor,
                 borderRadius: BorderRadius.circular(2)
               )
             )
@@ -93,7 +97,7 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
 
         child = ListTile(
           contentPadding: EdgeInsets.fromLTRB(embedded ? 15 : 12, 0, embedded ? 15 : 12, 0),
-          textColor: headerColor,
+          textColor: color,
           title: Text(
             headerText,
             overflow: TextOverflow.ellipsis,
@@ -111,9 +115,9 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
         // https://github.com/flutter/flutter/issues/78748
         height: _height,
         // Idk why, but tileColor doesn't seem to do the trick, when scrolling.
-        color: ListTileTheme.of(context).tileColor != null
-            ? JVxColors.lighten(ListTileTheme.of(context).tileColor!)
-            : Theme.of(context).colorScheme.surface,
+        color: background ?? (ListTileTheme.of(context).tileColor != null
+              ? JVxColors.lighten(ListTileTheme.of(context).tileColor!)
+              : Theme.of(context).colorScheme.surface),
         child: child,
       );
     });

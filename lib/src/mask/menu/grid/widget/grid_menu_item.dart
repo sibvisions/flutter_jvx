@@ -34,6 +34,21 @@ class GridMenuItem extends StatelessWidget {
   /// Model of this item
   final MenuItemModel menuItemModel;
 
+  /// The text color of tile
+  final Color? tileColor;
+
+  /// The background color of tile
+  final Color? tileBackground;
+
+  /// The text color of title
+  final Color? tileTitleColor;
+
+  /// The background color of title
+  final Color? tileTitleBackground;
+
+  /// Border radius
+  final double? borderRadius;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,6 +57,11 @@ class GridMenuItem extends StatelessWidget {
     super.key,
     required this.menuItemModel,
     required this.onClick,
+    this.borderRadius,
+    this.tileColor,
+    this.tileBackground,
+    this.tileTitleColor,
+    this.tileTitleBackground
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,12 +72,12 @@ class GridMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
 
     Widget wItem = Container(
-      color: Colors.black.withAlpha(Color.getAlphaFromOpacity(0.1)),
+      color: tileBackground ?? Colors.black.withAlpha(Color.getAlphaFromOpacity(0.1)),
       child: MenuItemModel.getImage(
         context,
         pMenuItemModel: menuItemModel,
         pSize: 72,
-        pColor: JVxColors.isLightTheme(context) ? Colors.white : Colors.white70,
+        pColor: tileColor ?? (JVxColors.isLightTheme(context) ? Colors.white : Colors.white70),
       ),
     );
 
@@ -68,10 +88,11 @@ class GridMenuItem extends StatelessWidget {
 
     wItem = BadgeUtil.wrapWithBadge(context, wItem, badgeConfig, expand: true);
 
-    var theme = Theme.of(context);
-    return Material(
-      color: (JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.canvasColor)
-          .withAlpha(Color.getAlphaFromOpacity(double.parse(AppStyle.of(context).style(context, AppStyle.opacityMenu) ?? "1"))),
+    ThemeData theme = Theme.of(context);
+
+    Widget w = Material(
+      color: tileBackground ?? ((JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.canvasColor)
+          .withAlpha(Color.getAlphaFromOpacity(double.parse(AppStyle.directOf(context).style(AppStyle.opacityMenu) ?? "1")))),
       child: InkWell(
         onTap: () => onClick(context, item: menuItemModel),
         child: Column(
@@ -81,7 +102,7 @@ class GridMenuItem extends StatelessWidget {
             Expanded(
               flex: 25,
               child: Container(
-                color: Colors.black.withAlpha(Color.getAlphaFromOpacity(0.2)),
+                color: tileTitleBackground ?? Colors.black.withAlpha(Color.getAlphaFromOpacity(0.2)),
                 padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
                 child: Padding(
                   padding: const EdgeInsets.all(2.0),
@@ -90,7 +111,7 @@ class GridMenuItem extends StatelessWidget {
                       menuItemModel.label,
                       style: TextStyle(
                         fontSize: 16,
-                        color: JVxColors.isLightTheme(context) ? Colors.white : Colors.white70,
+                        color: tileTitleColor ?? tileColor ?? (JVxColors.isLightTheme(context) ? Colors.white : Colors.white70),
                       ),
                       maxLines: 1,
                       minFontSize: 16,
@@ -109,5 +130,11 @@ class GridMenuItem extends StatelessWidget {
         ),
       ),
     );
+
+    if (borderRadius != null) {
+      w = ClipRRect(borderRadius: BorderRadiusGeometry.all(Radius.circular(borderRadius!)), child: w);
+    }
+
+    return w;
   }
 }

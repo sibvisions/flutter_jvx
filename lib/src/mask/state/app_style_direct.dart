@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../util/jvx_colors.dart';
@@ -25,10 +26,20 @@ import 'app_style.dart';
 /// Don't use it for e.g. coloring app which could depend on light/dark mode
 /// If you need context dependent information, use [AppStyle] instead.
 class AppStyleDirect {
-  Map<String, String>? _applicationStyle;
+  final Map<String, String>? _applicationStyle;
 
-  AppStyleDirect(Map<String, String>? style) {
-    _applicationStyle = style;
+  final bool _darkMode;
+
+  const AppStyleDirect(
+    Map<String, String>? style, {
+    bool? darkMode
+  }) :
+    _applicationStyle = style,
+    _darkMode = darkMode ?? false;
+
+  /// Returns a copy with given properties
+  AppStyleDirect copyWith({bool? darkMode}) {
+    return AppStyleDirect(_applicationStyle, darkMode: darkMode ?? _darkMode);
   }
 
   /// Returns whether styles are defined
@@ -37,11 +48,11 @@ class AppStyleDirect {
   }
 
   bool isSame(AppStyleDirect other) {
-    return _applicationStyle == other._applicationStyle;
+    return _applicationStyle == other._applicationStyle && _darkMode == other._darkMode;
   }
 
-  String? style(String propertyName, {BuildContext? context}) {
-    if (context != null && !JVxColors.isLightTheme(context)) {
+  String? style(String propertyName) {
+    if (_darkMode) {
       String? valueDark = _applicationStyle?["dark.$propertyName"];
 
       if (valueDark != null) {
@@ -53,8 +64,8 @@ class AppStyleDirect {
   }
 
   /// Gets the style setting as bool
-  bool styleAsBool(String propertyName, {BuildContext? context, bool defaultValue = false}) {
-    String? value = style(propertyName, context: context);
+  bool styleAsBool(String propertyName, {bool defaultValue = false}) {
+    String? value = style(propertyName);
 
     if (value == null) {
       return defaultValue;
@@ -70,115 +81,159 @@ class AppStyleDirect {
   }
 
   double dialogBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeDialogBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+    return ParseUtil.parseDouble(style(AppStyle.themeDialogBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
       ?? JVxColors.BORDER_RADIUS;
   }
 
   double panelBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themePanelBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+    return ParseUtil.parseDouble(style(AppStyle.themePanelBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
       ?? JVxColors.BORDER_RADIUS;
   }
 
-  double menuBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeMenuBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+  double popupMenuBorderRadius() {
+    return ParseUtil.parseDouble(style(AppStyle.themePopupMenuBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
       ?? JVxColors.BORDER_RADIUS;
   }
 
   double tableBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeTableBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+    return ParseUtil.parseDouble(style(AppStyle.themeTableBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
       ?? JVxColors.BORDER_RADIUS;
   }
 
   double listBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeListBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+    return ParseUtil.parseDouble(style(AppStyle.themeListBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
       ?? JVxColors.BORDER_RADIUS;
   }
 
   double listCardBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeListCardBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeListBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+    return ParseUtil.parseDouble(style(AppStyle.themeListCardBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeListBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
       ?? JVxColors.BORDER_RADIUS;
   }
 
   double editorBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeEditorBorderRadius])
-        ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+    return ParseUtil.parseDouble(style(AppStyle.themeEditorBorderRadius))
+        ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
         ?? JVxColors.BORDER_RADIUS;
   }
 
   double? slideButtonBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeSlideButtonBorderRadius]);
+    return ParseUtil.parseDouble(style(AppStyle.themeSlideButtonBorderRadius));
   }
 
   double? slideButtonHandleRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeSlideButtonHandleRadius]);
+    return ParseUtil.parseDouble(style(AppStyle.themeSlideButtonHandleRadius));
   }
 
   double buttonBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeButtonBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+    return ParseUtil.parseDouble(style(AppStyle.themeButtonBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
       ?? JVxColors.BORDER_RADIUS;
   }
 
   double buttonGroupBorderRadius() {
-    return ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeButtonGroupBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeButtonBorderRadius])
-      ?? ParseUtil.parseDouble(_applicationStyle?[AppStyle.themeBorderRadius])
+    return ParseUtil.parseDouble(style(AppStyle.themeButtonGroupBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeButtonBorderRadius))
+      ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
       ?? JVxColors.BORDER_RADIUS;
   }
 
-  Color? menuDrawerTopColor() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.menuDrawerTopColor]);
+  Color? menuDrawerBackgroundTop() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuDrawerBackgroundTop));
   }
 
   Color? menuDrawerBackground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.menuDrawerBackground]);
+    return ParseUtil.parseHexColor(style(AppStyle.menuDrawerBackground));
+  }
+
+  Color? menuDrawerMenuIconColor() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuDrawerMenuIconColor));
   }
 
   Color? buttonBackground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeButtonBackground]);
+    return ParseUtil.parseHexColor(style(AppStyle.themeButtonBackground));
   }
 
   Color? buttonForeground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeButtonForeground]);
+    return ParseUtil.parseHexColor(style(AppStyle.themeButtonForeground));
   }
 
   Color? textButtonForeground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeTextButtonForeground ]);
+    return ParseUtil.parseHexColor(style(AppStyle.themeTextButtonForeground ));
   }
 
   Color? outlinedButtonForeground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeOutlinedButtonForeground]);
+    return ParseUtil.parseHexColor(style(AppStyle.themeOutlinedButtonForeground));
   }
 
   Color? tableFloatingButtonBackground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeTableFloatingButtonBackground])
+    return ParseUtil.parseHexColor(style(AppStyle.themeTableFloatingButtonBackground))
       ?? buttonBackground();
   }
 
   Color? tableFloatingButtonForeground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeTableFloatingButtonForeground])
+    return ParseUtil.parseHexColor(style(AppStyle.themeTableFloatingButtonForeground))
       ?? buttonForeground();
   }
 
   Color? listFloatingButtonBackground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeListFloatingButtonBackground])
+    return ParseUtil.parseHexColor(style(AppStyle.themeListFloatingButtonBackground))
         ?? buttonBackground();
   }
 
   Color? listFloatingButtonForeground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeListFloatingButtonForeground])
+    return ParseUtil.parseHexColor(style(AppStyle.themeListFloatingButtonForeground))
         ?? buttonForeground();
   }
 
   Color? groupHeaderBackground() {
-    return ParseUtil.parseHexColor(_applicationStyle?[AppStyle.themeGroupHeaderBackground]);
+    return ParseUtil.parseHexColor(style(AppStyle.themeGroupHeaderBackground));
+  }
+
+  EdgeInsets? menuGridPadding() {
+    return ParseUtil.parseMargins(style(AppStyle.menuGridPadding));
+  }
+
+  double? menuGridPaddingTop() {
+    return ParseUtil.parseDouble(style(AppStyle.menuGridPaddingTop));
+  }
+
+  double? menuGridTileBorderRadius() {
+    return ParseUtil.parseDouble(style(AppStyle.menuGridTileBorderRadius));
+  }
+
+  Color? menuGridBackground() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuGridBackground));
+  }
+
+  Color? menuGridGroupTitleForeground() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuGridGroupTitleForeground));
+  }
+
+  Color? menuGridGroupTitleBackground() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuGridGroupTitleBackground));
+  }
+
+  Color? menuGridTileBackground() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuGridTileBackground));
+  }
+
+  Color? menuGridTileForeground() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuGridTileForeground));
+  }
+
+  Color? menuGridTileTitleBackground() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuGridTileTitleBackground));
+  }
+
+  Color? menuGridTileTitleForeground() {
+    return ParseUtil.parseHexColor(style(AppStyle.menuGridTileTitleForeground));
   }
 
 }

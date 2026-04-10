@@ -109,9 +109,9 @@ class WebFrameState extends FrameState {
   }) {
     var profileImage = IConfigService().userInfo.value?.profileImage;
     AppStyle appStyle = AppStyle.of(context);
-    Color? topMenuColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.webTopMenuColor));
-    Color? iconColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.webTopMenuIconColor));
-    String? imagePath = appStyle.style(context, AppStyle.webTopMenuImage);
+    Color? topMenuColor = ParseUtil.parseHexColor(appStyle.direct.style(AppStyle.webTopMenuColor));
+    Color? iconColor = ParseUtil.parseHexColor(appStyle.direct.style(AppStyle.webTopMenuIconColor));
+    String? imagePath = appStyle.direct.style(AppStyle.webTopMenuImage);
 
     bool inWorkscreen = IUiService().getCurrentWorkScreenName() != null;
 

@@ -41,6 +41,9 @@ class ListMenuItem extends StatelessWidget {
   /// Text style for inner widgets.
   final TextStyle? textStyle;
 
+  /// The icon color
+  final Color? iconColor;
+
   final bool decreasedDensity;
   final bool useAlternativeLabel;
   final bool embedded;
@@ -55,6 +58,7 @@ class ListMenuItem extends StatelessWidget {
     required this.menuItemModel,
     required this.onClick,
     this.onClose,
+    this.iconColor,
     this.textStyle,
     this.decreasedDensity = false,
     this.useAlternativeLabel = false,
@@ -74,7 +78,7 @@ class ListMenuItem extends StatelessWidget {
       context,
       pMenuItemModel: menuItemModel,
       pSize: 25,
-      pColor: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white70,
+      pColor: iconColor ?? (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white70),
     );
 
     BadgeConfig badgeConfig = BadgeConfig.fromApplicationParameter(menuItemModel.className);

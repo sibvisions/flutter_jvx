@@ -221,7 +221,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     return _wrapAsDialog(context, Container(
         clipBehavior: Clip.hardEdge,
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(AppStyle.of(context).direct.dialogBorderRadius()))),
+        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(AppStyle.directOf(context).dialogBorderRadius()))),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -305,7 +305,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       return Dialog(
           insetPadding: paddingInsets,
           elevation: 10.0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppStyle.of(context).direct.dialogBorderRadius())),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppStyle.directOf(context).dialogBorderRadius())),
           child: child
       );
     }

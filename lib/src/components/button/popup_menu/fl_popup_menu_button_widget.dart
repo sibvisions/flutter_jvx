@@ -96,7 +96,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   /// Creates a [FontAwesomeIcons.caretDown] icon which, when pressed, opens a menu showing the [popupItems].
   Widget createPopupIcon(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(AppStyle.of(context).direct.buttonBorderRadius()),
+      borderRadius: BorderRadius.circular(AppStyle.directOf(context).buttonBorderRadius()),
       canRequestFocus: false,
       enableFeedback: model.isEnabled,
       onTap: () => openMenu(context),

@@ -42,6 +42,7 @@ import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
 import '../state/app_style.dart';
+import '../state/app_style_direct.dart';
 import '../work_screen/work_screen_page.dart';
 import 'menu.dart';
 
@@ -169,9 +170,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 }
               }
 
-              AppStyle appStyle = AppStyle.of(context);
-              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.desktopColor));
-              String? backgroundImage = appStyle.style(context, AppStyle.desktopIcon);
+              AppStyleDirect appStyle = AppStyle.directOf(context);
+              Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(AppStyle.desktopColor)) ?? appStyle.menuGridBackground();
+              String? backgroundImage = appStyle.style(AppStyle.desktopIcon);
 
               FrameState? frameState = Frame.maybeOf(context);
               if (frameState != null) {
@@ -224,10 +225,10 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         if (backgroundColor != null || backgroundImage != null)
                           WorkScreenPage.buildBackground(backgroundColor, backgroundImage),
                         _getMenu(
+                          context,
                           applyMenuFilter(menuModel, (item) => item.label),
-                          key: const PageStorageKey('MainMenu'),
-                          context: context,
-                          appStyle: appStyle,
+                          appStyle,
+                          const PageStorageKey('MainMenu'),
                         ),
                       ],
                     ),
@@ -253,7 +254,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 );
               }
 
-              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.menuTitleColor));
+              Color? headerColor = ParseUtil.parseHexColor(appStyle.style(AppStyle.menuTitleColor));
 
               Widget menu = Scaffold(
                 drawerEnableOpenDragGesture: false,
@@ -410,22 +411,22 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   }
 
   Widget _getMenu(
-    MenuModel menuModel, {
-    Key? key,
-    required BuildContext context,
-    AppStyle? appStyle,
-  }) {
-    MenuMode menuMode = MenuMode.fromString(appStyle?.style(context, 'menu.mode'));
+    BuildContext context,
+    MenuModel menuModel,
+    AppStyleDirect appStyle,
+    Key key
+  ) {
+    MenuMode menuMode = MenuMode.fromString(appStyle.style('menu.mode'));
 
     // Overriding menu mode
     AppManager? customAppManager = IUiService().getAppManager();
     menuMode = customAppManager?.onMenuMode(menuMode) ?? menuMode;
 
-    bool? grouped = ParseUtil.parseBool(appStyle?.style(context, 'menu.grouped')) ?? false;
+    bool? grouped = ParseUtil.parseBool(appStyle.style('menu.grouped')) ?? false;
     // ignore: deprecated_member_use_from_same_package
     grouped = [MenuMode.GRID_GROUPED, MenuMode.LIST_GROUPED].contains(menuMode) || grouped;
-    bool? sticky = ParseUtil.parseBool(appStyle?.style(context, 'menu.sticky')) ?? true;
-    bool? groupOnlyOnMultiple = ParseUtil.parseBool(appStyle?.style(context, 'menu.group_only_on_multiple')) ?? false;
+    bool? sticky = ParseUtil.parseBool(appStyle.style('menu.sticky')) ?? true;
+    bool? groupOnlyOnMultiple = ParseUtil.parseBool(appStyle.style('menu.group_only_on_multiple')) ?? false;
 
     // ignore: deprecated_member_use_from_same_package
     menuMode = menuMode.migrate();
@@ -444,14 +445,16 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
     if (menuMode == MenuMode.DRAWER) return const SizedBox();
 
-    return Menu.fromMode(
-      key: key,
+    return Menu.create(
+      context,
+      appStyle,
       menuMode,
-      menuModel: menuModel,
-      onClick: Menu.menuItemPressed,
+      menuModel,
+      Menu.menuItemPressed,
+      key: key,
       grouped: grouped,
       sticky: sticky,
-      groupOnlyOnMultiple: groupOnlyOnMultiple,
+      groupOnlyOnMultiple: groupOnlyOnMultiple
     );
   }
 

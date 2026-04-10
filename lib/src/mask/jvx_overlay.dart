@@ -285,6 +285,7 @@ class JVxOverlayState extends State<JVxOverlay> {
         child: AppStyle(
           applicationStyle: IConfigService().applicationStyle.value,
           applicationSettings: IUiService().applicationSettings.value,
+          darkMode: !JVxColors.isLightTheme(context),
           child: FutureBuilder(
             future: _loadingDelayFuture,
             builder: (context, snapshot) {

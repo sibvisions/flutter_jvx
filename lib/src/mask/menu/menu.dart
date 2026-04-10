@@ -29,7 +29,10 @@ import '../../routing/locations/main_location.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/parse_util.dart';
 import '../frame/frame.dart';
+import '../state/app_style.dart';
+import '../state/app_style_direct.dart';
 import 'grid/grid_menu.dart';
 import 'list/list_menu.dart';
 import 'tab/tab_menu.dart';
@@ -78,14 +81,18 @@ abstract class Menu extends StatelessWidget {
   ///
   /// [groupOnlyOnMultiple] controls whether groups should only be shown if there is more than one group.
   /// Is only considered if [grouped] is `true`.
-  factory Menu.fromMode(
-    MenuMode menuMode, {
+  factory Menu.create(
+    BuildContext context,
+    AppStyleDirect style,
+    MenuMode menuMode,
+    MenuModel menuModel,
+    MenuItemCallback onClick, {
     Key? key,
-    required MenuModel menuModel,
-    required MenuItemCallback onClick,
     bool grouped = false,
     bool sticky = true,
     bool groupOnlyOnMultiple = true,
+    double? borderRadius,
+    double? padding
   }) {
     switch (menuMode) {
       case MenuMode.LIST:
@@ -108,6 +115,9 @@ abstract class Menu extends StatelessWidget {
       case MenuMode.GRID:
       // ignore: deprecated_member_use_from_same_package
       case MenuMode.GRID_GROUPED:
+
+        AppStyleDirect style = AppStyle.directOf(context);
+
         return GridMenu(
           key: key,
           menuModel: menuModel,
@@ -115,6 +125,14 @@ abstract class Menu extends StatelessWidget {
           grouped: grouped,
           sticky: sticky,
           groupOnlyOnMultiple: groupOnlyOnMultiple,
+          borderRadius: style.menuGridTileBorderRadius(),
+          padding: style.menuGridPadding(),
+          groupColor: style.menuGridGroupTitleForeground(),
+          groupBackground: ParseUtil.parseHexColor(style.style(AppStyle.desktopColor)) ?? style.menuGridGroupTitleBackground() ?? style.menuGridBackground(),
+          tileColor: style.menuGridTileForeground(),
+          tileBackground: style.menuGridTileBackground(),
+          tileTitleColor: style.menuGridTileTitleForeground(),
+          tileTitleBackground: style.menuGridTileTitleBackground()
         );
       //case MenuMode.DRAWER:
       default:

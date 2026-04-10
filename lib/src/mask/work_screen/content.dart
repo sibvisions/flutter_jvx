@@ -26,6 +26,7 @@ import '../../service/layout/i_layout_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/parse_util.dart';
 import '../state/app_style.dart';
+import '../state/app_style_direct.dart';
 import 'work_screen_page.dart';
 
 /// Screen used to show workScreens either custom or from the server,
@@ -75,9 +76,10 @@ class ContentState extends State<Content> {
 
   @override
   Widget build(BuildContext context) {
-    AppStyle appStyle = AppStyle.of(context);
-    Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.desktopColor));
-    String? backgroundImageString = appStyle.style(context, AppStyle.desktopIcon);
+    AppStyleDirect appStyle = AppStyle.directOf(context);
+
+    Color? backgroundColor = ParseUtil.parseHexColor(appStyle.style(AppStyle.desktopColor));
+    String? backgroundImageString = appStyle.style(AppStyle.desktopIcon);
 
     return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisible) => LayoutBuilder(

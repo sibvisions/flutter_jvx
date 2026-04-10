@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/command/ui/route/route_to_login_command.dart';
+import '../../state/app_style_direct.dart';
 import '../login_handler.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
@@ -54,25 +55,25 @@ class ModernLogin extends StatelessWidget implements Login {
 
   @override
   Widget build(BuildContext context) {
-    AppStyle appStyle = AppStyle.of(context);
-    String? loginLogo = appStyle.style(context, AppStyle.loginLogo);
-    String? loginTitle = appStyle.style(context, AppStyle.loginTitle);
+    AppStyleDirect appStyle = AppStyle.directOf(context);
+    String? loginLogo = appStyle.style(AppStyle.loginLogo);
+    String? loginTitle = appStyle.style(AppStyle.loginTitle);
 
     LoginHandler? handler = FlutterUI.of(context).widget.loginHandler;
 
-    bool inverseColor = ParseUtil.parseBoolOrFalse(appStyle.style(context, AppStyle.loginInverseColor));
+    bool inverseColor = ParseUtil.parseBoolOrFalse(appStyle.style(AppStyle.loginInverseColor));
 
     bool? colorGradient = handler?.colorGradient ??
-        ParseUtil.parseBoolOrTrue(appStyle.style(context, AppStyle.loginColorGradient));
+        ParseUtil.parseBoolOrTrue(appStyle.style(AppStyle.loginColorGradient));
 
     Color? topColor = handler?.topColorBuilder?.call(context) ??
-        ParseUtil.parseHexColor(appStyle.style(context, AppStyle.loginTopColor)) ??
+        ParseUtil.parseHexColor(appStyle.style(AppStyle.loginTopColor)) ??
         handler?.backgroundColorBuilder?.call(context) ??
-        ParseUtil.parseHexColor(appStyle.style(context, AppStyle.loginBackground)) ??
+        ParseUtil.parseHexColor(appStyle.style(AppStyle.loginBackground)) ??
         Theme.of(context).colorScheme.primary;
 
     Color? bottomColor = handler?.bottomColorBuilder?.call(context) ??
-        ParseUtil.parseHexColor(appStyle.style(context, AppStyle.loginBottomColor));
+        ParseUtil.parseHexColor(appStyle.style(AppStyle.loginBottomColor));
 
     if (inverseColor) {
       var tempTop = topColor;

@@ -1142,7 +1142,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     servUi.i18n().currentLanguage.addListener(refresh);
 
     // Init default themes (if applicable)
-    changeTheme(null);
+    changeTheme(null, null);
 
     // Let Flutter build it once, so we can access the context.
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -1667,27 +1667,29 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     AppStyleDirect style = AppStyle.directFromConfig();
 
     if (style.isValid()) {
-      changeTheme(style.themeColor(), style: style);
+      changeTheme(style.themeColor(), style);
     }
     else {
       refresh();
     }
   }
 
-  void changeTheme(Color? pColor, {AppStyleDirect? style}) {
+  void changeTheme(Color? pColor, AppStyleDirect? style) {
+    AppStyleDirect? styleDark = style?.copyWith(darkMode: true);
+
     if (pColor != null) {
       themeData = JVxColors.createTheme(pColor, Brightness.light, useFixedPrimary: true, style: style);
-      darkThemeData = JVxColors.createTheme(pColor, Brightness.dark, useFixedPrimary: true, style: style);
+      darkThemeData = JVxColors.createTheme(pColor, Brightness.dark, useFixedPrimary: true, style: styleDark);
 
       if (widget.themeBuilder != null) {
         themeData = widget.themeBuilder!(themeData, pColor, Brightness.light, true);
         darkThemeData = widget.themeBuilder!(darkThemeData, pColor, Brightness.dark, true);
       }
     } else {
-      Color color = Colors.blue;
+      Color color = JVxColors.DEFAULT_THEME_COLOR;
 
       themeData = JVxColors.createTheme(color, Brightness.light, style: style);
-      darkThemeData = JVxColors.createTheme(color, Brightness.dark, style: style);
+      darkThemeData = JVxColors.createTheme(color, Brightness.dark, style: styleDark);
 
       if (widget.themeBuilder != null) {
         themeData = widget.themeBuilder!(themeData, color, Brightness.light, false);

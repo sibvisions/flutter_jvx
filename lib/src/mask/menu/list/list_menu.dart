@@ -37,6 +37,7 @@ class ListMenu extends Menu {
 
   /// Text color for menu header
   final Color? headerColor;
+  final Color? iconColor;
 
   final bool decreasedDensity;
   final bool useAlternativeLabel;
@@ -59,6 +60,7 @@ class ListMenu extends Menu {
     this.layoutMode,
     this.textStyle,
     this.headerColor,
+    this.iconColor,
     this.decreasedDensity = false,
     this.useAlternativeLabel = false,
     required this.grouped,
@@ -81,6 +83,7 @@ class ListMenu extends Menu {
                     layoutMode: layoutMode,
                     textStyle: textStyle,
                     headerColor: headerColor,
+                    iconColor: iconColor,
                     decreasedDensity: decreasedDensity,
                     useAlternativeLabel: useAlternativeLabel,
                     embedded: embedded,
@@ -100,6 +103,7 @@ class ListMenu extends Menu {
                             useAlternativeLabel: useAlternativeLabel,
                             embedded: embedded,
                             smallBadge: smallBadge,
+                            iconColor: iconColor
                           ))
                       .toList(),
                 ),

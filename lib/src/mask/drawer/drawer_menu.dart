@@ -18,6 +18,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/api/i_api_service.dart';
@@ -59,7 +60,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     AppStyle style = AppStyle.of(context);
 
     return Opacity(
-      opacity: double.parse(style.style(context, AppStyle.opacitySideMenu) ?? "1"),
+      opacity: double.parse(style.direct.style(AppStyle.opacitySideMenu) ?? "1"),
       child: Drawer(
         backgroundColor: style.direct.menuDrawerBackground() ?? (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : JVxColors.darken(Theme.of(context).colorScheme.surface, 0.05)),
         child: SafeArea(
@@ -100,7 +101,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       headerItems = [
         _buildHeaderText(
           flex: 5,
-          text: AppStyle.of(context).style(context, 'login.title') ?? IConfigService().appName.value ?? "",
+          text: AppStyle.of(context).direct.style('login.title') ?? IConfigService().appName.value ?? "",
           context: context,
           fontWeight: FontWeight.bold,
         ),
@@ -139,7 +140,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       ];
     }
 
-    Color? colTop = AppStyle.of(context).direct.menuDrawerTopColor();
+    Color? colTop = AppStyle.of(context).direct.menuDrawerBackgroundTop();
 
     Widget wInner = Theme(
       data: Theme.of(context).copyWith(
@@ -199,6 +200,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }
 
   Widget _buildMenu(BuildContext context, bool isNormalSize) {
+    AppStyleDirect style = AppStyle.directOf(context);
+
     return ValueListenableBuilder<MenuModel>(
       valueListenable: IUiService().getMenuNotifier(),
       builder: (context, _, child) {
@@ -220,6 +223,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 useAlternativeLabel: true,
                 grouped: true,
                 embedded: true,
+                iconColor: style.menuDrawerMenuIconColor()
               ),
             ),
           ),

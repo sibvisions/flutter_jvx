@@ -49,23 +49,23 @@ class DefaultLogin extends StatelessWidget implements Login {
   @override
   Widget build(BuildContext context) {
     AppStyle appStyle = AppStyle.of(context);
-    String? loginLogo = appStyle.style(context, AppStyle.loginLogo);
+    String? loginLogo = appStyle.direct.style(AppStyle.loginLogo);
 
     LoginHandler? handler = FlutterUI.of(context).widget.loginHandler;
 
-    bool inverseColor = ParseUtil.parseBoolOrFalse(appStyle.style(context, AppStyle.loginInverseColor));
+    bool inverseColor = ParseUtil.parseBoolOrFalse(appStyle.direct.style(AppStyle.loginInverseColor));
 
     bool? colorGradient = handler?.colorGradient ??
-                          ParseUtil.parseBoolOrTrue(appStyle.style(context, AppStyle.loginColorGradient));
+                          ParseUtil.parseBoolOrTrue(appStyle.direct.style(AppStyle.loginColorGradient));
 
     Color? topColor = handler?.topColorBuilder?.call(context) ??
-                      ParseUtil.parseHexColor(appStyle.style(context, AppStyle.loginTopColor)) ??
+                      ParseUtil.parseHexColor(appStyle.direct.style(AppStyle.loginTopColor)) ??
                       handler?.backgroundColorBuilder?.call(context) ??
-                      ParseUtil.parseHexColor(appStyle.style(context, AppStyle.loginBackground)) ??
+                      ParseUtil.parseHexColor(appStyle.direct.style(AppStyle.loginBackground)) ??
                       Theme.of(context).colorScheme.primary;
 
     Color? bottomColor = handler?.bottomColorBuilder?.call(context) ??
-                         ParseUtil.parseHexColor(appStyle.style(context, AppStyle.loginBottomColor));
+                         ParseUtil.parseHexColor(appStyle.direct.style(AppStyle.loginBottomColor));
 
     if (inverseColor) {
       var tempTop = topColor;

@@ -22,7 +22,9 @@ import '../mask/state/app_style_direct.dart';
 import '../service/ui/i_ui_service.dart';
 
 abstract class JVxColors {
-  static Color blue = ColorScheme.fromSeed(seedColor: Colors.blue).primary;
+  static const Color DEFAULT_THEME_COLOR = Colors.blue;
+
+  static Color blue = ColorScheme.fromSeed(seedColor: DEFAULT_THEME_COLOR).primary;
   static const Color WHITE = Colors.white24;
 
   static const Color LIGHTER_BLACK = Color(0xFF424242);

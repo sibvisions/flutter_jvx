@@ -403,7 +403,7 @@ mixin FlDataMixin {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(AppStyle.of(context).direct.menuBorderRadius()),
+          Radius.circular(AppStyle.of(context).direct.popupMenuBorderRadius()),
         ),
       ),
       context: context,

@@ -271,7 +271,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             if (headerColor == null) {
               AppStyle appStyle = AppStyle.of(context);
 
-              headerColor = ParseUtil.parseHexColor(appStyle.style(context, AppStyle.screenTitleColor));
+              headerColor = ParseUtil.parseHexColor(appStyle.direct.style(AppStyle.screenTitleColor));
             }
 
             bool showOfflineBar = isOffline && !OfflineUtil.isGoingOffline;
