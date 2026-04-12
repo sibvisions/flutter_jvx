@@ -41,70 +41,70 @@ abstract class IDataService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Establishes the meta data of the given dataBook
-  bool updateMetaData({required DalMetaDataResponse pChangedResponse});
+  bool updateMetaData({required DalMetaDataResponse changedResponse});
 
   /// Establishes the meta data of the given dataBook
-  bool setMetaData(DalMetaData pMetaData);
+  bool setMetaData(DalMetaData metaData);
 
   /// Updates parts of the meta data of a given dataBook
-  bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse});
+  bool updateMetaDataChanged({required DalDataProviderChangedResponse changedResponse});
 
   /// Updates dataBook with fetched data,
-  Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand pCommand});
+  Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand command});
 
   /// Updates parts of dataBook with changed data.
-  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse});
+  bool updateDataChanged({required DalDataProviderChangedResponse changedResponse});
 
   /// Updates parts of dataBook with new selection data.
-  bool updateSelectionChanged({required DalDataProviderChangedResponse pChangedResponse});
+  bool updateSelectionChanged({required DalDataProviderChangedResponse changedResponse});
 
   /// Returns column data of the selected row of the dataProvider
   DataRecord? getSelectedRowData({
-    required List<String>? pColumnNames,
-    required String pDataProvider,
+    required List<String>? columnNames,
+    required String dataProvider,
   });
 
   /// Returns [DataChunk],
-  /// if [pColumnNames] is null will return all columns
-  /// if [pTo] is null will return all rows
+  /// if [columnNames] is null will return all columns
+  /// if [to] is null will return all rows
   DataChunk getDataChunk({
-    required int pFrom,
-    required String pDataProvider,
-    int? pTo,
-    List<String>? pColumnNames,
-    String? pPageKey,
-    bool pFromStart = false
+    required int from,
+    required String dataProvider,
+    int? to,
+    List<String>? columnNames,
+    String? pageKey,
+    bool fromStart = false
   });
 
   /// Returns the full [DalMetaData] for this dataProvider.
   ///
-  /// Returns null if there is no dataBook with [pDataProvider].
-  DalMetaData? getMetaData(String pDataProvider);
+  /// Returns null if there is no dataBook with [dataProvider].
+  DalMetaData? getMetaData(String dataProvider);
 
   /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
   bool dataBookNeedsFetch({
-    required String pDataProvider,
-    required int pFrom,
-    int? pTo,
+    required String dataProvider,
+    required int from,
+    int? to,
   });
 
   /// Returns true when deletion was successful
   bool deleteDataFromDataBook({
-    required String pDataProvider,
-    required int? pFrom,
-    required int? pTo,
-    required bool? pDeleteAll,
+    required String dataProvider,
+    required int? from,
+    required int? to,
+    required bool? deleteAll,
   });
 
   /// Returns true when row selection was successful (dataProvider and dataRow exist)
   bool setSelectedRow({
-    required String pDataProvider,
-    required int pNewSelectedRow,
-    String? pNewSelectedColumn,
+    required String dataProvider,
+    required int newSelectedRow,
+    String? newSelectedColumn,
   });
 
   /// Clears all the data books of this work-screen
-  void clearData(String pWorkScreen);
+  void clearData(String workScreen);
 
   /// Clear all data books
   void clearDataBooks();
@@ -113,7 +113,7 @@ abstract class IDataService implements Service {
   HashMap<String, DataBook> getDataBooks();
 
   /// Gets a data book
-  DataBook? getDataBook(String pDataProvider);
+  DataBook? getDataBook(String dataProvider);
 
   /// Adds a LinkedCellEditor as referenced cell editors to it's referenced data book and
   /// also builds the data map for the link reference.
@@ -126,7 +126,7 @@ abstract class IDataService implements Service {
   ReferencedCellEditor createReferencedCellEditors(
       FlLinkedCellEditorModel cellEditorModel, String dataProvider, String columnName);
 
-  void setDataBookFetching(String pDataProvider, int pTo);
+  void setDataBookFetching(String dataProvider, int to);
 
-  void removeDataBookFetching(String pDataProvider, int pTo);
+  void removeDataBookFetching(String dataProvider, int to);
 }

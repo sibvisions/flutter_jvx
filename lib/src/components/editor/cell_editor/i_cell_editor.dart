@@ -33,7 +33,7 @@ import 'fl_number_cell_editor.dart';
 import 'fl_text_cell_editor.dart';
 import 'linked/fl_linked_cell_editor.dart';
 
-typedef RecalculateCallback = Function([bool pRecalculate]);
+typedef RecalculateCallback = Function([bool recalculate]);
 typedef CellEditorFocusChecker = bool Function(IFocusableCellEditor cellEditor);
 
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.

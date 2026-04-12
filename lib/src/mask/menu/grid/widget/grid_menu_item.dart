@@ -75,9 +75,9 @@ class GridMenuItem extends StatelessWidget {
       color: tileBackground ?? Colors.black.withAlpha(Color.getAlphaFromOpacity(0.1)),
       child: MenuItemModel.getImage(
         context,
-        pMenuItemModel: menuItemModel,
-        pSize: 72,
-        pColor: tileColor ?? (JVxColors.isLightTheme(context) ? Colors.white : Colors.white70),
+        menuItemModel: menuItemModel,
+        size: 72,
+        color: tileColor ?? (JVxColors.isLightTheme(context) ? Colors.white : Colors.white70),
       ),
     );
 

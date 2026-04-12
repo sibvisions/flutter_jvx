@@ -142,7 +142,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
 
     return FlLabelWidget.createTextWidget(
       model.labelModel,
-      pTextStyle: textStyle,
+      textStyle: textStyle,
     );
   }
 

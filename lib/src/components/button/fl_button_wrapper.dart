@@ -90,7 +90,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
     if (model.columnName.isNotEmpty && model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider,
           dataColumns: [model.columnName],
@@ -111,8 +111,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         onSlide: (controller) {
           controller.loading();
           sendButtonPressed()
-              .then((success) {
-                if (success) {
+              .then((result) {
+                if (result.success) {
                   controller.success();
                 } else {
                   controller.failure();
@@ -207,30 +207,32 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void setSelectedRecord(DataRecord? pDataRecord) {
-    dataRecord = pDataRecord;
+  void setSelectedRecord(DataRecord? newDataRecord) {
+    dataRecord = newDataRecord;
 
     setState(() {});
   }
 
-  Future<bool> sendButtonPressed([String? overwrittenButtonPressId]) {
+  Future<CommandResult> sendButtonPressed([String? overwrittenButtonPressId]) {
     if (model.isSecure) {
-      return _authenticateUser().then((authenticated) {
+      return _authenticateUser().then((authenticated) async {
         if (authenticated == null) {
           IUiService().showJVxDialog(ErrorDialog(title:
             FlutterUI.translate("Error"),
             message: FlutterUI.translate("This application requires the use of biometrics or a PIN to proceed."),
             dismissible: true));
+
+          return CommandResult(success: false);
         }
         else if (authenticated) {
           return _sendButtonPressedImmediate(overwrittenButtonPressId);
         }
 
-        return Future.value(false);
+        return CommandResult(success: false);
       }).catchError((error, stack) {
         FlutterUI.log.e(error, error:error, stackTrace: stack);
 
-        return Future.value(false);
+        return CommandResult(success: false);
       });
     } else {
       return _sendButtonPressedImmediate(overwrittenButtonPressId);
@@ -267,10 +269,10 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     }
   }
 
-  Future<bool> _sendButtonPressedImmediate([String? overwrittenButtonPressId]) {
-    return IUiService().saveAllEditors(pId: model.id, pReason: "Button [${model.id} pressed").then((success) async {
-      if (!success) {
-        return false;
+  Future<CommandResult> _sendButtonPressedImmediate([String? overwrittenButtonPressId]) {
+    return IUiService().saveAllEditors(id: model.id, reason: "Button [${model.id} pressed").then((result) async {
+      if (!result.success) {
+        return result;
       }
 
       List<BaseCommand> commands = await _createButtonCommands(overwrittenButtonPressId);
@@ -279,11 +281,11 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         return ICommandService().sendCommands(commands);
       }
       else {
-        return Future.value(false);
+        return CommandResult(success: false);
       }
-    }).then((success) {
-      if (!success) {
-        return false;
+    }).then((result) {
+      if (!result.success) {
+        return result;
       }
 
       if (model.isHyperLink) {
@@ -302,11 +304,11 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         }
       }
 
-      return true;
+      return CommandResult(success: true);
     });
   }
 
-  Future<List<BaseCommand>> _createButtonCommands(String? pOverwrittenButtonPressId) async {
+  Future<List<BaseCommand>> _createButtonCommands(String? overwrittenButtonPressId) async {
     List<BaseCommand> commands = [];
 
     BaseCommand? commandAfterPress;
@@ -324,7 +326,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
     commands.add(
       PressButtonCommand(
-        componentName: pOverwrittenButtonPressId ?? model.name,
+        componentName: overwrittenButtonPressId ?? model.name,
         reason: "Button has been pressed",
       ),
     );
@@ -341,19 +343,19 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void openScanner() {
     IUiService().openDialogFullScreen(
       transitionDuration: Duration.zero,
-      pIsDismissible: true,
-      pBuilder: (_) => EmbeddedCodeScanner(formats: model.scanFormats ?? const [BarcodeFormat.all], callback: sendScannerResult),
+      isDismissible: true,
+      builder: (_) => EmbeddedCodeScanner(formats: model.scanFormats ?? const [BarcodeFormat.all], callback: sendScannerResult),
     );
   }
 
-  void sendScannerResult(List<Barcode> pBarcodes) {
-    if (pBarcodes.isNotEmpty) {
+  void sendScannerResult(List<Barcode> barcodes) {
+    if (barcodes.isNotEmpty) {
       ICommandService().sendCommand(
         SetValuesCommand(
           dataProvider: model.dataProvider,
           editorColumnName: model.columnName,
           columnNames: [model.columnName],
-          values: [pBarcodes.first.rawValue],
+          values: [barcodes.first.rawValue],
           reason: "Code was scanned",
         ),
       );

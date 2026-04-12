@@ -27,7 +27,7 @@ abstract class IsolateMessage<T> {
   final String? stackTrace = kDebugMode ? StackTrace.current.toString() : null;
 
   // TODO remove every wrapper message and co&kg
-  void sendResponse({required T? pResponse, required SendPort pSendPort}) {
-    pSendPort.send(pResponse);
+  void sendResponse({required T? response, required SendPort sendPort}) {
+    sendPort.send(response);
   }
 }

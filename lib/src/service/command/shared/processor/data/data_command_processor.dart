@@ -82,9 +82,9 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
     DalMetaData metaData = IDataService().getMetaData(command.dataProvider)!;
 
     IUiService().sendSubsMetaData(
-      pSubId: command.subId!,
-      pDataProvider: command.dataProvider,
-      pMetaData: metaData,
+      subId: command.subId!,
+      dataProvider: command.dataProvider,
+      metaData: metaData,
     );
 
     return [];
@@ -92,39 +92,39 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
 
   Future<List<BaseCommand>> _deleteDataProviderData(DeleteProviderDataCommand command) async {
     IDataService().deleteDataFromDataBook(
-      pDataProvider: command.dataProvider,
-      pFrom: command.from,
-      pTo: command.to,
-      pDeleteAll: command.deleteAll,
+      dataProvider: command.dataProvider,
+      from: command.from,
+      to: command.to,
+      deleteAll: command.deleteAll,
     );
 
     return [];
   }
 
-  Future<List<BaseCommand>> _saveMetaData(SaveMetaDataCommand pCommand) async {
-    IDataService().updateMetaData(pChangedResponse: pCommand.response);
+  Future<List<BaseCommand>> _saveMetaData(SaveMetaDataCommand command) async {
+    IDataService().updateMetaData(changedResponse: command.response);
 
-    IUiService().notifyMetaDataChange(pCommand.response.dataProvider);
-
-    return [];
-  }
-
-  Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand pCommand) async {
-    await IDataService().updateFromFetch(pCommand: pCommand);
+    IUiService().notifyMetaDataChange(command.response.dataProvider);
 
     return [];
   }
 
-  Future<List<BaseCommand>> _getSelectedData(GetSelectedDataCommand pCommand) async {
-    bool needFetch = IDataService().getDataBook(pCommand.dataProvider) == null;
+  Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand command) async {
+    await IDataService().updateFromFetch(command: command);
+
+    return [];
+  }
+
+  Future<List<BaseCommand>> _getSelectedData(GetSelectedDataCommand command) async {
+    bool needFetch = IDataService().getDataBook(command.dataProvider) == null;
 
     if (needFetch) {
       return [
         FetchCommand(
-          dataProvider: pCommand.dataProvider,
+          dataProvider: command.dataProvider,
           fromRow: 0,
-          rowCount: IUiService().getSubscriptionRowCount(pCommand.dataProvider),
-          reason: "Fetch for ${pCommand.runtimeType}",
+          rowCount: IUiService().getSubscriptionRowCount(command.dataProvider),
+          reason: "Fetch for ${command.runtimeType}",
           includeMetaData: true,
         )
       ];
@@ -132,14 +132,14 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
 
     // Get Data record - is null if data book has no selected row
     DataRecord? record = IDataService().getSelectedRowData(
-      pColumnNames: pCommand.columnNames,
-      pDataProvider: pCommand.dataProvider,
+      columnNames: command.columnNames,
+      dataProvider: command.dataProvider,
     );
 
     IUiService().sendSubsSelectedData(
-      pSubId: pCommand.subId!,
-      pDataProvider: pCommand.dataProvider,
-      pDataRow: record,
+      subId: command.subId!,
+      dataProvider: command.dataProvider,
+      dataRow: record,
     );
 
     return [];
@@ -147,9 +147,9 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
 
   Future<List<BaseCommand>> _getDataChunk(GetDataChunkCommand command) async {
     bool needFetch = IDataService().dataBookNeedsFetch(
-      pFrom: command.from!,
-      pTo: command.to,
-      pDataProvider: command.dataProvider,
+      from: command.from!,
+      to: command.to,
+      dataProvider: command.dataProvider,
     );
 
     if (needFetch) {
@@ -170,34 +170,34 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
     }
 
     DataChunk dataChunk = IDataService().getDataChunk(
-      pColumnNames: command.dataColumns,
-      pFrom: command.from!,
-      pTo: command.to,
-      pDataProvider: command.dataProvider,
-      pFromStart : command.fromStart
+      columnNames: command.dataColumns,
+      from: command.from!,
+      to: command.to,
+      dataProvider: command.dataProvider,
+      fromStart : command.fromStart
     );
 
     IUiService().sendSubsDataChunk(
-      pDataChunk: dataChunk,
-      pDataProvider: command.dataProvider,
-      pSubId: command.subId!,
+      dataChunk: dataChunk,
+      dataProvider: command.dataProvider,
+      subId: command.subId!,
     );
     return [];
   }
 
   Future<List<BaseCommand>> _getPageChunk(GetPageChunkCommand command) async {
     DataChunk dataChunk = IDataService().getDataChunk(
-      pFrom: command.from!,
-      pTo: command.to,
-      pDataProvider: command.dataProvider,
-      pPageKey: command.pageKey,
+      from: command.from!,
+      to: command.to,
+      dataProvider: command.dataProvider,
+      pageKey: command.pageKey,
     );
 
     IUiService().sendSubsPageChunk(
-      pDataChunk: dataChunk,
-      pDataProvider: command.dataProvider,
-      pSubId: command.subId!,
-      pPageKey: command.pageKey,
+      dataChunk: dataChunk,
+      dataProvider: command.dataProvider,
+      subId: command.subId!,
+      pageKey: command.pageKey,
     );
     return [];
   }

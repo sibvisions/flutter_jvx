@@ -93,127 +93,127 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   FlLinkedCellEditorModel get defaultModel => FlLinkedCellEditorModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     linkReference = getPropertyValue(
-        pJson: pJson,
-        pKey: ApiObjectProperty.linkReference,
-        pDefault: defaultModel.linkReference,
-        pCurrent: linkReference,
-        pConversion: (value) => ReferenceDefinition.fromJson(value));
+        json: newJson,
+        key: ApiObjectProperty.linkReference,
+        defaultValue: defaultModel.linkReference,
+        currentValue: linkReference,
+        conversion: (value) => ReferenceDefinition.fromJson(value));
 
     columnView = getPropertyValue(
-        pJson: pJson,
-        pKey: ApiObjectProperty.columnView,
-        pDefault: defaultModel.columnView,
-        pCurrent: columnView,
-        pConversion: (value) => ColumnView.fromJson(value));
+        json: newJson,
+        key: ApiObjectProperty.columnView,
+        defaultValue: defaultModel.columnView,
+        currentValue: columnView,
+        conversion: (value) => ColumnView.fromJson(value));
 
     displayReferencedColumnName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.displayReferencedColumnName,
-      pDefault: defaultModel.displayReferencedColumnName,
-      pCurrent: displayReferencedColumnName,
+      json: newJson,
+      key: ApiObjectProperty.displayReferencedColumnName,
+      defaultValue: defaultModel.displayReferencedColumnName,
+      currentValue: displayReferencedColumnName,
     );
 
     displayConcatMask = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.displayConcatMask,
-      pDefault: defaultModel.displayConcatMask,
-      pCurrent: displayConcatMask,
+      json: newJson,
+      key: ApiObjectProperty.displayConcatMask,
+      defaultValue: defaultModel.displayConcatMask,
+      currentValue: displayConcatMask,
     );
 
     searchColumnMapping = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.searchColumnMapping,
-      pDefault: defaultModel.searchColumnMapping,
-      pConversion: (value) => ColumnMapping.fromJson(value),
-      pCurrent: searchColumnMapping,
+      json: newJson,
+      key: ApiObjectProperty.searchColumnMapping,
+      defaultValue: defaultModel.searchColumnMapping,
+      conversion: (value) => ColumnMapping.fromJson(value),
+      currentValue: searchColumnMapping,
     );
 
     additionalCondition = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.additionalCondition,
-      pDefault: defaultModel.additionalCondition,
-      pCurrent: additionalCondition,
-      pConversion: (value) => BaseCondition.parseCondition(value),
+      json: newJson,
+      key: ApiObjectProperty.additionalCondition,
+      defaultValue: defaultModel.additionalCondition,
+      currentValue: additionalCondition,
+      conversion: (value) => BaseCondition.parseCondition(value),
     );
 
     searchTextAnywhere = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.searchTextAnywhere,
-      pDefault: defaultModel.searchTextAnywhere,
-      pCurrent: searchTextAnywhere,
+      json: newJson,
+      key: ApiObjectProperty.searchTextAnywhere,
+      defaultValue: defaultModel.searchTextAnywhere,
+      currentValue: searchTextAnywhere,
     );
 
     searchInAllTableColumns = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.searchInAllTableColumns,
-      pDefault: defaultModel.searchInAllTableColumns,
-      pCurrent: searchInAllTableColumns,
+      json: newJson,
+      key: ApiObjectProperty.searchInAllTableColumns,
+      defaultValue: defaultModel.searchInAllTableColumns,
+      currentValue: searchInAllTableColumns,
     );
 
     sortByColumnName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.sortByColumnName,
-      pDefault: defaultModel.sortByColumnName,
-      pCurrent: sortByColumnName,
+      json: newJson,
+      key: ApiObjectProperty.sortByColumnName,
+      defaultValue: defaultModel.sortByColumnName,
+      currentValue: sortByColumnName,
     );
 
     tableHeaderVisible = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.tableHeaderVisible,
-      pDefault: defaultModel.tableHeaderVisible,
-      pCurrent: tableHeaderVisible,
+      json: newJson,
+      key: ApiObjectProperty.tableHeaderVisible,
+      defaultValue: defaultModel.tableHeaderVisible,
+      currentValue: tableHeaderVisible,
     );
 
     validationEnabled = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.validationEnabled,
-      pDefault: defaultModel.validationEnabled,
-      pCurrent: validationEnabled,
+      json: newJson,
+      key: ApiObjectProperty.validationEnabled,
+      defaultValue: defaultModel.validationEnabled,
+      currentValue: validationEnabled,
     );
 
     tableReadonly = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.tableReadonly,
-      pDefault: defaultModel.tableReadonly,
-      pCurrent: tableReadonly,
+      json: newJson,
+      key: ApiObjectProperty.tableReadonly,
+      defaultValue: defaultModel.tableReadonly,
+      currentValue: tableReadonly,
     );
 
     popupSize = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.popupSize,
-      pDefault: defaultModel.popupSize,
-      pCurrent: popupSize,
-      pConversion: (pJson) => _parsePopupSize(pJson),
+      json: newJson,
+      key: ApiObjectProperty.popupSize,
+      defaultValue: defaultModel.popupSize,
+      currentValue: popupSize,
+      conversion: (json) => _parsePopupSize(json),
     );
 
     additionalClearColumnNames = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.additionalClearColumns,
-      pDefault: defaultModel.additionalClearColumnNames,
-      pCurrent: additionalClearColumnNames,
-      pConversion: (value) => value.cast<String>(),
+      json: newJson,
+      key: ApiObjectProperty.additionalClearColumns,
+      defaultValue: defaultModel.additionalClearColumnNames,
+      currentValue: additionalClearColumnNames,
+      conversion: (value) => value.cast<String>(),
     );
 
     clearColumnNames = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.clearColumns,
-      pDefault: defaultModel.clearColumnNames,
-      pCurrent: clearColumnNames,
-      pConversion: (value) => value.cast<String>(),
+      json: newJson,
+      key: ApiObjectProperty.clearColumns,
+      defaultValue: defaultModel.clearColumnNames,
+      currentValue: clearColumnNames,
+      conversion: (value) => value.cast<String>(),
     );
   }
 
-  Size? _parsePopupSize(Map<String, dynamic> pJson) {
-    if (!pJson.containsKey("width") || !pJson.containsKey("height")) {
+  Size? _parsePopupSize(Map<String, dynamic> json) {
+    if (!json.containsKey("width") || !json.containsKey("height")) {
       return null;
     }
 
-    num width = pJson["width"];
-    num height = pJson["height"];
+    num width = json["width"];
+    num height = json["height"];
     return Size(width.toDouble(), height.toDouble()) * IConfigService().getScaling();
   }
 

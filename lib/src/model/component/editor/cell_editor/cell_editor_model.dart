@@ -83,11 +83,11 @@ class ICellEditorModel {
   /// Initializes a [ICellEditorModel] with default values
   ICellEditorModel();
 
-  factory ICellEditorModel.fromJson(Map<String, dynamic>? pJson) {
-    if (pJson == null) return ICellEditorModel();
+  factory ICellEditorModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return ICellEditorModel();
 
     ICellEditorModel? model;
-    switch (pJson[ApiObjectProperty.className]) {
+    switch (json[ApiObjectProperty.className]) {
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         model = FlCheckBoxCellEditorModel();
         break;
@@ -112,7 +112,7 @@ class ICellEditorModel {
         model = ICellEditorModel();
     }
 
-    model.applyFromJson(pJson);
+    model.applyFromJson(json);
     return model;
   }
 
@@ -126,101 +126,101 @@ class ICellEditorModel {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void applyFromJson(Map<String, dynamic> pJson) {
+  void applyFromJson(Map<String, dynamic> newJson) {
     // ClassName
     className = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.className,
-      pDefault: defaultModel.className,
-      pCurrent: className,
+      json: newJson,
+      key: ApiObjectProperty.className,
+      defaultValue: defaultModel.className,
+      currentValue: className,
     );
 
     // ContentType
     contentType = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.contentType,
-      pDefault: defaultModel.contentType,
-      pCurrent: contentType,
+      json: newJson,
+      key: ApiObjectProperty.contentType,
+      defaultValue: defaultModel.contentType,
+      currentValue: contentType,
     );
 
     // HorizontalAlignment
     horizontalAlignment = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.horizontalAlignment,
-      pDefault: defaultModel.horizontalAlignment,
-      pCurrent: horizontalAlignment,
-      pCondition: (pValue) => pValue < HorizontalAlignment.values.length && pValue >= 0,
-      pConversion: HorizontalAlignmentE.fromDynamic,
+      json: newJson,
+      key: ApiObjectProperty.horizontalAlignment,
+      defaultValue: defaultModel.horizontalAlignment,
+      currentValue: horizontalAlignment,
+      condition: (value) => value < HorizontalAlignment.values.length && value >= 0,
+      conversion: HorizontalAlignmentE.fromDynamic,
     );
 
     // VerticalAlignment
     verticalAlignment = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.verticalAlignment,
-      pDefault: defaultModel.verticalAlignment,
-      pCurrent: verticalAlignment,
-      pCondition: (pValue) => pValue < VerticalAlignment.values.length && pValue >= 0,
-      pConversion: VerticalAlignmentE.fromDynamic,
+      json: newJson,
+      key: ApiObjectProperty.verticalAlignment,
+      defaultValue: defaultModel.verticalAlignment,
+      currentValue: verticalAlignment,
+      condition: (value) => value < VerticalAlignment.values.length && value >= 0,
+      conversion: VerticalAlignmentE.fromDynamic,
     );
 
     // DirectCellEditor
     directCellEditor = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.directCellEditor,
-      pDefault: defaultModel.directCellEditor,
-      pCurrent: directCellEditor,
+      json: newJson,
+      key: ApiObjectProperty.directCellEditor,
+      defaultValue: defaultModel.directCellEditor,
+      currentValue: directCellEditor,
     );
 
     // PreferredEditorMode
     preferredEditorMode = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.preferredEditorMode,
-      pDefault: defaultModel.preferredEditorMode,
-      pCurrent: preferredEditorMode,
+      json: newJson,
+      key: ApiObjectProperty.preferredEditorMode,
+      defaultValue: defaultModel.preferredEditorMode,
+      currentValue: preferredEditorMode,
     );
 
     // AutoOpenPopup
     autoOpenPopup = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.autoOpenPopup,
-      pDefault: defaultModel.autoOpenPopup,
-      pCurrent: autoOpenPopup,
+      json: newJson,
+      key: ApiObjectProperty.autoOpenPopup,
+      defaultValue: defaultModel.autoOpenPopup,
+      currentValue: autoOpenPopup,
     );
 
     // Styles
     styles = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.style,
-      pDefault: defaultModel.styles,
-      pConversion: _parseStyle,
-      pCurrent: styles,
+      json: newJson,
+      key: ApiObjectProperty.style,
+      defaultValue: defaultModel.styles,
+      conversion: _parseStyle,
+      currentValue: styles,
     );
   }
 
   T getPropertyValue<T>({
-    required Map<String, dynamic> pJson,
-    required String pKey,
-    required T pDefault,
-    required T pCurrent,
-    T Function(dynamic)? pConversion,
-    bool Function(dynamic)? pCondition,
+    required Map<String, dynamic> json,
+    required String key,
+    required T defaultValue,
+    required T currentValue,
+    T Function(dynamic)? conversion,
+    bool Function(dynamic)? condition,
   }) {
     return ParseUtil.getPropertyValue(
-      json: pJson,
-      key: pKey,
-      defaultValue: pDefault,
-      currentValue: pCurrent,
-      valueConversion: pConversion,
-      condition: pCondition,
+      json: json,
+      key: key,
+      defaultValue: defaultValue,
+      currentValue: currentValue,
+      valueConversion: conversion,
+      condition: condition,
     );
   }
 
-  Set<String> _parseStyle(dynamic pStyle) {
-    if (pStyle == null) {
+  Set<String> _parseStyle(dynamic style) {
+    if (style == null) {
       return {};
     }
 
-    String sStyle = (pStyle as String);
+    String sStyle = (style as String);
 
     if (sStyle.isEmpty) {
       return {};

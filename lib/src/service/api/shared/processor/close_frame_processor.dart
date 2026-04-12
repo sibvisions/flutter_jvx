@@ -22,10 +22,10 @@ import '../i_response_processor.dart';
 
 class CloseFrameProcessor implements IResponseProcessor<CloseFrameResponse> {
   @override
-  List<BaseCommand> processResponse(CloseFrameResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(CloseFrameResponse response, ApiRequest? request) {
     return [
       DeleteFrameCommand(
-        componentName: pResponse.componentId,
+        componentName: response.componentId,
         reason: "Server sent CloseFrame",
       ),
     ];

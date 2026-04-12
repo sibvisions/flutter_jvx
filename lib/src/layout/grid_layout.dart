@@ -67,7 +67,7 @@ class GridLayout extends ILayout {
   }
 
   @override
-  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData parent, List<LayoutData> children) {
     // The widest single grid of all components
     num maxWidth = 0;
     // The tallest single grid of all components
@@ -78,7 +78,7 @@ class GridLayout extends ILayout {
     int targetColumns = gridSize.columns;
     int targetRows = gridSize.rows;
 
-    for (LayoutData data in pChildren) {
+    for (LayoutData data in children) {
       // Generate constraints
       CellConstraint constraints = CellConstraint.fromList(data.constraints!.split(RegExp("[;,]")), scaling);
       cellConstraints[data.id] = constraints;
@@ -108,15 +108,15 @@ class GridLayout extends ILayout {
     }
 
     double calcWidth = maxWidth * targetColumns +
-        pParent.insets.horizontal +
+        parent.insets.horizontal +
         margins.horizontal +
         (targetColumns - 1) * gaps.horizontalGap;
 
     double calcHeight =
-        maxHeight * targetRows + pParent.insets.vertical + margins.vertical + (targetRows - 1) * gaps.verticalGap;
+        maxHeight * targetRows + parent.insets.vertical + margins.vertical + (targetRows - 1) * gaps.verticalGap;
 
-    double sizeWidth = pParent.layoutPosition?.width ?? calcWidth;
-    double sizeHeight = pParent.layoutPosition?.height ?? calcHeight;
+    double sizeWidth = parent.layoutPosition?.width ?? calcWidth;
+    double sizeHeight = parent.layoutPosition?.height ?? calcHeight;
 
     List<num> xPositions = [];
     List<num> yPositions = [];
@@ -165,7 +165,7 @@ class GridLayout extends ILayout {
       }
     }
 
-    for (LayoutData data in pChildren) {
+    for (LayoutData data in children) {
       CellConstraint constraint = cellConstraints[data.id]!;
 
       final num left = _getPosition(xPositions, constraint.gridX, columnWidth, gaps.horizontalGap) + constraint.margins.left;
@@ -189,20 +189,20 @@ class GridLayout extends ILayout {
       );
     }
 
-    pParent.calculatedSize = Size(calcWidth, calcHeight);
+    parent.calculatedSize = Size(calcWidth, calcHeight);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  num _getPosition(List<num> pPositions, int pIndex, num pSize, num pGap) {
-    if (pIndex < 0) {
-      return pPositions[0] + pIndex * (pSize + pGap);
-    } else if (pIndex >= pPositions.length) {
-      return pPositions[pPositions.length - 1] + (pIndex - pPositions.length + 1) * (pSize + pGap);
+  num _getPosition(List<num> positions, int index, num size, num gap) {
+    if (index < 0) {
+      return positions[0] + index * (size + gap);
+    } else if (index >= positions.length) {
+      return positions[positions.length - 1] + (index - positions.length + 1) * (size + gap);
     } else {
-      return pPositions[pIndex];
+      return positions[index];
     }
   }
 }

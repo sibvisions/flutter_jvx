@@ -37,24 +37,24 @@ abstract class ILayoutService implements Service {
   /// Registers a parent for receiving child constraint changes.
   ///
   /// Returns Command to update UI if, layout has been newly calculated, returns an empty list if nothing happened.
-  Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData});
+  Future<List<BaseCommand>> reportLayout({required LayoutData layoutData});
 
   /// Registers a preferred size for a child element.
   ///
   /// Returns Command to update UI if, layout has been newly calculated.
-  Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData});
+  Future<List<BaseCommand>> reportPreferredSize({required LayoutData layoutData});
 
   /// Register a fixed size of a component
   ///
   /// Returns Command to update UI if, layout has been newly calculated.
-  Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize});
+  Future<List<BaseCommand>> setScreenSize({required String screenComponentId, required Size size});
 
   /// Marks Layout as Dirty, used to wait for all changing components to re-register themselves to avoid unnecessary re-renders.
-  Future<bool> markLayoutAsDirty({required String pComponentId});
+  Future<bool> markLayoutAsDirty({required String componentId});
 
   /// Removes a component from the layouting system.
   /// Returns `true` if removed and `false` if nothing was removed.
-  Future<bool> removeLayout({required String pComponentId});
+  Future<bool> removeLayout({required String componentId});
 
   /// If any parent is currently layouting.
   Future<bool> layoutInProcess();
@@ -65,5 +65,5 @@ abstract class ILayoutService implements Service {
   Future<bool> isValid();
 
   /// Deletes Screen layout data, and all descendants.
-  Future<bool> deleteScreen({required String pComponentId});
+  Future<bool> deleteScreen({required String componentId});
 }

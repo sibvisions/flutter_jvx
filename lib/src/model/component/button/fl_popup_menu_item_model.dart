@@ -41,21 +41,21 @@ class FlPopupMenuItemModel extends FlComponentModel {
   FlPopupMenuItemModel get defaultModel => FlPopupMenuItemModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     text = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.text,
-      pDefault: defaultModel.text,
-      pCurrent: text,
+      json: newJson,
+      key: ApiObjectProperty.text,
+      defaultValue: defaultModel.text,
+      currentValue: text,
     );
 
     icon = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.image,
-      pDefault: defaultModel.icon,
-      pCurrent: icon,
+      json: newJson,
+      key: ApiObjectProperty.image,
+      defaultValue: defaultModel.icon,
+      currentValue: icon,
     );
   }
 }

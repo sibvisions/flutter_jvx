@@ -55,23 +55,23 @@ class FlSplitPanelModel extends FlPanelModel {
   FlSplitPanelModel get defaultModel => FlSplitPanelModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     // currently ignored as its sent in pixels, which are not mobile friendly
 
     // Orientation
     orientation = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.orientation,
-      pDefault: defaultModel.orientation,
-      pCurrent: orientation,
-      pConversion: orientationFromDynamic,
+      json: newJson,
+      key: ApiObjectProperty.orientation,
+      defaultValue: defaultModel.orientation,
+      currentValue: orientation,
+      conversion: orientationFromDynamic,
     );
   }
 
-  static SplitOrientation orientationFromDynamic(dynamic pValue) {
-    if (pValue != 1) {
+  static SplitOrientation orientationFromDynamic(dynamic value) {
+    if (value != 1) {
       return SplitOrientation.HORIZONTAL;
     } else {
       return SplitOrientation.VERTICAL;

@@ -383,9 +383,9 @@ class FlutterUI extends StatefulWidget {
   /// See also:
   /// * [I18n]
   /// * [IConfigService.getLanguage]
-  static String translate(String? pText) {
-    if (pText == null) return "";
-    return IUiService().i18n().translate(pText);
+  static String translate(String? text) {
+    if (text == null) return "";
+    return IUiService().i18n().translate(text);
   }
 
   /// Translates any text through the local-only translation files.
@@ -393,18 +393,18 @@ class FlutterUI extends StatefulWidget {
   /// See also:
   /// * [I18n]
   /// * [IConfigService.getLanguage]
-  static String translateLocal(String? pText) {
-    if (pText == null) return "";
-    return IUiService().i18n().translateLocal(pText);
+  static String translateLocal(String? text) {
+    if (text == null) return "";
+    return IUiService().i18n().translateLocal(text);
   }
 
   /// Creates an future error handler which prints the error + stackTrace
   /// to [FlutterUI.log] and throws the error.
   ///
   /// Intended do be use in [Future.catchError].
-  static Function(Object error, StackTrace stackTrace) createErrorHandler(String pMessage) {
+  static Function(Object error, StackTrace stackTrace) createErrorHandler(String message) {
     return (error, stackTrace) {
-      FlutterUI.log.e(pMessage, error: error, stackTrace: stackTrace);
+      FlutterUI.log.e(message, error: error, stackTrace: stackTrace);
       throw error;
     };
   }
@@ -464,11 +464,11 @@ class FlutterUI extends StatefulWidget {
     await IAppService().clear(reason);
   }
 
-  static Future<void> start([FlutterUI pAppToRun = const FlutterUI()]) async {
+  static Future<void> start([FlutterUI appToRun = const FlutterUI()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     //as soon as possible
-    await pAppToRun._initTemporaryPush();
+    await appToRun._initTemporaryPush();
 
     //e.g. to use it in release mode
     //DebugOverlay.enabled = true;
@@ -615,7 +615,7 @@ class FlutterUI extends StatefulWidget {
       }
     }
 
-    appConfig = const AppConfig.defaults().merge(pAppToRun.appConfig).merge(appConfig).merge(devConfig);
+    appConfig = const AppConfig.defaults().merge(appToRun.appConfig).merge(appConfig).merge(devConfig);
 
     //In case of web browser
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
@@ -699,9 +699,9 @@ class FlutterUI extends StatefulWidget {
     await IConfigService().reloadSupportedLanguages();
 
     await IUiService().i18n().setLanguage(IConfigService().getLanguage());
-    IUiService().setAppManager(pAppToRun.appManager);
+    IUiService().setAppManager(appToRun.appManager);
 
-    await pAppToRun.appManager?.init();
+    await appToRun.appManager?.init();
 
     if (urlApp != null) {
       FlutterUIState.startupApp = urlApp;
@@ -769,7 +769,7 @@ class FlutterUI extends StatefulWidget {
       }
     }
 
-    runApp(pAppToRun);
+    runApp(appToRun);
   }
 
   static AppConfig? _extractURIConfigParameters(Map<String, String> queryParameters) {
@@ -889,15 +889,15 @@ class FlutterUI extends StatefulWidget {
   }
 
   /// Registers a global subscription
-  static void registerGlobalSubscription(GlobalSubscription pSubscription) {
-    if (!_globalSubscriptions.contains(pSubscription)) {
-      _globalSubscriptions.add(pSubscription);
+  static void registerGlobalSubscription(GlobalSubscription subscription) {
+    if (!_globalSubscriptions.contains(subscription)) {
+      _globalSubscriptions.add(subscription);
     }
   }
 
   /// Disposes a global subscription
-  static void disposeGlobalSubscription(Object pSubscriber) {
-    _globalSubscriptions.remove(pSubscriber);
+  static void disposeGlobalSubscription(Object subscription) {
+    _globalSubscriptions.remove(subscription);
   }
 
   static List<GlobalSubscription> globalSubscriptions() {
@@ -1674,26 +1674,26 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
   }
 
-  void changeTheme(Color? pColor, AppStyleDirect? style) {
+  void changeTheme(Color? color, AppStyleDirect? style) {
     AppStyleDirect? styleDark = style?.copyWith(darkMode: true);
 
-    if (pColor != null) {
-      themeData = JVxColors.createTheme(pColor, Brightness.light, useFixedPrimary: true, style: style);
-      darkThemeData = JVxColors.createTheme(pColor, Brightness.dark, useFixedPrimary: true, style: styleDark);
+    if (color != null) {
+      themeData = JVxColors.createTheme(color, Brightness.light, useFixedPrimary: true, style: style);
+      darkThemeData = JVxColors.createTheme(color, Brightness.dark, useFixedPrimary: true, style: styleDark);
 
       if (widget.themeBuilder != null) {
-        themeData = widget.themeBuilder!(themeData, pColor, Brightness.light, true);
-        darkThemeData = widget.themeBuilder!(darkThemeData, pColor, Brightness.dark, true);
+        themeData = widget.themeBuilder!(themeData, color, Brightness.light, true);
+        darkThemeData = widget.themeBuilder!(darkThemeData, color, Brightness.dark, true);
       }
     } else {
-      Color color = JVxColors.DEFAULT_THEME_COLOR;
+      Color colDefault = JVxColors.DEFAULT_THEME_COLOR;
 
-      themeData = JVxColors.createTheme(color, Brightness.light, style: style);
-      darkThemeData = JVxColors.createTheme(color, Brightness.dark, style: styleDark);
+      themeData = JVxColors.createTheme(colDefault, Brightness.light, style: style);
+      darkThemeData = JVxColors.createTheme(colDefault, Brightness.dark, style: styleDark);
 
       if (widget.themeBuilder != null) {
-        themeData = widget.themeBuilder!(themeData, color, Brightness.light, false);
-        darkThemeData = widget.themeBuilder!(darkThemeData, color, Brightness.dark, false);
+        themeData = widget.themeBuilder!(themeData, colDefault, Brightness.light, false);
+        darkThemeData = widget.themeBuilder!(darkThemeData, colDefault, Brightness.dark, false);
       }
     }
 
@@ -1895,7 +1895,7 @@ class AppErrorWidget extends StatelessWidget {
   }
 }
 
-typedef OnTapCallback = void Function([PointerEvent? pEvent]);
+typedef OnTapCallback = void Function([PointerEvent? event]);
 
 /// Used for subscribing in [JVxOverlay] to receive data.
 @immutable

@@ -73,32 +73,32 @@ class IsolateLayoutService implements ILayoutService {
   }
 
   @override
-  Future<bool> markLayoutAsDirty({required String pComponentId}) {
-    MarkAsDirtyMessage message = MarkAsDirtyMessage(id: pComponentId);
+  Future<bool> markLayoutAsDirty({required String componentId}) {
+    MarkAsDirtyMessage message = MarkAsDirtyMessage(id: componentId);
     return _sendMessage<bool>(message);
   }
 
   @override
-  Future<bool> removeLayout({required String pComponentId}) {
-    RemoveLayoutMessage message = RemoveLayoutMessage(componentId: pComponentId);
+  Future<bool> removeLayout({required String componentId}) {
+    RemoveLayoutMessage message = RemoveLayoutMessage(componentId: componentId);
     return _sendMessage<bool>(message);
   }
 
   @override
-  Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) {
-    ReportLayoutMessage message = ReportLayoutMessage(layoutData: pLayoutData);
+  Future<List<BaseCommand>> reportLayout({required LayoutData layoutData}) {
+    ReportLayoutMessage message = ReportLayoutMessage(layoutData: layoutData);
     return _sendMessage<List<BaseCommand>>(message);
   }
 
   @override
-  Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) {
-    ReportPreferredSizeMessage message = ReportPreferredSizeMessage(layoutData: pLayoutData);
+  Future<List<BaseCommand>> reportPreferredSize({required LayoutData layoutData}) {
+    ReportPreferredSizeMessage message = ReportPreferredSizeMessage(layoutData: layoutData);
     return _sendMessage<List<BaseCommand>>(message);
   }
 
   @override
-  Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) {
-    SetScreenSizeMessage message = SetScreenSizeMessage(componentId: pScreenComponentId, size: pSize);
+  Future<List<BaseCommand>> setScreenSize({required String screenComponentId, required Size size}) {
+    SetScreenSizeMessage message = SetScreenSizeMessage(componentId: screenComponentId, size: size);
     return _sendMessage<List<BaseCommand>>(message);
   }
 
@@ -121,8 +121,8 @@ class IsolateLayoutService implements ILayoutService {
   }
 
   @override
-  Future<bool> deleteScreen({required String pComponentId}) {
-    DeleteScreenMessage message = DeleteScreenMessage(componentId: pComponentId);
+  Future<bool> deleteScreen({required String componentId}) {
+    DeleteScreenMessage message = DeleteScreenMessage(componentId: componentId);
     return _sendMessage<bool>(message);
   }
 

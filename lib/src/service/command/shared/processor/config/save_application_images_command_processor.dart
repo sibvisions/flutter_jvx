@@ -40,7 +40,7 @@ class SaveApplicationImagesCommandProcessor extends ICommandProcessor<SaveApplic
       }
 
       String path = fileManager.getAppSpecificPath("${IFileManager.IMAGES_PATH}/$name");
-      await fileManager.saveFile(path, pContent: content);
+      await fileManager.saveFile(path, content: content);
     }
 
     IConfigService().imagesChanged();

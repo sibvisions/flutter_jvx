@@ -102,13 +102,13 @@ class SplitLayout extends ILayout implements ICloneable {
   }
 
   @override
-  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData parent, List<LayoutData> children) {
     // Either left or top child, dependent on splitter orientation
-    LayoutData leftTopChild = pChildren.firstWhere((element) => element.constraints == FIRST_COMPONENT);
+    LayoutData leftTopChild = children.firstWhere((element) => element.constraints == FIRST_COMPONENT);
     // Either right or bottom child, dependent on splitter orientation
-    LayoutData rightBottomChild = pChildren.firstWhere((element) => element.constraints == SECOND_COMPONENT);
+    LayoutData rightBottomChild = children.firstWhere((element) => element.constraints == SECOND_COMPONENT);
 
-    LayoutPosition? position = pParent.layoutPosition;
+    LayoutPosition? position = parent.layoutPosition;
 
     // Only set position on children if layout has a position set.
     if (position != null) {
@@ -188,7 +188,7 @@ class SplitLayout extends ILayout implements ICloneable {
     double width = splitAlignment == SplitOrientation.VERTICAL ? splitterSize : 0;
     double height = splitAlignment == SplitOrientation.HORIZONTAL ? splitterSize : 0;
 
-    for (LayoutData child in pChildren) {
+    for (LayoutData child in children) {
       if (splitAlignment == SplitOrientation.VERTICAL) {
         width += child.bestSize.width;
         height = max(height, child.bestSize.height);
@@ -198,7 +198,7 @@ class SplitLayout extends ILayout implements ICloneable {
       }
     }
 
-    pParent.calculatedSize = Size(width, height);
+    parent.calculatedSize = Size(width, height);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

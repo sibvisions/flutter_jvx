@@ -230,8 +230,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       IStorageService servStorage = IStorageService();
 
       //cleanup removed components
-      allComponents.removeWhere((key, value) => servStorage.getComponentModel(pComponentId: value.modelId) == null);
-      allOffstageComponents.removeWhere((key, value) => servStorage.getComponentModel(pComponentId: key) == null);
+      allComponents.removeWhere((key, value) => servStorage.getComponentModel(componentId: value.modelId) == null);
+      allOffstageComponents.removeWhere((key, value) => servStorage.getComponentModel(componentId: key) == null);
 
 
       for (int i = 0; i < childWidgets.length; i++) {
@@ -650,8 +650,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     );
   }
 
-  Tab _createTab(BuildContext context, BaseCompWrapperWidget pComponent, int pIndex, {bool scrollable = true, _LayoutConstraints? constraints}) {
-    FlComponentModel childModel = pComponent.model;
+  Tab _createTab(BuildContext context, BaseCompWrapperWidget component, int index, {bool scrollable = true, _LayoutConstraints? constraints}) {
+    FlComponentModel childModel = component.model;
 
     constraints ??= _parseConstraints(childModel.constraints);
 
@@ -766,7 +766,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                 InkWell(
                   borderRadius: BorderRadius.circular(20),
                   onTap: constraints.enabled
-                      ? () => closeTab(pIndex)
+                      ? () => closeTab(index)
                       : null,
                   child: Padding(
                     padding: EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 4),

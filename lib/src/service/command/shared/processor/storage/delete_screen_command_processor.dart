@@ -40,7 +40,7 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
   @override
   Future<List<BaseCommand>> processCommand(DeleteScreenCommand command, BaseCommand? origin) async {
     FlPanelModel? screenModel =
-        IStorageService().getComponentByName(pComponentName: command.componentName) as FlPanelModel?;
+        IStorageService().getComponentByName(componentName: command.componentName) as FlPanelModel?;
 
     if (origin is! HomeCommand ) {
       if (command.popPage) {
@@ -83,7 +83,7 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
 
     IStorageService().deleteScreen(screenName: command.componentName);
     if (screenModel != null) {
-      await ILayoutService().deleteScreen(pComponentId: screenModel.id);
+      await ILayoutService().deleteScreen(componentId: screenModel.id);
     }
     IDataService().clearData(command.componentName);
 

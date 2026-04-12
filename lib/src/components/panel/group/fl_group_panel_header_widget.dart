@@ -47,9 +47,9 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
       labelWidget = Padding(
         padding: const EdgeInsets.fromLTRB(2, 2, 2, 5),
         child: FlLabelWidget.createTextWidget(model,
-                                              pTextStyle: model.createTextStyle(pForeground: model.foreground ??
+                                              textStyle: model.createTextStyle(foreground: model.foreground ??
                                                (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).textTheme.labelSmall!.color)),
-                                              pSelectable: true,
+                                              selectable: true,
         ),
       );
     } else {
@@ -60,8 +60,8 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: FlLabelWidget.createTextWidget(model,
-                                                pTextStyle: model.createTextStyle(pForeground: model.foreground ?? Theme.of(context).colorScheme.onPrimary),
-                                                pSelectable: true,
+                                                textStyle: model.createTextStyle(foreground: model.foreground ?? Theme.of(context).colorScheme.onPrimary),
+                                                selectable: true,
           ),
         ),
       );

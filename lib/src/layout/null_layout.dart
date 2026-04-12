@@ -49,28 +49,28 @@ class NullLayout extends ILayout implements ICloneable {
   }
 
   @override
-  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData parent, List<LayoutData> children) {
     double width = 0;
     double height = 0;
 
     LayoutPosition? bounds;
 
-    for (int i = 0; i < pChildren.length; i++) {
+    for (int i = 0; i < children.length; i++) {
 
-      bounds = pChildren[i].bounds;
+      bounds = children[i].bounds;
 
       if (bounds != null) {
         width = max(width, bounds.left + bounds.width);
         height = max(height, bounds.top + bounds.height);
 
-        pChildren[i].layoutPosition = pChildren[i].bounds;
+        children[i].layoutPosition = children[i].bounds;
       }
       else {
-        pChildren[i].layoutPosition = LayoutPosition(top: 0, left: 0, width: 0, height: 0);
+        children[i].layoutPosition = LayoutPosition(top: 0, left: 0, width: 0, height: 0);
       }
     }
 
-    pParent.calculatedSize = Size(width, height);
+    parent.calculatedSize = Size(width, height);
   }
 
 }

@@ -129,8 +129,8 @@ class ConfigService implements IConfigService {
         _fileManager = fileManager;
 
   @override
-  Future<void> loadConfig(AppConfig pAppConfig, [bool devConfig = false]) async {
-    _appConfig = pAppConfig;
+  Future<void> loadConfig(AppConfig appConfig, [bool devConfig = false]) async {
+    _appConfig = appConfig;
     await _migrateConfig();
 
     _themePreference = ValueNotifier(await _configHandler.themePreference() ?? ThemeMode.system);
@@ -182,10 +182,10 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  Future<void> refreshDefaultApp([bool pOverride = false]) async {
+  Future<void> refreshDefaultApp([bool override = false]) async {
     App? app;
 
-    if (!pOverride && defaultApp.value != null) {
+    if (!override && defaultApp.value != null) {
       app = await App.getApp(defaultApp.value!);
 
       //in case of forceSingleAppMode, the app is always NOT predefined - if there is no predefined app available
@@ -561,27 +561,27 @@ class ConfigService implements IConfigService {
   ValueListenable<String?> get authKey => _authKey;
 
   @override
-  Future<void> updateAuthKey(String? pAuthKey) async {
-    await _configHandler.updateAuthKey(pAuthKey);
-    _authKey.value = pAuthKey;
+  Future<void> updateAuthKey(String? authKey) async {
+    await _configHandler.updateAuthKey(authKey);
+    _authKey.value = authKey;
   }
 
   @override
   ValueListenable<String?> get version => _version;
 
   @override
-  Future<void> updateVersion(String? pVersion) async {
-    await _configHandler.updateVersion(pVersion);
-    _version.value = pVersion;
+  Future<void> updateVersion(String? version) async {
+    await _configHandler.updateVersion(version);
+    _version.value = version;
   }
 
   @override
   ValueListenable<UserInfo?> get userInfo => _userInfo;
 
   @override
-  Future<void> updateUserInfo({UserInfo? pUserInfo, Map<String, dynamic>? pJson}) async {
-    await _configHandler.updateUserInfo(pJson);
-    _userInfo.value = pUserInfo;
+  Future<void> updateUserInfo({UserInfo? userInfo, Map<String, dynamic>? json}) async {
+    await _configHandler.updateUserInfo(json);
+    _userInfo.value = userInfo;
   }
 
   @override
@@ -605,9 +605,9 @@ class ConfigService implements IConfigService {
   ValueListenable<String?> get applicationLanguage => _applicationLanguage;
 
   @override
-  Future<void> updateApplicationLanguage(String? pLanguage) async {
-    await _configHandler.updateApplicationLanguage(pLanguage);
-    _applicationLanguage.value = pLanguage;
+  Future<void> updateApplicationLanguage(String? language) async {
+    await _configHandler.updateApplicationLanguage(language);
+    _applicationLanguage.value = language;
     await IUiService().i18n().setLanguage(getLanguage());
   }
 
@@ -615,9 +615,9 @@ class ConfigService implements IConfigService {
   ValueListenable<String?> get userLanguage => _userLanguage;
 
   @override
-  Future<void> updateUserLanguage(String? pLanguage) async {
-    await _configHandler.updateUserLanguage(pLanguage);
-    _userLanguage.value = pLanguage;
+  Future<void> updateUserLanguage(String? language) async {
+    await _configHandler.updateUserLanguage(language);
+    _userLanguage.value = language;
     await IUiService().i18n().setLanguage(getLanguage());
   }
 
@@ -658,13 +658,13 @@ class ConfigService implements IConfigService {
   ValueListenable<Map<String, String>?> get applicationStyle => _applicationStyle;
 
   @override
-  Future<void> updateApplicationStyle(Map<String, String>? pAppStyle) async {
-    await _configHandler.updateApplicationStyle(pAppStyle);
+  Future<void> updateApplicationStyle(Map<String, String>? appStyle) async {
+    await _configHandler.updateApplicationStyle(appStyle);
 
-    Map<String, String>? appStyle = pAppStyle ?? await _configHandler.applicationStyle();
+    Map<String, String>? appStyle_ = appStyle ?? await _configHandler.applicationStyle();
 
     // To retrieve default
-    _applicationStyle.value = appStyle;
+    _applicationStyle.value = appStyle_;
   }
 
   @override
@@ -688,18 +688,18 @@ class ConfigService implements IConfigService {
   ValueListenable<bool> get offline => _offline;
 
   @override
-  Future<void> updateOffline(bool pOffline) async {
-    await _configHandler.updateOffline(pOffline);
-    _offline.value = pOffline;
+  Future<void> updateOffline(bool offline) async {
+    await _configHandler.updateOffline(offline);
+    _offline.value = offline;
   }
 
   @override
   ValueListenable<String?> get offlineScreen => _offlineScreen;
 
   @override
-  Future<void> updateOfflineScreen(String pWorkScreen) async {
-    await _configHandler.updateOfflineScreen(pWorkScreen);
-    _offlineScreen.value = pWorkScreen;
+  Future<void> updateOfflineScreen(String workScreen) async {
+    await _configHandler.updateOfflineScreen(workScreen);
+    _offlineScreen.value = workScreen;
   }
 
   // ------------------------------
@@ -710,12 +710,12 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void setCustomStartupParameters(Map<String, dynamic>? pParameters) {
-    if (pParameters == null) {
+  void setCustomStartupParameters(Map<String, dynamic>? parameters) {
+    if (parameters == null) {
       _customStartupParameters = {};
     }
     else {
-      _customStartupParameters = Map.of(pParameters);
+      _customStartupParameters = Map.of(parameters);
     }
   }
 
@@ -725,13 +725,13 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void registerImagesCallback(Function() pCallback) {
-    _registerCallback("images", pCallback);
+  void registerImagesCallback(Function() callback) {
+    _registerCallback("images", callback);
   }
 
   @override
-  void disposeImagesCallback(Function() pCallback) {
-    _disposeCallback("images", pCallback);
+  void disposeImagesCallback(Function() callback) {
+    _disposeCallback("images", callback);
   }
 
   @override
@@ -748,12 +748,12 @@ class ConfigService implements IConfigService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _registerCallback(String type, Function pCallback) {
-    _callbacks.putIfAbsent(type, () => []).add(pCallback);
+  void _registerCallback(String type, Function callback) {
+    _callbacks.putIfAbsent(type, () => []).add(callback);
   }
 
-  void _disposeCallback(String type, Function pCallback) {
-    _callbacks[type]?.remove(pCallback);
+  void _disposeCallback(String type, Function callback) {
+    _callbacks[type]?.remove(callback);
   }
 
   void _disposeCallbacks(String type) {

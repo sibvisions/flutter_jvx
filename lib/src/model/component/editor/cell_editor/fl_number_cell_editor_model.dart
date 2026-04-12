@@ -33,21 +33,21 @@ class FlNumberCellEditorModel extends ICellEditorModel {
   FlNumberCellEditorModel get defaultModel => FlNumberCellEditorModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     numberFormat = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.numberFormat,
-      pDefault: defaultModel.numberFormat,
-      pCurrent: numberFormat,
+      json: newJson,
+      key: ApiObjectProperty.numberFormat,
+      defaultValue: defaultModel.numberFormat,
+      currentValue: numberFormat,
     );
 
     locale = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.locale,
-      pDefault: defaultModel.locale,
-      pCurrent: locale,
+      json: newJson,
+      key: ApiObjectProperty.locale,
+      defaultValue: defaultModel.locale,
+      currentValue: locale,
     );
   }
 }

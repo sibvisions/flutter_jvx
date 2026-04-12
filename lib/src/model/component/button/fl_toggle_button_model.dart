@@ -43,20 +43,20 @@ class FlToggleButtonModel extends FlButtonModel {
   FlToggleButtonModel get defaultModel => FlToggleButtonModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     selected = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.selected,
-      pDefault: defaultModel.selected,
-      pCurrent: selected,
+      json: newJson,
+      key: ApiObjectProperty.selected,
+      defaultValue: defaultModel.selected,
+      currentValue: selected,
     );
     ariaPressed = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.ariaPressed,
-      pDefault: defaultModel.ariaPressed,
-      pCurrent: ariaPressed,
+      json: newJson,
+      key: ApiObjectProperty.ariaPressed,
+      defaultValue: defaultModel.ariaPressed,
+      currentValue: ariaPressed,
     );
   }
 }

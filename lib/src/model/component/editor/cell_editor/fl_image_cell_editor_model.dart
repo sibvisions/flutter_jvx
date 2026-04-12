@@ -53,21 +53,21 @@ class FlImageCellEditorModel extends ICellEditorModel {
   FlImageCellEditorModel get defaultModel => FlImageCellEditorModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     defaultImageName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.defaultImageName,
-      pDefault: defaultModel.defaultImageName,
-      pCurrent: defaultImageName,
+      json: newJson,
+      key: ApiObjectProperty.defaultImageName,
+      defaultValue: defaultModel.defaultImageName,
+      currentValue: defaultImageName,
     );
 
     preserveAspectRatio = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.preserveAspectRatio,
-      pDefault: defaultModel.preserveAspectRatio,
-      pCurrent: preserveAspectRatio,
+      json: newJson,
+      key: ApiObjectProperty.preserveAspectRatio,
+      defaultValue: defaultModel.preserveAspectRatio,
+      currentValue: preserveAspectRatio,
     );
   }
 }

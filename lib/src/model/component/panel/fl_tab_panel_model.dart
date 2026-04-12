@@ -73,43 +73,43 @@ class FlTabPanelModel extends FlPanelModel {
   FlTabPanelModel get defaultModel => FlTabPanelModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     eventTabClosed = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.eventTabClosed,
-      pDefault: defaultModel.eventTabClosed,
-      pCurrent: eventTabClosed,
+      json: newJson,
+      key: ApiObjectProperty.eventTabClosed,
+      defaultValue: defaultModel.eventTabClosed,
+      currentValue: eventTabClosed,
     );
 
     eventTabMoved = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.eventTabMoved,
-      pDefault: defaultModel.eventTabMoved,
-      pCurrent: eventTabMoved,
+      json: newJson,
+      key: ApiObjectProperty.eventTabMoved,
+      defaultValue: defaultModel.eventTabMoved,
+      currentValue: eventTabMoved,
     );
 
     selectedIndex = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.selectedIndex,
-      pDefault: defaultModel.selectedIndex,
-      pCurrent: selectedIndex,
+      json: newJson,
+      key: ApiObjectProperty.selectedIndex,
+      defaultValue: defaultModel.selectedIndex,
+      currentValue: selectedIndex,
     );
 
     draggable = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.draggable,
-      pDefault: defaultModel.draggable,
-      pCurrent: draggable,
+      json: newJson,
+      key: ApiObjectProperty.draggable,
+      defaultValue: defaultModel.draggable,
+      currentValue: draggable,
     );
 
     tabPlacement = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.tabPlacement,
-      pDefault: defaultModel.tabPlacement,
-      pCurrent: tabPlacement,
-      pConversion: (value) => TabPlacements.values[value],
+      json: newJson,
+      key: ApiObjectProperty.tabPlacement,
+      defaultValue: defaultModel.tabPlacement,
+      currentValue: tabPlacement,
+      conversion: (value) => TabPlacements.values[value],
     );
   }
 }

@@ -145,14 +145,14 @@ class OnlineApiRepository extends IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Map of all remote request mapped to their route
-  static final Map<Type, APIRoute Function(ApiRequest pRequest)> uriMap = {
+  static final Map<Type, APIRoute Function(ApiRequest request)> uriMap = {
     ApiStartupRequest: (_) => APIRoute.POST_STARTUP,
     ApiLoginRequest: (_) => APIRoute.POST_LOGIN,
     ApiCancelLoginRequest: (_) => APIRoute.POST_CANCEL_LOGIN,
     ApiCloseTabRequest: (_) => APIRoute.POST_CLOSE_TAB,
     ApiDeviceStatusRequest: (_) => APIRoute.POST_DEVICE_STATUS,
-    ApiOpenScreenRequest: (pRequest) =>
-        (pRequest as ApiOpenScreenRequest).reopen ? APIRoute.POST_REOPEN_SCREEN : APIRoute.POST_OPEN_SCREEN,
+    ApiOpenScreenRequest: (request) =>
+        (request as ApiOpenScreenRequest).reopen ? APIRoute.POST_REOPEN_SCREEN : APIRoute.POST_OPEN_SCREEN,
     ApiActivateScreenRequest: (_) => APIRoute.POST_ACTIVATE_SCREEN,
     ApiSetParameter: (_) => APIRoute.POST_SET_PARAMETER,
     ApiSetScreenParameter: (_) => APIRoute.POST_SET_SCREEN_PARAMETER,
@@ -530,7 +530,7 @@ class OnlineApiRepository extends IRepository {
                 ),
               );
             } else if (command == "api/reopenScreen" && className != null) {
-              if (IStorageService().getComponentByScreenClassName(pScreenClassName: className) != null) {
+              if (IStorageService().getComponentByScreenClassName(screenClassName: className) != null) {
                 ICommandService().sendCommand(
                   OpenScreenCommand(
                     reopen: true,
@@ -621,10 +621,10 @@ class OnlineApiRepository extends IRepository {
   }
 
   @override
-  void setCookies(Set<Cookie> pCookies) {
+  void setCookies(Set<Cookie> cookies) {
     _cookies.clear();
 
-    for (final cookie in pCookies) {
+    for (final cookie in cookies) {
       _cookies[cookie.name] = cookie;
     }
   }
@@ -635,12 +635,12 @@ class OnlineApiRepository extends IRepository {
   }
 
   @override
-  Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
+  Future<ApiInteraction> sendRequest(ApiRequest request, [bool? retryRequest]) async {
     _checkStatus();
 
     try {
       if (cancelledSessionExpired.value && (IUiService().clientId.value?.isEmpty ?? true)) {
-        return ApiInteraction(responses: [], request: pRequest);
+        return ApiInteraction(responses: [], request: request);
       }
 
       /// HttpException can also be an invalid argument, check before retrying.
@@ -655,7 +655,7 @@ class OnlineApiRepository extends IRepository {
 
       client!.options.baseUrl = IConfigService().baseUrl.value!.toString();
       sendFunction() => _sendRequest(
-            pRequest,
+            request,
             client: client!,
             headers: _headers,
             cookies: _cookies,
@@ -670,8 +670,8 @@ class OnlineApiRepository extends IRepository {
             sendFunction,
             retryIf: (e) => shouldRetry(e),
             retryIfResult: (response) => response.statusCode == 503,
-            onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", error: e),
-            onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (${response.statusCode}): ${pRequest.runtimeType}"),
+            onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${request.runtimeType}", error: e),
+            onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (${response.statusCode}): ${request.runtimeType}"),
             maxAttempts: 3,
             maxDelay: client?.options.receiveTimeout,
           );
@@ -694,32 +694,32 @@ class OnlineApiRepository extends IRepository {
       }
 
       if (IUiService().getAppManager() != null) {
-        response = await IUiService().getAppManager()!.handleResponse(pRequest, response, sendFunction);
+        response = await IUiService().getAppManager()!.handleResponse(request, response, sendFunction);
       }
 
       if (response.statusCode != null && response.statusCode! >= 400 && response.statusCode! <= 599) {
         String body = _decodeUTF8(response.data);
 
-        if (pRequest.ignoreError()) {
+        if (request.ignoreError()) {
           if (FlutterUI.logAPI.cl(Lvl.d)) {
-            FlutterUI.logAPI.d("Server sent HTTP ${response.statusCode} but ${pRequest.runtimeType} ignores the error");
+            FlutterUI.logAPI.d("Server sent HTTP ${response.statusCode} but ${request.runtimeType} ignores the error");
           }
 
-          return ApiInteraction(responses: [], request: pRequest);
+          return ApiInteraction(responses: [], request: request);
         }
 
         if (FlutterUI.logAPI.cl(Lvl.e)) {
           FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode} with body: $body");
         }
 
-        if (response.statusCode == 400 && pRequest is ApiStartupRequest) {
-          APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
+        if (response.statusCode == 400 && request is ApiStartupRequest) {
+          APIRoute? route = uriMap[request.runtimeType]?.call(request);
           String routeString = route!.route.replaceAll("api", "");
           throw InvalidServerResponseException("Server doesn't support '$routeString'.", response.statusCode);
         } else if (response.statusCode == 404) {
           throw InvalidServerResponseException("Application not found (404)", response.statusCode);
         } else if (response.statusCode == 410) {
-          return ApiInteraction(request: pRequest, responses: [SessionExpiredResponse()]);
+          return ApiInteraction(request: request, responses: [SessionExpiredResponse()]);
         } else if (response.statusCode == 500) {
           throw InvalidServerResponseException("General Server Error (500)", response.statusCode);
         } else {
@@ -728,9 +728,9 @@ class OnlineApiRepository extends IRepository {
       }
 
       // Download Request needs different handling
-      if (pRequest is DownloadRequest) {
+      if (request is DownloadRequest) {
         Uint8List body = response.data;
-        var parsedDownloadObject = _handleDownload(pBody: body, pRequest: pRequest);
+        var parsedDownloadObject = _handleDownload(body: body, request: request);
         return parsedDownloadObject;
       }
 
@@ -754,7 +754,7 @@ class OnlineApiRepository extends IRepository {
         }
       }
 
-      ApiInteraction apiInteraction = _responseParser(jsonResponse, request: pRequest);
+      ApiInteraction apiInteraction = _responseParser(jsonResponse, request: request);
 
       IUiService().getAppManager()?.modifyResponses(apiInteraction);
 
@@ -769,29 +769,29 @@ class OnlineApiRepository extends IRepository {
       return apiInteraction;
     } catch (error, stack) {
       if (FlutterUI.logAPI.cl(Lvl.e)) {
-        FlutterUI.logAPI.e("Error while sending ${pRequest.runtimeType}\n\n$error\n\n$stack");
+        FlutterUI.logAPI.e("Error while sending ${request.runtimeType}\n\n$error\n\n$stack");
       }
 
       rethrow;
     }
   }
 
-  Future<Object> _getData(ApiRequest pRequest) async {
-    if (pRequest is UploadRequest) {
-      if (pRequest is ApiUploadRequest) {
+  Future<Object> _getData(ApiRequest request) async {
+    if (request is UploadRequest) {
+      if (request is ApiUploadRequest) {
         return FormData.fromMap({
-          ...pRequest.toJson(),
+          ...request.toJson(),
           "data": MultipartFile.fromBytes(
-            await pRequest.file.readAsBytes(),
-            filename: pRequest.file.name,
+            await request.file.readAsBytes(),
+            filename: request.file.name,
           ),
         });
       } else {
-        throw UnimplementedError("${pRequest.runtimeType} is an unknown UploadRequest.");
+        throw UnimplementedError("${request.runtimeType} is an unknown UploadRequest.");
       }
     }
 
-    String json = jsonEncode(pRequest);
+    String json = jsonEncode(request);
 
     if (compress) {
       return GZipCodec().encode(utf8.encode(json));
@@ -802,12 +802,12 @@ class OnlineApiRepository extends IRepository {
   }
 
   /// Sends a single [ApiRequest] by creating a new client, ignoring every response and closing it after.
-  Future<void> sendRequestAndForget(ApiRequest pRequest) async {
+  Future<void> sendRequestAndForget(ApiRequest request) async {
     Dio? client;
     try {
       client = _createClient(baseUrl: IConfigService().baseUrl.value);
       await _sendRequest(
-        pRequest,
+        request,
         client: client,
         headers: _headers,
         cookies: _cookies,
@@ -832,36 +832,36 @@ class OnlineApiRepository extends IRepository {
 
   /// Sends request to remote server, applies timeout.
   Future<Response> _sendRequest(
-    ApiRequest pRequest, {
+    ApiRequest request, {
     required Dio client,
     required Map<String, Cookie> cookies,
     required Map<String, dynamic> headers,
     required String? clientId,
   }) async {
-    if (pRequest is ApplicationRequest && pRequest.clientId == null) {
+    if (request is ApplicationRequest && request.clientId == null) {
       if (clientId?.isNotEmpty == true) {
-        pRequest.clientId = clientId!;
+        request.clientId = clientId!;
       } else {
-        throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
+        throw Exception("No Client ID found while trying to send ${request.runtimeType}");
       }
     }
 
-    Object? data = await _getData(pRequest);
+    Object? data = await _getData(request);
 
-    APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
+    APIRoute? route = uriMap[request.runtimeType]?.call(request);
 
     if (route == null) {
-      throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
+      throw Exception("URI belonging to ${request.runtimeType} not found, add it to the apiConfig!");
     }
 
     List<Cookie>? requestCookies;
     if (!kIsWeb) {
       requestCookies = cookies.values.toList();
-      IUiService().getAppManager()?.modifyCookies(pRequest, requestCookies);
+      IUiService().getAppManager()?.modifyCookies(request, requestCookies);
     }
 
     Map<String, dynamic> requestHeaders = Map.of(headers);
-    IUiService().getAppManager()?.modifyHeaders(pRequest, requestHeaders);
+    IUiService().getAppManager()?.modifyHeaders(request, requestHeaders);
 
     if (compress) {
       requestHeaders["content-type"] = ContentType.binary.mimeType;
@@ -870,7 +870,7 @@ class OnlineApiRepository extends IRepository {
     Uri uri = Uri(path: "/${route.route}");
 
     if (IUiService().getAppManager() != null) {
-      IUiService().getAppManager()!.beforeRequest(pRequest, uri);
+      IUiService().getAppManager()!.beforeRequest(request, uri);
     }
 
     Response response = await client.requestUri(
@@ -914,8 +914,8 @@ class OnlineApiRepository extends IRepository {
 
   /// Check if response is an error, an error does not come as array, returns
   /// the error in an error.
-  List<dynamic> _parseAndCheckJson(String pBody) {
-    var response = jsonDecode(pBody);
+  List<dynamic> _parseAndCheckJson(String body) {
+    var response = jsonDecode(body);
 
     if (response is List<dynamic>) {
       return response;
@@ -947,36 +947,36 @@ class OnlineApiRepository extends IRepository {
     return ApiInteraction(responses: returnList, request: request);
   }
 
-  ApiInteraction _handleDownload({required Uint8List pBody, required DownloadRequest pRequest}) {
+  ApiInteraction _handleDownload({required Uint8List body, required DownloadRequest request}) {
     List<ApiResponse> parsedResponse = [];
 
-    if (pRequest is ApiDownloadImagesRequest) {
+    if (request is ApiDownloadImagesRequest) {
       parsedResponse.add(DownloadImagesResponse(
-        responseBody: pBody,
+        responseBody: body,
         name: ApiResponseNames.downloadImages,
       ));
-    } else if (pRequest is ApiDownloadTemplatesRequest) {
+    } else if (request is ApiDownloadTemplatesRequest) {
       parsedResponse.add(DownloadTemplatesResponse(
-        responseBody: pBody,
+        responseBody: body,
         name: ApiResponseNames.downloadTemplates,
       ));
-    } else if (pRequest is ApiDownloadTranslationRequest) {
+    } else if (request is ApiDownloadTranslationRequest) {
       parsedResponse.add(DownloadTranslationResponse(
-        bodyBytes: pBody,
+        bodyBytes: body,
         name: ApiResponseNames.downloadTranslation,
       ));
-    } else if (pRequest is ApiDownloadStyleRequest) {
+    } else if (request is ApiDownloadStyleRequest) {
       parsedResponse.add(DownloadStyleResponse(
-        bodyBytes: pBody,
+        bodyBytes: body,
         name: ApiResponseNames.downloadStyle,
       ));
-    } else if (pRequest is ApiDownloadRequest) {
+    } else if (request is ApiDownloadRequest) {
       parsedResponse.add(DownloadResponse(
-        bodyBytes: pBody,
+        bodyBytes: body,
         name: ApiResponseNames.downloadResponse,
       ));
     }
 
-    return ApiInteraction(responses: parsedResponse, request: pRequest);
+    return ApiInteraction(responses: parsedResponse, request: request);
   }
 }

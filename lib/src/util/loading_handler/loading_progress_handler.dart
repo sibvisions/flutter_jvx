@@ -60,7 +60,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  bool isSupported(BaseCommand pCommand) {
-    return pCommand.showLoading;
+  bool isSupported(BaseCommand command) {
+    return command.showLoading;
   }
 }

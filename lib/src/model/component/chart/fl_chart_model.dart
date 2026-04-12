@@ -93,72 +93,72 @@ class FlChartModel extends FlComponentModel {
   FlChartModel get defaultModel => FlChartModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     title = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.title,
-      pDefault: defaultModel.title,
-      pCurrent: title,
+      json: newJson,
+      key: ApiObjectProperty.title,
+      defaultValue: defaultModel.title,
+      currentValue: title,
     );
 
     xAxisTitle = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.xAxisTitle,
-      pDefault: defaultModel.xAxisTitle,
-      pCurrent: xAxisTitle,
+      json: newJson,
+      key: ApiObjectProperty.xAxisTitle,
+      defaultValue: defaultModel.xAxisTitle,
+      currentValue: xAxisTitle,
     );
 
     yAxisTitle = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.yAxisTitle,
-      pDefault: defaultModel.yAxisTitle,
-      pCurrent: yAxisTitle,
+      json: newJson,
+      key: ApiObjectProperty.yAxisTitle,
+      defaultValue: defaultModel.yAxisTitle,
+      currentValue: yAxisTitle,
     );
 
     xColumnName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.xColumnName,
-      pDefault: defaultModel.xColumnName,
-      pCurrent: xColumnName,
+      json: newJson,
+      key: ApiObjectProperty.xColumnName,
+      defaultValue: defaultModel.xColumnName,
+      currentValue: xColumnName,
     );
 
     xColumnLabel = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.xColumnLabel,
-      pDefault: defaultModel.xColumnLabel,
-      pCurrent: xColumnLabel,
+      json: newJson,
+      key: ApiObjectProperty.xColumnLabel,
+      defaultValue: defaultModel.xColumnLabel,
+      currentValue: xColumnLabel,
     );
 
     yColumnNames = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.yColumnNames,
-      pDefault: defaultModel.yColumnNames,
-      pCurrent: yColumnNames,
-      pConversion: (value) => List<String>.from(value),
+      json: newJson,
+      key: ApiObjectProperty.yColumnNames,
+      defaultValue: defaultModel.yColumnNames,
+      currentValue: yColumnNames,
+      conversion: (value) => List<String>.from(value),
     );
 
     yColumnLabels = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.yColumnLabels,
-      pDefault: defaultModel.yColumnLabels,
-      pCurrent: yColumnLabels,
-      pConversion: (value) => List<String>.from(value),
+      json: newJson,
+      key: ApiObjectProperty.yColumnLabels,
+      defaultValue: defaultModel.yColumnLabels,
+      currentValue: yColumnLabels,
+      conversion: (value) => List<String>.from(value),
     );
 
     dataProvider = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.dataBook,
-      pDefault: defaultModel.dataProvider,
-      pCurrent: dataProvider,
+      json: newJson,
+      key: ApiObjectProperty.dataBook,
+      defaultValue: defaultModel.dataProvider,
+      currentValue: dataProvider,
     );
 
     chartStyle = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.chartStyle,
-      pDefault: defaultModel.chartStyle,
-      pCurrent: chartStyle,
+      json: newJson,
+      key: ApiObjectProperty.chartStyle,
+      defaultValue: defaultModel.chartStyle,
+      currentValue: chartStyle,
     );
   }
 

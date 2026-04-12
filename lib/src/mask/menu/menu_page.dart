@@ -330,7 +330,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
   Future<DialogResult?> showSyncDialog() {
     return IUiService().openDialog(
-      pBuilder: (context) => AlertDialog(
+      builder: (context) => AlertDialog(
         title: Text(
           FlutterUI.translate("Synchronization"),
         ),
@@ -349,7 +349,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               child: Text(FlutterUI.translate("Discard changes")),
               onPressed: () async {
                 DialogResult? result = await IUiService().openDialog(
-                  pBuilder: (subContext) => AlertDialog(
+                  builder: (subContext) => AlertDialog(
                     title: Text(FlutterUI.translate("Discard changes")),
                     content: Text(FlutterUI.translate(
                         "Are you sure you want to discard all the changes you made in offline mode?")),
@@ -459,12 +459,10 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   }
 
   void _setScreenSize(Size size) {
-    ILayoutService()
-        .setScreenSize(
-          pScreenComponentId: IStorageService().getDesktopPanelNotifier().value!.id,
-          pSize: size,
-        )
-        .then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
+    ILayoutService().setScreenSize(
+      screenComponentId: IStorageService().getDesktopPanelNotifier().value!.id,
+      size: size,
+    ).then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
   }
 
   Widget? getScreen(Widget screen) {

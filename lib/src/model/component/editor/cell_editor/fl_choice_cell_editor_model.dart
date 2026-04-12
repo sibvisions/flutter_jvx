@@ -55,42 +55,42 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
   FlChoiceCellEditorModel get defaultModel => FlChoiceCellEditorModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     // ContentType
     defaultImage = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.defaultImageName,
-      pDefault: defaultModel.defaultImage,
-      pCurrent: defaultImage,
-      pConversion: (value) => ImageLoader.loadImage(
+      json: newJson,
+      key: ApiObjectProperty.defaultImageName,
+      defaultValue: defaultModel.defaultImage,
+      currentValue: defaultImage,
+      conversion: (value) => ImageLoader.loadImage(
         value,
         imageStreamListener: newMaxSize,
       ),
     );
 
     listValues = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.allowedValues,
-      pDefault: defaultModel.listValues,
-      pCurrent: listValues,
-      pConversion: (value) => List.of(value),
+      json: newJson,
+      key: ApiObjectProperty.allowedValues,
+      defaultValue: defaultModel.listValues,
+      currentValue: listValues,
+      conversion: (value) => List.of(value),
     );
 
     listImages = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.imageNames,
-      pDefault: defaultModel.listImages,
-      pCurrent: listImages,
-      pConversion: _parseImgList,
+      json: newJson,
+      key: ApiObjectProperty.imageNames,
+      defaultValue: defaultModel.listImages,
+      currentValue: listImages,
+      conversion: _parseImgList,
     );
   }
 
-  List<Widget> _parseImgList(dynamic pValue) {
+  List<Widget> _parseImgList(dynamic value) {
     List<Widget> imageList = [];
-    if (pValue != null) {
-      for (var jsonValueDynamic in pValue) {
+    if (value != null) {
+      for (var jsonValueDynamic in value) {
         String jsonValue = jsonValueDynamic as String;
 
         imageList.add(
@@ -104,16 +104,16 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
     return imageList;
   }
 
-  void newMaxSize(Size pInfo, bool pSynchronous) {
-    if (pInfo.width.toDouble() > imageSize || pInfo.height.toDouble() > imageSize) {
+  void newMaxSize(Size info, bool synchronous) {
+    if (info.width.toDouble() > imageSize || info.height.toDouble() > imageSize) {
       imageSize = max(
         max(
-          pInfo.width.toDouble(),
-          pInfo.height.toDouble(),
+          info.width.toDouble(),
+          info.height.toDouble(),
         ),
         imageSize,
       );
-      if (!pSynchronous) {
+      if (!synchronous) {
         imageLoadingCallback?.call();
       }
     }

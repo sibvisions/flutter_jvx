@@ -303,7 +303,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         });
       }
     } else {
-      IUiService().openDialog(pBuilder: (context) => passwordError(context), pIsDismissible: true);
+      IUiService().openDialog(builder: (context) => passwordError(context), isDismissible: true);
     }
   }
 

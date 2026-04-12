@@ -57,10 +57,10 @@ class JVxFont {
     if (isItalic != null) this.isItalic = isItalic;
   }
 
-  JVxFont.fromString(String? pFontString) {
-    if (pFontString == null || pFontString.isEmpty) return;
+  JVxFont.fromString(String? fontString) {
+    if (fontString == null || fontString.isEmpty) return;
 
-    var fontValuesList = pFontString.split(",");
+    var fontValuesList = fontString.split(",");
     if (fontValuesList.length == 3) {
       if (fontValuesList[0].isNotEmpty) {
         fontName = fontValuesList[0];

@@ -30,18 +30,18 @@ class ApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Executes remote requests
-  IRepository repository;
+  IRepository _repository;
 
   /// Processes responses into commands
-  IController? controller;
+  IController? _controller;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Initializes an instance where [repository] and [controller] are `null`
+  /// Initializes an instance where [_repository] and [_controller] are `null`
   /// and need to be set before any request can be sent.
-  ApiService.create(this.repository);
+  ApiService.create(this._repository);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -49,24 +49,24 @@ class ApiService implements IApiService {
 
   @override
   Future<List<BaseCommand>> sendRequest(ApiRequest request, [bool? retryRequest]) {
-    if (controller == null) throw Exception("Controller not initialized");
+    if (_controller == null) throw Exception("Controller not initialized");
     
-    return repository.sendRequest(request, retryRequest).then((value) => controller!.processResponse(value));
+    return _repository.sendRequest(request, retryRequest).then((value) => _controller!.processResponse(value));
   }
 
   @override
   IRepository getRepository() {
-    return repository;
+    return _repository;
   }
 
   @override
-  void setRepository(IRepository pRepository) {
-    repository = pRepository;
+  void setRepository(IRepository repository) {
+    _repository = repository;
   }
 
   @override
-  void setController(IController pController) {
-    controller = pController;
+  void setController(IController controller) {
+    _controller = controller;
   }
 
   @override
@@ -74,7 +74,7 @@ class ApiService implements IApiService {
     if (reason.isFull()) {
       //Stop is enough because a restart will set a new repository
       //and simple stopp will also trigger a new repository "later"
-      await repository.stop();
+      await _repository.stop();
     }
   }
 }

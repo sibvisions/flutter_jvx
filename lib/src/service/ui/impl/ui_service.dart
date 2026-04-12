@@ -175,11 +175,11 @@ class UiService implements IUiService {
   }
 
   @override
-  MenuItemModel? getMenuItem(String pScreenName) {
+  MenuItemModel? getMenuItem(String screenName) {
     return getMenuModel()
         .menuGroups
         .expand((group) => group.items)
-        .firstWhereOrNull((item) => item.matchesScreenName(pScreenName));
+        .firstWhereOrNull((item) => item.matchesScreenName(screenName));
   }
 
   @override
@@ -201,8 +201,8 @@ class UiService implements IUiService {
   }
 
   @override
-  void updateDesignModeElement(String? pId) {
-    _designModeElement.value = pId;
+  void updateDesignModeElement(String? id) {
+    _designModeElement.value = id;
   }
 
   @override
@@ -234,9 +234,9 @@ class UiService implements IUiService {
   // as you should not be able to go back to the splash screen or back to menu when u logged out
 
   @override
-  void routeToMenu({bool pReplaceRoute = false}) {
+  void routeToMenu({bool replaceRoute = false}) {
     var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
-    if (pReplaceRoute ||
+    if (replaceRoute ||
         lastBeamState.pathPatternSegments.contains("settings") ||
         lastBeamState.pathPatternSegments.contains("login")) {
       FlutterUI.clearHistory();
@@ -247,16 +247,16 @@ class UiService implements IUiService {
   }
 
   @override
-  void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false, bool pSecure = false}) {
+  void routeToWorkScreen({required String screenName, bool replaceRoute = false, bool secure = false}) {
     var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
 
     // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
-    if (lastBeamState.pathParameters[MainLocation.screenNameKey] == pScreenName) {
+    if (lastBeamState.pathParameters[MainLocation.screenNameKey] == screenName) {
       return;
     }
 
-    MenuItemModel? menuItemModel = getMenuItem(pScreenName);
-    String resolvedScreenName = menuItemModel?.navigationName ?? pScreenName;
+    MenuItemModel? menuItemModel = getMenuItem(screenName);
+    String resolvedScreenName = menuItemModel?.navigationName ?? screenName;
 
     // Clear the history of the screen we are going to so we don't jump back into the history.
     if (!kIsWeb) {
@@ -269,20 +269,20 @@ class UiService implements IUiService {
       });
     }
 
-    FlutterUI.logUI.i("Routing to work-screen: $pScreenName, resolved name: $resolvedScreenName");
+    FlutterUI.logUI.i("Routing to work-screen: $screenName, resolved name: $resolvedScreenName");
 
-    if (pReplaceRoute ||
+    if (replaceRoute ||
         lastBeamState.pathPatternSegments.contains("settings") ||
         lastBeamState.pathPatternSegments.contains("login")) {
-      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/screens/$resolvedScreenName${pSecure ? "?secure" : ""}");
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/screens/$resolvedScreenName${secure ? "?secure" : ""}");
     } else {
-      FlutterUI.getBeamerDelegate().beamToNamed("/screens/$resolvedScreenName${pSecure ? "?secure" : ""}");
+      FlutterUI.getBeamerDelegate().beamToNamed("/screens/$resolvedScreenName${secure ? "?secure" : ""}");
     }
   }
 
   @override
-  void routeToSettings({bool pReplaceRoute = false}) {
-    if (pReplaceRoute) {
+  void routeToSettings({bool replaceRoute = false}) {
+    if (replaceRoute) {
       FlutterUI.clearHistory();
       FlutterUI.getBeamerDelegate().beamToReplacementNamed("/settings");
     } else {
@@ -342,40 +342,40 @@ class UiService implements IUiService {
   }
 
   @override
-  void setAppManager(AppManager? pAppManager) {
-    appManager = pAppManager;
+  void setAppManager(AppManager? appManager) {
+    appManager = appManager;
   }
 
   @override
   Future<T?> openDialog<T>({
-    required WidgetBuilder pBuilder,
+    required WidgetBuilder builder,
     BuildContext? context,
-    bool pIsDismissible = true
+    bool isDismissible = true
   }) {
     return showDialog(
       context: context ?? FlutterUI.getCurrentContext()!,
-      barrierDismissible: pIsDismissible,
+      barrierDismissible: isDismissible,
       builder: (BuildContext context) =>
         PopScope(
-          canPop: pIsDismissible,
-          child: pBuilder.call(context),
+          canPop: isDismissible,
+          child: builder.call(context),
         ),
     );
   }
 
   @override
   Future<T?> openDialogFullScreen<T>({
-    required WidgetBuilder pBuilder,
+    required WidgetBuilder builder,
     BuildContext? context,
-    bool pIsDismissible = true,
+    bool isDismissible = true,
     Duration? transitionDuration
   }) {
     return showGeneralDialog(
       transitionDuration: transitionDuration ?? const Duration(milliseconds: 200),
       context: FlutterUI.getCurrentContext()!,
       pageBuilder: (context, animation, secondaryAnimation) => PopScope(
-        canPop: pIsDismissible,
-        child: pBuilder.call(context)
+        canPop: isDismissible,
+        child: builder.call(context)
       )
     );
   }
@@ -403,8 +403,8 @@ class UiService implements IUiService {
   }
 
   @override
-  void setMenuModel(MenuModel? pMenuModel) {
-    _originalMenuModel = pMenuModel;
+  void setMenuModel(MenuModel? menuModel) {
+    _originalMenuModel = menuModel;
 
     //modify only once
     _menuModel = _updateMenuModel(_originalMenuModel);
@@ -431,23 +431,23 @@ class UiService implements IUiService {
   ValueNotifier<String?> get clientId => _clientId;
 
   @override
-  void updateClientId(String? pClientId) {
-    _clientId.value = pClientId;
+  void updateClientId(String? clientId) {
+    _clientId.value = clientId;
   }
 
   @override
   ValueNotifier<ApplicationMetaDataResponse?> get applicationMetaData => _applicationMetaData;
 
   @override
-  void updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData) {
-    _applicationMetaData.value = pApplicationMetaData;
+  void updateApplicationMetaData(ApplicationMetaDataResponse? applicationMetaData) {
+    _applicationMetaData.value = applicationMetaData;
 
     //MARK: Set global timeout for biometric reAuth
 
     // If application parameters contain biometric-login max timeout -> change the default
     Duration? timeout;
 
-    int? hours = pApplicationMetaData?.biometricLoginMaxTimeout;
+    int? hours = applicationMetaData?.biometricLoginMaxTimeout;
 
     if (hours != null) {
       timeout = Duration(hours: hours);
@@ -461,26 +461,26 @@ class UiService implements IUiService {
   ValueNotifier<ApplicationSettingsResponse> get applicationSettings => _applicationSettings;
 
   @override
-  void updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) {
-    _applicationSettings.value = pApplicationSettings;
+  void updateApplicationSettings(ApplicationSettingsResponse applicationSettings) {
+    _applicationSettings.value = applicationSettings;
   }
 
   @override
   ValueNotifier<ApplicationParameters> get applicationParameters => _applicationParameters;
 
   @override
-  void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) {
+  void updateApplicationParameters(ApplicationParametersResponse applicationParameters) {
     var oldAppParam = _applicationParameters.value;
-    var newAppParam = oldAppParam.copyWith()..applyResponse(pApplicationParameters);
+    var newAppParam = oldAppParam.copyWith()..applyResponse(applicationParameters);
 
     getAppManager()?.modifyApplicationParameters(newAppParam);
 
     //Notify listeners about changed parameters
     List<ApplicationParameterChangedListener> copy = _appParameterListener.toList(growable: false);
 
-    for (String key in pApplicationParameters.parameters.keys) {
+    for (String key in applicationParameters.parameters.keys) {
       for (int i = 0; i < copy.length; i++) {
-        copy[i](key, oldAppParam.parameters[key], pApplicationParameters.parameters[key]);
+        copy[i](key, oldAppParam.parameters[key], applicationParameters.parameters[key]);
       }
     }
 
@@ -491,24 +491,24 @@ class UiService implements IUiService {
   ValueNotifier<LayoutMode> get layoutMode => _layoutMode;
 
   @override
-  void updateLayoutMode(LayoutMode pLayoutMode) {
-    _layoutMode.value = pLayoutMode;
+  void updateLayoutMode(LayoutMode layoutMode) {
+    _layoutMode.value = layoutMode;
   }
 
   @override
   ValueNotifier<bool> get mobileOnly => _mobileOnly;
 
   @override
-  void updateMobileOnly(bool pMobileOnly) {
-    _mobileOnly.value = pMobileOnly;
+  void updateMobileOnly(bool mobileOnly) {
+    _mobileOnly.value = mobileOnly;
   }
 
   @override
   ValueNotifier<bool> get webOnly => _webOnly;
 
   @override
-  void updateWebOnly(bool pWebOnly) {
-    _webOnly.value = pWebOnly;
+  void updateWebOnly(bool webOnly) {
+    _webOnly.value = webOnly;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -532,26 +532,26 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void registerAsLiveComponent(ComponentSubscription pComponentSubscription) {
-    _componentSubscriptions.add(pComponentSubscription);
+  void registerAsLiveComponent(ComponentSubscription componentSubscription) {
+    _componentSubscriptions.add(componentSubscription);
   }
 
   @override
-  void registerModelSubscription(ModelSubscription pModelSubscription) {
-    _modelSubscriptions.add(pModelSubscription);
+  void registerModelSubscription(ModelSubscription modelSubscription) {
+    _modelSubscriptions.add(modelSubscription);
   }
 
   @override
-  void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatelyRetrieveData = true}) {
-    _dataSubscriptions.removeWhere((element) => element.same(pDataSubscription));
-    _dataSubscriptions.add(pDataSubscription);
+  void registerDataSubscription({required DataSubscription dataSubscription, bool immediatelyRetrieveData = true}) {
+    _dataSubscriptions.removeWhere((element) => element.same(dataSubscription));
+    _dataSubscriptions.add(dataSubscription);
 
-    if (pImmediatelyRetrieveData) {
-      DataBook? dataBook = IDataService().getDataBook(pDataSubscription.dataProvider);
+    if (immediatelyRetrieveData) {
+      DataBook? dataBook = IDataService().getDataBook(dataSubscription.dataProvider);
       bool needsToFetch = IDataService().dataBookNeedsFetch(
-        pFrom: pDataSubscription.from,
-        pTo: pDataSubscription.to,
-        pDataProvider: pDataSubscription.dataProvider,
+        from: dataSubscription.from,
+        to: dataSubscription.to,
+        dataProvider: dataSubscription.dataProvider,
       );
       bool fetchMetaData = dataBook?.metaData == null;
 
@@ -560,65 +560,65 @@ class UiService implements IUiService {
 
       if (needsToFetch || fetchMetaData) {
         //metadata before data!
-        if (!fetchMetaData && pDataSubscription.onMetaData != null) {
+        if (!fetchMetaData && dataSubscription.onMetaData != null) {
           //in this case, we have metadata and we should handle it
 
           ICommandService().sendCommand(GetMetaDataCommand(
             reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            subId: pDataSubscription.id,
+            dataProvider: dataSubscription.dataProvider,
+            subId: dataSubscription.id,
           ));
         }
 
         //this command triggers metadata update, if we fetch metadata
         ICommandService().sendCommand(FetchCommand(
-          dataProvider: pDataSubscription.dataProvider,
-          fromRow: dataBook?.records.keys.maxOrNull ?? pDataSubscription.from,
-          rowCount: pDataSubscription.to != null
-              ? pDataSubscription.to! - pDataSubscription.from
-              : IUiService().getSubscriptionRowCount(pDataSubscription.dataProvider),
-          reason: "Fetch for DataSubscription [${pDataSubscription.dataProvider}]",
+          dataProvider: dataSubscription.dataProvider,
+          fromRow: dataBook?.records.keys.maxOrNull ?? dataSubscription.from,
+          rowCount: dataSubscription.to != null
+              ? dataSubscription.to! - dataSubscription.from
+              : IUiService().getSubscriptionRowCount(dataSubscription.dataProvider),
+          reason: "Fetch for DataSubscription [${dataSubscription.dataProvider}]",
           includeMetaData: fetchMetaData,
         ));
       } else {
         //metadata before data!
-        if (pDataSubscription.onMetaData != null) {
+        if (dataSubscription.onMetaData != null) {
           ICommandService().sendCommand(GetMetaDataCommand(
             reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            subId: pDataSubscription.id,
+            dataProvider: dataSubscription.dataProvider,
+            subId: dataSubscription.id,
           ));
         }
 
-        if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
+        if (dataSubscription.from != -1 && dataSubscription.onDataChunk != null) {
           ICommandService().sendCommand(GetDataChunkCommand(
             reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            from: pDataSubscription.from,
-            to: pDataSubscription.to,
-            subId: pDataSubscription.id,
-            dataColumns: pDataSubscription.dataColumns,
+            dataProvider: dataSubscription.dataProvider,
+            from: dataSubscription.from,
+            to: dataSubscription.to,
+            subId: dataSubscription.id,
+            dataColumns: dataSubscription.dataColumns,
           ));
         }
 
-        if (pDataSubscription.onSelectedRecord != null) {
+        if (dataSubscription.onSelectedRecord != null) {
           ICommandService().sendCommand(GetSelectedDataCommand(
-            subId: pDataSubscription.id,
+            subId: dataSubscription.id,
             reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            columnNames: pDataSubscription.dataColumns,
+            dataProvider: dataSubscription.dataProvider,
+            columnNames: dataSubscription.dataColumns,
           ));
         }
       }
 
-      if (pDataSubscription.onPage != null) {
+      if (dataSubscription.onPage != null) {
         dataBook?.pageRecords.keys.forEach((pageKey) {
           ICommandService().sendCommand(GetPageChunkCommand(
             reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            from: pDataSubscription.from,
-            to: pDataSubscription.to,
-            subId: pDataSubscription.id,
+            dataProvider: dataSubscription.dataProvider,
+            from: dataSubscription.from,
+            to: dataSubscription.to,
+            subId: dataSubscription.id,
             pageKey: pageKey,
           ));
         });
@@ -627,44 +627,44 @@ class UiService implements IUiService {
   }
 
   @override
-  void notifySubscriptionsOfReload(String pDataProvider) {
+  void notifySubscriptionsOfReload(String dataProvider) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider && copy[i].onReload != null && copy[i].onDataChunk != null && copy[i].from >= 0) {
+      if (copy[i].dataProvider == dataProvider && copy[i].onReload != null && copy[i].onDataChunk != null && copy[i].from >= 0) {
         copy[i].to = copy[i].onReload!.call();
       }
     }
   }
 
   @override
-  void disposeSubscriptions(Object pSubscriber) {
-    disposeDataSubscription(pSubscriber: pSubscriber);
-    _disposeComponentSubscription(pSubscriber);
-    _disposeModelSubscription(pSubscriber);
+  void disposeSubscriptions(Object subscriber) {
+    disposeDataSubscription(subscriber: subscriber);
+    _disposeComponentSubscription(subscriber);
+    _disposeModelSubscription(subscriber);
   }
 
   @override
-  void disposeDataSubscription({required Object pSubscriber, String? pDataProvider}) {
+  void disposeDataSubscription({required Object subscriber, String? dataProvider}) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].subbedObj == pSubscriber && (pDataProvider == null || copy[i].dataProvider == pDataProvider)) {
+      if (copy[i].subbedObj == subscriber && (dataProvider == null || copy[i].dataProvider == dataProvider)) {
         _dataSubscriptions.remove(copy[i]);
       }
     }
   }
 
   @override
-  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId, String pReason) async {
+  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? id, String reason) async {
     // Copy list to avoid concurrent modification
     List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
 
     List<BaseCommand> saveCommands = [];
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].compId != pId && copy[i].saveCallback != null) {
-        var command = await copy[i].saveCallback!.call(pReason);
+      if (copy[i].compId != id && copy[i].saveCallback != null) {
+        var command = await copy[i].saveCallback!.call(reason);
         if (command != null) {
           saveCommands.add(command);
         }
@@ -745,32 +745,32 @@ class UiService implements IUiService {
 
   @override
   void notifyDataChange({
-    required String pDataProvider,
-    bool pUpdatedCurrentPage = true,
-    String? pUpdatedPage,
-    bool pFromStart = false
+    required String dataProvider,
+    bool updatedCurrentPage = true,
+    String? updatedPage,
+    bool fromStart = false
   }) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider) {
+      if (copy[i].dataProvider == dataProvider) {
         // Check if selected data changed
-        if (pUpdatedPage != null && copy[i].onPage != null) {
+        if (updatedPage != null && copy[i].onPage != null) {
           ICommandService().sendCommand(GetPageChunkCommand(
             reason: "Notify data was called",
-            dataProvider: pDataProvider,
+            dataProvider: dataProvider,
             subId: copy[i].id,
             from: copy[i].from,
             to: copy[i].to,
-            pageKey: pUpdatedPage,
+            pageKey: updatedPage,
           ));
         }
 
-        if (pUpdatedCurrentPage) {
+        if (updatedCurrentPage) {
           if (copy[i].onSelectedRecord != null) {
             ICommandService().sendCommand(GetSelectedDataCommand(
-              reason: "Notify data was called with pFrom -1",
-              dataProvider: pDataProvider,
+              reason: "Notify data was called with from -1",
+              dataProvider: dataProvider,
               subId: copy[i].id,
               columnNames: copy[i].dataColumns,
             ));
@@ -779,12 +779,12 @@ class UiService implements IUiService {
           if (copy[i].from != -1 && copy[i].onDataChunk != null) {
             ICommandService().sendCommand(GetDataChunkCommand(
               reason: "Notify data was called",
-              dataProvider: pDataProvider,
+              dataProvider: dataProvider,
               subId: copy[i].id,
               from: copy[i].from,
               to: copy[i].to,
               dataColumns: copy[i].dataColumns,
-              fromStart: pFromStart
+              fromStart: fromStart
             ));
           }
         }
@@ -793,26 +793,26 @@ class UiService implements IUiService {
   }
 
   @override
-  void notifyDataToDisplayMapChanged(String pDataProvider) {
+  void notifyDataToDisplayMapChanged(String dataProvider) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider && copy[i].onDataToDisplayMapChanged != null) {
+      if (copy[i].dataProvider == dataProvider && copy[i].onDataToDisplayMapChanged != null) {
         copy[i].onDataToDisplayMapChanged?.call();
       }
     }
   }
 
   @override
-  void notifySelectionChange(String pDataProvider) {
+  void notifySelectionChange(String dataProvider) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider && copy[i].onSelectedRecord != null) {
+      if (copy[i].dataProvider == dataProvider && copy[i].onSelectedRecord != null) {
         ICommandService().sendCommand(GetSelectedDataCommand(
           subId: copy[i].id,
-          reason: "Notify data was called with pFrom -1",
-          dataProvider: pDataProvider,
+          reason: "Notify data was called with from -1",
+          dataProvider: dataProvider,
           columnNames: copy[i].dataColumns,
         ));
       }
@@ -820,16 +820,16 @@ class UiService implements IUiService {
   }
 
   @override
-  void notifyMetaDataChange(String pDataProvider) {
+  void notifyMetaDataChange(String dataProvider) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider && copy[i].onMetaData != null) {
+      if (copy[i].dataProvider == dataProvider && copy[i].onMetaData != null) {
         // Check if selected data changed
         ICommandService().sendCommand(GetMetaDataCommand(
           subId: copy[i].id,
-          reason: "Notify data was called with pFrom -1",
-          dataProvider: pDataProvider,
+          reason: "Notify data was called with from -1",
+          dataProvider: dataProvider,
         ));
       }
     }
@@ -837,73 +837,73 @@ class UiService implements IUiService {
 
   @override
   void sendSubsSelectedData({
-    required String pSubId,
-    required String pDataProvider,
-    DataRecord? pDataRow,
+    required String subId,
+    required String dataProvider,
+    DataRecord? dataRow,
   }) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider && copy[i].id == pSubId && copy[i].onSelectedRecord != null) {
-        copy[i].onSelectedRecord!.call(pDataRow);
+      if (copy[i].dataProvider == dataProvider && copy[i].id == subId && copy[i].onSelectedRecord != null) {
+        copy[i].onSelectedRecord!.call(dataRow);
       }
     }
   }
 
   @override
   void sendSubsDataChunk({
-    required String pSubId,
-    required DataChunk pDataChunk,
-    required String pDataProvider,
+    required String subId,
+    required DataChunk dataChunk,
+    required String dataProvider,
   }) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider && copy[i].id == pSubId && copy[i].onDataChunk != null) {
-        copy[i].onDataChunk!.call(pDataChunk);
+      if (copy[i].dataProvider == dataProvider && copy[i].id == subId && copy[i].onDataChunk != null) {
+        copy[i].onDataChunk!.call(dataChunk);
       }
     }
   }
 
   @override
   void sendSubsPageChunk({
-    required String pSubId,
-    required String pDataProvider,
-    required DataChunk pDataChunk,
-    required String pPageKey,
+    required String subId,
+    required String dataProvider,
+    required DataChunk dataChunk,
+    required String pageKey,
   }) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider && copy[i].id == pSubId && copy[i].onPage != null) {
-        copy[i].onPage?.call(pPageKey, pDataChunk);
+      if (copy[i].dataProvider == dataProvider && copy[i].id == subId && copy[i].onPage != null) {
+        copy[i].onPage?.call(pageKey, dataChunk);
       }
     }
   }
 
   @override
   void sendSubsMetaData({
-    required String pSubId,
-    required String pDataProvider,
-    required DalMetaData pMetaData,
+    required String subId,
+    required String dataProvider,
+    required DalMetaData metaData,
   }) {
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider && copy[i].id == pSubId && copy[i].onMetaData != null) {
-        copy[i].onMetaData!(pMetaData);
+      if (copy[i].dataProvider == dataProvider && copy[i].id == subId && copy[i].onMetaData != null) {
+        copy[i].onMetaData!(metaData);
       }
     }
   }
 
   @override
-  int getSubscriptionRowCount(String pDataProvider) {
+  int getSubscriptionRowCount(String dataProvider) {
     int rowCount = 0;
 
     List<DataSubscription> copy = _dataSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].dataProvider == pDataProvider) {
+      if (copy[i].dataProvider == dataProvider) {
         if (copy[i].to == null) {
           return -1;
         }
@@ -925,11 +925,11 @@ class UiService implements IUiService {
   }
 
   @override
-  CustomComponent? getCustomComponent(String pComponentName) {
+  CustomComponent? getCustomComponent(String componentName) {
     Map<String, CustomComponent>? comps = appManager?.replaceComponents;
 
     if (comps != null) {
-      return comps[pComponentName];
+      return comps[componentName];
     }
     else {
       return null;
@@ -937,15 +937,15 @@ class UiService implements IUiService {
   }
 
   @override
-  bool usesNativeRouting(String pScreenLongName) {
-    CustomScreen? customScreen = getCustomScreen(pScreenLongName);
+  bool usesNativeRouting(String screenLongName) {
+    CustomScreen? customScreen = getCustomScreen(screenLongName);
 
     if (customScreen == null) {
       // No replacement -> send
       return false;
     }
 
-    bool hasReplaced = _originalMenuModel?.containsMenuItemWithLongName(pScreenLongName) ?? false;
+    bool hasReplaced = _originalMenuModel?.containsMenuItemWithLongName(screenLongName) ?? false;
 
     if (hasReplaced) {
       if (IConfigService().offline.value) {
@@ -971,14 +971,14 @@ class UiService implements IUiService {
   }
 
   @override
-  void showJVxDialog(JVxDialog pDialog) {
+  void showJVxDialog(JVxDialog dialog) {
     List<JVxDialog> copy = _activeDialogs.toList(growable: false);
 
     MessageDialog? msg;
 
-    if (pDialog is MessageDialog) {
+    if (dialog is MessageDialog) {
       for (int i = 0; i < copy.length && msg == null; i++) {
-        if (copy[i] is MessageDialog && (copy[i] as MessageDialog).command.componentName == pDialog.command.componentName) {
+        if (copy[i] is MessageDialog && (copy[i] as MessageDialog).command.componentName == dialog.command.componentName) {
           msg = copy[i] as MessageDialog;
         }
       }
@@ -986,11 +986,11 @@ class UiService implements IUiService {
 
     //not found means that all "other" JVxDialogs will be shown more than once
     if (msg == null) {
-      _activeDialogs.add(pDialog);
+      _activeDialogs.add(dialog);
       JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
 
       //feedback for the user
-      if (pDialog is IError) {
+      if (dialog is IError) {
         HapticUtil.error();
 
         //better not
@@ -999,15 +999,15 @@ class UiService implements IUiService {
     } else {
       //it would also be possible to replace the dialog in _activeDialogs
       //but in this special case, we always re-use the same widget
-      msg.command.apply((pDialog as MessageDialog).command);
+      msg.command.apply((dialog as MessageDialog).command);
     }
   }
 
   @override
-  void closeJVxDialog(JVxDialog pDialog) {
-    pDialog.onClose();
+  void closeJVxDialog(JVxDialog dialog) {
+    dialog.onClose();
 
-    _activeDialogs.remove(pDialog);
+    _activeDialogs.remove(dialog);
     JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
@@ -1046,18 +1046,18 @@ class UiService implements IUiService {
   }
 
   @override
-  Future<bool> saveAllEditors({String? pId, required String pReason}) async {
+  Future<CommandResult> saveAllEditors({String? id, required String reason}) async {
     return ICommandService().sendCommands(
-      await collectAllEditorSaveCommands(pId, pReason),
+      await collectAllEditorSaveCommands(id, reason),
       showDialogOnError: false,
       abortOnFirstError: false,
     );
   }
 
   @override
-  void setFocus(String pComponentId) {
+  void setFocus(String componentId) {
     removeFocus();
-    focusedComponentId = pComponentId;
+    focusedComponentId = componentId;
   }
 
   @override
@@ -1066,17 +1066,17 @@ class UiService implements IUiService {
       return null;
     }
 
-    return IStorageService().getComponentModel(pComponentId: focusedComponentId!);
+    return IStorageService().getComponentModel(componentId: focusedComponentId!);
   }
 
   @override
-  bool hasFocus(String? pComponentId) {
-    return pComponentId != null && focusedComponentId == pComponentId;
+  bool hasFocus(String? componentId) {
+    return componentId != null && focusedComponentId == componentId;
   }
 
   @override
-  void removeFocus([String? pComponentId]) {
-    if (pComponentId == null || hasFocus(pComponentId)) {
+  void removeFocus([String? componentId]) {
+    if (componentId == null || hasFocus(componentId)) {
       focusedComponentId = null;
     }
   }
@@ -1088,12 +1088,12 @@ class UiService implements IUiService {
   }
 
   @override
-  void openContent(String pContentName) {
-    if (_activeContents.contains(pContentName)) {
+  void openContent(String contentName) {
+    if (_activeContents.contains(contentName)) {
       return;
     }
 
-    FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
+    FlComponentModel? panelModel = IStorageService().getComponentByName(componentName: contentName);
 
     if (panelModel == null || panelModel is! FlPanelModel) {
       FlutterUI.logUI.e("Tried to open a content which is not panel!", stackTrace: StackTrace.current);
@@ -1101,10 +1101,10 @@ class UiService implements IUiService {
     }
 
     RouteSettings routeSettings = RouteSettings(
-      name: Content.ROUTE_SETTINGS_PREFIX + pContentName,
+      name: Content.ROUTE_SETTINGS_PREFIX + contentName,
     );
 
-    _activeContents.add(pContentName);
+    _activeContents.add(contentName);
 
     if (Frame.isWebFrame()) {
       showDialog(
@@ -1145,25 +1145,25 @@ class UiService implements IUiService {
   }
 
   @override
-  Future<void> closeContent(String pContentName, [bool pSendClose = true]) async {
-    if (!_activeContents.contains(pContentName)) {
+  Future<void> closeContent(String contentName, [bool sendClose = true]) async {
+    if (!_activeContents.contains(contentName)) {
       return;
     }
 
-    FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
+    FlComponentModel? panelModel = IStorageService().getComponentByName(componentName: contentName);
     if (panelModel == null || panelModel is! FlPanelModel) {
       FlutterUI.logUI.e("Tried to close a content which is not panel!", stackTrace: StackTrace.current);
       return;
     }
 
-    _activeContents.remove(pContentName);
+    _activeContents.remove(contentName);
 
     BuildContext? uicontext = FlutterUI.getCurrentContext();
 
     Route? route = FlutterUI.maybeOf(uicontext!)
         ?.jvxRouteObserver
         .knownRoutes
-        .firstWhereOrNull((element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName));
+        .firstWhereOrNull((element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + contentName));
 
     if (route != null) {
       if (route.isCurrent) {
@@ -1194,13 +1194,13 @@ class UiService implements IUiService {
       }
     }
 
-    if (pSendClose) {
+    if (sendClose) {
       unawaited(
-          ICommandService().sendCommand(CloseContentCommand(componentName: pContentName, reason: "I got closed")));
+          ICommandService().sendCommand(CloseContentCommand(componentName: contentName, reason: "Content got closed")));
     }
 
-    IStorageService().deleteScreen(screenName: pContentName);
-    await ILayoutService().deleteScreen(pComponentId: panelModel.id);
+    IStorageService().deleteScreen(screenName: contentName);
+    await ILayoutService().deleteScreen(componentId: panelModel.id);
   }
 
   @override
@@ -1291,10 +1291,10 @@ class UiService implements IUiService {
   }
 
   @override
-  bool isContentVisible(String pContentName) {
-    return _activeContents.contains(pContentName) &&
+  bool isContentVisible(String contentName) {
+    return _activeContents.contains(contentName) &&
         FlutterUI.of(FlutterUI.getCurrentContext()!).jvxRouteObserver.knownRoutes.firstWhereOrNull(
-                (element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName)) !=
+                (element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + contentName)) !=
             null;
   }
 
@@ -1327,13 +1327,13 @@ class UiService implements IUiService {
   ///   _menuNotifier.value = _updateMenuModel(_originalMenuModel);
   /// });
   /// ```
-  MenuModel _updateMenuModel(MenuModel? pMenuModel) {
+  MenuModel _updateMenuModel(MenuModel? menuModel) {
     List<MenuGroupModel> menuGroupModels = [];
 
     bool offlineMode = IConfigService().offline.value;
 
-    if (!offlineMode && pMenuModel != null) {
-      menuGroupModels.addAll(pMenuModel.copy().menuGroups);
+    if (!offlineMode && menuModel != null) {
+      menuGroupModels.addAll(menuModel.copy().menuGroups);
     }
 
     if (appManager != null) {
@@ -1342,8 +1342,8 @@ class UiService implements IUiService {
 
         MenuItemModel? oldMenuItem;
 
-        if (pMenuModel != null) {
-          oldMenuItem = pMenuModel.getMenuItemByLongName(key) ?? pMenuModel.getMenuItemByNavigationName(key);
+        if (menuModel != null) {
+          oldMenuItem = menuModel.getMenuItemByLongName(key) ?? menuModel.getMenuItemByNavigationName(key);
         }
 
         //existing item configured for online only but we're offline -> remove item
@@ -1408,29 +1408,29 @@ class UiService implements IUiService {
       menuGroupModels.removeWhere((group) => group.items.isEmpty);
     }
 
-    MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
+    MenuModel menuModelNew = MenuModel(menuGroups: menuGroupModels);
 
-    appManager?.modifyMenuModel(menuModel);
+    appManager?.modifyMenuModel(menuModelNew);
 
-    return menuModel;
+    return menuModelNew;
   }
 
 
-  void _disposeModelSubscription(Object pSubscriber) {
+  void _disposeModelSubscription(Object subscriber) {
     List<ModelSubscription> copy = _modelSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].subbedObj == pSubscriber) {
+      if (copy[i].subbedObj == subscriber) {
         _modelSubscriptions.remove(copy[i]);
       }
     }
   }
 
-  void _disposeComponentSubscription(Object pSubscriber) {
+  void _disposeComponentSubscription(Object subscriber) {
     List<ComponentSubscription> copy = _componentSubscriptions.toList(growable: false);
 
     for (int i = 0; i < copy.length; i++) {
-      if (copy[i].subbedObj == pSubscriber) {
+      if (copy[i].subbedObj == subscriber) {
         _componentSubscriptions.remove(copy[i]);
       }
     }

@@ -30,7 +30,7 @@ class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> 
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command, BaseCommand? origin) async {
     FlPanelModel? modelOfScreen =
-        IStorageService().getComponentByName(pComponentName: command.componentName) as FlPanelModel?;
+        IStorageService().getComponentByName(componentName: command.componentName) as FlPanelModel?;
 
     if (modelOfScreen != null && !modelOfScreen.isCloseAble) {
       return [];

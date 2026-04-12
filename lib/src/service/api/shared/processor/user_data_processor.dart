@@ -26,7 +26,7 @@ class UserDataProcessor implements IResponseProcessor<UserDataResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(UserDataResponse pResponse, ApiRequest? pRequest) {
-    return [SaveUserDataCommand(userData: pResponse, reason: "Server sent user data")];
+  List<BaseCommand> processResponse(UserDataResponse response, ApiRequest? request) {
+    return [SaveUserDataCommand(userData: response, reason: "Server sent user data")];
   }
 }

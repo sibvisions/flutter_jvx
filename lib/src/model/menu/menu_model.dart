@@ -66,16 +66,16 @@ class MenuModel {
     return _menuMap.containsKey(name);
   }
 
-  MenuItemModel? getMenuItemByClassName(String pClassName) {
-    return items.firstWhereOrNull((item) => item.screenLongName.contains(pClassName));
+  MenuItemModel? getMenuItemByClassName(String className) {
+    return items.firstWhereOrNull((item) => item.screenLongName.contains(className));
   }
 
   MenuItemModel? getMenuItemByLongName(String screenLongName) {
     return _screenMap[screenLongName];
   }
 
-  MenuItemModel? getMenuItemByNavigationName(String pNavName) {
-    return _navigationMap[pNavName];
+  MenuItemModel? getMenuItemByNavigationName(String navigationName) {
+    return _navigationMap[navigationName];
   }
 
   MenuGroupModel? getMenuGroup(String name) {

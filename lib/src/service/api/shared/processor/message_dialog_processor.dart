@@ -22,24 +22,24 @@ import '../i_response_processor.dart';
 
 class MessageDialogProcessor implements IResponseProcessor<MessageDialogResponse> {
   @override
-  List<BaseCommand> processResponse(MessageDialogResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(MessageDialogResponse response, ApiRequest? request) {
     return [
       OpenMessageDialogCommand(
-        componentName: pResponse.componentId,
-        closable: pResponse.closable,
-        buttonType: pResponse.buttonType,
-        iconType: pResponse.iconType,
-        okComponentName: pResponse.okComponentId,
-        notOkComponentName: pResponse.notOkComponentId,
-        cancelComponentName: pResponse.cancelComponentId,
-        okText: pResponse.okText,
-        notOkText: pResponse.notOkText,
-        cancelText: pResponse.cancelText,
-        title: pResponse.title,
-        message: pResponse.message,
-        dataProvider: pResponse.dataProvider,
-        columnName: pResponse.columnName,
-        inputLabel: pResponse.inputLabel,
+        componentName: response.componentId,
+        closable: response.closable,
+        buttonType: response.buttonType,
+        iconType: response.iconType,
+        okComponentName: response.okComponentId,
+        notOkComponentName: response.notOkComponentId,
+        cancelComponentName: response.cancelComponentId,
+        okText: response.okText,
+        notOkText: response.notOkText,
+        cancelText: response.cancelText,
+        title: response.title,
+        message: response.message,
+        dataProvider: response.dataProvider,
+        columnName: response.columnName,
+        inputLabel: response.inputLabel,
         reason: "Message.dialog from server",
       )
     ];

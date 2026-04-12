@@ -118,9 +118,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   /// Returns the dataprovider of the tree level.
   /// If the dataprovider is self-joined, the dataprovider is returned.
   /// Otherwise an empty string is returned.
-  String? dataProviderAtTreeDepth(int pLevel) {
-    if (pLevel < model.dataProviders.length) {
-      return model.dataProviders[pLevel];
+  String? dataProviderAtTreeDepth(int level) {
+    if (level < model.dataProviders.length) {
+      return model.dataProviders[level];
     } else {
       return metaDatas[model.dataProviders.last]?.isSelfJoined() == true ? model.dataProviders.last : null;
     }
@@ -145,7 +145,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       );
       first = false;
 
-      IUiService().registerDataSubscription(pDataSubscription: dataSubscription, pImmediatelyRetrieveData: false);
+      IUiService().registerDataSubscription(dataSubscription: dataSubscription, immediatelyRetrieveData: false);
 
       ICommandService().sendCommand(
         GetMetaDataCommand(dataProvider: dataProvider, subId: dataSubscription.id, reason: "Get all meta datas"),
@@ -161,15 +161,15 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     }
   }
 
-  void _onPage(String pDataProvider, String? pPageKey, DataChunk pPageChunk) {
-    if (data[pDataProvider] == null) {
-      data[pDataProvider] = HashMap<String?, DataChunk>();
+  void _onPage(String dataProvider, String? pageKey, DataChunk pageChunk) {
+    if (data[dataProvider] == null) {
+      data[dataProvider] = HashMap<String?, DataChunk>();
     }
 
-    data[pDataProvider]![pPageKey] = pPageChunk;
+    data[dataProvider]![pageKey] = pageChunk;
 
     if (initialized) {
-      _addPage(pDataProvider, pPageKey, pPageChunk);
+      _addPage(dataProvider, pageKey, pageChunk);
     }
   }
 
@@ -228,15 +228,15 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       initialized = true;
   }
 
-  void _handleNodeDoubleTap(String pNodeKey) {
+  void _handleNodeDoubleTap(String nodeKey) {
     // Do nothing
   }
 
-  void _handleNodeTap(String pNodeKey) {
+  void _handleNodeTap(String nodeKey) {
     List<String> dataProviders = [];
     List<Filter?> filters = [];
 
-    Node<dynamic>? node = controller.getNode(pNodeKey);
+    Node<dynamic>? node = controller.getNode(nodeKey);
     while (node != null) {
       dataProviders.insert(0, node.data!.dataProvider);
       filters.insert(0, node.data!.rowFilter);
@@ -263,12 +263,12 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     );
   }
 
-  void _handleExpansionChanged(String pNodeKey, bool pExpanded) {
-    Node<dynamic> node = controller.getNode(pNodeKey)!;
-    node = node.copyWith(expanded: pExpanded);
+  void _handleExpansionChanged(String nodeKey, bool expanded) {
+    Node<dynamic> node = controller.getNode(nodeKey)!;
+    node = node.copyWith(expanded: expanded);
     controller = controller.withUpdateNode(node.key, node);
 
-    if (pExpanded) {
+    if (expanded) {
       if (node.children.isEmpty) {
         _fetchNodeChildren(node);
       } else if (model.detectEndNode) {
@@ -309,14 +309,14 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     }
   }
 
-  void _addPage(String pDataProvider, String? pPageKey, DataChunk pPageChunk) {
+  void _addPage(String dataProvider, String? pageKey, DataChunk pageChunk) {
     // Check if this data that is coming in is the first level of the tree.
     String baseDataProvider = dataProviderAtTreeDepth(0)!;
     bool isLevelZeroData =
-        baseDataProvider == pDataProvider && IDataService().getDataBook(baseDataProvider)!.rootKey == pPageKey;
+        baseDataProvider == dataProvider && IDataService().getDataBook(baseDataProvider)!.rootKey == pageKey;
 
     // Get all the nodes that are receiving this page.
-    List<Node<dynamic>> parentNodes = nodesReceivingPage[pDataProvider]?[pPageKey]
+    List<Node<dynamic>> parentNodes = nodesReceivingPage[dataProvider]?[pageKey]
             ?.map((nodeKey) => controller.getNode(nodeKey)!)
             .toList() ??
         [];
@@ -351,15 +351,15 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     // All nodes that were build for each parent node.
     HashMap<String?, List<Node<dynamic>>> newNodesPerParent = HashMap();
 
-    pPageChunk.data.forEach((rowIndex, dataRow) {
+    pageChunk.data.forEach((rowIndex, dataRow) {
       // Filter to identify this row in the child nodes of our parent nodes.
       // The tree path is no indication as just the sorting could be switched between fetches. Need to use the
       // primary keys!
-      Filter rowFilter = _createPrimaryKeysFilter(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions);
+      Filter rowFilter = _createPrimaryKeysFilter(metaDatas[dataProvider]!, dataRow, pageChunk.columnDefinitions);
 
       // If there is another databook that is a child of this one, then we need to create a potential parent node.
 
-      String nodeLabel = _createLabel(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions);
+      String nodeLabel = _createLabel(metaDatas[dataProvider]!, dataRow, pageChunk.columnDefinitions);
 
       int parentIndex = 0;
 
@@ -374,7 +374,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         Filter? childFilter;
         if (childDataBook != null) {
           DalMetaData childMetaData = metaDatas[childDataBook]!;
-          childFilter = _createChildFilter(childMetaData, metaDatas[pDataProvider]!, dataRow);
+          childFilter = _createChildFilter(childMetaData, metaDatas[dataProvider]!, dataRow);
 
           String childPageKey = childFilter.toPageKey();
 
@@ -402,7 +402,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
           children: oldNode?.children ?? [],
           // If the node is not evaluated to be a parent, then it can not be expanded.
           expanded: (oldNode?.expanded ?? false) && (oldNode?.parent ?? false),
-          data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider,
+          data: NodeData(pageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, dataProvider,
               childFilter?.toPageKey()),
           // If the node is not evaluated to be a parent, then it can be a parent.
           parent: isPotentialParent && (oldNode?.parent ?? true),
@@ -455,41 +455,41 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   Filter _createPrimaryKeysFilter(
-      DalMetaData pMetaData, List<dynamic> pDataRow, ColumnList pColumnDefinitions) {
+      DalMetaData metaData, List<dynamic> dataRow, ColumnList columnDefinitions) {
     return Filter(
-      columnNames: pMetaData.primaryKeyColumns,
-      values: pMetaData.primaryKeyColumns
-          .map((columnName) => pDataRow[pColumnDefinitions.indexByName(columnName)])
+      columnNames: metaData.primaryKeyColumns,
+      values: metaData.primaryKeyColumns
+          .map((columnName) => dataRow[columnDefinitions.indexByName(columnName)])
           .toList(),
     );
   }
 
-  String _createLabel(DalMetaData pMetaData, List<dynamic> pDataRow, ColumnList pColumnDefinitions) {
-    if (pMetaData.columnViewTree.isNotEmpty) {
+  String _createLabel(DalMetaData metaData, List<dynamic> dataRow, ColumnList columnDefinitions) {
+    if (metaData.columnViewTree.isNotEmpty) {
       String label = "";
-      for (String column in pMetaData.columnViewTree) {
+      for (String column in metaData.columnViewTree) {
         if (label.isNotEmpty) {
           label += " ";
         }
-        label += "${pDataRow[pColumnDefinitions.indexByName(column)]}";
+        label += "${dataRow[columnDefinitions.indexByName(column)]}";
       }
       return label;
-    } else if (pMetaData.columnViewTable.isNotEmpty) {
-      return pDataRow[pColumnDefinitions.indexByName(pMetaData.columnViewTable[0])].toString();
+    } else if (metaData.columnViewTable.isNotEmpty) {
+      return dataRow[columnDefinitions.indexByName(metaData.columnViewTable[0])].toString();
     } else {
       return "No column view";
     }
   }
 
-  Filter _createChildFilter(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow) {
-    ReferenceDefinition? reference = pChildMetaData.masterReference;
-    if (pChildMetaData.isSelfJoined() && pParentMetaData.dataProvider != pChildMetaData.dataProvider) {
-      reference = pChildMetaData.rootReference ?? reference;
+  Filter _createChildFilter(DalMetaData childMetaData, DalMetaData parentMetaData, List<dynamic> parentRow) {
+    ReferenceDefinition? reference = childMetaData.masterReference;
+    if (childMetaData.isSelfJoined() && parentMetaData.dataProvider != childMetaData.dataProvider) {
+      reference = childMetaData.rootReference ?? reference;
     }
 
     return Filter(
-      columnNames: pChildMetaData.masterReference!.columnNames,
-      values: pChildMetaData.masterReference!.columnNames.map((column) {
+      columnNames: childMetaData.masterReference!.columnNames,
+      values: childMetaData.masterReference!.columnNames.map((column) {
         // Is there a reference to the parent table?
         if (!reference!.columnNames.contains(column)) {
           return null;
@@ -499,11 +499,11 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         String parentColumn = reference.referencedColumnNames[reference.columnNames.indexOf(column)];
 
         // Get the index of the column in the parent table.
-        int parentColumnIndex = pParentMetaData.columnDefinitions.indexWhere((colDef) => colDef.name == parentColumn);
+        int parentColumnIndex = parentMetaData.columnDefinitions.indexWhere((colDef) => colDef.name == parentColumn);
 
         // Get the value of the column in the parent table.
-        if (parentColumnIndex >= 0 && parentColumnIndex < pParentRow.length) {
-          return pParentRow[parentColumnIndex];
+        if (parentColumnIndex >= 0 && parentColumnIndex < parentRow.length) {
+          return parentRow[parentColumnIndex];
         } else {
           return null;
         }
@@ -559,16 +559,16 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     setState(() {});
   }
 
-  Node? getNodeFromTreePath(List<int> pTreePath, [Node? parentNode]) {
+  Node? getNodeFromTreePath(List<int> treePath, [Node? parentNode]) {
     Iterator iterator = (parentNode?.children ?? controller.children).iterator;
     while (iterator.moveNext()) {
       Node<dynamic> child = iterator.current;
-      if (listEquals(child.data!.treePath, pTreePath)) {
+      if (listEquals(child.data!.treePath, treePath)) {
         return child;
       } else if (child.isParent &&
-          child.data!.treePath.length < pTreePath.length &&
-          listEquals(child.data!.treePath, pTreePath.sublist(0, child.data!.treePath.length))) {
-        return getNodeFromTreePath(pTreePath, child);
+          child.data!.treePath.length < treePath.length &&
+          listEquals(child.data!.treePath, treePath.sublist(0, child.data!.treePath.length))) {
+        return getNodeFromTreePath(treePath, child);
       }
     }
     return null;

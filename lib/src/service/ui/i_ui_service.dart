@@ -44,6 +44,7 @@ import '../../model/response/application_meta_data_response.dart';
 import '../../model/response/application_parameters_response.dart';
 import '../../model/response/application_settings_response.dart';
 import '../../model/response/device_status_response.dart';
+import '../command/i_command_service.dart';
 import '../service.dart';
 import 'protect_config.dart';
 
@@ -91,7 +92,7 @@ abstract class IUiService implements Service {
     }
   }
 
-  MenuItemModel? getMenuItem(String pScreenName);
+  MenuItemModel? getMenuItem(String screenName);
 
   I18n i18n();
 
@@ -105,7 +106,7 @@ abstract class IUiService implements Service {
   ValueListenable<String?> get designModeElement;
 
   /// Updates the design mode element.
-  void updateDesignModeElement(String? pId);
+  void updateDesignModeElement(String? id);
 
   /// the protection handling
   ValueListenable<List<ProtectConfig>?> get protection;
@@ -121,15 +122,15 @@ abstract class IUiService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Route to meu page
-  /// pReplaceRoute - true if the route should replace the route in its history
+  /// [replaceRoute] - true if the route should replace the route in its history
   /// false if it should add to it
-  void routeToMenu({bool pReplaceRoute = false});
+  void routeToMenu({bool replaceRoute = false});
 
   /// Route to work screen page
-  void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false, bool pSecure = false});
+  void routeToWorkScreen({required String screenName, bool replaceRoute = false, bool secure = false});
 
   /// Route to settings page
-  void routeToSettings({bool pReplaceRoute = false});
+  void routeToSettings({bool replaceRoute = false});
 
   Future<void> routeToAppOverview();
 
@@ -139,20 +140,20 @@ abstract class IUiService implements Service {
   AppManager? getAppManager();
 
   /// Sets the current custom manager
-  void setAppManager(AppManager? pAppManager);
+  void setAppManager(AppManager? appManager);
 
   /// Opens a [Dialog]
   Future<T?> openDialog<T>({
-    required WidgetBuilder pBuilder,
+    required WidgetBuilder builder,
     BuildContext? context,
-    bool pIsDismissible = true
+    bool isDismissible = true
   });
 
   /// Opens a [Dialog]
   Future<T?> openDialogFullScreen<T>({
-    required WidgetBuilder pBuilder,
+    required WidgetBuilder builder,
     BuildContext? context,
-    bool pIsDismissible = true,
+    bool isDismissible = true,
     Duration? transitionDuration
   });
 
@@ -174,7 +175,7 @@ abstract class IUiService implements Service {
   ValueNotifier<MenuModel> getMenuNotifier();
 
   /// Set menu model to be used when opening the menu
-  void setMenuModel(MenuModel? pMenuModel);
+  void setMenuModel(MenuModel? menuModel);
 
   /// Clears the menu model (this is not the same as setting menu model to null)
   void clearMenuModel();
@@ -189,24 +190,24 @@ abstract class IUiService implements Service {
   /// `null` if none is present.
   ValueNotifier<String?> get clientId;
 
-  void updateClientId(String? pClientId);
+  void updateClientId(String? clientId);
 
   /// Returns the last known [ApplicationMetaDataResponse].
   ValueNotifier<ApplicationMetaDataResponse?> get applicationMetaData;
 
-  void updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData);
+  void updateApplicationMetaData(ApplicationMetaDataResponse? applicationMetaData);
 
   /// Retrieves the last known [ApplicationSettingsResponse].
   ValueNotifier<ApplicationSettingsResponse> get applicationSettings;
 
   /// Sets the [ApplicationSettingsResponse].
-  void updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings);
+  void updateApplicationSettings(ApplicationSettingsResponse applicationSettings);
 
   /// Retrieves the last known [ApplicationParameters].
   ValueNotifier<ApplicationParameters> get applicationParameters;
 
   /// Sets the [ApplicationParameters].
-  void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters);
+  void updateApplicationParameters(ApplicationParametersResponse applicationParameters);
 
   /// Returns the app's layout mode.
   ///
@@ -215,7 +216,7 @@ abstract class IUiService implements Service {
   ValueNotifier<LayoutMode> get layoutMode;
 
   /// Sets the layout mode.
-  void updateLayoutMode(LayoutMode pLayoutMode);
+  void updateLayoutMode(LayoutMode layoutMode);
 
   /// Returns if mobile-only mode is currently forced.
   ///
@@ -224,7 +225,7 @@ abstract class IUiService implements Service {
   ValueNotifier<bool> get mobileOnly;
 
   /// Sets the mobile-only mode.
-  void updateMobileOnly(bool pMobileOnly);
+  void updateMobileOnly(bool mobileOnly);
 
   /// Returns if web-only mode is currently forced.
   ///
@@ -233,7 +234,7 @@ abstract class IUiService implements Service {
   ValueNotifier<bool> get webOnly;
 
   /// Sets the web-only mode.
-  void updateWebOnly(bool pWebOnly);
+  void updateWebOnly(bool webOnly);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // LayoutData management
@@ -247,24 +248,24 @@ abstract class IUiService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Register as an active component, callback will be called when model
-  void registerAsLiveComponent(ComponentSubscription pComponentSubscription);
+  void registerAsLiveComponent(ComponentSubscription componentSubscription);
 
-  void registerModelSubscription(ModelSubscription pModelSubscription);
+  void registerModelSubscription(ModelSubscription modelSubscription);
 
   /// Register to receive a subscriptions of data from a specific dataProvider
-  void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatelyRetrieveData = true});
+  void registerDataSubscription({required DataSubscription dataSubscription, bool immediatelyRetrieveData = true});
 
   /// Notifies all subscriptions of a reload.
-  void notifySubscriptionsOfReload(String pDataProvider);
+  void notifySubscriptionsOfReload(String dataProvider);
 
   /// Removes all active subscriptions
-  void disposeSubscriptions(Object pSubscriber);
+  void disposeSubscriptions(Object subscriber);
 
   /// Removes [DataSubscription] from [IUiService]
-  void disposeDataSubscription({required Object pSubscriber, String? pDataProvider});
+  void disposeDataSubscription({required Object subscriber, String? dataProvider});
 
   /// Collects all commands to do to save all editors.
-  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId, String pReason);
+  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? id, String reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves
@@ -282,57 +283,57 @@ abstract class IUiService implements Service {
 
   void notifyModels();
 
-  /// Notify all components belonging to [pDataProvider] that their underlying
+  /// Notify all components belonging to [dataProvider] that their underlying
   /// data may have changed.
   void notifyDataChange({
-    required String pDataProvider,
-    bool pUpdatedCurrentPage = true,
-    String? pUpdatedPage,
-    bool pFromStart = false
+    required String dataProvider,
+    bool updatedCurrentPage = true,
+    String? updatedPage,
+    bool fromStart = false
   });
 
-  /// Notify components belonging to [pDataProvider] that the display map has been changed.
-  void notifyDataToDisplayMapChanged(String pDataProvider);
+  /// Notify components belonging to [dataProvider] that the display map has been changed.
+  void notifyDataToDisplayMapChanged(String dataProvider);
 
-  /// Notify all components belonging to [pDataProvider] that their underlying
+  /// Notify all components belonging to [dataProvider] that their underlying
   /// data selection has changed.
-  void notifySelectionChange(String pDataProvider);
+  void notifySelectionChange(String dataProvider);
 
-  /// Notify all components belonging to [pDataProvider] that the meta data has been changed.
-  void notifyMetaDataChange(String pDataProvider);
+  /// Notify all components belonging to [dataProvider] that the meta data has been changed.
+  void notifyMetaDataChange(String dataProvider);
 
   /// Calls the callback of all subscribed [DataSubscription]s with the new selected record.
   /// Null if no record is selected or if the selected record is not fetched.
   void sendSubsSelectedData({
-    required String pSubId,
-    required String pDataProvider,
-    DataRecord? pDataRow,
+    required String subId,
+    required String dataProvider,
+    DataRecord? dataRow,
   });
 
   /// Calls the callback of all subscribed [DataSubscription]s with the changed data.
   void sendSubsDataChunk({
-    required String pSubId,
-    required String pDataProvider,
-    required DataChunk pDataChunk,
+    required String subId,
+    required String dataProvider,
+    required DataChunk dataChunk,
   });
 
   /// Calls the callback of all subscribed [DataSubscription]s
   void sendSubsPageChunk({
-    required String pSubId,
-    required String pDataProvider,
-    required DataChunk pDataChunk,
-    required String pPageKey,
+    required String subId,
+    required String dataProvider,
+    required DataChunk dataChunk,
+    required String pageKey,
   });
 
   /// Calls the callback of all subscribed [DataSubscription]s with the changed meta data.
   void sendSubsMetaData({
-    required String pSubId,
-    required String pDataProvider,
-    required DalMetaData pMetaData,
+    required String subId,
+    required String dataProvider,
+    required DalMetaData metaData,
   });
 
   /// Returns the highest row which any component is subscribed to on this data provider
-  int getSubscriptionRowCount(String pDataProvider);
+  int getSubscriptionRowCount(String dataProvider);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom
@@ -342,10 +343,10 @@ abstract class IUiService implements Service {
   CustomScreen? getCustomScreen(String key);
 
   /// Gets a custom component with given name (ignores screen)
-  CustomComponent? getCustomComponent(String pComponentName);
+  CustomComponent? getCustomComponent(String componentName);
 
   /// If this screen beams or sends an open work-screen command first.
-  bool usesNativeRouting(String pScreenLongName);
+  bool usesNativeRouting(String screenLongName);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Uncategorized method definitions
@@ -353,9 +354,9 @@ abstract class IUiService implements Service {
 
   List<JVxDialog> getJVxDialogs();
 
-  void showJVxDialog(JVxDialog pDialog);
+  void showJVxDialog(JVxDialog dialog);
 
-  void closeJVxDialog(JVxDialog pDialog);
+  void closeJVxDialog(JVxDialog dialog);
 
   void closeJVxDialogs();
 
@@ -368,30 +369,30 @@ abstract class IUiService implements Service {
     StackTrace? stackTrace
   });
 
-  Future<bool> saveAllEditors({String? pId, required String pReason});
+  Future<CommandResult> saveAllEditors({String? id, required String reason});
 
-  void setFocus(String pComponentId);
+  void setFocus(String componentId);
 
   FlComponentModel? getFocus();
 
-  bool hasFocus(String? pComponentId);
+  bool hasFocus(String? componentId);
 
-  void removeFocus([String? pComponentId]);
+  void removeFocus([String? componentId]);
 
   /// Returns the current work screen name from the route url.
   ///
   /// This is usually the same as in [MenuItemModel.label].
   String? getCurrentWorkScreenName();
 
-  void openContent(String name);
+  void openContent(String contentName);
 
-  Future<void> closeContent(String name, [bool pSendClose = true]);
+  Future<void> closeContent(String name, [bool sendClose = true]);
 
   void disposeContents();
 
   Future<void> closeAllScreens([bool popPage = true]);
 
-  bool isContentVisible(String pContentName);
+  bool isContentVisible(String contentName);
 
   /// Adds a listener which receives application parameter changes
   void addApplicationParameterChangedListener(ApplicationParameterChangedListener listener);

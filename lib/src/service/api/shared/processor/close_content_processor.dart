@@ -26,8 +26,8 @@ class CloseContentProcessor implements IResponseProcessor<CloseContentResponse> 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(CloseContentResponse pResponse, ApiRequest? pRequest) {
-    IUiService().closeContent(pResponse.componentName, false);
+  List<BaseCommand> processResponse(CloseContentResponse response, ApiRequest? request) {
+    IUiService().closeContent(response.componentName, false);
 
     return [];
   }

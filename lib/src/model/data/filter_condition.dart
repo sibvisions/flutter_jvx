@@ -61,31 +61,31 @@ class FilterCondition {
     }
   }
 
-  FilterCondition.fromJson(Map<String, dynamic> pJson) {
-    columnName = pJson[ApiObjectProperty.columnName];
-    value = pJson[ApiObjectProperty.value];
-    not = pJson[ApiObjectProperty.not] ?? false;
+  FilterCondition.fromJson(Map<String, dynamic> json) {
+    columnName = json[ApiObjectProperty.columnName];
+    value = json[ApiObjectProperty.value];
+    not = json[ApiObjectProperty.not] ?? false;
 
     operatorType = ParseUtil.getPropertyValue(
-      json: pJson,
+      json: json,
       key: ApiObjectProperty.operatorType,
       defaultValue: OperatorType.And,
       currentValue: operatorType,
       valueConversion: (value) => OperatorType.values.firstWhere((e) => e.name == value),
     );
     compareType = ParseUtil.getPropertyValue(
-      json: pJson,
+      json: json,
       key: ApiObjectProperty.compareType,
       defaultValue: CompareType.Equals,
       currentValue: compareType,
       valueConversion: (value) => CompareType.values.firstWhere((e) => e.name == value),
     );
 
-    if (pJson.containsKey(ApiObjectProperty.condition)) {
-      conditions.add(FilterCondition.fromJson(pJson[ApiObjectProperty.condition]));
+    if (json.containsKey(ApiObjectProperty.condition)) {
+      conditions.add(FilterCondition.fromJson(json[ApiObjectProperty.condition]));
     }
-    if (pJson.containsKey(ApiObjectProperty.conditions)) {
-      pJson[ApiObjectProperty.conditions].forEach((c) => conditions.add(FilterCondition.fromJson(c)));
+    if (json.containsKey(ApiObjectProperty.conditions)) {
+      json[ApiObjectProperty.conditions].forEach((c) => conditions.add(FilterCondition.fromJson(c)));
     }
   }
 

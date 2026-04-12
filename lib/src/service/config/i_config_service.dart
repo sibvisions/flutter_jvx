@@ -44,7 +44,7 @@ abstract class IConfigService implements Service {
   ///
   /// If [devConfig] is true, this call removes all saved values for [ServerConfig]
   /// which would prevent the default config to be used.
-  Future<void> loadConfig(AppConfig pAppConfig, [bool devConfig = false]);
+  Future<void> loadConfig(AppConfig appConfig, [bool devConfig = false]);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Helper-methods for non-persistent fields
@@ -191,19 +191,19 @@ abstract class IConfigService implements Service {
   ValueListenable<String?> get authKey;
 
   /// Sets the authKey.
-  Future<void> updateAuthKey(String? pAuthKey);
+  Future<void> updateAuthKey(String? authKey);
 
   /// Returns version of the current app.
   ValueListenable<String?> get version;
 
   /// Sets the version of the current app.
-  Future<void> updateVersion(String? pVersion);
+  Future<void> updateVersion(String? version);
 
   /// Returns info about the current user.
   ValueListenable<UserInfo?> get userInfo;
 
   /// Sets the current user info.
-  Future<void> updateUserInfo({UserInfo? pUserInfo, Map<String, dynamic>? pJson});
+  Future<void> updateUserInfo({UserInfo? userInfo, Map<String, dynamic>? json});
 
   /// Returns the language which should be used to translate text shown to the user.
   ///
@@ -225,7 +225,7 @@ abstract class IConfigService implements Service {
   ValueListenable<String?> get applicationLanguage;
 
   /// Sets the application language code returned by the server.
-  Future<void> updateApplicationLanguage(String? pLanguage);
+  Future<void> updateApplicationLanguage(String? language);
 
   /// Returns the user defined language code.
   ///
@@ -233,7 +233,7 @@ abstract class IConfigService implements Service {
   ValueListenable<String?> get userLanguage;
 
   /// Set the user defined language code.
-  Future<void> updateUserLanguage(String? pLanguage);
+  Future<void> updateUserLanguage(String? language);
 
   /// Returns all currently supported languages by this application.
   ValueListenable<Set<String>> get supportedLanguages;
@@ -273,7 +273,7 @@ abstract class IConfigService implements Service {
   ///
   /// See also:
   /// * [DownloadStyleResponse]
-  Future<void> updateApplicationStyle(Map<String, String>? pAppStyle);
+  Future<void> updateApplicationStyle(Map<String, String>? appStyle);
 
   /// Returns the theme mode which should be set to the app.
   ///
@@ -289,7 +289,7 @@ abstract class IConfigService implements Service {
   ValueListenable<bool> get offline;
 
   /// Sets the offline mode.
-  Future<void> updateOffline(bool pOffline);
+  Future<void> updateOffline(bool offline);
 
   /// Returns the screen to which the offline data has to be synced back.
   ///
@@ -298,7 +298,7 @@ abstract class IConfigService implements Service {
   ValueListenable<String?> get offlineScreen;
 
   /// Sets the screen to which the offline data has to be synced back.
-  Future<void> updateOfflineScreen(String pWorkScreen);
+  Future<void> updateOfflineScreen(String workScreen);
 
   // ------------------------------
 
@@ -312,7 +312,7 @@ abstract class IConfigService implements Service {
   ///
   /// See also:
   /// * [getCustomStartupProperties]
-  void setCustomStartupParameters(Map<String, dynamic>? pParameters);
+  void setCustomStartupParameters(Map<String, dynamic>? parameters);
 
   /// Returns a map of all temporary parameters which are sent on the next [ApiStartupRequest].
   ///
@@ -324,10 +324,10 @@ abstract class IConfigService implements Service {
   ///
   /// See also:
   /// * [DownloadImagesResponse]
-  void registerImagesCallback(Function() pCallback);
+  void registerImagesCallback(Function() callback);
 
   /// Dispose an image callback.
-  void disposeImagesCallback(Function() pCallback);
+  void disposeImagesCallback(Function() callback);
 
   /// Dispose all image callbacks.
   void disposeImagesCallbacks();
@@ -337,6 +337,6 @@ abstract class IConfigService implements Service {
 
   /// Refreshes the default app if necessary.
   ///
-  /// @param pOverride If true, the default app will be refreshed even if it is already set.
-  Future<void> refreshDefaultApp([bool pOverride = false]);
+  /// @param override If true, the default app will be refreshed even if it is already set.
+  Future<void> refreshDefaultApp([bool override = false]);
 }

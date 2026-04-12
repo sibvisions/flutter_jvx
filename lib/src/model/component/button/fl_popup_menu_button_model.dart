@@ -27,14 +27,14 @@ class FlPopupMenuButtonModel extends FlButtonModel {
   FlPopupMenuButtonModel get defaultModel => FlPopupMenuButtonModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     defaultMenuItem = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.defaultMenuItem,
-      pDefault: defaultModel.defaultMenuItem,
-      pCurrent: defaultMenuItem,
+      json: newJson,
+      key: ApiObjectProperty.defaultMenuItem,
+      defaultValue: defaultModel.defaultMenuItem,
+      currentValue: defaultMenuItem,
     );
   }
 }

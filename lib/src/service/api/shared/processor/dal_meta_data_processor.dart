@@ -22,7 +22,7 @@ import '../i_response_processor.dart';
 
 class DalMetaDataProcessor implements IResponseProcessor<DalMetaDataResponse> {
   @override
-  List<BaseCommand> processResponse(DalMetaDataResponse pResponse, ApiRequest? pRequest) {
-    return [SaveMetaDataCommand(response: pResponse, reason: "Server sent new MetaData")];
+  List<BaseCommand> processResponse(DalMetaDataResponse response, ApiRequest? request) {
+    return [SaveMetaDataCommand(response: response, reason: "Server sent new MetaData")];
   }
 }

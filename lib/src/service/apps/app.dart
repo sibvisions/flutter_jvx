@@ -314,10 +314,10 @@ class App {
   }
 
   /// Sets the default state of this app.
-  Future<void> updateDefault(bool pDefault) async {
+  Future<void> updateDefault(bool asDefault) async {
     //don't use assert here because we won't throw an error
     if (!locked) {
-      if (pDefault) {
+      if (asDefault) {
         await IConfigService().updateDefaultApp(_id);
       } else if (isDefault) {
         await IConfigService().refreshDefaultApp(true);

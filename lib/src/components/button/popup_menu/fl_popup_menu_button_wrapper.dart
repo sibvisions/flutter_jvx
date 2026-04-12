@@ -85,7 +85,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
 
   /// Register descendant models to receive ui updates
   void _registerDescendantModels() {
-    List<FlComponentModel> descendantModels = IStorageService().getAllComponentsBelowById(pParentId: model.id);
+    List<FlComponentModel> descendantModels = IStorageService().getAllComponentsBelowById(parentId: model.id);
     for (var childModel in descendantModels) {
       IUiService().disposeSubscriptions(childModel.id);
       ComponentSubscription componentSubscription = ComponentSubscription(
@@ -104,13 +104,13 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
 
       // Get all children models
       List<FlComponentModel> listOfPopupMenuModels =
-          IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false);
+          IStorageService().getAllComponentsBelowById(parentId: model.id, recursively: false);
       // Remove all non popup menu models
       listOfPopupMenuModels.removeWhere((element) => element is! FlPopupMenuModel);
 
       for (FlComponentModel popupMenuModel in listOfPopupMenuModels) {
         List<FlComponentModel> listOfPopupMenuItems =
-            IStorageService().getAllComponentsBelowById(pParentId: popupMenuModel.id, pRecursively: false);
+            IStorageService().getAllComponentsBelowById(parentId: popupMenuModel.id, recursively: false);
         // Remove all non popup menu item models
         listOfPopupMenuItems.removeWhere((element) => element is! FlPopupMenuItemModel && element is! FlSeparatorModel);
 

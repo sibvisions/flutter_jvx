@@ -61,6 +61,9 @@ mixin FlDataMixin {
   /// The sizes of the table.
   TableSize? tableSize;
 
+  /// The repaint function
+  Function? repaint;
+
   /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
 
@@ -80,13 +83,13 @@ mixin FlDataMixin {
   }
 
   /// Gets whether the row at [index] can be deleted.
-  bool isRowDeletable(int pRowIndex) {
+  bool isRowDeletable(int rowIndex) {
     return model.isEnabled &&
-      isDataRow(pRowIndex) &&
+      isDataRow(rowIndex) &&
       model.deleteEnabled &&
-      ((selectedRow == pRowIndex && (metaData.deleteEnabled || metaData.modelDeleteEnabled)) ||
-       (selectedRow != pRowIndex && metaData.modelDeleteEnabled)) &&
-      (!metaData.additionalRowVisible || pRowIndex != 0) &&
+      ((selectedRow == rowIndex && (metaData.deleteEnabled || metaData.modelDeleteEnabled)) ||
+       (selectedRow != rowIndex && metaData.modelDeleteEnabled)) &&
+      (!metaData.additionalRowVisible || rowIndex != 0) &&
       !metaData.readOnly;
   }
 
@@ -193,17 +196,17 @@ mixin FlDataMixin {
   }
 
   /// Selects a record by [index].
-  Future<bool> selectRecord(int index, {String? columnName, CommandCallback? afterSelectCommand, bool? force}) async {
+  Future<CommandResult> selectRecord(int index, {String? columnName, CommandCallback? afterSelectCommand, bool? force}) async {
     if (index >= dataChunk.data.length) {
       FlutterUI.logUI.i("Row index $index out of range (${dataChunk.data.length})");
-      return false;
+      return CommandResult(success: false);
     }
 
-    int selectedRow = IDataService().getDataBook(model.dataProvider)?.selectedRow ?? -1;
+    int selectedRowOld = IDataService().getDataBook(model.dataProvider)?.selectedRow ?? -1;
 
     Filter? filter;
 
-    if (selectedRow != index || force == true) {
+    if (selectedRowOld != index || force == true) {
       filter = createFilter(index);
 
       if (filter == null) {
@@ -211,7 +214,7 @@ mixin FlDataMixin {
           FlutterUI.logUI.w("Filter of (${model.dataProvider}) is null");
         }
 
-        return false;
+        return CommandResult(success: false);
       }
     }
 
@@ -219,7 +222,7 @@ mixin FlDataMixin {
 
     commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus because of selecting row of ${model.dataProvider}"));
 
-    if (selectedRow != index || force == true) {
+    if (selectedRowOld != index || force == true) {
       commands.add(
         SelectRecordCommand(
           dataProvider: model.dataProvider,
@@ -231,11 +234,23 @@ mixin FlDataMixin {
       );
     }
 
-    if (afterSelectCommand != null) {
-      commands.add(FunctionCommand(afterSelectCommand, reason: "After selected row of ${model.dataProvider}"));
-    }
+    return ICommandService().sendCommands(commands, delayUILocking: true).then((result) {
+      if (result.success) {
+        if (afterSelectCommand != null) {
+          afterSelectCommand.call();
+        }
+      }
+      else {
+        selectedRowTemporary = null;
+        selectedRow = selectedRowOld;
 
-    return ICommandService().sendCommands(commands, delayUILocking: true);
+        if (repaint != null) {
+          repaint!.call();
+        }
+      }
+
+      return result;
+    });
   }
 
   /// Creates an [InsertRecordCommand].
@@ -251,10 +266,10 @@ mixin FlDataMixin {
   /// Inserts a new record.
   void insertRecord() {
     IUiService().saveAllEditors(
-      pReason: "Insert record in ${model.dataProvider}",
-      pId: model.id,
-    ).then((success) {
-      if (!success) {
+      reason: "Insert record in ${model.dataProvider}",
+      id: model.id,
+    ).then((result) {
+      if (!result.success) {
         return;
       }
 
@@ -292,45 +307,45 @@ mixin FlDataMixin {
   }
 
   /// Sends a [SetValuesCommand] for this row.
-  BaseCommand setValues(int pRowIndex, List<String> pColumnNames, List<dynamic> pValues, String pEditorColumnName) {
+  BaseCommand setValues(int rowIndex, List<String> columnNames, List<dynamic> values, String editorColumnName) {
     return SetValuesCommand(
       dataProvider: model.dataProvider,
-      columnNames: pColumnNames,
-      values: pValues,
-      filter: createFilter(pRowIndex),
-      rowNumber: pRowIndex,
+      columnNames: columnNames,
+      values: values,
+      filter: createFilter(rowIndex),
+      rowNumber: rowIndex,
       reason: "Values changed in ${model.dataProvider}",
     );
   }
 
-  void setValueOnEndEditing(dynamic pValue, int pRow, String pColumnName) {
+  void setValueOnEndEditing(dynamic value, int row, String columnName) {
     selectRecord(
-      pRow,
-      columnName: pColumnName,
+      row,
+      columnName: columnName,
       afterSelectCommand: () {
-        int colIndex = metaData.columnDefinitions.indexByName(pColumnName);
+        int colIndex = metaData.columnDefinitions.indexByName(columnName);
 
-        if (isColumn(pRow, colIndex)) {
-          if (pValue is Map<String, dynamic>) {
+        if (isColumn(row, colIndex)) {
+          if (value is Map<String, dynamic>) {
             List<String> columns = [];
             List<dynamic> values = [];
 
             //only use editable columns
-            for (String columnName in pValue.keys) {
-              if (isCellEditable(pRow, columnName)) {
+            for (String columnName in value.keys) {
+              if (isCellEditable(row, columnName)) {
                 columns.add(columnName);
-                values.add(pValue[columnName]);
+                values.add(value[columnName]);
               }
             }
 
             //only send if at least one columns is editable
             if (columns.isNotEmpty) {
-              return [setValues(pRow, columns, values, pColumnName)];
+              return [setValues(row, columns, values, columnName)];
             }
           }
           else {
-            if (isCellEditable(pRow, pColumnName)) {
-              return [setValues(pRow, [pColumnName], [pValue], pColumnName)];
+            if (isCellEditable(row, columnName)) {
+              return [setValues(row, [columnName], [value], columnName)];
             }
           }
         }

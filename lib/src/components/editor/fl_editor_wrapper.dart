@@ -246,14 +246,14 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void _subscribe([bool immediatelyRetrieveData = true]) {
     if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider,
           onSelectedRecord: setValue,
           onMetaData: receiveMetaData,
           dataColumns: isLinkedEditor() ? null : [model.columnName],
         ),
-          pImmediatelyRetrieveData: immediatelyRetrieveData
+        immediatelyRetrieveData: immediatelyRetrieveData
       );
     }
   }
@@ -266,7 +266,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Unsubscribes the callback of the cell editor from value changes.
   void _unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    IUiService().disposeDataSubscription(subscriber: this, dataProvider: model.dataProvider);
   }
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
@@ -282,13 +282,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   void _onValueChanged(dynamic value) {
-    IUiService()
-        .saveAllEditors(
-      pId: model.id,
-      pReason: "Value of ${model.id} set to $value",
-    ).then((success) {
-      if (!success) {
-        return false;
+    IUiService().saveAllEditors(
+      id: model.id,
+      reason: "Value of ${model.id} set to $value",
+    ).then((result) {
+      if (!result.success) {
+        return result;
       }
 
       ICommandService().sendCommand(_sendValueToServer(value));
@@ -342,11 +341,11 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
 
     await IUiService().saveAllEditors(
-      pId: model.id,
-      pReason: "Value of ${model.id} set to $value",
-    ).then((success) {
-      if (!success) {
-        return false;
+      id: model.id,
+      reason: "Value of ${model.id} set to $value",
+    ).then((result) {
+      if (!result.success) {
+        return result;
       }
 
       List<BaseCommand> commands = [];
@@ -439,7 +438,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
 
     dynamic value = await cellEditor.getValue();
-    // cellEditor.formatValue(pValue)
+    // cellEditor.formatValue(alue)
     if (_isSameValue(value)) {
       return null;
     }

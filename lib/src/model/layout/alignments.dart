@@ -24,30 +24,30 @@ extension VerticalAlignmentE on VerticalAlignment {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Gets [pAlignment] as [VerticalAlignment]
-  static VerticalAlignment fromInt(int pAlignment) {
-    return VerticalAlignment.values[pAlignment];
+  /// Gets [alignment] as [VerticalAlignment]
+  static VerticalAlignment fromInt(int alignment) {
+    return VerticalAlignment.values[alignment];
   }
 
-  /// Parses [pAlignment] to [VerticalAlignment]
-  static VerticalAlignment fromString(String pAlignment) {
-    return VerticalAlignment.values[int.parse(pAlignment)];
+  /// Parses [alignment] to [VerticalAlignment]
+  static VerticalAlignment fromString(String alignment) {
+    return VerticalAlignment.values[int.parse(alignment)];
   }
 
-  /// Parses [pAlignment] to [VerticalAlignment]
-  static VerticalAlignment fromDynamic(dynamic pAlignment) {
-    if (pAlignment is String) {
-      return VerticalAlignment.values[int.parse(pAlignment)];
+  /// Parses [alignment] to [VerticalAlignment]
+  static VerticalAlignment fromDynamic(dynamic alignment) {
+    if (alignment is String) {
+      return VerticalAlignment.values[int.parse(alignment)];
     }
-    else if (pAlignment is int) {
-      return VerticalAlignment.values[pAlignment];
+    else if (alignment is int) {
+      return VerticalAlignment.values[alignment];
     }
 
-    return VerticalAlignment.values[int.parse(pAlignment.toString())];
+    return VerticalAlignment.values[int.parse(alignment.toString())];
   }
 
-  static TextAlignVertical toTextAlign(VerticalAlignment pAlignment) {
-    switch (pAlignment) {
+  static TextAlignVertical toTextAlign(VerticalAlignment alignment) {
+    switch (alignment) {
       case VerticalAlignment.TOP:
         return TextAlignVertical.top;
       case VerticalAlignment.CENTER:
@@ -68,30 +68,30 @@ extension HorizontalAlignmentE on HorizontalAlignment {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Gets [pAlignment] as [HorizontalAlignment]
-  static HorizontalAlignment fromInt(int pAlignment) {
-    return HorizontalAlignment.values[pAlignment];
+  /// Gets [alignment] as [HorizontalAlignment]
+  static HorizontalAlignment fromInt(int alignment) {
+    return HorizontalAlignment.values[alignment];
   }
 
-  /// Parses [pAlignment] to [HorizontalAlignment]
-  static HorizontalAlignment fromString(String pAlignment) {
-    return HorizontalAlignment.values[int.parse(pAlignment)];
+  /// Parses [alignment] to [HorizontalAlignment]
+  static HorizontalAlignment fromString(String alignment) {
+    return HorizontalAlignment.values[int.parse(alignment)];
   }
 
-  /// Parses [pAlignment] to [HorizontalAlignment]
-  static HorizontalAlignment fromDynamic(dynamic pAlignment) {
-    if (pAlignment is String) {
-      return HorizontalAlignment.values[int.parse(pAlignment)];
+  /// Parses [alignment] to [HorizontalAlignment]
+  static HorizontalAlignment fromDynamic(dynamic alignment) {
+    if (alignment is String) {
+      return HorizontalAlignment.values[int.parse(alignment)];
     }
-    else if (pAlignment is int) {
-      return HorizontalAlignment.values[pAlignment];
+    else if (alignment is int) {
+      return HorizontalAlignment.values[alignment];
     }
 
-    return HorizontalAlignment.values[int.parse(pAlignment.toString())];
+    return HorizontalAlignment.values[int.parse(alignment.toString())];
   }
 
-  static TextAlign toTextAlign(HorizontalAlignment pAlignment) {
-    switch (pAlignment) {
+  static TextAlign toTextAlign(HorizontalAlignment alignment) {
+    switch (alignment) {
       case HorizontalAlignment.LEFT:
         return TextAlign.left;
       case HorizontalAlignment.CENTER:
@@ -112,9 +112,9 @@ extension AlignmentOrientationE on HorizontalAlignment {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Parses [pAlignment] to [AlignmentOrientation]
-  static AlignmentOrientation fromString(String pAlignment) {
-    return AlignmentOrientation.values[int.parse(pAlignment)];
+  /// Parses [alignment] to [AlignmentOrientation]
+  static AlignmentOrientation fromString(String alignment) {
+    return AlignmentOrientation.values[int.parse(alignment)];
   }
 }
 

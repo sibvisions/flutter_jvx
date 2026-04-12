@@ -164,10 +164,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         hintText: model.isBorderVisible ? null : model.placeholder,
         labelText: model.isBorderVisible ? model.placeholder : null,
         labelStyle: model.createTextStyle(
-          pForeground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
+          foreground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
         ),
         hintStyle: model.createTextStyle(
-          pForeground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
+          foreground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
         ),
         contentPadding: contentPadding,
         border: createBorder(context, FlTextBorderType.border),
@@ -489,7 +489,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       color = _extractColor(FlComponentModel.STYLE_TEXT_COLOR_DISABLED);
     }
 
-    return model.createTextStyle(pForeground: color);
+    return model.createTextStyle(foreground: color);
   }
 }
 

@@ -312,7 +312,7 @@ class AppService implements IAppService {
     } else {
       //in offline mode, we don't send anything to the server, but we should trigger menu
       servUi.setMenuModel(null);
-      servUi.routeToMenu(pReplaceRoute: true);
+      servUi.routeToMenu(replaceRoute: true);
     }
   }
 

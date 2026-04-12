@@ -184,18 +184,16 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   Future<void> _openDateAndTimeEditors(DateTime initialDate, TimeOfDay initialTime) {
     dynamic originalValue = _value;
 
-    return IUiService()
-        .openDialog(
-            pBuilder: (context) {
-              return FlDatePickerDialog(
-                initialDate: initialDate,
-                firstDate: DateTime(1900),
-                lastDate: DateTime(2100),
-                showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
-              );
-            },
-            pIsDismissible: true)
-        .then((value) {
+    return IUiService().openDialog(
+      builder: (context) {
+        return FlDatePickerDialog(
+          initialDate: initialDate,
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2100),
+          showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
+        );
+      },
+      isDismissible: true).then((value) {
       if (value == null) {
         _value = originalValue;
       } else if (value == FlDatePickerDialog.NULL_DATE) {
@@ -203,14 +201,12 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
       } else {
         _setDatePart(value);
 
-        return IUiService()
-            .openDialog(
-                pBuilder: (_) => FlTimePickerDialog(
-                      initialTime: initialTime,
-                      showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
-                    ),
-                pIsDismissible: true)
-            .then((value) {
+        return IUiService().openDialog(
+          builder: (_) => FlTimePickerDialog(
+                initialTime: initialTime,
+                showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
+              ),
+          isDismissible: true).then((value) {
           if (value == null) {
             _value = originalValue;
           } else if (value == FlTimePickerDialog.NULL_TIME) {
@@ -228,39 +224,36 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
   }
 
   Future<void> _openDateEditor(DateTime initialDate) {
-    return IUiService()
-        .openDialog(
-            pBuilder: (_) => FlDatePickerDialog(
-                  initialDate: initialDate,
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime(2100),
-                  showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
-                ),
-            pIsDismissible: true)
-        .then((value) {
-      if (value != null) {
-        if (value == FlDatePickerDialog.NULL_DATE) {
-          onEndEditing(null);
-        } else {
-          _setDatePart(value);
-          onEndEditing(_value);
+    return IUiService().openDialog(
+      builder: (_) => FlDatePickerDialog(
+        initialDate: initialDate,
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100),
+        showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
+      ),
+      isDismissible: true).then((value) {
+        if (value != null) {
+          if (value == FlDatePickerDialog.NULL_DATE) {
+            onEndEditing(null);
+          } else {
+            _setDatePart(value);
+            onEndEditing(_value);
+          }
         }
+      }).whenComplete(() {
+        isOpen = false;
+        // The "onEndEditing" of the FlEditorWrapper handles the focus for the linked cell picker and date cell editor.
       }
-    }).whenComplete(() {
-      isOpen = false;
-      // The "onEndEditing" of the FlEditorWrapper handles the focus for the linked cell picker and date cell editor.
-    });
+    );
   }
 
   Future<void> _openTimeEditor(TimeOfDay initialTime) {
-    return IUiService()
-        .openDialog(
-            pBuilder: (_) => FlTimePickerDialog(
-                  initialTime: initialTime,
-                  showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
-                ),
-            pIsDismissible: true)
-        .then((value) {
+    return IUiService().openDialog(
+      builder: (_) => FlTimePickerDialog(
+        initialTime: initialTime,
+        showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
+      ),
+      isDismissible: true).then((value) {
       if (value != null) {
         if (value == FlTimePickerDialog.NULL_TIME) {
           onEndEditing(null);

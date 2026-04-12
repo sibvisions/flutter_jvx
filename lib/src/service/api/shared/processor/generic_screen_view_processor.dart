@@ -40,7 +40,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> processResponse(GenericScreenViewResponse pResponse, ApiRequest? pRequest) async {
+  Future<List<BaseCommand>> processResponse(GenericScreenViewResponse response, ApiRequest? request) async {
     List<BaseCommand> commands = [];
 
     String? screenNavigationName;
@@ -48,25 +48,25 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
     bool bSecure = false;
 
     //we check if routing is disabled
-    bool routing = pRequest is ApiCloseScreenRequest ? pRequest.routing : true;
+    bool routing = request is ApiCloseScreenRequest ? request.routing : true;
 
     FlPanelModel? panel;
     // Handle New & Changed Components
     // Get new full components
-    if (pResponse.changedComponents != null) {
+    if (response.changedComponents != null) {
       SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
-        components: pResponse.changedComponents!,
-        componentName: pResponse.componentName,
-        isUpdate: pResponse.update,
+        components: response.changedComponents!,
+        componentName: response.componentName,
+        isUpdate: response.update,
         reason: "Api received screen.generic response",
       );
       commands.add(saveComponentsCommand);
 
       panel = saveComponentsCommand.newComponents
           ?.whereType<FlPanelModel>()
-          .firstWhereOrNull((element) => element.name == pResponse.componentName);
+          .firstWhereOrNull((element) => element.name == response.componentName);
 
-      if (pResponse.update) {
+      if (response.update) {
         //in case of an update, check if the screen itself got activated. In this case, show the screen
         dynamic json = saveComponentsCommand.changedComponents?.firstWhereOrNull((element) {
           if (element is Map) {
@@ -78,7 +78,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
         if (json != null) {
           bActive = json[ApiObjectProperty.screenActive] == true;
 
-          FlComponentModel? model = IStorageService().getComponentModel(pComponentId: json[ApiObjectProperty.id]);
+          FlComponentModel? model = IStorageService().getComponentModel(componentId: json[ApiObjectProperty.id]);
 
           if (model is FlPanelModel && model.isScreen) {
             screenNavigationName = model.screenNavigationName;
@@ -94,7 +94,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
       // Handle Screen Opening
       // if update == false => new screen that should be routed to
       if (!IConfigService().offline.value) {
-        if (!pResponse.update) {
+        if (!response.update) {
           if (panel?.screenNavigationName != null) {
             nextCommand = RouteToWorkScreenCommand(
               screenName: panel!.screenNavigationName!,

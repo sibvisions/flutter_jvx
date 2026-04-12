@@ -38,13 +38,13 @@ class NoOpRepository extends IRepository {
   Set<Cookie> getCookies() => {};
 
   @override
-  void setCookies(Set<Cookie> pCookies) => {};
+  void setCookies(Set<Cookie> cookies) => {};
 
   @override
   Map<String, String> getHeaders() => {};
 
   @override
-  Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
+  Future<ApiInteraction> sendRequest(ApiRequest request, [bool? retryRequest]) async {
     return Future.value(ApiInteraction(responses: []));
   }
 

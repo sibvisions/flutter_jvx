@@ -103,7 +103,7 @@ class ColumnDefinition {
       key: ApiObjectProperty.horizontalAlignment,
       defaultValue: HorizontalAlignment.LEFT,
       currentValue: HorizontalAlignment.LEFT,
-      condition: (pValue) => pValue < HorizontalAlignment.values.length && pValue >= 0,
+      condition: (value) => value < HorizontalAlignment.values.length && value >= 0,
       valueConversion: HorizontalAlignmentE.fromDynamic,
     );
   }

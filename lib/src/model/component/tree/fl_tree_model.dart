@@ -44,22 +44,22 @@ class FlTreeModel extends FlComponentModel {
   FlTreeModel get defaultModel => FlTreeModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     dataProviders = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.dataBooks,
-      pDefault: defaultModel.dataProviders,
-      pCurrent: dataProviders,
-      pConversion: (value) => List<String>.from(value),
+      json: newJson,
+      key: ApiObjectProperty.dataBooks,
+      defaultValue: defaultModel.dataProviders,
+      currentValue: dataProviders,
+      conversion: (value) => List<String>.from(value),
     );
 
     detectEndNode = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.detectEndNode,
-      pDefault: defaultModel.detectEndNode,
-      pCurrent: detectEndNode,
+      json: newJson,
+      key: ApiObjectProperty.detectEndNode,
+      defaultValue: defaultModel.detectEndNode,
+      currentValue: detectEndNode,
     );
   }
 }

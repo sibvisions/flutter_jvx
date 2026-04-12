@@ -59,26 +59,26 @@ class FlLabelModel extends FlComponentModel {
   FlLabelModel get defaultModel => FlLabelModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     text = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.text,
-      pDefault: defaultModel.text,
-      pCurrent: text,
+      json: newJson,
+      key: ApiObjectProperty.text,
+      defaultValue: defaultModel.text,
+      currentValue: text,
     );
   }
 
   @override
-  void applyCellEditorOverrides(Map<String, dynamic> pJson) {
-    super.applyCellEditorOverrides(pJson);
+  void applyCellEditorOverrides(Map<String, dynamic> json) {
+    super.applyCellEditorOverrides(json);
 
     text = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.cellEditorText,
-      pDefault: defaultModel.text,
-      pCurrent: text,
+      json: json,
+      key: ApiObjectProperty.cellEditorText,
+      defaultValue: defaultModel.text,
+      currentValue: text,
     );
   }
 }

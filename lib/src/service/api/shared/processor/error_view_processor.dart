@@ -22,16 +22,16 @@ import '../i_response_processor.dart';
 
 class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
   @override
-  List<BaseCommand> processResponse(ErrorViewResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(ErrorViewResponse response, ApiRequest? request) {
     return [
       OpenServerErrorDialogCommand(
         reason: "Server sent error in response",
-        componentName: pResponse.componentId,
-        title: pResponse.title,
-        message: pResponse.message,
-        silentAbort: pResponse.silentAbort,
-        invalidApp: isInvalidApp(pResponse.message),
-        exceptions: pResponse.exceptions,
+        componentName: response.componentId,
+        title: response.title,
+        message: response.message,
+        silentAbort: response.silentAbort,
+        invalidApp: isInvalidApp(response.message),
+        exceptions: response.exceptions,
       )
     ];
   }

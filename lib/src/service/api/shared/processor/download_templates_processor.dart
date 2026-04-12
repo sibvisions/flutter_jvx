@@ -26,8 +26,8 @@ class DownloadTemplatesProcessor extends IResponseProcessor<DownloadTemplatesRes
   ZipDecoder zipDecoder = ZipDecoder();
 
   @override
-  List<BaseCommand> processResponse(DownloadTemplatesResponse pResponse, ApiRequest? pRequest) {
-    Archive archive = zipDecoder.decodeBytes(pResponse.responseBody);
+  List<BaseCommand> processResponse(DownloadTemplatesResponse response, ApiRequest? request) {
+    Archive archive = zipDecoder.decodeBytes(response.responseBody);
 
     return [
       SaveApplicationTemplatesCommand(

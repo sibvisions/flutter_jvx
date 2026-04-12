@@ -22,10 +22,10 @@ import '../i_response_processor.dart';
 
 class UploadActionProcessor implements IResponseProcessor<UploadActionResponse> {
   @override
-  List<BaseCommand> processResponse(UploadActionResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(UploadActionResponse response, ApiRequest? request) {
     return [
       UploadActionCommand(
-        fileId: pResponse.fileId,
+        fileId: response.fileId,
         reason: "Upload from server",
       )
     ];

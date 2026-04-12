@@ -62,7 +62,7 @@ class AppOverviewPage extends StatefulWidget {
   }) {
     return IUiService().openDialog(
       context: context,
-      pBuilder: (context) => EmbeddedCodeScanner(
+      builder: (context) => EmbeddedCodeScanner(
         allowMultiScan: allowMultiScan,
         title: "QR Scanner",
         formats: const [BarcodeFormat.qrCode],
@@ -97,7 +97,7 @@ class AppOverviewPage extends StatefulWidget {
   static Future<void> showInvalidURLDialog(BuildContext context, e) {
     return IUiService().openDialog(
       context: context,
-      pBuilder: (context) => AlertDialog(
+      builder: (context) => AlertDialog(
         title: Text(FlutterUI.translateLocal("Invalid URL")),
         content: Text("${FlutterUI.translateLocal("URL is invalid")}:\n${e.toString()}"),
         actions: [
@@ -107,14 +107,14 @@ class AppOverviewPage extends StatefulWidget {
           ),
         ],
       ),
-      pIsDismissible: true,
+      isDismissible: true,
     );
   }
 
   static Future<void> showRequiredFieldsDialog(BuildContext context) {
     return IUiService().openDialog(
       context: context,
-      pBuilder: (context) => AlertDialog(
+      builder: (context) => AlertDialog(
         title: Text(FlutterUI.translateLocal("Missing required fields")),
         content: Text(FlutterUI.translateLocal("You have to provide an app name and URL to add an app.")),
         actions: [
@@ -124,7 +124,7 @@ class AppOverviewPage extends StatefulWidget {
           ),
         ],
       ),
-      pIsDismissible: true,
+      isDismissible: true,
     );
   }
 
@@ -534,7 +534,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   void _openAppEditor(BuildContext context, {App? editApp}) {
     IUiService().openDialog(
       context: context,
-      pBuilder: (context) => AppEditDialog(
+      builder: (context) => AppEditDialog(
         config: editApp,
         predefined: editApp?.predefined ?? false,
         locked: editApp?.locked ?? false,

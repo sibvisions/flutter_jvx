@@ -371,7 +371,7 @@ class _FlTableCellState extends State<FlTableCell> {
           value,
           IDataService()
               .getDataBook(widget.model.dataProvider)!
-              .getRecord(pDataColumnNames: null, pRecordIndex: widget.rowIndex)
+              .getRecord(dataColumnNames: null, recordIndex: widget.rowIndex)
               ?.values,
         ),
       );

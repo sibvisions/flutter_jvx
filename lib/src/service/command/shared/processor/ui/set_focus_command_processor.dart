@@ -33,8 +33,8 @@ class SetFocusCommandProcessor extends ICommandProcessor<SetFocusCommand> {
     }
   }
 
-  Future<List<BaseCommand>> focus(String? pComponentId) async {
-    if (IUiService().hasFocus(pComponentId)) {
+  Future<List<BaseCommand>> focus(String? componentId) async {
+    if (IUiService().hasFocus(componentId)) {
       return [];
     }
     FlComponentModel? previousFocus = IUiService().getFocus();
@@ -44,16 +44,16 @@ class SetFocusCommandProcessor extends ICommandProcessor<SetFocusCommand> {
     if (previousFocus != null) {
       if (previousFocus.eventFocusLost) {
         commands
-            .add(FocusLostCommand(componentName: previousFocus.name, reason: "Unfocused, next focus: $pComponentId"));
+            .add(FocusLostCommand(componentName: previousFocus.name, reason: "Unfocused, next focus: $componentId"));
       }
       IUiService().removeFocus(previousFocus.id);
     }
 
     FlComponentModel? component;
-    if (pComponentId != null) {
-      component = IStorageService().getComponentModel(pComponentId: pComponentId);
+    if (componentId != null) {
+      component = IStorageService().getComponentModel(componentId: componentId);
       if (component?.isFocusable == true) {
-        IUiService().setFocus(pComponentId);
+        IUiService().setFocus(componentId);
         if (component!.eventFocusGained) {
           commands.add(FocusGainedCommand(componentName: component.name, reason: "${component.name} Focused"));
         }
@@ -63,13 +63,13 @@ class SetFocusCommandProcessor extends ICommandProcessor<SetFocusCommand> {
     return commands;
   }
 
-  Future<List<BaseCommand>> unfocus(String? pComponentId) async {
-    if (!IUiService().hasFocus(pComponentId)) {
+  Future<List<BaseCommand>> unfocus(String? componentId) async {
+    if (!IUiService().hasFocus(componentId)) {
       return [];
     }
-    IUiService().removeFocus(pComponentId);
+    IUiService().removeFocus(componentId);
 
-    FlComponentModel? component = IStorageService().getComponentModel(pComponentId: pComponentId!);
+    FlComponentModel? component = IStorageService().getComponentModel(componentId: componentId!);
     if (component == null || !component.eventFocusLost) {
       return [];
     }

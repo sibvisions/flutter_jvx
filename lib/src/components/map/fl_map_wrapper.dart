@@ -122,7 +122,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   void _subscribe() {
     if (model.pointsDataBook != null) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
           dataProvider: model.pointsDataBook!,
@@ -138,7 +138,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
 
     if (model.groupDataBook != null) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
           dataProvider: model.groupDataBook!,
@@ -155,16 +155,16 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
 
   void _unsubscribe() {
     if (model.groupDataBook != null) {
-      IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.groupDataBook);
+      IUiService().disposeDataSubscription(subscriber: this, dataProvider: model.groupDataBook);
     }
 
     if (model.pointsDataBook != null) {
-      IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.pointsDataBook);
+      IUiService().disposeDataSubscription(subscriber: this, dataProvider: model.pointsDataBook);
     }
   }
 
-  void receivePolygonData(DataChunk pChunkData) {
-    _chunkData = pChunkData;
+  void receivePolygonData(DataChunk newChunkData) {
+    _chunkData = newChunkData;
 
     polygons.clear();
 
@@ -196,8 +196,8 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
     setState(() {});
   }
 
-  void receiveMarkerData(DataChunk pChunkData) {
-    _chunkData = pChunkData;
+  void receiveMarkerData(DataChunk newChunkData) {
+    _chunkData = newChunkData;
 
     markers.clear();
 

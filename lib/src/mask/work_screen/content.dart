@@ -133,12 +133,10 @@ class ContentState extends State<Content> {
   }
 
   void _setScreenSize(Size size) {
-    ILayoutService()
-        .setScreenSize(
-          pScreenComponentId: widget.model.id,
-          pSize: size,
-        )
-        .then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
+    ILayoutService().setScreenSize(
+      screenComponentId: widget.model.id,
+      size: size,
+    ).then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
   }
 }
 

@@ -166,7 +166,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
         && (lastSentValue != value || action != null)) {
 
       //this could happen if screen will be closed
-      FlComponentModel? comp = IStorageService().getComponentModel(pComponentId: model.id);
+      FlComponentModel? comp = IStorageService().getComponentModel(componentId: model.id);
 
       if (comp == null) {
         return;

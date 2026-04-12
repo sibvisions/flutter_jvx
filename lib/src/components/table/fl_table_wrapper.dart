@@ -155,6 +155,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   void initState() {
     super.initState();
 
+    repaint = () => setState(() {});
+
     layoutData.isFixedSize = true;
 
     tableSize = TableSize();
@@ -194,7 +196,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       onLongPress: _onLongPress,
       onTap: _onTimedCellTap,
       onHeaderTap: _sortColumn,
-      onHeaderDoubleTap: (pColumn) => _sortColumn(pColumn, true),
+      onHeaderDoubleTap: (column) => _sortColumn(column, true),
       onFloatingPress: showFloatingButton ? insertRecord : null,
     );
 
@@ -217,9 +219,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   @override
-  void receiveNewLayoutData(LayoutData pLayoutData) {
-    bool newConstraint = pLayoutData.layoutPosition?.width != layoutData.layoutPosition?.width;
-    super.receiveNewLayoutData(pLayoutData);
+  void receiveNewLayoutData(LayoutData newLayoutData) {
+    bool newConstraint = newLayoutData.layoutPosition?.width != layoutData.layoutPosition?.width;
+    super.receiveNewLayoutData(newLayoutData);
 
     if (newConstraint) {
       _recalculateTableSize();
@@ -266,8 +268,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Recalculates the size of the table.
-  void _recalculateTableSize([bool pRecalculateWidth = true]) {
-    if (pRecalculateWidth) {
+  void _recalculateTableSize([bool recalculateWidth = true]) {
+    if (recalculateWidth) {
       tableSize!.calculateTableSize(
         metaData: metaData,
         tableModel: model,
@@ -289,11 +291,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   /// Subscribes to the data service.
   void _subscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this);
+    IUiService().disposeDataSubscription(subscriber: this);
 
     if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider,
           from: 0,
@@ -315,7 +317,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   /// Unsubscribes from the data service.
   void _unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this);
+    IUiService().disposeDataSubscription(subscriber: this);
 
     currentState &= ~LOADED_META_DATA;
     currentState &= ~LOADED_DATA;
@@ -334,16 +336,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   /// Loads data from the server.
-  void _receiveTableData(DataChunk pDataChunk) {
+  void _receiveTableData(DataChunk newDataChunk) {
     bool recalculateWidth = (currentState & LOADED_DATA) != LOADED_DATA;
     currentState |= LOADED_DATA;
 
     if (!recalculateWidth) {
-      recalculateWidth = !listEquals(pDataChunk.columnDefinitions.listNames, dataChunk.columnDefinitions.listNames);
+      recalculateWidth = !listEquals(newDataChunk.columnDefinitions.listNames, dataChunk.columnDefinitions.listNames);
     }
 
-    bool changedDataCount = (dataChunk.data.length != pDataChunk.data.length);
-    dataChunk = pDataChunk;
+    bool changedDataCount = (dataChunk.data.length != newDataChunk.data.length);
+    dataChunk = newDataChunk;
 
     if (isDataRow(selectedRow)) {
       Map<String, dynamic> valueMap = {};
@@ -366,14 +368,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   /// Receives which row is selected.
-  void _receiveSelectedRecord(DataRecord? pRecord) {
+  void _receiveSelectedRecord(DataRecord? newRecord) {
     currentState |= LOADED_SELECTED_RECORD;
 
     var currentSelectedRow = selectedRow;
 
-    if (pRecord != null) {
-      selectedRow = pRecord.index;
-      selectedColumn = pRecord.selectedColumn;
+    if (newRecord != null) {
+      selectedRow = newRecord.index;
+      selectedColumn = newRecord.selectedColumn;
     } else {
       DataBook? dataBook = IDataService().getDataBook(model.dataProvider);
       if (dataBook != null) {
@@ -409,11 +411,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   /// Receives the meta data of the table.
-  void _receiveMetaData(DalMetaData pMetaData) {
+  void _receiveMetaData(DalMetaData newMetaData) {
     bool hasToCalc = (currentState & LOADED_META_DATA) != LOADED_META_DATA;
     currentState |= LOADED_META_DATA;
 
-    metaData = pMetaData;
+    metaData = newMetaData;
 
     hasToCalc = metaData.changedProperties.contains(ApiObjectProperty.columns);
 
@@ -447,7 +449,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   // Action methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _setValueChanged(dynamic pValue, int pRow, String pColumnName) {
+  void _setValueChanged(dynamic value, int row, String columnName) {
     // Do nothing
   }
 
@@ -459,23 +461,23 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
   }
 
-  void _onTimedCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    if (pRowIndex == -1) {
-      if (pColumnName.isNotEmpty) {
+  void _onTimedCellTap(int rowIndex, String columnName, ICellEditor cellEditor) {
+    if (rowIndex == -1) {
+      if (columnName.isNotEmpty) {
         // Header was pressed
-        _sortColumn(pColumnName);
+        _sortColumn(columnName);
       }
 
       return;
     }
 
     if (FlutterUI.logUI.cl(Lvl.d)) {
-      FlutterUI.logUI.d("Select row temporary: $pRowIndex");
+      FlutterUI.logUI.d("Select row temporary: $rowIndex");
     }
 
     bool doubleTap = false;
 
-    if (lastTapRowIndex != pRowIndex || lastTapColumnName != pColumnName) {
+    if (lastTapRowIndex != rowIndex || lastTapColumnName != columnName) {
       _timerTap?.cancel();
       _timerTap = null;
     }
@@ -484,7 +486,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
         _timerTap?.cancel();
         _timerTap = null;
 
-        _onDoubleCellTap(pRowIndex, pColumnName, pCellEditor);
+        _onDoubleCellTap(rowIndex, columnName, cellEditor);
 
         //no single tap after double tap
         doubleTap = true;
@@ -498,43 +500,42 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       _timerTap = Timer(
           const Duration(milliseconds: 300),
               () {
-            _onCellTap(pRowIndex, pColumnName, pCellEditor);
+            _onCellTap(rowIndex, columnName, cellEditor);
           }
       );
     }
 
-    selectedRowTemporary = pRowIndex;
+    selectedRowTemporary = rowIndex;
 
-    lastTapRowIndex = pRowIndex;
-    lastTapColumnName = pColumnName;
+    lastTapRowIndex = rowIndex;
+    lastTapColumnName = columnName;
 
     setState(() {});
   }
 
-  void _onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+  void _onCellTap(int rowIndex, String columnName, ICellEditor cellEditor) {
     if (FlutterUI.logUI.cl(Lvl.d)) {
-      FlutterUI.logUI.d("Table cell tapped: $pRowIndex, $pColumnName");
+      FlutterUI.logUI.d("Table cell tapped: $rowIndex, $columnName");
     }
 
     selectRecord(
-      pRowIndex,
-      columnName: pColumnName,
+      rowIndex,
+      columnName: columnName,
       force: true,
       afterSelectCommand: () {
-
         if (FlutterUI.logUI.cl(Lvl.d)) {
-          FlutterUI.logUI.d("Selected row: $pRowIndex");
+          FlutterUI.logUI.d("Selected row: $rowIndex");
         }
 
         if (IStorageService().isVisibleInUI(model.id) &&
-            !pCellEditor.allowedInTable &&
-            isCellEditable(pRowIndex, pColumnName) &&
-            pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
+            !cellEditor.allowedInTable &&
+            isCellEditable(rowIndex, columnName) &&
+            cellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
           _showDialog(
-            rowIndex: pRowIndex,
-            columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
-            values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
-            dataRow: dataChunk.data[pRowIndex],
+            rowIndex: rowIndex,
+            columnDefinitions: ColumnList.fromElement(cellEditor.columnDefinition!),
+            values: {cellEditor.columnDefinition!.name: dataChunk.getValue(columnName, rowIndex)},
+            dataRow: dataChunk.data[rowIndex],
             onEndEditing: setValueOnEndEditing,
             newValueNotifier: dialogValueNotifier,
           );
@@ -545,29 +546,29 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     );
   }
 
-  void _onDoubleCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+  void _onDoubleCellTap(int rowIndex, String columnName, ICellEditor cellEditor) {
     if (FlutterUI.logUI.cl(Lvl.d)) {
-      FlutterUI.logUI.d("Table cell double tapped: $pRowIndex, $pColumnName");
+      FlutterUI.logUI.d("Table cell double tapped: $rowIndex, $columnName");
     }
 
     selectRecord(
-      pRowIndex,
-      columnName: pColumnName,
+      rowIndex,
+      columnName: columnName,
       force: true,
       afterSelectCommand: () {
         if (FlutterUI.logUI.cl(Lvl.d)) {
-          FlutterUI.logUI.d("Selected row: $pRowIndex");
+          FlutterUI.logUI.d("Selected row: $rowIndex");
         }
 
         if (IStorageService().isVisibleInUI(model.id) &&
-            !pCellEditor.allowedInTable &&
-            isCellEditable(pRowIndex, pColumnName) &&
-            pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
+            !cellEditor.allowedInTable &&
+            isCellEditable(rowIndex, columnName) &&
+            cellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
           _showDialog(
-            rowIndex: pRowIndex,
-            columnDefinitions: ColumnList.fromElement(pCellEditor.columnDefinition!),
-            values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
-            dataRow: dataChunk.data[pRowIndex],
+            rowIndex: rowIndex,
+            columnDefinitions: ColumnList.fromElement(cellEditor.columnDefinition!),
+            values: {cellEditor.columnDefinition!.name: dataChunk.getValue(columnName, rowIndex)},
+            dataRow: dataChunk.data[rowIndex],
             onEndEditing: setValueOnEndEditing,
             newValueNotifier: dialogValueNotifier,
           );
@@ -578,19 +579,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     );
   }
 
-  void _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
+  void _onLongPress(int rowIndex, String columnName, ICellEditor cellEditor, Offset globalPosition) {
     List<PopupMenuEntry<DataContextMenuItemType>> popupMenuEntries = <PopupMenuEntry<DataContextMenuItemType>>[];
 
     int separator = 0;
 
-    if (pRowIndex == -1 && kDebugMode) {
+    if (rowIndex == -1 && kDebugMode) {
       popupMenuEntries.add(createContextMenuItem(Icons.cloud_off, "Offline", DataContextMenuItemType.OFFLINE));
       separator++;
     }
 
-    if (pRowIndex == -1 && pColumnName.isNotEmpty && model.sortOnHeaderEnabled) {
+    if (rowIndex == -1 && columnName.isNotEmpty && model.sortOnHeaderEnabled) {
 
-      String? columnLabel = dataChunk.columnDefinitions.byName(pColumnName)?.label;
+      String? columnLabel = dataChunk.columnDefinitions.byName(columnName)?.label;
 
       if (columnLabel == FlTableHeaderCell.CHECKBOX_DESELECTED) {
         popupMenuEntries.add(createContextMenuItem(Icons.check_box_outlined, "Select", DataContextMenuItemType.SORT));
@@ -608,11 +609,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       popupMenuEntries.add(createContextMenuItem(Icons.add_box_outlined, "New", DataContextMenuItemType.INSERT));
     }
 
-    if (isRowDeletable(pRowIndex)) {
+    if (isRowDeletable(rowIndex)) {
       popupMenuEntries.add(createContextMenuItem(Icons.delete_outline, "Delete", DataContextMenuItemType.DELETE));
     }
 
-    if (isAnyCellInRowEditable(pRowIndex)) {
+    if (isAnyCellInRowEditable(rowIndex)) {
       popupMenuEntries.add(createContextMenuItem(Icons.edit_note_outlined, "Edit", DataContextMenuItemType.EDIT));
     }
 
@@ -621,25 +622,25 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
 
     if (popupMenuEntries.isNotEmpty) {
-      showPopupMenu(context, pGlobalPosition, popupMenuEntries).then((type) {
+      showPopupMenu(context, globalPosition, popupMenuEntries).then((type) {
         if (type != null) {
           _menuItemPressed(
             type,
-            pRowIndex,
-            pColumnName,
-            pCellEditor,
+            rowIndex,
+            columnName,
+            cellEditor,
           );
         }
       });
     }
   }
 
-  void _menuItemPressed(DataContextMenuItemType val, int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+  void _menuItemPressed(DataContextMenuItemType val, int rowIndex, String columnName, ICellEditor cellEditor) {
     IUiService().saveAllEditors(
-      pId: model.id,
-      pReason: "Table menu item pressed",
-    ).then((success) {
-      if (!success) {
+      id: model.id,
+      reason: "Table menu item pressed",
+    ).then((result) {
+      if (!result.success) {
         return;
       }
 
@@ -651,7 +652,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
         }
       }
       else if (val == DataContextMenuItemType.SORT) {
-        BaseCommand? command = _createSortColumnCommand(pColumnName);
+        BaseCommand? command = _createSortColumnCommand(columnName);
 
         if (command != null) {
           commands.add(command);
@@ -660,14 +661,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       else if (val == DataContextMenuItemType.INSERT) {
         commands.add(createInsertCommand());
       } else if (val == DataContextMenuItemType.DELETE) {
-        BaseCommand? command = createDeleteCommand(pRowIndex >= 0 ? pRowIndex : selectedRow);
+        BaseCommand? command = createDeleteCommand(rowIndex >= 0 ? rowIndex : selectedRow);
 
         if (command != null) {
           commands.add(command);
         }
       }
       else if (val == DataContextMenuItemType.EDIT) {
-        _editRow(pRowIndex);
+        _editRow(rowIndex);
       }
       else if (val == DataContextMenuItemType.RELOAD) {
         unawaited(refresh());
@@ -685,24 +686,24 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  BaseCommand? _createSortColumnCommand(String pColumnName, [bool pAdditive = false]) {
+  BaseCommand? _createSortColumnCommand(String columnName, [bool additive = false]) {
     if (!model.sortOnHeaderEnabled) {
       return null;
     }
-    ColumnDefinition? colDef = metaData.columnDefinitions.byName(pColumnName);
+    ColumnDefinition? colDef = metaData.columnDefinitions.byName(columnName);
 
     if (colDef == null || !colDef.sortable) {
       return null;
     }
 
-    SortDefinition? currentSortDefinition = metaData.sortDefinitions?.byName(pColumnName);
+    SortDefinition? currentSortDefinition = metaData.sortDefinitions?.byName(columnName);
     bool exists = currentSortDefinition != null;
 
     currentSortDefinition?.mode = currentSortDefinition.nextMode;
-    currentSortDefinition ??= SortDefinition(columnName: pColumnName);
+    currentSortDefinition ??= SortDefinition(columnName: columnName);
 
     SortList sort;
-    if (pAdditive && metaData.sortDefinitions != null) {
+    if (additive && metaData.sortDefinitions != null) {
       sort = SortList([
         ...metaData.sortDefinitions ?? {},
         if (!exists) currentSortDefinition,
@@ -712,20 +713,20 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
 
     return SortCommand(
-        dataProvider: model.dataProvider, sortDefinition: sort, reason: "sorted", columnName: pColumnName);
+        dataProvider: model.dataProvider, sortDefinition: sort, reason: "sorted", columnName: columnName);
   }
 
-  void _sortColumn(String pColumnName, [bool pAdditive = false]) {
-    BaseCommand? sortCommand = _createSortColumnCommand(pColumnName, pAdditive);
+  void _sortColumn(String columnName, [bool additive = false]) {
+    BaseCommand? sortCommand = _createSortColumnCommand(columnName, additive);
     if (sortCommand == null) {
       return;
     }
 
     IUiService().saveAllEditors(
-      pReason: "Sort of ${model.dataProvider}",
-      pId: model.id,
-    ).then((success) {
-      if (!success) {
+      reason: "Sort of ${model.dataProvider}",
+      id: model.id,
+    ).then((result) {
+      if (!result.success) {
         return;
       }
 
@@ -736,17 +737,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     });
   }
 
-  void _editRow(int pRowIndex) {
+  void _editRow(int rowIndex) {
     selectRecord(
-      pRowIndex,
+      rowIndex,
       afterSelectCommand: () {
         selectedRowTemporary = null;
 
-        if (IStorageService().isVisibleInUI(model.id) && isAnyCellInRowEditable(pRowIndex)) {
-          var editColumns = getEditableColumns(pRowIndex);
+        if (IStorageService().isVisibleInUI(model.id) && isAnyCellInRowEditable(rowIndex)) {
+          var editColumns = getEditableColumns(rowIndex);
 
           _showDialog(
-            rowIndex: pRowIndex,
+            rowIndex: rowIndex,
             columnDefinitions: editColumns.columns,
             values: editColumns.values,
             onEndEditing: setValueOnEndEditing,
@@ -754,7 +755,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
           );
         }
         return [];
-      },
+      }
     );
   }
 
@@ -919,16 +920,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
         cellEditor.dispose();
       } else if (columnDefinitions.isNotEmpty) {
         currentEditDialog = IUiService().openDialog(
-          pBuilder: (context) =>
-              FlTableEditDialog(
-                rowIndex: rowIndex,
-                model: model,
-                columnDefinitions: columnDefinitions,
-                values: values,
-                valuesRow: dataChunk.getValuesAsMap(rowIndex),
-                onEndEditing: onEndEditing,
-                newValueNotifier: newValueNotifier,
-              ),
+          builder: (context) =>
+            FlTableEditDialog(
+              rowIndex: rowIndex,
+              model: model,
+              columnDefinitions: columnDefinitions,
+              values: values,
+              valuesRow: dataChunk.getValuesAsMap(rowIndex),
+              onEndEditing: onEndEditing,
+              newValueNotifier: newValueNotifier,
+            ),
         );
       }
 

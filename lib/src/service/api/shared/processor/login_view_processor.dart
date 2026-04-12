@@ -27,18 +27,18 @@ class LoginViewProcessor implements IResponseProcessor<LoginViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(LoginViewResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(LoginViewResponse response, ApiRequest? request) {
     return [RouteToLoginCommand(
       loginData: LoginData(
-        mode: pResponse.mode,
-        username: pResponse.username,
-        password: pRequest is ApiLoginRequest ? pRequest.password : null,
-        newPassword: pRequest is ApiLoginRequest ? pRequest.newPassword : null,
-        confirmationCode: pResponse.confirmationCode,
-        link: pResponse.link,
-        timeout: pResponse.timeout,
-        timeoutReset: pResponse.timeoutReset,
-        errorMessage: pResponse.errorMessage
+        mode: response.mode,
+        username: response.username,
+        password: request is ApiLoginRequest ? request.password : null,
+        newPassword: request is ApiLoginRequest ? request.newPassword : null,
+        confirmationCode: response.confirmationCode,
+        link: response.link,
+        timeout: response.timeout,
+        timeoutReset: response.timeoutReset,
+        errorMessage: response.errorMessage
       ),
       reason: "Login as response",
     )];

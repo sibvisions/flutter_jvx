@@ -66,16 +66,15 @@ class FormLayoutAnchor {
       this.relatedAnchor,
       this.relatedAnchorName});
 
-  FormLayoutAnchor.fromAnchorData({required String pAnchorData, required double scaling})
-      : anchorData = pAnchorData,
-        name = pAnchorData.split(",")[0],
-        relatedAnchorName = pAnchorData.split(",")[1],
-        autoSize = pAnchorData.split(",")[3] == "a",
+  FormLayoutAnchor.fromAnchorData({required this.anchorData, required double scaling})
+      : name = anchorData.split(",")[0],
+        relatedAnchorName = anchorData.split(",")[1],
+        autoSize = anchorData.split(",")[3] == "a",
         autoSizeCalculated = false,
         firstCalculation = true,
         relative = false,
-        position = double.parse(pAnchorData.split(",")[4]) * scaling,
-        orientation = getOrientationFromData(anchorName: pAnchorData.split(",")[0]);
+        position = double.parse(anchorData.split(",")[4]) * scaling,
+        orientation = getOrientationFromData(anchorName: anchorData.split(",")[0]);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods

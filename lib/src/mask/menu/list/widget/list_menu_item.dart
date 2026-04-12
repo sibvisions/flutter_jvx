@@ -76,9 +76,9 @@ class ListMenuItem extends StatelessWidget {
 
     var leading = MenuItemModel.getImage(
       context,
-      pMenuItemModel: menuItemModel,
-      pSize: 25,
-      pColor: iconColor ?? (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white70),
+      menuItemModel: menuItemModel,
+      size: 25,
+      color: iconColor ?? (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white70),
     );
 
     BadgeConfig badgeConfig = BadgeConfig.fromApplicationParameter(menuItemModel.className);

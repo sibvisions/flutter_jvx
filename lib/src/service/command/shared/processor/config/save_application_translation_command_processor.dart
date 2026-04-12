@@ -31,7 +31,7 @@ class SaveApplicationTranslationCommandProcessor extends ICommandProcessor<SaveA
 
     for (ArchiveFile translation in command.translations) {
       String path = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/${translation.name}");
-      saveFutures.add(fileManager.saveFile(path, pContent: translation.content));
+      saveFutures.add(fileManager.saveFile(path, content: translation.content));
     }
 
     // Wait till all files are saved

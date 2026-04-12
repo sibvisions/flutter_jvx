@@ -37,10 +37,10 @@ class ComponentSubscription<T extends FlComponentModel> {
   final Function()? modelUpdatedCallback;
 
   /// Component callback to receive new layout data
-  final Function(LayoutData pLayout)? layoutCallback;
+  final Function(LayoutData layout)? layoutCallback;
 
   /// Component callback to notify of saving.
-  final FutureOr<BaseCommand?> Function(String pReason)? saveCallback;
+  final FutureOr<BaseCommand?> Function(String reason)? saveCallback;
 
   ComponentSubscription({
     required this.compId,

@@ -101,7 +101,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
     layoutData.layout = ScrollLayout(originalLayout);
     layoutData.children =
-        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+        IStorageService().getAllComponentsBelowById(parentId: model.id, recursively: false).map((e) => e.id).toList();
   }
 
   double get widthOfScrollPanel {

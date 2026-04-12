@@ -62,11 +62,21 @@ abstract class ICommandService implements Service {
   /// [abortOnFirstError] If true, will abort processing on the first error, otherwise the other commands will still be executed, even if an error has occurred.
   /// [delayUILocking] If true, will delay the ui lock until the loading bar is shown. Overrides command specific settings if set. But only for the first command.
   /// [showLoading] If true, will show the loading bar. Overrides command specific settings if set. But only for the first command.
-  Future<bool> sendCommands(
+  Future<CommandResult> sendCommands(
     List<BaseCommand> commands, {
     bool showDialogOnError = true,
     bool abortOnFirstError = true,
     bool? delayUILocking,
     bool? showLoading,
+  });
+}
+
+class CommandResult {
+  final bool success;
+  final List<(BaseCommand command, bool success)>? commands;
+
+  const CommandResult({
+    required this.success,
+    this.commands
   });
 }

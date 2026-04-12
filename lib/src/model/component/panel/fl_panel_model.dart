@@ -128,63 +128,63 @@ class FlPanelModel extends FlComponentModel {
   FlPanelModel get defaultModel => FlPanelModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     layout = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.layout,
-      pDefault: defaultModel.layout,
-      pCurrent: layout,
+      json: newJson,
+      key: ApiObjectProperty.layout,
+      defaultValue: defaultModel.layout,
+      currentValue: layout,
     );
 
     layoutData = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.layoutData,
-      pDefault: defaultModel.layoutData,
-      pCurrent: layoutData,
+      json: newJson,
+      key: ApiObjectProperty.layoutData,
+      defaultValue: defaultModel.layoutData,
+      currentValue: layoutData,
     );
 
     screenTitle = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.screenTitle,
-      pDefault: defaultModel.screenTitle,
-      pCurrent: screenTitle,
+      json: newJson,
+      key: ApiObjectProperty.screenTitle,
+      defaultValue: defaultModel.screenTitle,
+      currentValue: screenTitle,
     );
 
     screenNavigationName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.screenNavigationName,
-      pDefault: defaultModel.screenNavigationName,
-      pCurrent: screenNavigationName,
+      json: newJson,
+      key: ApiObjectProperty.screenNavigationName,
+      defaultValue: defaultModel.screenNavigationName,
+      currentValue: screenNavigationName,
     );
 
     screenClassName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.screenClassName,
-      pDefault: defaultModel.screenClassName,
-      pCurrent: screenClassName,
+      json: newJson,
+      key: ApiObjectProperty.screenClassName,
+      defaultValue: defaultModel.screenClassName,
+      currentValue: screenClassName,
     );
 
     contentTitle = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.contentTitle,
-      pDefault: defaultModel.contentTitle,
-      pCurrent: contentTitle,
+      json: newJson,
+      key: ApiObjectProperty.contentTitle,
+      defaultValue: defaultModel.contentTitle,
+      currentValue: contentTitle,
     );
 
     contentModal = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.contentModal,
-      pDefault: defaultModel.contentModal,
-      pCurrent: contentModal,
+      json: newJson,
+      key: ApiObjectProperty.contentModal,
+      defaultValue: defaultModel.contentModal,
+      currentValue: contentModal,
     );
 
     contentClassName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.contentClassName,
-      pDefault: defaultModel.contentClassName,
-      pCurrent: contentClassName,
+      json: newJson,
+      key: ApiObjectProperty.contentClassName,
+      defaultValue: defaultModel.contentClassName,
+      currentValue: contentClassName,
     );
   }
 

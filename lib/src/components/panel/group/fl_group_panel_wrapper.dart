@@ -196,7 +196,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   void _createLayout() {
     layoutData.layout = ILayout.getLayout(model);
     layoutData.children =
-        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+        IStorageService().getAllComponentsBelowById(parentId: model.id, recursively: false).map((e) => e.id).toList();
   }
 
   @override

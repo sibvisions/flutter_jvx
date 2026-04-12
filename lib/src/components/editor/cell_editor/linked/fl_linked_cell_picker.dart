@@ -571,7 +571,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   void _subscribe() {
     IUiService().registerDataSubscription(
-      pDataSubscription: DataSubscription(
+      dataSubscription: DataSubscription(
         subbedObj: this,
         dataProvider: model.linkReference.referencedDataBook,
         onDataChunk: _receiveTableData,

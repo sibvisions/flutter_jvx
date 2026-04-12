@@ -59,14 +59,14 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  Future<bool> doesFileExist(String pPath) async {
+  Future<bool> doesFileExist(String path) async {
     bool exists = false;
 
-    exists = await Directory(_getSavePath(pPath)).exists();
+    exists = await Directory(_getSavePath(path)).exists();
 
     if (exists) return exists;
 
-    exists = await File(_getSavePath(pPath)).exists();
+    exists = await File(_getSavePath(path)).exists();
 
     if (exists) return exists;
 
@@ -74,8 +74,8 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  Future<File?> getFile(String pPath) async {
-    File file = File(_getSavePath(pPath));
+  Future<File?> getFile(String path) async {
+    File file = File(_getSavePath(path));
     bool doesExist = await file.exists();
 
     if (doesExist) {
@@ -85,21 +85,21 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  void deleteFile(String pPath) {
-    File file = File(_getSavePath(pPath));
+  void deleteFile(String path) {
+    File file = File(_getSavePath(path));
     file.delete();
   }
 
   @override
-  Future<File> saveFile(String pPath, {required List<int> pContent}) async {
-    File file = File(_getSavePath(pPath));
+  Future<File> saveFile(String path, {required List<int> content}) async {
+    File file = File(_getSavePath(path));
     File created = await file.create(recursive: true);
-    return created.writeAsBytes(pContent);
+    return created.writeAsBytes(content);
   }
 
   @override
-  File? getFileSync(String pPath) {
-    File file = File(_getSavePath(pPath));
+  File? getFileSync(String path) {
+    File file = File(_getSavePath(path));
     if (file.existsSync()) {
       return file;
     }
@@ -107,15 +107,15 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  Directory? getDirectory(String pPath) {
-    return Directory(_getSavePath(pPath));
+  Directory? getDirectory(String path) {
+    return Directory(_getSavePath(path));
   }
 
   @override
-  Future<void> renameIndependentDirectory(List<String> pPath, String pNewName) async {
-    var dir = Directory(joinAll([directory.path, ...pPath]));
+  Future<void> renameIndependentDirectory(List<String> path, String newName) async {
+    var dir = Directory(joinAll([directory.path, ...path]));
     if (dir.existsSync()) {
-      var newDir = Directory(join(directory.path, pNewName));
+      var newDir = Directory(join(directory.path, newName));
       if (newDir.existsSync()) {
         await newDir.delete(recursive: true);
       }
@@ -126,8 +126,8 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false}) {
-    var dir = Directory(joinAll([directory.path, ...pPath]));
+  Future<void> deleteIndependentDirectory(List<String> path, {bool recursive = false}) {
+    var dir = Directory(joinAll([directory.path, ...path]));
     if (dir.existsSync()) {
       return dir.delete(recursive: recursive);
     } else {

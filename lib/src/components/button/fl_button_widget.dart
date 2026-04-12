@@ -222,7 +222,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
     return FlLabelWidget.createTextWidget(
       model.labelModel,
-      pTextStyle: textStyle,
+      textStyle: textStyle,
     );
   }
 
@@ -265,10 +265,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   /// Converts [VerticalAlignment] into a usable [CrossAxisAlignment] for [Row]
-  static CrossAxisAlignment _getCrossAxisAlignment(VerticalAlignment pAlignment) {
-    if (pAlignment == VerticalAlignment.TOP) {
+  static CrossAxisAlignment _getCrossAxisAlignment(VerticalAlignment alignment) {
+    if (alignment == VerticalAlignment.TOP) {
       return CrossAxisAlignment.start;
-    } else if (pAlignment == VerticalAlignment.BOTTOM) {
+    } else if (alignment == VerticalAlignment.BOTTOM) {
       return CrossAxisAlignment.end;
     }
 
@@ -332,8 +332,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     return null;
   }
 
-  void _onFocusChange(bool pFocus) {
-    if (pFocus) {
+  void _onFocusChange(bool focus) {
+    if (focus) {
       onFocusGained?.call();
     } else {
       onFocusLost?.call();

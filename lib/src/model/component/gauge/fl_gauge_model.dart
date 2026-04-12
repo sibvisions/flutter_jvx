@@ -49,85 +49,85 @@ class FlGaugeModel extends FlComponentModel {
   FlGaugeModel get defaultModel => FlGaugeModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     title = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.title,
-      pDefault: title,
-      pCurrent: title,
+      json: newJson,
+      key: ApiObjectProperty.title,
+      defaultValue: title,
+      currentValue: title,
     );
 
     maxValue = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.maxValue,
-      pDefault: maxValue,
-      pCurrent: maxValue,
+      json: newJson,
+      key: ApiObjectProperty.maxValue,
+      defaultValue: maxValue,
+      currentValue: maxValue,
     );
 
     minValue = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.minValue,
-      pDefault: minValue,
-      pCurrent: minValue,
+      json: newJson,
+      key: ApiObjectProperty.minValue,
+      defaultValue: minValue,
+      currentValue: minValue,
     );
 
     maxErrorValue = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.maxErrorValue,
-      pDefault: maxErrorValue,
-      pCurrent: maxErrorValue,
+      json: newJson,
+      key: ApiObjectProperty.maxErrorValue,
+      defaultValue: maxErrorValue,
+      currentValue: maxErrorValue,
     );
 
     minErrorValue = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.minErrorValue,
-      pDefault: minErrorValue,
-      pCurrent: minErrorValue,
+      json: newJson,
+      key: ApiObjectProperty.minErrorValue,
+      defaultValue: minErrorValue,
+      currentValue: minErrorValue,
     );
 
     maxWarningValue = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.maxWarningValue,
-      pDefault: maxWarningValue,
-      pCurrent: maxWarningValue,
+      json: newJson,
+      key: ApiObjectProperty.maxWarningValue,
+      defaultValue: maxWarningValue,
+      currentValue: maxWarningValue,
     );
 
     minWarningValue = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.minWarningValue,
-      pDefault: minWarningValue,
-      pCurrent: minWarningValue,
+      json: newJson,
+      key: ApiObjectProperty.minWarningValue,
+      defaultValue: minWarningValue,
+      currentValue: minWarningValue,
     );
 
     dataProvider = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.dataRow,
-      pDefault: dataProvider,
-      pCurrent: dataProvider,
+      json: newJson,
+      key: ApiObjectProperty.dataRow,
+      defaultValue: dataProvider,
+      currentValue: dataProvider,
     );
 
     gaugeStyle = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.gaugeStyle,
-      pDefault: gaugeStyle,
-      pCurrent: gaugeStyle,
+      json: newJson,
+      key: ApiObjectProperty.gaugeStyle,
+      defaultValue: gaugeStyle,
+      currentValue: gaugeStyle,
     );
 
     value = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.data,
-      pDefault: value,
-      pCurrent: value,
-      pConversion: (conv) => conv.toDouble(),
+      json: newJson,
+      key: ApiObjectProperty.data,
+      defaultValue: value,
+      currentValue: value,
+      conversion: (conv) => conv.toDouble(),
     );
 
     columnLabel = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.columnLabel,
-      pDefault: columnLabel,
-      pCurrent: columnLabel,
+      json: newJson,
+      key: ApiObjectProperty.columnLabel,
+      defaultValue: columnLabel,
+      currentValue: columnLabel,
     );
   }
 }

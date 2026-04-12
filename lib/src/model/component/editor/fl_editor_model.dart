@@ -53,40 +53,40 @@ class FlEditorModel extends FlComponentModel {
   FlEditorModel get defaultModel => FlEditorModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
+  void applyFromJson(Map<String, dynamic> newJson) {
     // We have to give the editor wrapper all the necessary information for the layout.
-    super.applyFromJson(pJson);
+    super.applyFromJson(newJson);
 
-    ParseUtil.applyJsonToJson(pJson, json);
+    ParseUtil.applyJsonToJson(newJson, json);
 
     columnName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.columnName,
-      pDefault: defaultModel.columnName,
-      pCurrent: columnName,
+      json: newJson,
+      key: ApiObjectProperty.columnName,
+      defaultValue: defaultModel.columnName,
+      currentValue: columnName,
     );
 
     dataProvider = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.dataRow,
-      pDefault: defaultModel.dataProvider,
-      pCurrent: dataProvider,
+      json: newJson,
+      key: ApiObjectProperty.dataRow,
+      defaultValue: defaultModel.dataProvider,
+      currentValue: dataProvider,
     );
 
     savingImmediate = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.savingImmediate,
-      pDefault: defaultModel.savingImmediate,
-      pCurrent: savingImmediate,
+      json: newJson,
+      key: ApiObjectProperty.savingImmediate,
+      defaultValue: defaultModel.savingImmediate,
+      currentValue: savingImmediate,
     );
 
-    changedCellEditor = pJson.keys.contains(ApiObjectProperty.cellEditor);
+    changedCellEditor = newJson.keys.contains(ApiObjectProperty.cellEditor);
   }
 
   /// Applies component specific layout size information
-  void applyComponentInformation(FlComponentModel pComponentModel) {
-    preferredSize ??= pComponentModel.preferredSize;
-    minimumSize ??= pComponentModel.minimumSize;
-    maximumSize ??= pComponentModel.maximumSize;
+  void applyComponentInformation(FlComponentModel componentModel) {
+    preferredSize ??= componentModel.preferredSize;
+    minimumSize ??= componentModel.minimumSize;
+    maximumSize ??= componentModel.maximumSize;
   }
 }

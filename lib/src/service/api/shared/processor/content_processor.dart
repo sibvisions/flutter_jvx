@@ -32,17 +32,17 @@ class ContentProcessor implements IResponseProcessor<ContentResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(ContentResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(ContentResponse response, ApiRequest? request) {
     List<BaseCommand> commands = [];
 
     FlPanelModel? panel;
     // Handle New & Changed Components
     // Get new full components
-    if (pResponse.changedComponents != null) {
+    if (response.changedComponents != null) {
       SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
-        components: pResponse.changedComponents!,
+        components: response.changedComponents!,
         isContent: true,
-        isUpdate: pResponse.update,
+        isUpdate: response.update,
         reason: "Api received content response",
       );
       commands.add(saveComponentsCommand);
@@ -54,7 +54,7 @@ class ContentProcessor implements IResponseProcessor<ContentResponse> {
 
     // Handle Screen Opening
     // if update == false => new screen that should be routed to
-    if (!pResponse.update && panel != null) {
+    if (!response.update && panel != null) {
       commands.add(
         FunctionCommand(
           () {

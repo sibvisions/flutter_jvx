@@ -156,8 +156,8 @@ class DataBook {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Updates all data from a fetch request
-  Future<void> updateFromFetch({required SaveFetchDataCommand pCommand}) async {
-    var pFetchResponse = pCommand.response;
+  Future<void> updateFromFetch({required SaveFetchDataCommand command}) async {
+    var fetchResponse = command.response;
 
     Map<int, List<dynamic>> dataMap;
     String? pageKey;
@@ -167,13 +167,13 @@ class DataBook {
     if (_metaData?.masterReference == null) {
       dataMap = records;
     } else {
-      if (pFetchResponse.masterRow?.isEmpty ?? true) {
+      if (fetchResponse.masterRow?.isEmpty ?? true) {
         pageKey = "noMasterRow";
       } else {
         pageKey = Filter(
           columnNames: _metaData!.masterReference!.columnNames,
           values: _metaData!.masterReference!.columnNames
-              .mapIndexed((index, referencedColumn) => pFetchResponse.masterRow![index])
+              .mapIndexed((index, referencedColumn) => fetchResponse.masterRow![index])
               .toList(),
         ).toPageKey();
       }
@@ -183,14 +183,14 @@ class DataBook {
         newPageKey = true;
       }
 
-      if (pCommand.requestFilter.isNotEmpty) {
+      if (command.requestFilter.isNotEmpty) {
         dataMap = pageRecords[pageKey]!;
       } else {
         dataMap = records;
       }
     }
 
-    if (pCommand.setRootKey == true) {
+    if (command.setRootKey == true) {
       rootKey = pageKey;
     }
 
@@ -201,12 +201,12 @@ class DataBook {
     }
 
     // Save records
-    for (int i = 0; i < pFetchResponse.records.length; i++) {
+    for (int i = 0; i < fetchResponse.records.length; i++) {
       if (notDecrypted != null) {
-        notDecrypted.add(pFetchResponse.from + i);
+        notDecrypted.add(fetchResponse.from + i);
       }
 
-      dataMap[pFetchResponse.from + i] = await _decryptValues(pageKey, pFetchResponse.from + i, pFetchResponse.records[i], _metaData);
+      dataMap[fetchResponse.from + i] = await _decryptValues(pageKey, fetchResponse.from + i, fetchResponse.records[i], _metaData);
     }
 
     if (notDecrypted != null) {
@@ -215,52 +215,52 @@ class DataBook {
     }
 
     // Remove values with higher index if all records are fetched (clean old data)
-    if (pCommand.response.isAllFetched == true) {
-      if (pFetchResponse.records.isEmpty) {
+    if (command.response.isAllFetched == true) {
+      if (fetchResponse.records.isEmpty) {
         dataMap.clear();
 
         _notDecryptedCache = null;
         _cryptoLock.clear();
       }
       else {
-        dataMap.removeWhere((key, value) => key > pFetchResponse.to);
+        dataMap.removeWhere((key, value) => key > fetchResponse.to);
       }
     }
 
-    if (pCommand.requestFilter.isEmpty && pageKey != null) {
-      if (pCommand.response.isAllFetched == true) {
+    if (command.requestFilter.isEmpty && pageKey != null) {
+      if (command.response.isAllFetched == true) {
         pageRecords[pageKey] = dataMap;
       } else {
-        for (int i = 0; i < pFetchResponse.records.length; i++) {
-          pageRecords[pageKey]![pFetchResponse.from + i] = dataMap[pFetchResponse.from + i]!;
+        for (int i = 0; i < fetchResponse.records.length; i++) {
+          pageRecords[pageKey]![fetchResponse.from + i] = dataMap[fetchResponse.from + i]!;
         }
       }
     }
 
-    if (pCommand.requestFilter.isEmpty) {
+    if (command.requestFilter.isEmpty) {
       //don't change if isAllFetched is missing
-      if (pFetchResponse.isAllFetched != null) {
-        isAllFetched = pFetchResponse.isAllFetched!;
+      if (fetchResponse.isAllFetched != null) {
+        isAllFetched = fetchResponse.isAllFetched!;
       }
 
-      selectedRow = pFetchResponse.selectedRow;
-      if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
-        selectedColumn = pFetchResponse.selectedColumn;
+      selectedRow = fetchResponse.selectedRow;
+      if (fetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
+        selectedColumn = fetchResponse.selectedColumn;
       }
-      treePath = pFetchResponse.treePath;
+      treePath = fetchResponse.treePath;
 
-      _updateSortDefinitions(pFetchResponse.sortDefinitions);
-      _updateRecordReadOnly(pFetchResponse.recordReadOnly, dataMap, pFetchResponse.from);
-      _updateRecordFormats(pFetchResponse.recordFormats);
+      _updateSortDefinitions(fetchResponse.sortDefinitions);
+      _updateRecordReadOnly(fetchResponse.recordReadOnly, dataMap, fetchResponse.from);
+      _updateRecordFormats(fetchResponse.recordFormats);
     }
 
     referencedCellEditors.forEach((refCellEditor) => refCellEditor.buildDataToDisplayMap(this));
 
     IUiService().notifyDataChange(
-      pDataProvider: dataProvider,
-      pUpdatedCurrentPage: dataMap == records,
-      pUpdatedPage: pageKey,
-      pFromStart: pFetchResponse.clear || newPageKey || (pFetchResponse.from == 0 && (pFetchResponse.to > 0 || pFetchResponse.isAllFetched == true))
+      dataProvider: dataProvider,
+      updatedCurrentPage: dataMap == records,
+      updatedPage: pageKey,
+      fromStart: fetchResponse.clear || newPageKey || (fetchResponse.from == 0 && (fetchResponse.to > 0 || fetchResponse.isAllFetched == true))
     );
   }
 
@@ -346,35 +346,35 @@ class DataBook {
   }
 
   /// Updates all data from a [DalDataProviderChangedResponse]
-  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
-    bool changed = _updateSortDefinitions(pChangedResponse.sortDefinitions);
-    changed |= _updateRecordReadOnly(pChangedResponse.recordReadOnly, records, 0);
-    changed |= _updateRecordFormats(pChangedResponse.recordFormats);
+  bool updateDataChanged({required DalDataProviderChangedResponse changedResponse}) {
+    bool changed = _updateSortDefinitions(changedResponse.sortDefinitions);
+    changed |= _updateRecordReadOnly(changedResponse.recordReadOnly, records, 0);
+    changed |= _updateRecordFormats(changedResponse.recordFormats);
 
-    if (pChangedResponse.deletedRow != null && pChangedResponse.deletedRow! < records.length) {
-      for (int i = pChangedResponse.deletedRow!; i < records.length - 1; i++) {
+    if (changedResponse.deletedRow != null && changedResponse.deletedRow! < records.length) {
+      for (int i = changedResponse.deletedRow!; i < records.length - 1; i++) {
         records[i] = records[i + 1]!;
       }
       records.remove(records.length - 1);
       changed = true;
     }
 
-    if (pChangedResponse.changedColumnNames == null ||
-        pChangedResponse.changedValues == null ||
-        pChangedResponse.selectedRow == null) {
+    if (changedResponse.changedColumnNames == null ||
+        changedResponse.changedValues == null ||
+        changedResponse.selectedRow == null) {
       return changed;
     }
 
-    List<dynamic>? rowData = records[pChangedResponse.selectedRow!];
+    List<dynamic>? rowData = records[changedResponse.selectedRow!];
     if (rowData == null) {
       return changed;
     }
 
     for (int index = 0;
-        index < min(pChangedResponse.changedColumnNames!.length, pChangedResponse.changedValues!.length);
+        index < min(changedResponse.changedColumnNames!.length, changedResponse.changedValues!.length);
         index++) {
-      String columnName = pChangedResponse.changedColumnNames![index];
-      dynamic columnData = pChangedResponse.changedValues![index];
+      String columnName = changedResponse.changedColumnNames![index];
+      dynamic columnData = changedResponse.changedValues![index];
 
       int colIndex = _metaData?.columnDefinitions.indexByName(columnName) ?? -1;
       if (colIndex >= 0) {
@@ -391,23 +391,23 @@ class DataBook {
   }
 
   /// Sets the sort definition and returns if anything changed
-  bool _updateSortDefinitions(SortList? pSortDefinitions) {
+  bool _updateSortDefinitions(SortList? sortDefinitions) {
     if (_metaData == null) {
       return false;
     }
 
     bool changeDetected = false;
 
-    if (_metaData!.sortDefinitions == null || pSortDefinitions == null) {
-      changeDetected = _metaData!.sortDefinitions != pSortDefinitions;
+    if (_metaData!.sortDefinitions == null || sortDefinitions == null) {
+      changeDetected = _metaData!.sortDefinitions != sortDefinitions;
     }
 
-    if (pSortDefinitions != null && !changeDetected) {
-      changeDetected = _metaData!.sortDefinitions!.length != pSortDefinitions.length;
+    if (sortDefinitions != null && !changeDetected) {
+      changeDetected = _metaData!.sortDefinitions!.length != sortDefinitions.length;
 
       if (!changeDetected) {
 
-        for (SortDefinition sortDefinition in pSortDefinitions) {
+        for (SortDefinition sortDefinition in sortDefinitions) {
           if (changeDetected) {
             break;
           }
@@ -419,7 +419,7 @@ class DataBook {
       }
     }
 
-    _metaData!.sortDefinitions = pSortDefinitions;
+    _metaData!.sortDefinitions = sortDefinitions;
 
     return changeDetected;
   }
@@ -431,29 +431,29 @@ class DataBook {
   /// Get the selected record,
   /// If no record is currently selected (-1) returns null
   /// If selected row is not found returns null
-  DataRecord? getSelectedRecord({required List<String>? pDataColumnNames}) {
-    return getRecord(pDataColumnNames: pDataColumnNames, pRecordIndex: selectedRow);
+  DataRecord? getSelectedRecord({required List<String>? dataColumnNames}) {
+    return getRecord(dataColumnNames: dataColumnNames, recordIndex: selectedRow);
   }
 
   /// Gets a record
   /// If row is not found returns null
-  DataRecord? getRecord({required List<String>? pDataColumnNames, required int pRecordIndex}) {
-    if (!records.containsKey(pRecordIndex) || _metaData == null) {
+  DataRecord? getRecord({required List<String>? dataColumnNames, required int recordIndex}) {
+    if (!records.containsKey(recordIndex) || _metaData == null) {
       return null;
     }
 
     ColumnList? columnList;
 
-    List<dynamic> selectedRecord = records[pRecordIndex]!;
+    List<dynamic> selectedRecord = records[recordIndex]!;
 
     List<dynamic>? recordForColumnNames;
 
-    if (pDataColumnNames != null) {
+    if (dataColumnNames != null) {
       columnList = ColumnList.empty();
 
       recordForColumnNames = [];
 
-      for (String columnName in pDataColumnNames) {
+      for (String columnName in dataColumnNames) {
         var colDef = _metaData!.columnDefinitions.byName(columnName);
 
         if (colDef != null) {
@@ -470,7 +470,7 @@ class DataBook {
 
     return DataRecord(
       columnDefinitions: columnList ?? _metaData!.columnDefinitions,
-      index: pRecordIndex,
+      index: recordIndex,
       values: recordForColumnNames ?? selectedRecord,
       selectedColumn: selectedColumn,
       treePath: treePath,
@@ -478,8 +478,8 @@ class DataBook {
   }
 
   /// Deletes all records in the specified range, even when they do not exist
-  void deleteRecordRange({required int pFrom, required int pTo}) {
-    for (int i = pFrom; pFrom <= pTo; i++) {
+  void deleteRecordRange({required int from, required int to}) {
+    for (int i = from; from <= to; i++) {
       if (records.remove(i) != null) {
         isAllFetched = false;
         if (selectedRow == i) {
@@ -504,24 +504,24 @@ class DataBook {
 
   /// Selects the first record which fulfills the filter.
   ///
-  /// The [pRowNumber] is to shortcut the filter.
+  /// The [rowNumber] is to shortcut the filter.
   ///  This row index will be checked against the filter if it applies, otherwise checks every row until the filter applies.
   ///
   /// A column can be optionally selected.
   static Future<bool> selectRecord({
-    required String pDataProvider,
-    required Filter pFilter,
-    int? pRowNumber,
-    String? pColumn,
+    required String dataProvider,
+    required Filter filter,
+    int? rowNumber,
+    String? column,
     bool showDialogOnError = true,
   }) {
     return ICommandService().sendCommand(
       SelectRecordCommand.select(
         reason: "Select record | DataBook selectRecord",
-        dataProvider: pDataProvider,
-        filter: pFilter,
-        rowNumber: pRowNumber,
-        selectedColumn: pColumn,
+        dataProvider: dataProvider,
+        filter: filter,
+        rowNumber: rowNumber,
+        selectedColumn: column,
       ),
       showDialogOnError: showDialogOnError,
     );
@@ -529,13 +529,13 @@ class DataBook {
 
   /// Deselects the currently selected record.
   static Future<bool> deselectRecord({
-    required String pDataProvider,
+    required String dataProvider,
     bool showDialogOnError = true,
   }) {
     return ICommandService().sendCommand(
       SelectRecordCommand.deselect(
         reason: "Select record | DataBook selectRecord",
-        dataProvider: pDataProvider,
+        dataProvider: dataProvider,
       ),
       showDialogOnError: showDialogOnError,
     );
@@ -543,16 +543,16 @@ class DataBook {
 
   /// Filters the data book with the provided filter.
   static Future<bool> filterRecords({
-    required String pDataProvider,
-    Filter? pFilter,
-    FilterCondition? pFilterCondition,
+    required String dataProvider,
+    Filter? filter,
+    FilterCondition? filterCondition,
     bool showDialogOnError = true,
   }) {
     return ICommandService().sendCommand(
       FilterCommand(
-        filter: pFilter,
-        filterCondition: pFilterCondition,
-        dataProvider: pDataProvider,
+        filter: filter,
+        filterCondition: filterCondition,
+        dataProvider: dataProvider,
         reason: "Filter record | DataBook filterRecords",
       ),
       showDialogOnError: showDialogOnError,
@@ -561,12 +561,12 @@ class DataBook {
 
   /// Inserts a new record into the data book.
   static Future<bool> insertRecord({
-    required String pDataProvider,
+    required String dataProvider,
     bool showDialogOnError = true,
   }) {
     return ICommandService().sendCommand(
       InsertRecordCommand(
-        dataProvider: pDataProvider,
+        dataProvider: dataProvider,
         reason: "Insert record | DataBook insertRecord",
       ),
       showDialogOnError: showDialogOnError,
@@ -577,18 +577,18 @@ class DataBook {
   ///
   /// If no filter is provided, the currently selected record will be updated.
   static Future<bool> updateRecord({
-    required String pDataProvider,
-    required List<String> pColumnNames,
-    required List<dynamic> pValues,
-    Filter? pFilter,
+    required String dataProvider,
+    required List<String> columnNames,
+    required List<dynamic> values,
+    Filter? filter,
     bool showDialogOnError = true,
   }) {
     return ICommandService().sendCommand(
       SetValuesCommand(
-        dataProvider: pDataProvider,
-        columnNames: pColumnNames,
-        values: pValues,
-        filter: pFilter,
+        dataProvider: dataProvider,
+        columnNames: columnNames,
+        values: values,
+        filter: filter,
         reason: "Update record | DataBook updateRecord",
       ),
       showDialogOnError: showDialogOnError,
@@ -599,16 +599,16 @@ class DataBook {
   ///
   /// If no filter is provided, the currently selected record will be deleted.
   static Future<bool> deleteRecord({
-    required String pDataProvider,
-    Filter? pFilter,
-    int? pRowIndex,
+    required String dataProvider,
+    Filter? filter,
+    int? rowIndex,
     bool showDialogOnError = true,
   }) {
     return ICommandService().sendCommand(
       DeleteRecordCommand(
-        dataProvider: pDataProvider,
-        filter: pFilter,
-        rowNumber: pRowIndex,
+        dataProvider: dataProvider,
+        filter: filter,
+        rowNumber: rowIndex,
         reason: "Delete record | DataBook deleteRecord",
       ),
       showDialogOnError: showDialogOnError,
@@ -616,39 +616,40 @@ class DataBook {
   }
 
   static void subscribeToDataBook({
-    required Object pSubObject,
-    required String pDataProvider,
-    List<String>? pDataColumns,
-    int pFrom = -1,
-    int? pTo,
-    OnDataChunkCallback? pOnDataChunk,
-    OnMetaDataCallback? pOnMetaData,
-    OnSelectedRecordCallback? pOnSelectedRecord,
-    OnDataToDisplayMapChanged? pOnDataToDisplayMapChanged,
-    OnReloadCallback? pOnReload,
-    OnPageCallback? pOnPage,
+    required Object subObject,
+    required String dataProvider,
+    List<String>? dataColumns,
+    int from = -1,
+    int? to,
+    OnDataChunkCallback? onDataChunk,
+    OnMetaDataCallback? onMetaData,
+    OnSelectedRecordCallback? onSelectedRecord,
+    OnDataToDisplayMapChanged? onDataToDisplayMapChanged,
+    OnReloadCallback? onReload,
+    OnPageCallback? onPage,
   }) {
     IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
-      subbedObj: pSubObject,
-      dataProvider: pDataProvider,
-      dataColumns: pDataColumns,
-      from: pFrom,
-      to: pTo,
-      onDataChunk: pOnDataChunk,
-      onMetaData: pOnMetaData,
-      onSelectedRecord: pOnSelectedRecord,
-      onReload: pOnReload,
-      onDataToDisplayMapChanged: pOnDataToDisplayMapChanged,
-      onPage: pOnPage,
-    ));
+      dataSubscription: DataSubscription(
+        subbedObj: subObject,
+        dataProvider: dataProvider,
+        dataColumns: dataColumns,
+        from: from,
+        to: to,
+        onDataChunk: onDataChunk,
+        onMetaData: onMetaData,
+        onSelectedRecord: onSelectedRecord,
+        onReload: onReload,
+        onDataToDisplayMapChanged: onDataToDisplayMapChanged,
+        onPage: onPage,
+      )
+    );
   }
 
   static void unsubscribeToDataBook({
-    required Object pSubObject,
-    String? pDataProvider,
+    required Object subObject,
+    String? dataProvider,
   }) {
-    IUiService().disposeDataSubscription(pSubscriber: pSubObject, pDataProvider: pDataProvider);
+    IUiService().disposeDataSubscription(subscriber: subObject, dataProvider: dataProvider);
   }
 
   /// Encrypts [values] of [columnNames] if necessary.
@@ -892,7 +893,7 @@ class DalMetaData {
   SortList? sortDefinitions = SortList.empty();
 
   /// Combined json of this metaData
-  Map<String, dynamic> json = {};
+  Map<String, dynamic> _json = {};
 
   /// The last changed properties
   List<String> changedProperties = [];
@@ -933,58 +934,59 @@ class DalMetaData {
 
   DalMetaData([String? dataProvider]) : dataProvider = dataProvider ?? "";
 
-  DalMetaData.fromJson(Map<String, dynamic> pJson)
-      : dataProvider = pJson[ApiObjectProperty.dataProvider],
-        columnViewTable = pJson[ApiObjectProperty.columnViewTable]?.cast<String>(),
-        columnViewTree = pJson[ApiObjectProperty.columnViewTree]?.cast<String>(),
-        columnDefinitions = ColumnList((pJson[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList() ?? []),
-        readOnly = pJson[ApiObjectProperty.readOnly],
-        deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],
-        updateEnabled = pJson[ApiObjectProperty.updateEnabled],
-        insertEnabled = pJson[ApiObjectProperty.insertEnabled],
-        modelDeleteEnabled = pJson[ApiObjectProperty.modelDeleteEnabled],
-        modelUpdateEnabled = pJson[ApiObjectProperty.modelUpdateEnabled],
-        modelInsertEnabled = pJson[ApiObjectProperty.modelInsertEnabled],
-        primaryKeyColumns = pJson[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
-        masterReference = pJson[ApiObjectProperty.masterReference] != null
-            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.masterReference])
+  DalMetaData.fromJson(Map<String, dynamic> json)
+      : dataProvider = json[ApiObjectProperty.dataProvider],
+        columnViewTable = json[ApiObjectProperty.columnViewTable]?.cast<String>(),
+        columnViewTree = json[ApiObjectProperty.columnViewTree]?.cast<String>(),
+        columnDefinitions = ColumnList((json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList() ?? []),
+        readOnly = json[ApiObjectProperty.readOnly],
+        deleteEnabled = json[ApiObjectProperty.deleteEnabled],
+        updateEnabled = json[ApiObjectProperty.updateEnabled],
+        insertEnabled = json[ApiObjectProperty.insertEnabled],
+        modelDeleteEnabled = json[ApiObjectProperty.modelDeleteEnabled],
+        modelUpdateEnabled = json[ApiObjectProperty.modelUpdateEnabled],
+        modelInsertEnabled = json[ApiObjectProperty.modelInsertEnabled],
+        primaryKeyColumns = json[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
+        masterReference = json[ApiObjectProperty.masterReference] != null
+            ? ReferenceDefinition.fromJson(json[ApiObjectProperty.masterReference])
             : null,
-        detailReferences = (pJson[ApiObjectProperty.detailReferences] as List<dynamic>?)?.map((e) => ReferenceDefinition.fromJson(e)).toList(),
-        rootReference = pJson[ApiObjectProperty.rootReference] != null
-            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.rootReference])
+        detailReferences = (json[ApiObjectProperty.detailReferences] as List<dynamic>?)?.map((e) => ReferenceDefinition.fromJson(e)).toList(),
+        rootReference = json[ApiObjectProperty.rootReference] != null
+            ? ReferenceDefinition.fromJson(json[ApiObjectProperty.rootReference])
             : null,
-        additionalRowVisible = pJson[ApiObjectProperty.additionalRowVisible],
-        flags = pJson[ApiObjectProperty.flags],
-        json = pJson["json"] ?? {} {
-    changedProperties = json.keys.toList();
+        additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
+        flags = json[ApiObjectProperty.flags],
+
+        _json = json["json"] ?? {} {
+    changedProperties = _json.keys.toList();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  bool applyMetaDataResponse(DalMetaDataResponse pResponse) {
-    changedProperties = pResponse.json.keys.toList();
+  bool applyMetaDataResponse(DalMetaDataResponse response) {
+    changedProperties = response.json.keys.toList();
 
     bool isChanged = false;
 
     DeepCollectionEquality comp = const DeepCollectionEquality.unordered();
 
-    if (pResponse.columnViewTable != null && !comp.equals(columnViewTable, pResponse.columnViewTable)) {
-      columnViewTable = pResponse.columnViewTable!;
+    if (response.columnViewTable != null && !comp.equals(columnViewTable, response.columnViewTable)) {
+      columnViewTable = response.columnViewTable!;
 
       isChanged = true;
     }
-    if (pResponse.columnViewTree != null && !comp.equals(columnViewTree, pResponse.columnViewTree)) {
-      columnViewTree = pResponse.columnViewTree!;
+    if (response.columnViewTree != null && !comp.equals(columnViewTree, response.columnViewTree)) {
+      columnViewTree = response.columnViewTree!;
 
       isChanged = true;
     }
-    if (pResponse.columnDefinitions != null) {
+    if (response.columnDefinitions != null) {
       createdReferencedCellEditors.forEach((element) => element.dispose());
       createdReferencedCellEditors.clear();
 
-      columnDefinitions = pResponse.columnDefinitions!;
+      columnDefinitions = response.columnDefinitions!;
       columnDefinitions.forEach((colDef) {
         if (colDef.cellEditorModel is FlLinkedCellEditorModel) {
           createdReferencedCellEditors.add(IDataService().createReferencedCellEditors(
@@ -994,140 +996,140 @@ class DalMetaData {
 
       isChanged = true;
     }
-    if (pResponse.readOnly != null && readOnly != pResponse.readOnly) {
-      readOnly = pResponse.readOnly!;
+    if (response.readOnly != null && readOnly != response.readOnly) {
+      readOnly = response.readOnly!;
 
       isChanged = true;
     }
-    if (pResponse.deleteEnabled != null && deleteEnabled != pResponse.deleteEnabled) {
-      deleteEnabled = pResponse.deleteEnabled!;
+    if (response.deleteEnabled != null && deleteEnabled != response.deleteEnabled) {
+      deleteEnabled = response.deleteEnabled!;
 
       isChanged = true;
     }
-    if (pResponse.updateEnabled != null && updateEnabled != pResponse.updateEnabled) {
-      updateEnabled = pResponse.updateEnabled!;
+    if (response.updateEnabled != null && updateEnabled != response.updateEnabled) {
+      updateEnabled = response.updateEnabled!;
 
       isChanged = true;
     }
-    if (pResponse.insertEnabled != null && insertEnabled != pResponse.insertEnabled) {
-      insertEnabled = pResponse.insertEnabled!;
+    if (response.insertEnabled != null && insertEnabled != response.insertEnabled) {
+      insertEnabled = response.insertEnabled!;
 
       isChanged = true;
     }
-    if (pResponse.modelDeleteEnabled != null && modelDeleteEnabled != pResponse.modelDeleteEnabled) {
-      modelDeleteEnabled = pResponse.modelDeleteEnabled!;
+    if (response.modelDeleteEnabled != null && modelDeleteEnabled != response.modelDeleteEnabled) {
+      modelDeleteEnabled = response.modelDeleteEnabled!;
 
       isChanged = true;
     }
-    if (pResponse.modelUpdateEnabled != null && modelUpdateEnabled != pResponse.modelUpdateEnabled) {
-      modelUpdateEnabled = pResponse.modelUpdateEnabled!;
+    if (response.modelUpdateEnabled != null && modelUpdateEnabled != response.modelUpdateEnabled) {
+      modelUpdateEnabled = response.modelUpdateEnabled!;
 
       isChanged = true;
     }
-    if (pResponse.modelInsertEnabled != null && modelInsertEnabled != pResponse.modelInsertEnabled) {
-      modelInsertEnabled = pResponse.modelInsertEnabled!;
+    if (response.modelInsertEnabled != null && modelInsertEnabled != response.modelInsertEnabled) {
+      modelInsertEnabled = response.modelInsertEnabled!;
 
       isChanged = true;
     }
-    if (pResponse.primaryKeyColumns != null && !comp.equals(primaryKeyColumns, pResponse.primaryKeyColumns)) {
-      primaryKeyColumns = pResponse.primaryKeyColumns!;
+    if (response.primaryKeyColumns != null && !comp.equals(primaryKeyColumns, response.primaryKeyColumns)) {
+      primaryKeyColumns = response.primaryKeyColumns!;
 
       isChanged = true;
     }
-    if (pResponse.masterReference != null) {
-      masterReference = pResponse.masterReference!;
+    if (response.masterReference != null) {
+      masterReference = response.masterReference!;
 
       isChanged = true;
     }
-    if (pResponse.detailReferences != null) {
-      detailReferences = pResponse.detailReferences!;
+    if (response.detailReferences != null) {
+      detailReferences = response.detailReferences!;
 
       isChanged = true;
     }
-    if (pResponse.rootReference != null) {
-      rootReference = pResponse.rootReference!;
+    if (response.rootReference != null) {
+      rootReference = response.rootReference!;
 
       isChanged = true;
     }
-    if (pResponse.additionalRowVisible != null && additionalRowVisible != pResponse.additionalRowVisible) {
-      additionalRowVisible = pResponse.additionalRowVisible!;
-
-      isChanged = true;
-    }
-
-    if (pResponse.flags != null && !listEquals(flags, pResponse.flags)) {
-      flags = pResponse.flags;
+    if (response.additionalRowVisible != null && additionalRowVisible != response.additionalRowVisible) {
+      additionalRowVisible = response.additionalRowVisible!;
 
       isChanged = true;
     }
 
-    isChanged |= ParseUtil.applyJsonToJson(pResponse.json, json);
+    if (response.flags != null && !listEquals(flags, response.flags)) {
+      flags = response.flags;
+
+      isChanged = true;
+    }
+
+    isChanged |= ParseUtil.applyJsonToJson(response.json, _json);
 
     return isChanged;
   }
 
-  bool applyMetaDataFromChangedResponse(DalDataProviderChangedResponse pResponse) {
+  bool applyMetaDataFromChangedResponse(DalDataProviderChangedResponse response) {
     changedProperties.clear();
 
-    if (pResponse.readOnly != null && readOnly != pResponse.readOnly) {
-      readOnly = pResponse.readOnly!;
+    if (response.readOnly != null && readOnly != response.readOnly) {
+      readOnly = response.readOnly!;
 
       changedProperties.add(ApiObjectProperty.readOnly);
     }
 
-    if (pResponse.insertEnabled != null && insertEnabled != pResponse.insertEnabled) {
-      insertEnabled = pResponse.insertEnabled!;
+    if (response.insertEnabled != null && insertEnabled != response.insertEnabled) {
+      insertEnabled = response.insertEnabled!;
 
       changedProperties.add(ApiObjectProperty.insertEnabled);
     }
 
-    if (pResponse.updateEnabled != null && updateEnabled != pResponse.updateEnabled) {
-      updateEnabled = pResponse.updateEnabled!;
+    if (response.updateEnabled != null && updateEnabled != response.updateEnabled) {
+      updateEnabled = response.updateEnabled!;
 
       changedProperties.add(ApiObjectProperty.updateEnabled);
     }
 
-    if (pResponse.deleteEnabled != null && deleteEnabled != pResponse.deleteEnabled) {
-      deleteEnabled = pResponse.deleteEnabled!;
+    if (response.deleteEnabled != null && deleteEnabled != response.deleteEnabled) {
+      deleteEnabled = response.deleteEnabled!;
 
       changedProperties.add(ApiObjectProperty.deleteEnabled);
     }
 
-    if (pResponse.modelInsertEnabled != null && modelInsertEnabled != pResponse.modelInsertEnabled) {
-      modelInsertEnabled = pResponse.modelInsertEnabled!;
+    if (response.modelInsertEnabled != null && modelInsertEnabled != response.modelInsertEnabled) {
+      modelInsertEnabled = response.modelInsertEnabled!;
 
       changedProperties.add(ApiObjectProperty.modelInsertEnabled);
     }
 
-    if (pResponse.modelUpdateEnabled != null && modelUpdateEnabled != pResponse.modelUpdateEnabled) {
-      modelUpdateEnabled = pResponse.modelUpdateEnabled!;
+    if (response.modelUpdateEnabled != null && modelUpdateEnabled != response.modelUpdateEnabled) {
+      modelUpdateEnabled = response.modelUpdateEnabled!;
 
       changedProperties.add(ApiObjectProperty.modelUpdateEnabled);
     }
 
-    if (pResponse.modelDeleteEnabled != null && modelDeleteEnabled != pResponse.modelDeleteEnabled) {
-      modelDeleteEnabled = pResponse.modelDeleteEnabled!;
+    if (response.modelDeleteEnabled != null && modelDeleteEnabled != response.modelDeleteEnabled) {
+      modelDeleteEnabled = response.modelDeleteEnabled!;
 
       changedProperties.add(ApiObjectProperty.modelDeleteEnabled);
     }
 
-    if (pResponse.additionalRowVisible != null && additionalRowVisible != pResponse.additionalRowVisible!) {
-      additionalRowVisible = pResponse.additionalRowVisible!;
+    if (response.additionalRowVisible != null && additionalRowVisible != response.additionalRowVisible!) {
+      additionalRowVisible = response.additionalRowVisible!;
 
       changedProperties.add(ApiObjectProperty.additionalRowVisible);
     }
 
-    if (pResponse.flags != null && !listEquals(flags, pResponse.flags)) {
-      flags = pResponse.flags;
+    if (response.flags != null && !listEquals(flags, response.flags)) {
+      flags = response.flags;
 
       changedProperties.add(ApiObjectProperty.flags);
     }
 
-    if (pResponse.changedColumns != null) {
+    if (response.changedColumns != null) {
 
       bool isColumnChanged = false;
 
-      pResponse.changedColumns!.forEach((changedColumn) {
+      response.changedColumns!.forEach((changedColumn) {
 
         ColumnDefinition? foundColumn = columnDefinitions.byName(changedColumn.name);
 
@@ -1170,7 +1172,7 @@ class DalMetaData {
             if (foundColumn.cellEditorModel is FlLinkedCellEditorModel) {
               createdReferencedCellEditors.add(IDataService().createReferencedCellEditors(
                   foundColumn.cellEditorModel as FlLinkedCellEditorModel,
-                  pResponse.dataProvider,
+                  response.dataProvider,
                   foundColumn.name));
             }
 
@@ -1211,7 +1213,9 @@ class DalMetaData {
     data[ApiObjectProperty.rootReference] = rootReference?.toJson();
     data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
     data[ApiObjectProperty.flags] = flags;
-    data["json"] = json;
+
+    data["json"] = _json;
+
     return data;
   }
 

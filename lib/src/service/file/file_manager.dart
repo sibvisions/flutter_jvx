@@ -48,28 +48,28 @@ abstract class IFileManager {
   String getAppSpecificPath(String path, {String? appId, String? version});
 
   /// Check if a file/directory with the given path exists
-  Future<bool> doesFileExist(String pPath);
+  Future<bool> doesFileExist(String path);
 
   /// Get File from provided path, returns null if file was not found
-  Future<File?> getFile(String pPath);
+  Future<File?> getFile(String path);
 
   /// Get File from provided path, returns null if file was not found
-  File? getFileSync(String pPath);
+  File? getFileSync(String path);
 
   /// Delete file/directory with provided path
-  void deleteFile(String pPath);
+  void deleteFile(String path);
 
   /// Save File in provided path
-  Future<File> saveFile(String pPath, {required List<int> pContent});
+  Future<File> saveFile(String path, {required List<int> content});
 
   /// Returns directory, will always return null if in web
-  Directory? getDirectory(String pPath);
+  Directory? getDirectory(String path);
 
   /// Renames a independent directory.
-  Future<void> renameIndependentDirectory(List<String> pPath, String pNewName);
+  Future<void> renameIndependentDirectory(List<String> path, String newName);
 
   /// Deletes a independent directory.
-  Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false});
+  Future<void> deleteIndependentDirectory(List<String> path, {bool recursive = false});
 
   /// Removes all previous app versions.
   ///

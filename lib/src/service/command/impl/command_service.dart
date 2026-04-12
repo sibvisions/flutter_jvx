@@ -108,54 +108,62 @@ class CommandService implements ICommandService {
 
   @override
   Future<bool> sendCommand(
-    BaseCommand pCommand, {
+    BaseCommand command, {
     bool showDialogOnError = true,
     bool throwFirstErrorCommand = false,
     bool? delayUILocking,
     bool? showLoading,
   }) async {
-    BaseCommand command = IUiService().getAppManager()?.interceptCommand(pCommand) ?? pCommand;
+    BaseCommand cmd = IUiService().getAppManager()?.interceptCommand(command) ?? command;
     // Only queue layout commands
-    if (command is LayoutCommand) {
-      return _layoutCommandsQueue.add(() => _initCommandProcessing(command, false));
+    if (cmd is LayoutCommand) {
+      return _layoutCommandsQueue.add(() => _initCommandProcessing(cmd, false));
     }
     // Only queue queue commands
-    else if (command is IQueueCommand) {
+    else if (cmd is IQueueCommand) {
       return _commandsQueue.add(() =>
-          _initCommandProcessing(command, showDialogOnError, throwFirstErrorCommand, delayUILocking, showLoading));
+          _initCommandProcessing(cmd, showDialogOnError, throwFirstErrorCommand, delayUILocking, showLoading));
     }
 
-    return _initCommandProcessing(command, showDialogOnError, throwFirstErrorCommand, delayUILocking, showLoading);
+    return _initCommandProcessing(cmd, showDialogOnError, throwFirstErrorCommand, delayUILocking, showLoading);
   }
 
   @override
-  Future<bool> sendCommands(
+  Future<CommandResult> sendCommands(
     List<BaseCommand> commands, {
     bool showDialogOnError = true,
     bool abortOnFirstError = false,
     bool? delayUILocking,
     bool? showLoading,
   }) async {
+    bool sendResult = true;
     bool success = true;
     bool first = true;
+
+    List<(BaseCommand command, bool success)> execStatus = [];
 
     for (BaseCommand command in commands) {
       success = await sendCommand(command,
               showDialogOnError: showDialogOnError,
               delayUILocking: first ? delayUILocking : null,
-              showLoading: first ? showLoading : null) &&
-          success;
+              showLoading: first ? showLoading : null);
+
       first = false;
+
+      execStatus.add((command, success));
+
+      sendResult = success && sendResult;
+
       if (!success && abortOnFirstError) {
         break;
       }
     }
 
-    return success;
+    return CommandResult(success: sendResult, commands: execStatus);
   }
 
   Future<bool> _initCommandProcessing(
-    BaseCommand pCommand,
+    BaseCommand command,
     bool showDialogOnError, [
     bool throwFirstErrorCommand = false,
     bool? delayUILocking,
@@ -171,29 +179,29 @@ class CommandService implements ICommandService {
     }
 
     try {
-      pCommand.delayUILocking = delayUILocking ?? pCommand.delayUILocking;
-      pCommand.showLoading = showLoading ?? pCommand.showLoading;
+      command.delayUILocking = delayUILocking ?? command.delayUILocking;
+      command.showLoading = showLoading ?? command.showLoading;
 
       try {
-        progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
+        progressHandler.forEach((element) => element.notifyProgressStart(command));
       } catch (e) {
         FlutterUI.logCommand.d("Error notifying progress start");
       }
 
       // Discard SessionCommands which are sent from an older session (e.g. dispose sends an command).
-      if (pCommand is ApplicationCommand && pCommand.clientId != IUiService().clientId.value) {
+      if (command is ApplicationCommand && command.clientId != IUiService().clientId.value) {
         if (FlutterUI.logCommand.cl(Lvl.d)) {
-          FlutterUI.logCommand.d("${pCommand.runtimeType} uses old/invalid Client ID, discarding.");
+          FlutterUI.logCommand.d("${command.runtimeType} uses old/invalid Client ID, discarding.");
         }
 
         return false;
       }
 
       if (FlutterUI.logCommand.cl(Lvl.d)) {
-        FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
+        FlutterUI.logCommand.d("Started ${command.runtimeType}-chain");
       }
 
-      List<BaseCommand>? followCommands = await _processCommand(pCommand, null);
+      List<BaseCommand>? followCommands = await _processCommand(command, null);
       IErrorCommand? firstErrorCommand;
 
       while (followCommands != null) {
@@ -206,7 +214,7 @@ class CommandService implements ICommandService {
             wasConnected = repository.connected;
           }
 
-          List<BaseCommand>? newCommands = await _processCommand(followCommand, pCommand);
+          List<BaseCommand>? newCommands = await _processCommand(followCommand, command);
           if (newCommands != null) {
             newFollowCommands ??= [];
             newFollowCommands.addAll(newCommands);
@@ -216,10 +224,10 @@ class CommandService implements ICommandService {
         followCommands = newFollowCommands;
       }
 
-      await getProcessor(pCommand)?.onFinish(pCommand);
+      await getProcessor(command)?.onFinish(command);
 
       if (FlutterUI.logCommand.cl(Lvl.d)) {
-        FlutterUI.logCommand.d("Finished ${pCommand.runtimeType}-chain");
+        FlutterUI.logCommand.d("Finished ${command.runtimeType}-chain");
       }
 
       if (firstErrorCommand != null) {
@@ -230,18 +238,18 @@ class CommandService implements ICommandService {
     } catch (error, stack) {
       if (FlutterUI.logCommand.cl(Lvl.e)) {
         if (error is OpenServerErrorDialogCommand && error.silentAbort) {
-          FlutterUI.logCommand.d("Silent abort while processing ${pCommand.runtimeType}-chain");
+          FlutterUI.logCommand.d("Silent abort while processing ${command.runtimeType}-chain");
         }
         else {
-          FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
+          FlutterUI.logCommand.e("Error processing ${command.runtimeType}-chain");
         }
       }
 
       if ((error is! IErrorCommand)
-          && pCommand is! IErrorCommand && pCommand is! FeedbackCommand) {
+          && command is! IErrorCommand && command is! FeedbackCommand) {
         bool showError = true;
 
-        if (pCommand is AliveCommand) {
+        if (command is AliveCommand) {
           if (!wasConnected) {
             showError = false;
           }
@@ -275,7 +283,7 @@ class CommandService implements ICommandService {
       }
     } finally {
       try {
-        progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
+        progressHandler.forEach((element) => element.notifyProgressEnd(command));
       } catch (e) {
         FlutterUI.logCommand.d("Error notifying progress end");
       }
@@ -286,16 +294,16 @@ class CommandService implements ICommandService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<List<BaseCommand>?> _processCommand(BaseCommand pCommand, BaseCommand? origin) async {
-    if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
-      FlutterUI.logCommand.i("Processing ${pCommand.runtimeType} (${pCommand.reason})");
+  Future<List<BaseCommand>?> _processCommand(BaseCommand command, BaseCommand? origin) async {
+    if (command is ApiCommand && command is! DeviceStatusCommand) {
+      FlutterUI.logCommand.i("Processing ${command.runtimeType} (${command.reason})");
     }
 
-    ICommandProcessor<BaseCommand>? processor = getProcessor(pCommand);
+    ICommandProcessor<BaseCommand>? processor = getProcessor(command);
 
     if (processor == null) {
       if (FlutterUI.logCommand.cl(Lvl.e)) {
-        FlutterUI.logCommand.e("Command (${pCommand.runtimeType}) without Processor found");
+        FlutterUI.logCommand.e("Command (${command.runtimeType}) without Processor found");
       }
 
       return null;
@@ -304,31 +312,31 @@ class CommandService implements ICommandService {
     List<BaseCommand> commands;
 
     try {
-      await processor.beforeProcessing(pCommand, origin);
+      await processor.beforeProcessing(command, origin);
 
-      commands = await processor.processCommand(pCommand, origin);
+      commands = await processor.processCommand(command, origin);
 
       if (FlutterUI.logCommand.cl(Lvl.d)) {
-        FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");
+        FlutterUI.logCommand.d("After processing ${command.runtimeType}");
       }
-      await processor.afterProcessing(pCommand, origin);
+      await processor.afterProcessing(command, origin);
 
       // Exit doesn't require additional handling -> just done
-      if (pCommand is ExitCommand) {
+      if (command is ExitCommand) {
         return null;
       }
 
-      modifyCommands(commands, pCommand);
-      IUiService().getAppManager()?.modifyFollowUpCommands(pCommand, commands);
+      modifyCommands(commands, command);
+      IUiService().getAppManager()?.modifyFollowUpCommands(command, commands);
 
       if (FlutterUI.logCommand.cl(Lvl.d)) {
         if (commands.isNotEmpty) {
-          FlutterUI.logCommand.d("$pCommand\n->\n\t$commands");
+          FlutterUI.logCommand.d("$command\n->\n\t$commands");
         }
       }
     } catch (error, stackTrace) {
       if (FlutterUI.logAPI.cl(Lvl.e)) {
-        FlutterUI.logAPI.e("Error while processing ${pCommand.runtimeType} with ${processor.runtimeType} $error $stackTrace");
+        FlutterUI.logAPI.e("Error while processing ${command.runtimeType} with ${processor.runtimeType} $error $stackTrace");
       }
 
       rethrow;
@@ -337,20 +345,20 @@ class CommandService implements ICommandService {
     return commands;
   }
 
-  ICommandProcessor<BaseCommand>? getProcessor(BaseCommand pCommand) {
+  ICommandProcessor<BaseCommand>? getProcessor(BaseCommand command) {
     ICommandProcessor? processor;
-    if (pCommand is ApiCommand) {
-      processor = _apiProcessor.getProcessor(pCommand);
-    } else if (pCommand is ConfigCommand) {
-      processor = _configProcessor.getProcessor(pCommand);
-    } else if (pCommand is StorageCommand) {
-      processor = _storageProcessor.getProcessor(pCommand);
-    } else if (pCommand is UiCommand) {
-      processor = _uiProcessor.getProcessor(pCommand);
-    } else if (pCommand is LayoutCommand) {
-      processor = _layoutProcessor.getProcessor(pCommand);
-    } else if (pCommand is DataCommand) {
-      processor = _dataProcessor.getProcessor(pCommand);
+    if (command is ApiCommand) {
+      processor = _apiProcessor.getProcessor(command);
+    } else if (command is ConfigCommand) {
+      processor = _configProcessor.getProcessor(command);
+    } else if (command is StorageCommand) {
+      processor = _storageProcessor.getProcessor(command);
+    } else if (command is UiCommand) {
+      processor = _uiProcessor.getProcessor(command);
+    } else if (command is LayoutCommand) {
+      processor = _layoutProcessor.getProcessor(command);
+    } else if (command is DataCommand) {
+      processor = _dataProcessor.getProcessor(command);
     }
     return processor;
   }
@@ -359,7 +367,7 @@ class CommandService implements ICommandService {
     commands.whereType<DeleteScreenCommand>().where((deleteScreen) {
       Set<String> setNamesOfScreen = {deleteScreen.componentName};
 
-      FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: deleteScreen.componentName);
+      FlComponentModel? screenModel = IStorageService().getComponentByName(componentName: deleteScreen.componentName);
       if (screenModel is FlPanelModel) {
         if (screenModel.screenNavigationName != null) {
           setNamesOfScreen.add(screenModel.screenNavigationName!);

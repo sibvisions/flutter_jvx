@@ -147,6 +147,8 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   void initState() {
     super.initState();
 
+    repaint = () => setState(() {});
+
     _subscribe();
   }
 
@@ -229,11 +231,11 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// Subscribes to the data service.
   void _subscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this);
+    IUiService().disposeDataSubscription(subscriber: this);
 
     if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider,
           from: 0,
@@ -254,7 +256,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// Unsubscribes from the data service.
   void _unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this);
+    IUiService().disposeDataSubscription(subscriber: this);
 
     currentState &= ~LOADED_META_DATA;
     currentState &= ~LOADED_DATA;
@@ -515,11 +517,11 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   void _menuItemPressed(DataContextMenuItemType type, int index) {
     IUiService().saveAllEditors(
-      pId: model.id,
-      pReason: "List menu item pressed",
-    ).then((success) {
-      if (!success) {
-        return;
+      id: model.id,
+      reason: "List menu item pressed",
+    ).then((result) {
+      if (!result.success) {
+        return result;
       }
 
       List<BaseCommand> commands = [];
@@ -558,23 +560,23 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// Show sort options
   void _sort(int index) {
-      if (currentDialog == null) {
+    if (currentDialog == null) {
 
-        ColumnList sortableColumns = getSortableColumns();
+      ColumnList sortableColumns = getSortableColumns();
 
-        currentDialog = IUiService().openDialog(
-            pBuilder: (context) => FlListSortDialog(
-              rowIndex: index,
-              model: model,
-              columnDefinitions: sortableColumns,
-              sortDefinitions: metaData.sortDefinitions
-            )
-        );
+      currentDialog = IUiService().openDialog(
+        builder: (context) => FlListSortDialog(
+          rowIndex: index,
+          model: model,
+          columnDefinitions: sortableColumns,
+          sortDefinitions: metaData.sortDefinitions
+        )
+      );
 
-        if (currentDialog != null) {
-          currentDialog!.whenComplete(() => currentDialog = null);
-        }
+      if (currentDialog != null) {
+        currentDialog!.whenComplete(() => currentDialog = null);
       }
+    }
   }
 
   /// Edits row at [index]
@@ -594,7 +596,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
           );
         }
         return [];
-      },
+      }
     );
   }
 
@@ -610,7 +612,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
     }
     else if (currentDialog == null) {
       currentDialog = IUiService().openDialog(
-        pBuilder: (context) => FlTableEditDialog(
+        builder: (context) => FlTableEditDialog(
           rowIndex: rowIndex,
           model: model,
           columnDefinitions: columnDefinitions,

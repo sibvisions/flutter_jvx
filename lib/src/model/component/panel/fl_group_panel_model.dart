@@ -56,14 +56,14 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   FlGroupPanelModel get defaultModel => FlGroupPanelModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     text = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.text,
-      pDefault: defaultModel.text,
-      pCurrent: text,
+      json: newJson,
+      key: ApiObjectProperty.text,
+      defaultValue: defaultModel.text,
+      currentValue: text,
     );
   }
 }

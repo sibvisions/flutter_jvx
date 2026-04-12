@@ -26,8 +26,8 @@ class DownloadTranslationProcessor implements IResponseProcessor<DownloadTransla
   ZipDecoder zipDecoder = ZipDecoder();
 
   @override
-  List<BaseCommand> processResponse(DownloadTranslationResponse pResponse, ApiRequest? pRequest) {
-    Archive archive = zipDecoder.decodeBytes(pResponse.bodyBytes);
+  List<BaseCommand> processResponse(DownloadTranslationResponse response, ApiRequest? request) {
+    Archive archive = zipDecoder.decodeBytes(response.bodyBytes);
 
     return [
       SaveApplicationTranslationCommand(translations: archive.files, reason: "Downloaded Translations"),

@@ -129,7 +129,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     );
     overrideLeftTopRatio = splitLayout.leftTopRatio;
     layoutData.children =
-        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+        IStorageService().getAllComponentsBelowById(parentId: model.id, recursively: false).map((e) => e.id).toList();
   }
 
   Widget getDragSlider() {
@@ -196,7 +196,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     }
   }
 
-  void _dragStart(DragStartDetails pDragDetails) {
+  void _dragStart(DragStartDetails dragDetails) {
     if (model.orientation == SplitOrientation.HORIZONTAL) {
       mouseCursor = SystemMouseCursors.resizeUpDown;
     } else {
@@ -206,25 +206,25 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     setState(() {});
   }
 
-  void _dragEnd(DragEndDetails pDragDetails) {
+  void _dragEnd(DragEndDetails dragDetails) {
     mouseCursor = MouseCursor.defer;
     setState(() {});
   }
 
-  void _verticalDrag(DragUpdateDetails pDragDetails) {
-    _calculateSlider(pDragDetails, false);
+  void _verticalDrag(DragUpdateDetails dragDetails) {
+    _calculateSlider(dragDetails, false);
   }
 
-  void _horizontalDrag(DragUpdateDetails pDragDetails) {
-    _calculateSlider(pDragDetails, true);
+  void _horizontalDrag(DragUpdateDetails dragDetails) {
+    _calculateSlider(dragDetails, true);
   }
 
-  void _calculateSlider(DragUpdateDetails pDragDetails, bool pHorizontal) {
+  void _calculateSlider(DragUpdateDetails dragDetails, bool horizontal) {
     final RenderBox container = context.findRenderObject() as RenderBox;
-    final pos = container.globalToLocal(pDragDetails.globalPosition);
+    final pos = container.globalToLocal(dragDetails.globalPosition);
 
-    double positionalPixel = pHorizontal ? pos.dx : pos.dy;
-    double containerPixel = pHorizontal ? container.size.width : container.size.height;
+    double positionalPixel = horizontal ? pos.dx : pos.dy;
+    double containerPixel = horizontal ? container.size.width : container.size.height;
 
     overrideLeftTopRatio = max(0.0, min(1.0, positionalPixel / containerPixel)) * 100;
     subject.add(null);

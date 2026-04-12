@@ -22,10 +22,10 @@ import '../i_response_processor.dart';
 
 class ApplicationParametersProcessor implements IResponseProcessor<ApplicationParametersResponse> {
   @override
-  List<BaseCommand> processResponse(ApplicationParametersResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(ApplicationParametersResponse response, ApiRequest? request) {
     return [
       SaveApplicationParametersCommand(
-        parameters: pResponse,
+        parameters: response,
         reason: "Parameters received from server",
       ),
     ];

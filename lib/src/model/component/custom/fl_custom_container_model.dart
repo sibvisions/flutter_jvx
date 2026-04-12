@@ -45,35 +45,35 @@ class FlCustomContainerModel extends FlComponentModel {
   FlCustomContainerModel get defaultModel => FlCustomContainerModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
-    properties = pJson;
+    properties = newJson;
 
     // Currently only used for signature pad
     dataProvider = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.dataRow,
-      pDefault: defaultModel.dataProvider,
-      pCurrent: dataProvider,
+      json: newJson,
+      key: ApiObjectProperty.dataRow,
+      defaultValue: defaultModel.dataProvider,
+      currentValue: dataProvider,
     );
     columnName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.columnName,
-      pDefault: defaultModel.columnName,
-      pCurrent: columnName,
+      json: newJson,
+      key: ApiObjectProperty.columnName,
+      defaultValue: defaultModel.columnName,
+      currentValue: columnName,
     );
     saveLock = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.saveLock,
-      pDefault: defaultModel.saveLock,
-      pCurrent: saveLock,
+      json: newJson,
+      key: ApiObjectProperty.saveLock,
+      defaultValue: defaultModel.saveLock,
+      currentValue: saveLock,
     );
     editLock = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.editLock,
-      pDefault: defaultModel.editLock,
-      pCurrent: editLock,
+      json: newJson,
+      key: ApiObjectProperty.editLock,
+      defaultValue: defaultModel.editLock,
+      currentValue: editLock,
     );
   }
 }

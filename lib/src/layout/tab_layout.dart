@@ -43,11 +43,11 @@ class TabLayout extends ILayout {
   }
 
   @override
-  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData parent, List<LayoutData> children) {
     LayoutPosition? childrenPosition;
-    if (pParent.hasPosition) {
-      double width = pParent.layoutPosition!.width;
-      double height = pParent.layoutPosition!.height - tabHeaderHeight;
+    if (parent.hasPosition) {
+      double width = parent.layoutPosition!.width;
+      double height = parent.layoutPosition!.height - tabHeaderHeight;
       childrenPosition = LayoutPosition(
         width: width,
         height: height,
@@ -58,7 +58,7 @@ class TabLayout extends ILayout {
 
     double calcWidth = 0.0;
     double calcHeight = 0.0;
-    for (LayoutData childData in pChildren) {
+    for (LayoutData childData in children) {
       if (childData.hasCalculatedSize) {
         if (childData.calculatedSize!.width > calcWidth) {
           calcWidth = childData.calculatedSize!.width;
@@ -71,7 +71,7 @@ class TabLayout extends ILayout {
       childData.layoutPosition = childrenPosition;
     }
 
-    pParent.calculatedSize = Size(calcWidth, calcHeight + tabHeaderHeight);
+    parent.calculatedSize = Size(calcWidth, calcHeight + tabHeaderHeight);
   }
 
 }

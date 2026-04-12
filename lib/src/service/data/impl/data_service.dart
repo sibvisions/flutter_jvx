@@ -68,60 +68,60 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand pCommand}) async {
-    DataBook dataBook = dataBooks[pCommand.response.dataProvider] ??= DataBook(dataProvider: pCommand.response.dataProvider);
+  Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand command}) async {
+    DataBook dataBook = dataBooks[command.response.dataProvider] ??= DataBook(dataProvider: command.response.dataProvider);
 
-    if (pCommand.response.clear) {
+    if (command.response.clear) {
       dataBook.clearRecords();
       dataBook.selectedRow = -1;
     }
 
-    await dataBook.updateFromFetch(pCommand: pCommand);
+    await dataBook.updateFromFetch(command: command);
 
     return [];
   }
 
   @override
-  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
-    DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
+  bool updateDataChanged({required DalDataProviderChangedResponse changedResponse}) {
+    DataBook? dataBook = dataBooks[changedResponse.dataProvider];
     if (dataBook == null) {
       return false;
     }
 
-    return dataBook.updateDataChanged(pChangedResponse: pChangedResponse);
+    return dataBook.updateDataChanged(changedResponse: changedResponse);
   }
 
   @override
-  bool updateSelectionChanged({required DalDataProviderChangedResponse pChangedResponse}) {
-    DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
+  bool updateSelectionChanged({required DalDataProviderChangedResponse changedResponse}) {
+    DataBook? dataBook = dataBooks[changedResponse.dataProvider];
     if (dataBook == null) {
       return false;
     }
 
     bool changed = false;
 
-    if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
-      changed = dataBook.selectedColumn != pChangedResponse.selectedColumn;
+    if (changedResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
+      changed = dataBook.selectedColumn != changedResponse.selectedColumn;
 
       if (changed) {
-        dataBook.selectedColumn = pChangedResponse.selectedColumn;
+        dataBook.selectedColumn = changedResponse.selectedColumn;
       }
     }
 
-    if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedRow) && pChangedResponse.selectedRow != null) {
-      changed |= dataBook.selectedRow != pChangedResponse.selectedRow!;
+    if (changedResponse.json.containsKey(ApiObjectProperty.selectedRow) && changedResponse.selectedRow != null) {
+      changed |= dataBook.selectedRow != changedResponse.selectedRow!;
 
       if (changed) {
-        dataBook.selectedRow = pChangedResponse.selectedRow!;
+        dataBook.selectedRow = changedResponse.selectedRow!;
       }
     }
 
-    if (pChangedResponse.json.containsKey(ApiObjectProperty.treePath) && pChangedResponse.treePath != null) {
-      changed |= !listEquals(dataBook.treePath, pChangedResponse.treePath);
+    if (changedResponse.json.containsKey(ApiObjectProperty.treePath) && changedResponse.treePath != null) {
+      changed |= !listEquals(dataBook.treePath, changedResponse.treePath);
 
       if (changed) {
-        dataBook.treePath = pChangedResponse.treePath;
-        dataBook.selectedRow = pChangedResponse.treePath!.last;
+        dataBook.treePath = changedResponse.treePath;
+        dataBook.selectedRow = changedResponse.treePath!.last;
       }
     }
 
@@ -129,48 +129,48 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateMetaData({required DalMetaDataResponse pChangedResponse}) {
-    DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
+  bool updateMetaData({required DalMetaDataResponse changedResponse}) {
+    DataBook? dataBook = dataBooks[changedResponse.dataProvider];
 
     if (dataBook == null) {
-      DalMetaData metaData = DalMetaData(pChangedResponse.dataProvider);
-      metaData.applyMetaDataResponse(pChangedResponse);
+      DalMetaData metaData = DalMetaData(changedResponse.dataProvider);
+      metaData.applyMetaDataResponse(changedResponse);
 
       dataBook = DataBook(
-        dataProvider: pChangedResponse.dataProvider,
+        dataProvider: changedResponse.dataProvider,
         metaData: metaData
       );
 
       dataBooks[dataBook.dataProvider] = dataBook;
     }
     else {
-      dataBook.metaData ??= DalMetaData(pChangedResponse.dataProvider);
-      dataBook.metaData!.applyMetaDataResponse(pChangedResponse);
+      dataBook.metaData ??= DalMetaData(changedResponse.dataProvider);
+      dataBook.metaData!.applyMetaDataResponse(changedResponse);
     }
 
     return true;
   }
 
   @override
-  bool setMetaData(DalMetaData pMetaData) {
-    DataBook? dataBook = dataBooks[pMetaData.dataProvider];
+  bool setMetaData(DalMetaData metaData) {
+    DataBook? dataBook = dataBooks[metaData.dataProvider];
 
     if (dataBook == null) {
       dataBook = DataBook(
-        dataProvider: pMetaData.dataProvider,
-        metaData: pMetaData
+        dataProvider: metaData.dataProvider,
+        metaData: metaData
       );
 
       dataBooks[dataBook.dataProvider] = dataBook;
     }
     else {
-      dataBook.metaData = pMetaData;
+      dataBook.metaData = metaData;
     }
 
-    pMetaData.columnDefinitions.forEach((colDef) {
+    metaData.columnDefinitions.forEach((colDef) {
       if (colDef.cellEditorModel is FlLinkedCellEditorModel) {
         IDataService().createReferencedCellEditors(
-            colDef.cellEditorModel as FlLinkedCellEditorModel, pMetaData.dataProvider, colDef.name);
+            colDef.cellEditorModel as FlLinkedCellEditorModel, metaData.dataProvider, colDef.name);
       }
     });
 
@@ -178,54 +178,54 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
-    DalMetaData? metaData = dataBooks[pChangedResponse.dataProvider]?.metaData;
+  bool updateMetaDataChanged({required DalDataProviderChangedResponse changedResponse}) {
+    DalMetaData? metaData = dataBooks[changedResponse.dataProvider]?.metaData;
 
     if (metaData == null) {
       return false;
     }
 
-    return metaData.applyMetaDataFromChangedResponse(pChangedResponse);
+    return metaData.applyMetaDataFromChangedResponse(changedResponse);
   }
 
   @override
   DataRecord? getSelectedRowData({
-    required List<String>? pColumnNames,
-    required String pDataProvider,
+    required List<String>? columnNames,
+    required String dataProvider,
   }) {
-    DataBook dataBook = dataBooks[pDataProvider]!;
+    DataBook dataBook = dataBooks[dataProvider]!;
 
-    DataRecord? selectedRowColumnData = dataBook.getSelectedRecord(pDataColumnNames: pColumnNames);
+    DataRecord? selectedRowColumnData = dataBook.getSelectedRecord(dataColumnNames: columnNames);
 
     return selectedRowColumnData;
   }
 
   @override
   DataChunk getDataChunk({
-    required int pFrom,
-    required String pDataProvider,
-    int? pTo,
-    List<String>? pColumnNames,
-    String? pPageKey,
-    bool pFromStart = false
+    required int from,
+    required String dataProvider,
+    int? to,
+    List<String>? columnNames,
+    String? pageKey,
+    bool fromStart = false
   }) {
     // Get data from all requested columns
     List<ColumnDefinition> columnDefinitions = [];
     List<int> colDefIndexes = [];
 
-    DataBook dataBook = dataBooks[pDataProvider]!;
+    DataBook dataBook = dataBooks[dataProvider]!;
 
     // Get data from data book and add column definitions in correct order -
     // either same as requested or as received from server
     if (dataBook.metaData != null) {
-      if (pColumnNames != null) {
-        for (String columnName in pColumnNames) {
+      if (columnNames != null) {
+        for (String columnName in columnNames) {
           ColumnDefinition? colDef = dataBook.metaData!.columnDefinitions.byName(columnName);
 
           if (colDef != null) {
             columnDefinitions.add(colDef);
           } else {
-            throw Exception("Column $columnName not found in metadata of $pDataProvider");
+            throw Exception("Column $columnName not found in metadata of $dataProvider");
           }
         }
       } else {
@@ -243,10 +243,10 @@ class DataService implements IDataService {
     Map<int, List<bool>> resultReadOnly = HashMap();
     Map<String, RecordFormat> resultRecordFormats = HashMap();
 
-    Map<int, List<dynamic>> currentDataMap = pPageKey != null ? (dataBook.pageRecords[pPageKey] ?? HashMap()) : dataBook.records;
-    int toIndex = min(pTo ?? currentDataMap.length, currentDataMap.length);
+    Map<int, List<dynamic>> currentDataMap = pageKey != null ? (dataBook.pageRecords[pageKey] ?? HashMap()) : dataBook.records;
+    int toIndex = min(to ?? currentDataMap.length, currentDataMap.length);
 
-    for (int i = pFrom; i < toIndex; i++) {
+    for (int i = from; i < toIndex; i++) {
       var resultRow = List<dynamic>.filled(columnDefinitions.length + 1, null);
       var dataRow = currentDataMap[i]!;
 
@@ -258,7 +258,7 @@ class DataService implements IDataService {
       resultData[i] = resultRow;
 
       //currently, the formats are not saved per page, so we can't support it
-      if (pPageKey == null) {
+      if (pageKey == null) {
         List<bool>? readOnlyFormat = dataBook.recordReadOnly[i];
 
         //use only readonly information of matching records
@@ -298,47 +298,47 @@ class DataService implements IDataService {
       //this chunk is only all fetched if it contains all records
       isAllFetched: dataBook.isAllFetched && resultData.length == currentDataMap.length,
       columnDefinitions: ColumnList(columnDefinitions),
-      from: pFrom,
+      from: from,
       recordFormats: resultRecordFormats,
       dataReadOnly: resultReadOnly,
-      fromStart: pFromStart
+      fromStart: fromStart
     );
   }
 
   @override
-  DalMetaData? getMetaData(String pDataProvider) {
-    return dataBooks[pDataProvider]?.metaData;
+  DalMetaData? getMetaData(String dataProvider) {
+    return dataBooks[dataProvider]?.metaData;
   }
 
   @override
   bool dataBookNeedsFetch({
-    required int pFrom,
-    required String pDataProvider,
-    int? pTo,
+    required int from,
+    required String dataProvider,
+    int? to,
   }) {
-    if (pFrom <= -1) {
+    if (from <= -1) {
       return false;
     }
 
-    if (!dataBooks.containsKey(pDataProvider)) {
+    if (!dataBooks.containsKey(dataProvider)) {
       return true;
     }
 
-    DataBook dataBook = dataBooks[pDataProvider]!;
+    DataBook dataBook = dataBooks[dataProvider]!;
 
     // If all has already been fetched, then there is no point in fetching more,
-    // If not all data is fetched and pTo is null (all possible data is being requested), more should be fetched
+    // If not all data is fetched and to is null (all possible data is being requested), more should be fetched
     if (dataBook.isAllFetched) {
       return false;
-    } else if ((pTo == null || pTo == -1)) {
-      return !fetchingDataBooks.containsKey(pDataProvider) || fetchingDataBooks[pDataProvider] != -1;
+    } else if ((to == null || to == -1)) {
+      return !fetchingDataBooks.containsKey(dataProvider) || fetchingDataBooks[dataProvider] != -1;
     }
 
     // Check all indexes if they are present.
-    for (int i = pFrom; i < pTo; i++) {
+    for (int i = from; i < to; i++) {
       var record = dataBook.records[i];
       if (record == null) {
-        return !fetchingDataBooks.containsKey(pDataProvider) || pTo > (fetchingDataBooks[pDataProvider]!);
+        return !fetchingDataBooks.containsKey(dataProvider) || to > (fetchingDataBooks[dataProvider]!);
       }
     }
 
@@ -348,47 +348,47 @@ class DataService implements IDataService {
 
   @override
   bool deleteDataFromDataBook({
-    required String pDataProvider,
-    required int? pFrom,
-    required int? pTo,
-    required bool? pDeleteAll,
+    required String dataProvider,
+    required int? from,
+    required int? to,
+    required bool? deleteAll,
   }) {
     // Get data book and return false if it does not exist
-    DataBook? dataBook = dataBooks[pDataProvider];
+    DataBook? dataBook = dataBooks[dataProvider];
     if (dataBook == null) {
       return false;
     }
     // If delete all flag is set just clear all records
-    if (pDeleteAll == true) {
+    if (deleteAll == true) {
       dataBook.clearRecords();
       return true;
     }
     // Clear only records in given range
-    if (pFrom != null && pTo != null) {
-      dataBook.deleteRecordRange(pFrom: pFrom, pTo: pTo);
+    if (from != null && to != null) {
+      dataBook.deleteRecordRange(from: from, to: to);
       return true;
     }
     return false;
   }
 
   @override
-  bool setSelectedRow({required String pDataProvider, required int pNewSelectedRow, String? pNewSelectedColumn}) {
+  bool setSelectedRow({required String dataProvider, required int newSelectedRow, String? newSelectedColumn}) {
     // get data book, if null return false
-    DataBook? dataBook = dataBooks[pDataProvider];
+    DataBook? dataBook = dataBooks[dataProvider];
     if (dataBook == null) {
       return false;
     }
     // set selected row
-    dataBook.selectedRow = pNewSelectedRow;
-    dataBook.selectedColumn = pNewSelectedColumn;
+    dataBook.selectedRow = newSelectedRow;
+    dataBook.selectedColumn = newSelectedColumn;
     return true;
   }
 
   @override
-  void clearData(String pWorkScreen) {
-    FlutterUI.logUI.i("Clearing all data books of prefix: $pWorkScreen");
+  void clearData(String workScreen) {
+    FlutterUI.logUI.i("Clearing all data books of prefix: $workScreen");
     FlutterUI.logUI.i("Pre clearing: ${dataBooks.values}");
-    dataBooks.removeWhere((key, value) => key.startsWith(pWorkScreen, key.indexOf("/") + 1));
+    dataBooks.removeWhere((key, value) => key.startsWith(workScreen, key.indexOf("/") + 1));
     FlutterUI.logUI.i("Post clearing: ${dataBooks.values}");
   }
 
@@ -403,8 +403,8 @@ class DataService implements IDataService {
   }
 
   @override
-  DataBook? getDataBook(String pDataProvider) {
-    return dataBooks[pDataProvider];
+  DataBook? getDataBook(String dataProvider) {
+    return dataBooks[dataProvider];
   }
 
   @override
@@ -424,7 +424,7 @@ class DataService implements IDataService {
     }
 
     var dataBook = getDataBook(linkReference.referencedDataBook);
-    if (dataBookNeedsFetch(pFrom: 0, pDataProvider: linkReference.referencedDataBook, pTo: -1) ||
+    if (dataBookNeedsFetch(from: 0, dataProvider: linkReference.referencedDataBook, to: -1) ||
         (dataBook != null && dataBook.metaData == null)) {
       ICommandService().sendCommand(
         FetchCommand(
@@ -443,14 +443,14 @@ class DataService implements IDataService {
   }
 
   @override
-  void setDataBookFetching(String pDataProvider, int pTo) {
-    fetchingDataBooks[pDataProvider] = pTo;
+  void setDataBookFetching(String dataProvider, int to) {
+    fetchingDataBooks[dataProvider] = to;
   }
 
   @override
-  void removeDataBookFetching(String pDataProvider, int pTo) {
-    if (fetchingDataBooks[pDataProvider] == pTo) {
-      fetchingDataBooks.remove(pDataProvider);
+  void removeDataBookFetching(String dataProvider, int to) {
+    if (fetchingDataBooks[dataProvider] == to) {
+      fetchingDataBooks.remove(dataProvider);
     }
   }
 }

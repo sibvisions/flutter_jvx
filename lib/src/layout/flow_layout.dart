@@ -81,22 +81,22 @@ class FlowLayout extends ILayout {
   }
 
   @override
-  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData parent, List<LayoutData> children) {
     /** Sorts the Child component based on indexOf property */
-    pChildren.sort((a, b) => a.indexOf! - b.indexOf!);
+    children.sort((a, b) => a.indexOf! - b.indexOf!);
 
-    double dimWidth = pParent.layoutPosition?.width ?? 0;
-    double dimHeight = pParent.layoutPosition?.height ?? 0;
+    double dimWidth = parent.layoutPosition?.width ?? 0;
+    double dimHeight = parent.layoutPosition?.height ?? 0;
 
-    dimWidth -= (pParent.insets.horizontal + margins.horizontal);
-    dimHeight -= (pParent.insets.vertical + margins.vertical);
+    dimWidth -= (parent.insets.horizontal + margins.horizontal);
+    dimHeight -= (parent.insets.vertical + margins.vertical);
 
     dimHeight = max(0, dimHeight);
     dimWidth = max(0, dimWidth);
 
     Size dimSize = Size(dimWidth, dimHeight);
 
-    final _FlowGrid flowLayoutInfo = _calculateGrid(dimSize, pChildren);
+    final _FlowGrid flowLayoutInfo = _calculateGrid(dimSize, children);
 
     Size prefSize = Size(
         (flowLayoutInfo.gridWidth * flowLayoutInfo.columns + gaps.horizontalGap * (flowLayoutInfo.columns - 1)),
@@ -139,7 +139,7 @@ class FlowLayout extends ILayout {
 
     bool bFirst = true;
 
-    for (LayoutData child in pChildren) {
+    for (LayoutData child in children) {
       Size size = child.bestSize;
 
       if (isRowOrientationHorizontal) {
@@ -197,10 +197,10 @@ class FlowLayout extends ILayout {
       }
     }
 
-    pParent.calculatedSize = prefSize +
+    parent.calculatedSize = prefSize +
         Offset(
-          margins.horizontal + pParent.insets.horizontal,
-          margins.vertical + pParent.insets.vertical,
+          margins.horizontal + parent.insets.horizontal,
+          margins.vertical + parent.insets.vertical,
         );
   }
 
@@ -208,8 +208,8 @@ class FlowLayout extends ILayout {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static double _getAlignmentFactor(int pEnumIndex) {
-    switch (pEnumIndex) {
+  static double _getAlignmentFactor(int enumIndex) {
+    switch (enumIndex) {
       case 0: // HorizontalAlignment.LEFT or VerticalAlignment.TOP
       case 3: // HorizontalAlignment.STRETCH or VerticalAlignment.STRETCH
         return 0;
@@ -218,12 +218,12 @@ class FlowLayout extends ILayout {
       case 2: // HorizontalAlignment.RIGHT or VerticalAlignment.BOTTOM
         return 1;
       default:
-        throw Exception("Cant evaluate alignment factor for alignment: $pEnumIndex");
+        throw Exception("Cant evaluate alignment factor for alignment: $enumIndex");
     }
   }
 
   /// Calculates the grid for the FlowLayout
-  _FlowGrid _calculateGrid(Size pContainerSize, List<LayoutData> pChildren) {
+  _FlowGrid _calculateGrid(Size containerSize, List<LayoutData> children) {
     /// Calculated height of the latest column of the FlowLayout
     double calcHeight = 0;
 
@@ -245,7 +245,7 @@ class FlowLayout extends ILayout {
     /// If the current component is the first
     bool bFirst = true;
 
-    for (LayoutData component in pChildren) {
+    for (LayoutData component in children) {
       Size prefSize = component.bestSize;
       if (isRowOrientationHorizontal) {
         /** If this isn't the first component add the gap between components*/
@@ -257,7 +257,7 @@ class FlowLayout extends ILayout {
         height = max(height, prefSize.height);
 
         /** If auto wrapping is true and the width of the row is greater than the width of the layout, add a new row */
-        if (!bFirst && autoWrap && pContainerSize.width > 0 && calcWidth > pContainerSize.width) {
+        if (!bFirst && autoWrap && containerSize.width > 0 && calcWidth > containerSize.width) {
           calcWidth = prefSize.width;
           anzRows++;
         } else if (bFirst) {
@@ -275,7 +275,7 @@ class FlowLayout extends ILayout {
         width = max(width, prefSize.width);
 
         /** If auto wrapping is true and the height of the column is greater than the height of the layout, add a new column */
-        if (!bFirst && autoWrap && pContainerSize.height > 0 && calcHeight > pContainerSize.height) {
+        if (!bFirst && autoWrap && containerSize.height > 0 && calcHeight > containerSize.height) {
           calcHeight = prefSize.height;
           anzCols++;
         } else if (bFirst) {

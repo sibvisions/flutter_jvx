@@ -107,11 +107,11 @@ abstract class AppManager {
     customListEntryBuilder[componentName] = builder;
   }
 
-  /// Gets called on menu mode selection. Default implementation returns original [pCurrentMode]
-  MenuMode onMenuMode(MenuMode pCurrentMode) => pCurrentMode;
+  /// Gets called on menu mode selection. Default implementation returns original [currentMode]
+  MenuMode onMenuMode(MenuMode currentMode) => currentMode;
 
   /// Gets called on menu model selection.
-  void modifyMenuModel(MenuModel pMenuModel) {}
+  void modifyMenuModel(MenuModel menuModel) {}
 
   /// This lets you modify the list of actions shown in the app bar.
   List<Widget> getAdditionalActions() => [];
@@ -123,15 +123,15 @@ abstract class AppManager {
   void modifyCookies(ApiRequest? request, List<Cookie> cookies) {}
 
   /// Can be used to modify the application parameters before they get updated via [IUiService.updateApplicationParameters]
-  void modifyApplicationParameters(ApplicationParameters pApplicationParameters) {}
+  void modifyApplicationParameters(ApplicationParameters applicationParameters) {}
 
-  /// Can be used to modify a command which is to be executed. Default implementation returns original [pSentCommand]
+  /// Can be used to modify a command which is to be executed. Default implementation returns original [sentCommand]
   /// This method can be used to modify command properties, return a different command or even return null to cancel the command.
   ///
   /// Be warned! This method gets executed on every possible command.
   /// Significant performance issues can arise in the whole application the more this function takes to compute.
   /// This method can be called multiple times within a second.
-  BaseCommand? interceptCommand(BaseCommand pSentCommand) => pSentCommand;
+  BaseCommand? interceptCommand(BaseCommand sentCommand) => sentCommand;
 
   /// Can be used to modify the commands which follow on a recently executed command.
   /// This method can be used to modify command properties, return different commands or remove commands to cancel them.
@@ -139,7 +139,7 @@ abstract class AppManager {
   /// Be warned! This method gets executed on every possible command.
   /// Significant performance issues can arise in the whole application the more this function takes to compute.
   /// This method can be called multiple times within a second.
-  void modifyFollowUpCommands(BaseCommand pParentCommand, List<BaseCommand> pFollowUpCommands) {}
+  void modifyFollowUpCommands(BaseCommand parentCommand, List<BaseCommand> followUpCommands) {}
 
   /// Can be used to modify the responses list after each request
   void modifyResponses(ApiInteraction responses) {}
@@ -170,7 +170,7 @@ abstract class AppManager {
   void onMenuPage() {}
 
   /// Is called when going to a workscreen.
-  void onScreenPage(String pScreenName) {}
+  void onScreenPage(String screenName) {}
 
   /// Is called when going to the settings.
   void onSettingPage() {}

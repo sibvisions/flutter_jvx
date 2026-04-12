@@ -45,52 +45,52 @@ class FileManagerWeb extends IFileManager {
   }
 
   @override
-  void deleteFile(String pPath) {
-    _files.removeWhere((key, value) => key == _preparePath(pPath));
+  void deleteFile(String path) {
+    _files.removeWhere((key, value) => key == _preparePath(path));
   }
 
   @override
-  Future<bool> doesFileExist(String pPath) {
-    bool doesExist = _files.containsKey(_preparePath(pPath));
+  Future<bool> doesFileExist(String path) {
+    bool doesExist = _files.containsKey(_preparePath(path));
     return Future.value(doesExist);
   }
 
   @override
-  Future<File?> getFile(String pPath) {
-    File? file = _files[_preparePath(pPath)];
+  Future<File?> getFile(String path) {
+    File? file = _files[_preparePath(path)];
     return Future.value(file);
   }
 
   @override
-  Future<File> saveFile(String pPath, {required List<int> pContent}) {
-    File file = FakeFile(_preparePath(pPath));
-    file.writeAsBytes(pContent);
+  Future<File> saveFile(String path, {required List<int> content}) {
+    File file = FakeFile(_preparePath(path));
+    file.writeAsBytes(content);
     _files[file.path] = file;
     return Future.value(file);
   }
 
   @override
-  File? getFileSync(String pPath) {
-    return _files[_preparePath(pPath)];
+  File? getFileSync(String path) {
+    return _files[_preparePath(path)];
   }
 
   @override
-  Directory? getDirectory(String pPath) {
+  Directory? getDirectory(String path) {
     return null;
   }
 
   @override
-  Future<void> renameIndependentDirectory(List<String> pPath, String pNewName) async {
-    String path = _preparePath(pPath.join("/"));
-    List<String> parentPath = List.of(pPath)
+  Future<void> renameIndependentDirectory(List<String> path, String newName) async {
+    String path_ = _preparePath(path.join("/"));
+    List<String> parentPath = List.of(path)
       ..removeLast()
-      ..add(pNewName);
+      ..add(newName);
     String newPath = _preparePath(parentPath.join("/"));
 
     Map<String, File> copyMap = Map.of(_files);
     for (MapEntry<String, File> entry in copyMap.entries) {
-      if (entry.key.startsWith(path)) {
-        String newKey = entry.key.replaceFirst(path, newPath);
+      if (entry.key.startsWith(path_)) {
+        String newKey = entry.key.replaceFirst(path_, newPath);
         if (entry.key == newKey) continue;
         _files[newKey] = entry.value;
         _files.remove(entry.key);
@@ -99,9 +99,9 @@ class FileManagerWeb extends IFileManager {
   }
 
   @override
-  Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false}) async {
-    String path = _preparePath(pPath.join("/"));
-    _files.removeWhere((key, value) => key.startsWith(path));
+  Future<void> deleteIndependentDirectory(List<String> path, {bool recursive = false}) async {
+    String path_ = _preparePath(path.join("/"));
+    _files.removeWhere((key, value) => key.startsWith(path_));
   }
 
   /// Ignores the version as this will only be used before the app is downloaded

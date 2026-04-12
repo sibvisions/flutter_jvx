@@ -82,7 +82,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   /// Returns `TRUE` if the children have changed, `FALSE` if no change has occurred.
   bool buildChildren({bool setStateOnChange = true, bool forceSetState = false}) {
     List<FlComponentModel> childModels =
-        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false);
+        IStorageService().getAllComponentsBelowById(parentId: model.id, recursively: false);
     Map<String, Widget> updatedChildren = {};
 
     bool changeDetected = false;

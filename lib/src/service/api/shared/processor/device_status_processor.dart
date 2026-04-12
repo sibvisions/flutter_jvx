@@ -22,10 +22,10 @@ import '../i_response_processor.dart';
 
 class DeviceStatusProcessor implements IResponseProcessor<DeviceStatusResponse> {
   @override
-  List<BaseCommand> processResponse(DeviceStatusResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(DeviceStatusResponse response, ApiRequest? request) {
     return [
       LayoutModeCommand(
-        layoutMode: pResponse.layoutMode,
+        layoutMode: response.layoutMode,
         reason: "Server sent Device Status",
       )
     ];

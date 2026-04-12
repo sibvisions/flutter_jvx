@@ -23,15 +23,15 @@ import '../i_response_processor.dart';
 
 class DownloadProcessor implements IResponseProcessor<DownloadResponse> {
   @override
-  List<BaseCommand> processResponse(DownloadResponse pResponse, ApiRequest? pRequest) {
-    if (pRequest is ApiDownloadRequest) {
+  List<BaseCommand> processResponse(DownloadResponse response, ApiRequest? request) {
+    if (request is ApiDownloadRequest) {
       return [
         SaveOrShowFileCommand(
-          content: pResponse.bodyBytes,
-          fileId: pRequest.fileId,
-          fileName: pRequest.fileName,
-          showFile: pRequest.showFile,
-          reason: "${pRequest.showFile ? "Showing" : "Saving"} a file",
+          content: response.bodyBytes,
+          fileId: request.fileId,
+          fileName: request.fileName,
+          showFile: request.showFile,
+          reason: "${request.showFile ? "Showing" : "Saving"} a file",
         )
       ];
     } else {

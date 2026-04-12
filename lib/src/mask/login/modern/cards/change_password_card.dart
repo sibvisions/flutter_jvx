@@ -424,8 +424,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
       });
 
       IUiService().openDialog(
-        pIsDismissible: true,
-        pBuilder: (context) => AlertDialog(
+        isDismissible: true,
+        builder: (context) => AlertDialog(
           title: Text(FlutterUI.translate("Error")),
           content: Text(FlutterUI.translate("The passwords are different!")),
           actions: [

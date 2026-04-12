@@ -42,21 +42,21 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(MenuViewResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(MenuViewResponse response, ApiRequest? request) {
     List<BaseCommand> commands = [];
-    MenuViewResponse response = pResponse;
+    MenuViewResponse response_ = response;
 
-    List<MenuGroupModel> groups = _isolateGroups(response);
+    List<MenuGroupModel> groups = _isolateGroups(response_);
     for (MenuGroupModel group in groups) {
-      group.items.addAll(_getItemsByGroup(group.name, response.responseMenuItems));
+      group.items.addAll(_getItemsByGroup(group.name, response_.responseMenuItems));
     }
     MenuModel menuModel = MenuModel(menuGroups: groups);
 
     SaveMenuCommand saveMenuCommand = SaveMenuCommand(menuModel: menuModel, reason: "Server sent menu items");
     commands.add(saveMenuCommand);
 
-    if (!IConfigService().offline.value && pRequest is! ApiReloadMenuRequest) {
-      var returnUri = IAppService().getApplicableReturnUri(response.responseMenuItems);
+    if (!IConfigService().offline.value && request is! ApiReloadMenuRequest) {
+      var returnUri = IAppService().getApplicableReturnUri(response_.responseMenuItems);
 
       if (returnUri != null) {
         var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;

@@ -156,7 +156,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     if (item != null) {
       IStorageService servStorage = IStorageService();
 
-      model = servStorage.getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
+      model = servStorage.getComponentByScreenClassName(screenClassName: item!.screenLongName);
 
       customScreen = servUi.getCustomScreen(item!.screenLongName);
 
@@ -458,12 +458,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   void _setScreenSize(Size size) {
-    ILayoutService()
-        .setScreenSize(
-      pScreenComponentId: model!.id,
-      pSize: size,
-    )
-        .then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
+    ILayoutService().setScreenSize(
+      screenComponentId: model!.id,
+      size: size,
+    ).then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
   }
 
   void _init() {
@@ -582,16 +580,16 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   /// Is being called by Back button in [AppBar].
-  Future<void> _onBack([bool pForced = false]) async {
+  Future<void> _onBack([bool forced = false]) async {
     if (isNavigating) {
       return;
     }
 
-    isForced = pForced;
+    isForced = forced;
 
     // Calls _onWillPop -> call server, beam back or pop.
     if (mounted) {
-      if (pForced && !_useOwnNavigation) {
+      if (forced && !_useOwnNavigation) {
         IUiService().routeToMenu();
         return;
       }
@@ -638,8 +636,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
         BaseCommand commandToCloseScreen = _closeScreen();
 
-        unawaited(IUiService().saveAllEditors(pReason: "Closing screen").then((success) {
-          if (success) {
+        unawaited(IUiService().saveAllEditors(reason: "Closing screen").then((result) {
+          if (result.success) {
             unawaited(ICommandService().sendCommand(commandToCloseScreen, throwFirstErrorCommand: true).catchError((error) {
 
               if (wasForced) {

@@ -602,7 +602,7 @@ class TableSize {
     List<CellFormat?> dataFormats,
     List<dynamic> dataColumn,
     ICellEditor cellEditor,
-    TextStyle pTextStyle,
+    TextStyle textStyle,
   ) {
     double columnWidth = 0.0;
 
@@ -617,21 +617,21 @@ class TableSize {
 
         CellFormat? format = dataFormats[i];
 
-        TextStyle textStyle = pTextStyle;
+        TextStyle textStyle_ = textStyle;
 
         if (format != null && format.font != null)   {
           //use cell format instead of standard text style
-          textStyle = TextStyle(
-            color: format.foreground ?? pTextStyle.color,
-            fontSize: format.font?.fontSize.toDouble() ?? pTextStyle.fontSize,
-            fontStyle: format.font != null ? FontStyle.italic : pTextStyle.fontStyle,
-            fontWeight: format.font != null ? FontWeight.bold : pTextStyle.fontWeight,
-            fontFamily: format.font?.fontName ?? pTextStyle.fontFamily,
+          textStyle_ = TextStyle(
+            color: format.foreground ?? textStyle.color,
+            fontSize: format.font?.fontSize.toDouble() ?? textStyle.fontSize,
+            fontStyle: format.font != null ? FontStyle.italic : textStyle.fontStyle,
+            fontWeight: format.font != null ? FontWeight.bold : textStyle.fontWeight,
+            fontFamily: format.font?.fontName ?? textStyle.fontFamily,
             overflow: TextOverflow.ellipsis,
           );
         }
 
-        double rowWidth = _calculateTextWidth(textStyle, formattedText);
+        double rowWidth = _calculateTextWidth(textStyle_, formattedText);
 
         if (format != null) {
           double formatWidth = format.leftIndent?.toDouble() ?? 0;
@@ -666,12 +666,12 @@ class TableSize {
 
   ///Calculates text width with given style and table settings like divider and paddings.
   double _calculateTextWidth(
-    TextStyle pTextStyle,
-    String pText,
+    TextStyle textStyle,
+    String text,
   ) {
     double width = ParseUtil.getTextWidth(
-      text: pText,
-      style: pTextStyle,
+      text: text,
+      style: textStyle,
     );
 
     width += cellPaddings.horizontal + columnDividerWidth;

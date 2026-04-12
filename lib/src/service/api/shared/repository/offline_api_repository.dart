@@ -88,7 +88,7 @@ class OfflineApiRepository extends IRepository {
   Set<Cookie> getCookies() => {};
 
   @override
-  void setCookies(Set<Cookie> pCookies) => {};
+  void setCookies(Set<Cookie> cookies) => {};
 
   @override
   Map<String, String> getHeaders() => {};
@@ -150,43 +150,43 @@ class OfflineApiRepository extends IRepository {
     return offlineDatabase!.dropTables(IConfigService().currentApp.value!);
   }
 
-  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {
+  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String dataProvider) {
     _checkStatus();
-    return offlineDatabase!.getChangedRows(pDataProvider);
+    return offlineDatabase!.getChangedRows(dataProvider);
   }
 
-  Future<int> resetState(String pDataProvider, Map<String, Object?> pResetRow) {
+  Future<int> resetState(String dataProvider, Map<String, Object?> resetRow) {
     _checkStatus();
-    return offlineDatabase!.resetState(pDataProvider, pResetRow);
+    return offlineDatabase!.resetState(dataProvider, resetRow);
   }
 
   @override
-  Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
+  Future<ApiInteraction> sendRequest(ApiRequest request, [bool? retryRequest]) async {
     _checkStatus();
 
     ApiResponse? response;
 
-    if (pRequest is ApiDalSaveRequest) {
+    if (request is ApiDalSaveRequest) {
       // Does nothing but is supported as api
-    } else if (pRequest is ApiDeleteRecordRequest) {
-      response = await _delete(pRequest);
-    } else if (pRequest is ApiFetchRequest) {
-      response = await _fetch(pRequest);
-    } else if (pRequest is ApiReloadDataRequest) {
-      response = await _reload(pRequest);
-    } else if (pRequest is ApiFilterRequest) {
-      response = await _filter(pRequest);
-    } else if (pRequest is ApiInsertRecordRequest) {
-      response = await _insert(pRequest);
-    } else if (pRequest is ApiSetValuesRequest) {
-      response = await _setValues(pRequest);
-    } else if (pRequest is ApiSelectRecordRequest) {
-      response = await _select(pRequest);
+    } else if (request is ApiDeleteRecordRequest) {
+      response = await _delete(request);
+    } else if (request is ApiFetchRequest) {
+      response = await _fetch(request);
+    } else if (request is ApiReloadDataRequest) {
+      response = await _reload(request);
+    } else if (request is ApiFilterRequest) {
+      response = await _filter(request);
+    } else if (request is ApiInsertRecordRequest) {
+      response = await _insert(request);
+    } else if (request is ApiSetValuesRequest) {
+      response = await _setValues(request);
+    } else if (request is ApiSelectRecordRequest) {
+      response = await _select(request);
     } else {
-      throw Exception("${pRequest.runtimeType} is not supported while offline");
+      throw Exception("${request.runtimeType} is not supported while offline");
     }
 
-    return ApiInteraction(responses: response != null ? [response] : [], request: pRequest);
+    return ApiInteraction(responses: response != null ? [response] : [], request: request);
   }
 
   void _checkStatus() {
@@ -197,87 +197,87 @@ class OfflineApiRepository extends IRepository {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<DalFetchResponse?> _delete(ApiDeleteRecordRequest pRequest) async {
+  Future<DalFetchResponse?> _delete(ApiDeleteRecordRequest request) async {
     List<FilterCondition> filters = [];
 
-    FilterCondition? requestFilter = _getFilter(pRequest.filter, null);
+    FilterCondition? requestFilter = _getFilter(request.filter, null);
     if (requestFilter != null) {
       filters.add(requestFilter);
     }
 
-    if (filters.isEmpty && pRequest.rowNumber != null) {
-      filters.add(FilterCondition(columnName: "ROWID", value: pRequest.rowNumber));
+    if (filters.isEmpty && request.rowNumber != null) {
+      filters.add(FilterCondition(columnName: "ROWID", value: request.rowNumber));
     }
 
     // Fallback
     if (filters.isEmpty) {
-      Filter? selectedRowFilter = _createSelectedRowFilter(pDataProvider: pRequest.dataProvider);
+      Filter? selectedRowFilter = _createSelectedRowFilter(dataProvider: request.dataProvider);
       if (selectedRowFilter != null) {
         filters.add(selectedRowFilter.asFilterCondition());
       } else {
         // Cancel when no filter
-        return _reFetchMaximum(pRequest.dataProvider);
+        return _reFetchMaximum(request.dataProvider);
       }
     }
 
-    FilterCondition? lastFilter = _getLastFilter(pRequest.dataProvider);
+    FilterCondition? lastFilter = _getLastFilter(request.dataProvider);
     if (lastFilter != null) {
       filters.add(lastFilter);
     }
 
     await offlineDatabase!.delete(
-      pTableName: pRequest.dataProvider,
-      pFilter: FilterCondition(conditions: filters),
+      tableName: request.dataProvider,
+      filter: FilterCondition(conditions: filters),
     );
 
     // JVx Server does also ignore fetch and always fetches.
-    // if (pRequest.fetch) {
+    // if (request.fetch) {
 
-    await DataBook.deselectRecord(pDataProvider: pRequest.dataProvider);
+    await DataBook.deselectRecord(dataProvider: request.dataProvider);
 
-    return _reFetchMaximum(pRequest.dataProvider);
+    return _reFetchMaximum(request.dataProvider);
     // }
   }
 
-  Future<DalFetchResponse?> _fetch(ApiFetchRequest pRequest) async {
-    return _fetchData(pRequest.dataProvider, pRequest.fromRow, pRequest.rowCount);
+  Future<DalFetchResponse?> _fetch(ApiFetchRequest request) async {
+    return _fetchData(request.dataProvider, request.fromRow, request.rowCount);
   }
 
-  Future<DalFetchResponse?> _reload(ApiReloadDataRequest pRequest) async {
-    return _fetchData(pRequest.dataProvider, pRequest.fromRow, pRequest.rowCount);
+  Future<DalFetchResponse?> _reload(ApiReloadDataRequest request) async {
+    return _fetchData(request.dataProvider, request.fromRow, request.rowCount);
   }
 
-  Future<DalFetchResponse?> _fetchData(String pDataProvider, int pFromRow, int pRowCount) async {
-    if (pFromRow <= -1) {
+  Future<DalFetchResponse?> _fetchData(String dataProvider, int fromRow, int rowCount) async {
+    if (fromRow <= -1) {
       return null;
     }
 
-    int? rowCount = pRowCount >= 0 ? pRowCount : null;
+    int? rowCount_ = rowCount >= 0 ? rowCount : null;
 
-    if (rowCount == null) {
-      _dataBookFetchMap[pDataProvider] = -1;
+    if (rowCount_ == null) {
+      _dataBookFetchMap[dataProvider] = -1;
     } else {
-      int currentMaxFetch = _dataBookFetchMap[pDataProvider] ?? 0;
+      int currentMaxFetch = _dataBookFetchMap[dataProvider] ?? 0;
 
-      int maxFetch = pFromRow + rowCount;
+      int maxFetch = fromRow + rowCount_;
 
       if (currentMaxFetch != -1 && currentMaxFetch < maxFetch) {
-        _dataBookFetchMap[pDataProvider] = maxFetch;
+        _dataBookFetchMap[dataProvider] = maxFetch;
       }
     }
 
-    FilterCondition? filter = _getLastFilter(pDataProvider);
+    FilterCondition? filter = _getLastFilter(dataProvider);
 
-    DataBook dataBook = IDataService().getDataBook(pDataProvider)!;
+    DataBook dataBook = IDataService().getDataBook(dataProvider)!;
 
     List<String> columnNames = dataBook.metaData!.columnDefinitions.map((e) => e.name).toList();
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
-      pColumns: columnNames,
-      pTableName: pDataProvider,
-      pOffset: pFromRow > 0 ? pFromRow : null,
-      pLimit: rowCount,
-      pFilter: filter,
+      columns: columnNames,
+      tableName: dataProvider,
+      offset: fromRow > 0 ? fromRow : null,
+      limit: rowCount_,
+      filter: filter,
     );
 
     List<List<dynamic>> sortedMap = [];
@@ -291,69 +291,69 @@ class OfflineApiRepository extends IRepository {
     }
 
     int rowCountDatabase = await offlineDatabase!.getCount(
-      pTableName: pDataProvider,
-      pFilter: filter,
+      tableName: dataProvider,
+      filter: filter,
     );
 
     bool isAllFetched = rowCountDatabase <= sortedMap.length;
 
     return DalFetchResponse(
-      dataProvider: pDataProvider,
-      from: pFromRow,
+      dataProvider: dataProvider,
+      from: fromRow,
       selectedRow: dataBook.selectedRow,
       isAllFetched: isAllFetched,
       columnNames: columnNames,
-      to: pFromRow + (sortedMap.length - 1),
+      to: fromRow + (sortedMap.length - 1),
       records: sortedMap,
       name: "dal.fetch",
     );
   }
 
-  Future<DalFetchResponse?> _filter(ApiFilterRequest pRequest) async {
-    if (pRequest.columnNames != null) {
+  Future<DalFetchResponse?> _filter(ApiFilterRequest request) async {
+    if (request.columnNames != null) {
       Filter filter = Filter(
-        values: pRequest.columnNames!.map((e) => pRequest.value).toList(),
-        columnNames: pRequest.columnNames!,
+        values: request.columnNames!.map((e) => request.value).toList(),
+        columnNames: request.columnNames!,
       );
 
-      _dataBookLastFilter[pRequest.dataProvider] = filter;
-    } else if ((pRequest.filter?.isEmpty ?? true) && pRequest.filterCondition == null) {
-      _dataBookLastFilter.remove(pRequest.dataProvider);
+      _dataBookLastFilter[request.dataProvider] = filter;
+    } else if ((request.filter?.isEmpty ?? true) && request.filterCondition == null) {
+      _dataBookLastFilter.remove(request.dataProvider);
     } else {
-      _dataBookLastFilter[pRequest.dataProvider] = pRequest.filterCondition ?? pRequest.filter!;
+      _dataBookLastFilter[request.dataProvider] = request.filterCondition ?? request.filter!;
     }
 
-    return _reFetchMaximum(pRequest.dataProvider);
+    return _reFetchMaximum(request.dataProvider);
   }
 
-  Future<ApiResponse?> _insert(ApiInsertRecordRequest pRequest) async {
-    await offlineDatabase!.insert(pTableName: pRequest.dataProvider, pInsert: {});
+  Future<ApiResponse?> _insert(ApiInsertRecordRequest request) async {
+    await offlineDatabase!.insert(tableName: request.dataProvider, insert: {});
 
-    return _reFetchMaximum(pRequest.dataProvider);
+    return _reFetchMaximum(request.dataProvider);
   }
 
-  DalDataProviderChangedResponse _deselect(String pDataProvider) {
+  DalDataProviderChangedResponse _deselect(String dataProvider) {
     return DalDataProviderChangedResponse.fromJson(
       {
         ApiObjectProperty.name: ApiResponseNames.dalDataProviderChanged,
-        ApiObjectProperty.dataProvider: pDataProvider,
+        ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.selectedRow: -1,
         ApiObjectProperty.selectedColumn: null,
       },
     );
   }
 
-  Future<DalDataProviderChangedResponse?> _select(ApiSelectRecordRequest pRequest) async {
-    if (pRequest.filter == null) {
-      if (pRequest.rowNumber != null && pRequest.rowNumber! < 0) {
-        return _deselect(pRequest.dataProvider);
+  Future<DalDataProviderChangedResponse?> _select(ApiSelectRecordRequest request) async {
+    if (request.filter == null) {
+      if (request.rowNumber != null && request.rowNumber! < 0) {
+        return _deselect(request.dataProvider);
       } else {
         // Cancel when no filter
         throw Exception("A filter is required!");
       }
     }
 
-    Filter selectionFilter = pRequest.filter!;
+    Filter selectionFilter = request.filter!;
 
     var filterColumns = selectionFilter.columnNames;
     var filterValues = selectionFilter.values;
@@ -362,7 +362,7 @@ class OfflineApiRepository extends IRepository {
       throw Exception("A filter is required!");
     }
 
-    DataBook dataBook = IDataService().getDataBook(pRequest.dataProvider)!;
+    DataBook dataBook = IDataService().getDataBook(request.dataProvider)!;
 
     //no specific filter columns -> we support using the PK columns
     if (filterColumns.isEmpty) {
@@ -376,26 +376,26 @@ class OfflineApiRepository extends IRepository {
     List<String> columnNames = dataBook.metaData!.columnDefinitions.map((e) => e.name).toList();
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
-      pColumns: columnNames,
-      pTableName: pRequest.dataProvider,
-      pOffset: 0,
-      pLimit: -1,
-      pFilter: _getLastFilter(pRequest.dataProvider),
+      columns: columnNames,
+      tableName: request.dataProvider,
+      offset: 0,
+      limit: -1,
+      filter: _getLastFilter(request.dataProvider),
     );
 
     int iFoundRow = -1;
 
     if (selectionResult.isNotEmpty) {
-      if (pRequest.rowNumber != null && selectionResult.length > pRequest.rowNumber!) {
+      if (request.rowNumber != null && selectionResult.length > request.rowNumber!) {
         /// check if every value of the selected result at this row number fulfills all values provided by the filter
         bool bFound = true;
-        var rowToCheck = selectionResult[pRequest.rowNumber!];
+        var rowToCheck = selectionResult[request.rowNumber!];
         for (int i = 0; i < filterColumns.length && bFound; i++) {
           bFound = rowToCheck[filterColumns[i]] == filterValues[i];
         }
 
         if (bFound) {
-          iFoundRow = pRequest.rowNumber!;
+          iFoundRow = request.rowNumber!;
         }
       }
 
@@ -403,13 +403,13 @@ class OfflineApiRepository extends IRepository {
         bool bFound = false;
         for (int rowIndex = 0; rowIndex < selectionResult.length && !bFound; rowIndex++) {
           bFound = true;
-          var rowToCheck = selectionResult[pRequest.rowNumber!];
+          var rowToCheck = selectionResult[request.rowNumber!];
           for (int i = 0; i < filterColumns.length && bFound; i++) {
             bFound = rowToCheck[filterColumns[i]] == filterValues[i];
           }
 
           if (bFound) {
-            iFoundRow = pRequest.rowNumber!;
+            iFoundRow = request.rowNumber!;
           }
         }
       }
@@ -422,49 +422,49 @@ class OfflineApiRepository extends IRepository {
     return DalDataProviderChangedResponse.fromJson(
       {
         ApiObjectProperty.name: ApiResponseNames.dalDataProviderChanged,
-        ApiObjectProperty.dataProvider: pRequest.dataProvider,
+        ApiObjectProperty.dataProvider: request.dataProvider,
         ApiObjectProperty.selectedRow: iFoundRow,
-        if (pRequest.selectedColumn != null) ApiObjectProperty.selectedColumn: pRequest.selectedColumn,
+        if (request.selectedColumn != null) ApiObjectProperty.selectedColumn: request.selectedColumn,
       },
     );
   }
 
-  Future<DalFetchResponse?> _setValues(ApiSetValuesRequest pRequest) async {
+  Future<DalFetchResponse?> _setValues(ApiSetValuesRequest request) async {
     List<FilterCondition> filters = [];
 
-    FilterCondition? requestFilter = _getFilter(pRequest.filter, null);
+    FilterCondition? requestFilter = _getFilter(request.filter, null);
     if (requestFilter != null) {
       filters.add(requestFilter);
     }
 
     // Fallback
     if (filters.isEmpty) {
-      Filter? selectedRowFilter = _createSelectedRowFilter(pDataProvider: pRequest.dataProvider);
+      Filter? selectedRowFilter = _createSelectedRowFilter(dataProvider: request.dataProvider);
       if (selectedRowFilter != null) {
         filters.add(selectedRowFilter.asFilterCondition());
       } else {
         // Cancel when no filter
-        return _reFetchMaximum(pRequest.dataProvider);
+        return _reFetchMaximum(request.dataProvider);
       }
     }
 
-    FilterCondition? lastFilter = _getLastFilter(pRequest.dataProvider);
+    FilterCondition? lastFilter = _getLastFilter(request.dataProvider);
     if (lastFilter != null) {
       filters.add(lastFilter);
     }
 
     Map<String, dynamic> updateData = {};
-    for (int i = 0; i < pRequest.columnNames.length; i++) {
-      updateData[pRequest.columnNames[i]] = pRequest.values[i];
+    for (int i = 0; i < request.columnNames.length; i++) {
+      updateData[request.columnNames[i]] = request.values[i];
     }
 
     await offlineDatabase!.update(
-      pTableName: pRequest.dataProvider,
-      pUpdate: updateData,
-      pFilter: FilterCondition(conditions: filters),
+      tableName: request.dataProvider,
+      update: updateData,
+      filter: FilterCondition(conditions: filters),
     );
 
-    return _reFetchMaximum(pRequest.dataProvider);
+    return _reFetchMaximum(request.dataProvider);
   }
 
   FilterCondition? _getLastFilter(String dataProvider) {
@@ -474,14 +474,14 @@ class OfflineApiRepository extends IRepository {
     );
   }
 
-  Future<DalFetchResponse?> _reFetchMaximum(String pDataProvider) async {
-    int? maxFetch = _dataBookFetchMap[pDataProvider];
+  Future<DalFetchResponse?> _reFetchMaximum(String dataProvider) async {
+    int? maxFetch = _dataBookFetchMap[dataProvider];
     if (maxFetch != null) {
       return _fetch(
         ApiFetchRequest(
           fromRow: 0,
           rowCount: maxFetch,
-          dataProvider: pDataProvider,
+          dataProvider: dataProvider,
           includeMetaData: true,
         ),
       );
@@ -490,22 +490,22 @@ class OfflineApiRepository extends IRepository {
     return null;
   }
 
-  FilterCondition? _getFilter(Filter? pFilter, FilterCondition? pFilterCondition) {
-    if (pFilterCondition != null) {
-      return pFilterCondition;
-    } else if (!(pFilter?.isEmpty ?? true)) {
+  FilterCondition? _getFilter(Filter? filter, FilterCondition? filterCondition) {
+    if (filterCondition != null) {
+      return filterCondition;
+    } else if (!(filter?.isEmpty ?? true)) {
       // Not null and not empty
-      return pFilter!.asFilterCondition();
+      return filter!.asFilterCondition();
     }
     return null;
   }
 
-  Filter? _createSelectedRowFilter({required String pDataProvider, int? pSelectedRow}) {
-    DataBook dataBook = IDataService().getDataBook(pDataProvider)!;
+  Filter? _createSelectedRowFilter({required String dataProvider, int? selectedRow}) {
+    DataBook dataBook = IDataService().getDataBook(dataProvider)!;
 
     DataRecord? dataRecord = dataBook.getRecord(
-      pDataColumnNames: dataBook.metaData!.primaryKeyColumns,
-      pRecordIndex: pSelectedRow ?? dataBook.selectedRow,
+      dataColumnNames: dataBook.metaData!.primaryKeyColumns,
+      recordIndex: selectedRow ?? dataBook.selectedRow,
     );
 
     if (dataRecord == null) {

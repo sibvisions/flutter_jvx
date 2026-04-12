@@ -31,7 +31,7 @@ class FakeFile implements File {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FakeFile(String pPath) : _path = pPath;
+  FakeFile(String path) : _path = path;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

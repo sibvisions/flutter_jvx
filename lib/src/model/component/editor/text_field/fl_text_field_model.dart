@@ -73,53 +73,53 @@ class FlTextFieldModel extends FlLabelModel {
   FlTextFieldModel get defaultModel => FlTextFieldModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     placeholder = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.placeholder,
-      pDefault: defaultModel.placeholder,
-      pCurrent: placeholder,
+      json: newJson,
+      key: ApiObjectProperty.placeholder,
+      defaultValue: defaultModel.placeholder,
+      currentValue: placeholder,
     );
 
     rows = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.rows,
-      pDefault: defaultModel.rows,
-      pCurrent: rows,
+      json: newJson,
+      key: ApiObjectProperty.rows,
+      defaultValue: defaultModel.rows,
+      currentValue: rows,
     );
 
     columns = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.columns,
-      pDefault: defaultModel.columns,
-      pCurrent: columns,
+      json: newJson,
+      key: ApiObjectProperty.columns,
+      defaultValue: defaultModel.columns,
+      currentValue: columns,
     );
 
     isBorderVisible = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.borderVisible,
-      pDefault: defaultModel.isBorderVisible,
-      pCurrent: isBorderVisible,
+      json: newJson,
+      key: ApiObjectProperty.borderVisible,
+      defaultValue: defaultModel.isBorderVisible,
+      currentValue: isBorderVisible,
     );
 
     isEditable = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.editable,
-      pDefault: defaultModel.isEditable,
-      pCurrent: isEditable,
+      json: newJson,
+      key: ApiObjectProperty.editable,
+      defaultValue: defaultModel.isEditable,
+      currentValue: isEditable,
     );
   }
 
   @override
-  void applyCellEditorOverrides(Map<String, dynamic> pJson) {
-    super.applyCellEditorOverrides(pJson);
+  void applyCellEditorOverrides(Map<String, dynamic> json) {
+    super.applyCellEditorOverrides(json);
 
     Map<String, dynamic> overrideJson = {};
 
-    if (pJson.containsKey(ApiObjectProperty.cellEditorPlaceholder)) {
-      overrideJson[ApiObjectProperty.placeholder] = pJson[ApiObjectProperty.cellEditorPlaceholder];
+    if (json.containsKey(ApiObjectProperty.cellEditorPlaceholder)) {
+      overrideJson[ApiObjectProperty.placeholder] = json[ApiObjectProperty.cellEditorPlaceholder];
     }
 
     if (overrideJson.isNotEmpty) {

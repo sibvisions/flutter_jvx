@@ -24,29 +24,29 @@ import '../i_response_processor.dart';
 
 class DownloadStyleProcessor extends IResponseProcessor<DownloadStyleResponse> {
   @override
-  List<BaseCommand> processResponse(DownloadStyleResponse pResponse, ApiRequest? pRequest) {
-    String decoded = utf8.decode(pResponse.bodyBytes);
+  List<BaseCommand> processResponse(DownloadStyleResponse response, ApiRequest? request) {
+    String decoded = utf8.decode(response.bodyBytes);
 
-    Map<String, dynamic> styleWithNull = jsonDecode(decoded);
+    Map<String, dynamic> stylesNoNull = jsonDecode(decoded);
 
-    styleWithNull.removeWhere((key, value) => value == null);
+    stylesNoNull.removeWhere((key, value) => value == null);
 
-    Map<String, String> styleNoNull = rebuildStylesMap(styleWithNull);
+    Map<String, String> styleNoNull = rebuildStylesMap(stylesNoNull);
 
     return [
       SaveApplicationStyleCommand(style: styleNoNull, reason: "Downloaded Styles"),
     ];
   }
 
-  Map<String, String> rebuildStylesMap(Map<String, dynamic> pOgMap, [String? pKeyPrefix]) {
+  Map<String, String> rebuildStylesMap(Map<String, dynamic> styles, [String? keyPrefix]) {
     Map<String, String> rebuiltMap = {};
 
-    pOgMap.forEach((key, value) {
+    styles.forEach((key, value) {
       if (value is Map) {
         rebuiltMap
-            .addAll(rebuildStylesMap(value as Map<String, dynamic>, pKeyPrefix == null ? key : "$pKeyPrefix.$key"));
-      } else if (pKeyPrefix != null) {
-        rebuiltMap["$pKeyPrefix.$key"] = value;
+            .addAll(rebuildStylesMap(value as Map<String, dynamic>, keyPrefix == null ? key : "$keyPrefix.$key"));
+      } else if (keyPrefix != null) {
+        rebuiltMap["$keyPrefix.$key"] = value;
       } else {
         rebuiltMap[key] = value;
       }

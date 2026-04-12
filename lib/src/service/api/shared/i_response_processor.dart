@@ -21,5 +21,5 @@ import '../../../model/request/api_request.dart';
 import '../../../model/response/api_response.dart';
 
 abstract class IResponseProcessor<T extends ApiResponse> {
-  FutureOr<List<BaseCommand>> processResponse(T pResponse, ApiRequest? pRequest);
+  FutureOr<List<BaseCommand>> processResponse(T response, ApiRequest? request);
 }

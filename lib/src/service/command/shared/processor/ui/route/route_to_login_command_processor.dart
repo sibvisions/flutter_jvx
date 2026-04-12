@@ -32,7 +32,7 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
   @override
   Future<List<BaseCommand>> processCommand(RouteToLoginCommand command, BaseCommand? origin) async {
     // As a [LoginViewResponse] can also indicate a logout initiated by the server, clear user data here.
-    await IConfigService().updateUserInfo(pUserInfo: null, pJson: null);
+    await IConfigService().updateUserInfo(userInfo: null, json: null);
     await IConfigService().updateAuthKey(null);
     await IConfigService().updatePassword(null);
 

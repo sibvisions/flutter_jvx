@@ -22,9 +22,9 @@ import '../i_response_processor.dart';
 
 class CloseScreenProcessor implements IResponseProcessor<CloseScreenResponse> {
   @override
-  List<BaseCommand> processResponse(CloseScreenResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(CloseScreenResponse response, ApiRequest? request) {
     return [DeleteScreenCommand(
-      componentName: pResponse.componentName,
+      componentName: response.componentName,
       reason: "Server sent CloseScreen",
     )];
   }

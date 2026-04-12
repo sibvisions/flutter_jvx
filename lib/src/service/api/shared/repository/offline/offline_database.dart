@@ -226,17 +226,17 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Retrieves all saved [DalMetaData]s from [OFFLINE_APPS_TABLE].
-  Future<List<DalMetaData>> getMetaData(String appId, {String? pDataProvider, Transaction? txn}) {
+  Future<List<DalMetaData>> getMetaData(String appId, {String? dataProvider, Transaction? txn}) {
     List<String> whereArgs = [appId];
-    if (pDataProvider != null) {
-      whereArgs.add(pDataProvider);
+    if (dataProvider != null) {
+      whereArgs.add(dataProvider);
     }
     return db
         .query(
           OFFLINE_METADATA_TABLE,
           columns: ["META_DATA"],
           where:
-              "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)${pDataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""}",
+              "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)${dataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""}",
           whereArgs: whereArgs,
         )
         .then((result) =>
@@ -263,11 +263,11 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return COLUMN_PREFIX + columnName;
   }
 
-  /// Builds a SQL command to create an offline table on the basis of [pTable].
-  String _buildCreateTableSQL(DalMetaData pTable) {
-    var sql = StringBuffer('CREATE TABLE "${formatOfflineTableName(pTable.dataProvider)}" (');
+  /// Builds a SQL command to create an offline table on the basis of [table].
+  String _buildCreateTableSQL(DalMetaData table) {
+    var sql = StringBuffer('CREATE TABLE "${formatOfflineTableName(table.dataProvider)}" (');
 
-    for (var column in pTable.columnDefinitions) {
+    for (var column in table.columnDefinitions) {
       sql.write(_buildCreateColumnSQL(column.name, column));
       // Offline/Old columns are always nullable.
       sql.write(_buildCreateColumnSQL(formatOfflineColumnName(column.name), column, nullable: true));
@@ -278,26 +278,26 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return sql.toString();
   }
 
-  /// Builds a SQL command to create a column on the basis of [pColumn].
+  /// Builds a SQL command to create a column on the basis of [columnDefinition].
   ///
   /// [nullable] is currently ignored, therefore every column is nullable, could be completely dropped in a future release.
-  String _buildCreateColumnSQL(String pColumnName, ColumnDefinition pColumn, {bool? nullable}) {
-    var columnDef = StringBuffer('"$pColumnName" ');
-    columnDef.write(ITypes.convertToSQLite(pColumn.dataTypeIdentifier, scale: pColumn.scale));
+  String _buildCreateColumnSQL(String columnName, ColumnDefinition columnDefinition, {bool? nullable}) {
+    var columnDef = StringBuffer('"$columnName" ');
+    columnDef.write(ITypes.convertToSQLite(columnDefinition.dataTypeIdentifier, scale: columnDefinition.scale));
 
     // TODO Check default value
 
     if (IConfigService().getAppConfig()?.offlineConfig!.checkConstraints ?? true) {
-      if (pColumn.length != null) {
-        columnDef.write(' CHECK(length("$pColumnName") <= ${pColumn.length})');
+      if (columnDefinition.length != null) {
+        columnDef.write(' CHECK(length("$columnName") <= ${columnDefinition.length})');
       }
 
-      if (pColumn.precision != null) {
-        columnDef.write(' CHECK("$pColumnName" = ROUND("$pColumnName", ${pColumn.precision}))');
+      if (columnDefinition.precision != null) {
+        columnDef.write(' CHECK("$columnName" = ROUND("$columnName", ${columnDefinition.precision}))');
       }
 
-      if (!(pColumn.signed ?? true)) {
-        columnDef.write(' CHECK("$pColumnName") >= 0)');
+      if (!(columnDefinition.signed ?? true)) {
+        columnDef.write(' CHECK("$columnName") >= 0)');
       }
     }
 
@@ -309,11 +309,11 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   // Table management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Whether a table named [pTableName] exists.
+  /// Whether a table named [tableName] exists.
   ///
   /// The table name is escaped using [formatOfflineTableName].
-  Future<bool> tableExists(String pTableName, {Transaction? txn}) {
-    return _tableExists(formatOfflineTableName(pTableName), txn: txn);
+  Future<bool> tableExists(String tableName, {Transaction? txn}) {
+    return _tableExists(formatOfflineTableName(tableName), txn: txn);
   }
 
   /// Whether a table named [tableName] exists.
@@ -324,11 +324,11 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         .then((results) => results[0]["COUNT"] as int > 0);
   }
 
-  /// Drops a table named [pTableName], if it exists.
+  /// Drops a table named [tableName], if it exists.
   ///
   /// The table name is escaped using [formatOfflineTableName].
-  Future<void> dropTable(String pTableName, {Transaction? txn}) {
-    return _dropTable(formatOfflineTableName(pTableName), txn: txn);
+  Future<void> dropTable(String tableName, {Transaction? txn}) {
+    return _dropTable(formatOfflineTableName(tableName), txn: txn);
   }
 
   /// Drops a table named [tableName], if it exists.
@@ -340,31 +340,31 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   // Row Management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Retrieves all rows from this [pDataProvider] where the [STATE_COLUMN] is not null.
+  /// Retrieves all rows from this [dataProvider] where the [STATE_COLUMN] is not null.
   ///
   /// Returns an empty map if the table doesn't exist.
-  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider, {Transaction? txn}) async {
-    if (await tableExists(pDataProvider, txn: txn)) {
+  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String dataProvider, {Transaction? txn}) async {
+    if (await tableExists(dataProvider, txn: txn)) {
       return (txn ?? db)
-          .query(formatOfflineTableName(pDataProvider), where: '"$STATE_COLUMN" IS NOT NULL')
+          .query(formatOfflineTableName(dataProvider), where: '"$STATE_COLUMN" IS NOT NULL')
           .then((value) => groupBy(value, (p0) => p0[STATE_COLUMN] as String));
     } else {
       return {};
     }
   }
 
-  /// Resets all state columns for [pDataProvider]. (Sets all [STATE_COLUMN]s back to `null`)
+  /// Resets all state columns for [dataProvider]. (Sets all [STATE_COLUMN]s back to `null`)
   ///
-  /// * If [pResetRow] is empty, returns `0` and does nothing.
-  /// * If row in [pResetRow] contains no columns, it is skipped.
-  /// * Otherwise the columns in [pResetRow] are used to create a where clause.
-  Future<int> resetState(String pDataProvider, Map<String, Object?> pResetRow, {Transaction? txn}) {
+  /// * If [resetRow] is empty, returns `0` and does nothing.
+  /// * If row in [resetRow] contains no columns, it is skipped.
+  /// * Otherwise the columns in [resetRow] are used to create a where clause.
+  Future<int> resetState(String dataProvider, Map<String, Object?> resetRow, {Transaction? txn}) {
     String where = "1 = 0";
 
-    if (pResetRow.isNotEmpty) {
+    if (resetRow.isNotEmpty) {
       where += " OR (";
       List<String> columns = [];
-      for (var column in pResetRow.entries) {
+      for (var column in resetRow.entries) {
         String s = '"${column.key}"';
         if (column.value != null) {
           s += " = ?";
@@ -377,57 +377,57 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     }
 
     return (txn ?? db).update(
-      formatOfflineTableName(pDataProvider),
+      formatOfflineTableName(dataProvider),
       {'"$STATE_COLUMN"': null},
       where: where,
-      whereArgs: pResetRow.values.whereType<Object>().toList(growable: false),
+      whereArgs: resetRow.values.whereType<Object>().toList(growable: false),
     );
   }
 
-  /// Checks if at least one valid row (not marked as deleted) exists in [pTableName], optionally with [pFilter] applied.
-  Future<bool> rowExists({required String pTableName, Map<String, dynamic>? pFilter, Transaction? txn}) {
-    String sql = 'SELECT COUNT(*) AS COUNT FROM "${formatOfflineTableName(pTableName)}"';
-    if (pFilter != null) {
-      sql += " WHERE${pFilter.keys.map((key) => '"$key" = ?').join(" AND ")}";
+  /// Checks if at least one valid row (not marked as deleted) exists in [tableName], optionally with [filter] applied.
+  Future<bool> rowExists({required String tableName, Map<String, dynamic>? filter, Transaction? txn}) {
+    String sql = 'SELECT COUNT(*) AS COUNT FROM "${formatOfflineTableName(tableName)}"';
+    if (filter != null) {
+      sql += " WHERE${filter.keys.map((key) => '"$key" = ?').join(" AND ")}";
       sql += ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
     }
 
-    return (txn ?? db).rawQuery(sql, [...?pFilter?.values]).then((results) => results[0]["COUNT"] as int > 0);
+    return (txn ?? db).rawQuery(sql, [...?filter?.values]).then((results) => results[0]["COUNT"] as int > 0);
   }
 
-  /// Executes a SQL SELECT COUNT query for [pTableName] and returns the number of valid rows found, optionally with [pFilter] applied.
-  Future<int> getCount({required String pTableName, FilterCondition? pFilter, Transaction? txn}) {
-    var where = _getWhere(pFilter);
+  /// Executes a SQL SELECT COUNT query for [tableName] and returns the number of valid rows found, optionally with [filter] applied.
+  Future<int> getCount({required String tableName, FilterCondition? filter, Transaction? txn}) {
+    var where = _getWhere(filter);
     return (txn ?? db)
-        .query(formatOfflineTableName(pTableName),
+        .query(formatOfflineTableName(tableName),
             columns: ["COUNT(*) AS COUNT"], where: where?[0], whereArgs: where?[1])
         .then((results) => results[0]["COUNT"] as int);
   }
 
-  /// Executes a SQL SELECT query for [pTableName] and returns a list of the valid rows that were found.
+  /// Executes a SQL SELECT query for [tableName] and returns a list of the valid rows that were found.
   Future<List<Map<String, dynamic>>> select({
-    required String pTableName,
-    List<String>? pColumns,
-    FilterCondition? pFilter,
-    String? pGroupBy,
-    String? pHaving,
-    String? pOrderBy,
-    int? pLimit,
-    int? pOffset,
+    required String tableName,
+    List<String>? columns,
+    FilterCondition? filter,
+    String? groupBy,
+    String? having,
+    String? orderBy,
+    int? limit,
+    int? offset,
     Transaction? txn,
   }) {
-    var where = _getWhere(pFilter);
+    var where = _getWhere(filter);
     return (txn ?? db).query(
-      formatOfflineTableName(pTableName),
-      columns: pColumns,
+      formatOfflineTableName(tableName),
+      columns: columns,
       where: where?[0],
       whereArgs: where?[1],
-      groupBy: pGroupBy,
-      having: pHaving,
-      orderBy: pOrderBy,
+      groupBy: groupBy,
+      having: having,
+      orderBy: orderBy,
       // Workaround for https://github.com/tekartik/sqflite/issues/1018
-      limit: pLimit ?? (pOffset != null ? -1 : null),
-      offset: pOffset,
+      limit: limit ?? (offset != null ? -1 : null),
+      offset: offset,
     );
   }
 
@@ -435,18 +435,18 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   // CUD Operations
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Executes a INSERT query for [pTableName], sets the state to [ROW_STATE_INSERTED] and returns the last inserted row ID.
-  Future<int> insert({required String pTableName, required Map<String, dynamic> pInsert, Transaction? txn}) {
-    pInsert['"$STATE_COLUMN"'] = ROW_STATE_INSERTED;
-    return rawInsert(pTableName: pTableName, pInsert: pInsert, txn: txn);
+  /// Executes a INSERT query for [tableName], sets the state to [ROW_STATE_INSERTED] and returns the last inserted row ID.
+  Future<int> insert({required String tableName, required Map<String, dynamic> insert, Transaction? txn}) {
+    insert['"$STATE_COLUMN"'] = ROW_STATE_INSERTED;
+    return rawInsert(tableName: tableName, insert: insert, txn: txn);
   }
 
-  /// Executes a SQL INSERT query for [pTableName] and returns the last inserted row ID.
-  Future<int> rawInsert({required String pTableName, required Map<String, dynamic> pInsert, Transaction? txn}) {
-    return (txn ?? db).insert(formatOfflineTableName(pTableName), pInsert);
+  /// Executes a SQL INSERT query for [tableName] and returns the last inserted row ID.
+  Future<int> rawInsert({required String tableName, required Map<String, dynamic> insert, Transaction? txn}) {
+    return (txn ?? db).insert(formatOfflineTableName(tableName), insert);
   }
 
-  /// Executes a SQL UPDATE query for [pTableName] and returns the number of changes made.
+  /// Executes a SQL UPDATE query for [tableName] and returns the number of changes made.
   ///
   /// It first checks if the [STATE_COLUMN] is already set:
   /// * If not, copies all values to their respective offline/old column and sets the state to [ROW_STATE_UPDATED].
@@ -460,7 +460,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// |-----|-----------|
   /// | 5   | NULL      |
   ///
-  /// [pUpdate]: `{age = 10}`
+  /// [update]: `{age = 10}`
   /// * `UPDATE $OLD$_age = age`
   /// * `UPDATE age = 10`
   ///
@@ -472,12 +472,12 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   ///
   /// Future updates are just updating the column, no changes to state or offline/old columns.
   Future<int> update({
-    required String pTableName,
-    required Map<String, dynamic> pUpdate,
-    FilterCondition? pFilter,
+    required String tableName,
+    required Map<String, dynamic> update,
+    FilterCondition? filter,
   }) {
-    var where = _getWhere(pFilter);
-    var offlineTableName = formatOfflineTableName(pTableName);
+    var where = _getWhere(filter);
+    var offlineTableName = formatOfflineTableName(tableName);
 
     return db.transaction((txn) async {
       String? state = await _getState(offlineTableName, where: where, txn: txn);
@@ -497,7 +497,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
           [ROW_STATE_UPDATED, ...?where?[1]],
         );
       }
-      return txn.update(offlineTableName, pUpdate, where: where?[0], whereArgs: where?[1]);
+      return txn.update(offlineTableName, update, where: where?[0], whereArgs: where?[1]);
     });
   }
 
@@ -516,15 +516,15 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     await txn.rawUpdate('UPDATE "$tableName" SET $updateClause WHERE $where', args);
   }
 
-  /// Executes a SQL DELETE query for [pTableName] and returns the number of changes made.
+  /// Executes a SQL DELETE query for [tableName] and returns the number of changes made.
   ///
   /// It first checks if the [STATE_COLUMN] is:
   /// * [ROW_STATE_INSERTED], which then simply deletes the row.
   /// * [ROW_STATE_UPDATED], which rolls back all changes (copying back from offline/old columns)
   /// to preserve primary keys and sets the state to [ROW_STATE_DELETED].
-  Future<int> delete({required String pTableName, FilterCondition? pFilter}) {
-    var where = _getWhere(pFilter);
-    var offlineTableName = formatOfflineTableName(pTableName);
+  Future<int> delete({required String tableName, FilterCondition? filter}) {
+    var where = _getWhere(filter);
+    var offlineTableName = formatOfflineTableName(tableName);
 
     return db.transaction((txn) async {
       String? state = await _getState(offlineTableName, where: where, txn: txn);
@@ -534,7 +534,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
           return txn.delete(offlineTableName, where: where?[0], whereArgs: where?[1]);
         } else if (state == ROW_STATE_UPDATED) {
           // Reset column to preserve primary key columns and then set Deleted
-          List<String> tableColumns = await _getTableColumns(pTableName, txn: txn);
+          List<String> tableColumns = await _getTableColumns(tableName, txn: txn);
 
           Map<String, dynamic> updateColumns = {};
           // Constructs "age = $OLD$_age"
@@ -555,15 +555,15 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     });
   }
 
-  /// Builds a where clause using [pFilter] which excludes all "deleted" columns.
+  /// Builds a where clause using [filter] which excludes all "deleted" columns.
   ///
   /// Returns either a list in the format `{String, List}` or just `{String, null}`.
-  List<dynamic>? _getWhere(FilterCondition? pFilter) {
+  List<dynamic>? _getWhere(FilterCondition? filter) {
     String where = '"$STATE_COLUMN" IS NULL OR "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
-    if (pFilter != null) {
-      String? filterWhere = _buildWhereClause(pFilter);
+    if (filter != null) {
+      String? filterWhere = _buildWhereClause(filter);
       where = '($filterWhere) AND ($where)';
-      var whereArgs = pFilter.getValues().map((e) {
+      var whereArgs = filter.getValues().map((e) {
         if (e is String) {
           return e.replaceAll("*", "%").replaceAll("?", "_");
         }
@@ -648,39 +648,39 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Executes a List of sql statements in a batch operation (single atomic operation).
-  Future<List<Object?>> batch({required List<String> pSqlStatements}) {
+  Future<List<Object?>> batch({required List<String> sqlStatements}) {
     return db.transaction((txn) {
       var batch = txn.batch();
-      pSqlStatements.forEach((sql) {
+      sqlStatements.forEach((sql) {
         batch.execute(sql);
       });
       return batch.commit();
     });
   }
 
-  /// Executes a list of sql statements, calls [pProgressCallback] after each statement.
-  Future<dynamic> bulk({required Iterable<String> pSqlStatements, VoidCallback? pProgressCallback}) {
+  /// Executes a list of sql statements, calls [progressCallback] after each statement.
+  Future<dynamic> bulk({required Iterable<String> sqlStatements, VoidCallback? progressCallback}) {
     return db.transaction((txn) {
-      return Future.forEach(pSqlStatements, (String sql) async {
+      return Future.forEach(sqlStatements, (String sql) async {
         await txn.execute(sql);
-        if (pProgressCallback != null) {
-          pProgressCallback();
+        if (progressCallback != null) {
+          progressCallback();
         }
       });
     });
   }
 
-  /// Retrieves the state of a single row of [pTableName] using [where].
-  Future<String?> _getState(String pTableName, {List<dynamic>? where, Transaction? txn}) {
+  /// Retrieves the state of a single row of [tableName] using [where].
+  Future<String?> _getState(String tableName, {List<dynamic>? where, Transaction? txn}) {
     return (txn ?? db)
-        .query(pTableName, columns: [STATE_COLUMN], where: where?[0], whereArgs: where?[1])
+        .query(tableName, columns: [STATE_COLUMN], where: where?[0], whereArgs: where?[1])
         .then((value) => value.firstOrNull?[STATE_COLUMN] as String?);
   }
 
-  /// Retrieves all column names of [pTableName] via `PRAGMA_TABLE_INFO`.
-  Future<List<String>> _getTableColumns(String pTableName, {Transaction? txn}) {
+  /// Retrieves all column names of [tableName] via `PRAGMA_TABLE_INFO`.
+  Future<List<String>> _getTableColumns(String tableName, {Transaction? txn}) {
     return (txn ?? db).rawQuery(
-      "SELECT NAME FROM PRAGMA_TABLE_INFO('$pTableName') WHERE NAME NOT LIKE ? AND NAME NOT LIKE ?;",
+      "SELECT NAME FROM PRAGMA_TABLE_INFO('$tableName') WHERE NAME NOT LIKE ? AND NAME NOT LIKE ?;",
       [
         "$COLUMN_PREFIX%",
         STATE_COLUMN,

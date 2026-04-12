@@ -42,30 +42,30 @@ abstract class ILayout implements ICloneable {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Calculates the constraints and widths and heigths of the children components and those of the [pParent].
-  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren);
+  /// Calculates the constraints and widths and heigths of the children components and those of the [parent].
+  void calculateLayout(LayoutData parent, List<LayoutData> children);
 
   @override
   ILayout clone();
 
-  /// Returns the correct [ILayout] implementation depending on the data in [pLayout].
+  /// Returns the correct [ILayout] implementation depending on the data in [model].
   ///
   /// Current implementations are:
   ///
   /// [BorderLayout] , [FormLayout], [FlowLayout], [GridLayout]
-  static ILayout? getLayout(FlPanelModel pModel) {
-    if (pModel.layout != null) {
-      final list = pModel.layout!.split(",");
+  static ILayout? getLayout(FlPanelModel model) {
+    if (model.layout != null) {
+      final list = model.layout!.split(",");
 
       switch (list.first) {
         case "BorderLayout":
-          return BorderLayout(layoutString: pModel.layout!, scaling: pModel.scaling);
+          return BorderLayout(layoutString: model.layout!, scaling: model.scaling);
         case "FormLayout":
-          return FormLayout(layoutString: pModel.layout!, scaling: pModel.scaling, layoutData: pModel.layoutData!);
+          return FormLayout(layoutString: model.layout!, scaling: model.scaling, layoutData: model.layoutData!);
         case "GridLayout":
-          return GridLayout(layoutString: pModel.layout!, scaling: pModel.scaling);
+          return GridLayout(layoutString: model.layout!, scaling: model.scaling);
         case "FlowLayout":
-          return FlowLayout(layoutString: pModel.layout!, scaling: pModel.scaling);
+          return FlowLayout(layoutString: model.layout!, scaling: model.scaling);
         case "SplitLayout":
           return SplitLayout();
         default:
@@ -73,7 +73,7 @@ abstract class ILayout implements ICloneable {
       }
     }
 
-    return NullLayout(scaling: pModel.scaling);
+    return NullLayout(scaling: model.scaling);
   }
 
   /// Creates an EdgeInset from the margins.

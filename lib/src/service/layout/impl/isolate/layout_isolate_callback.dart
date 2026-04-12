@@ -64,13 +64,13 @@ void layoutCallback(Map<String, dynamic> message) {
     if (isolateMessage is ClearMessage) {
       layoutStorage.clear(isolateMessage.reason);
     } else if (isolateMessage is MarkAsDirtyMessage) {
-      response = await layoutStorage.markLayoutAsDirty(pComponentId: isolateMessage.id);
+      response = await layoutStorage.markLayoutAsDirty(componentId: isolateMessage.id);
     } else if (isolateMessage is ReportLayoutMessage) {
-      response = await layoutStorage.reportLayout(pLayoutData: isolateMessage.layoutData);
+      response = await layoutStorage.reportLayout(layoutData: isolateMessage.layoutData);
     } else if (isolateMessage is ReportPreferredSizeMessage) {
-      response = await layoutStorage.reportPreferredSize(pLayoutData: isolateMessage.layoutData);
+      response = await layoutStorage.reportPreferredSize(layoutData: isolateMessage.layoutData);
     } else if (isolateMessage is SetScreenSizeMessage) {
-      response = await layoutStorage.setScreenSize(pScreenComponentId: isolateMessage.componentId, pSize: isolateMessage.size);
+      response = await layoutStorage.setScreenSize(screenComponentId: isolateMessage.componentId, size: isolateMessage.size);
     } else if (isolateMessage is LayoutInProcessMessage) {
       response = await layoutStorage.layoutInProcess();
     } else if (isolateMessage is LayoutValidMessage) {
@@ -80,11 +80,11 @@ void layoutCallback(Map<String, dynamic> message) {
         response = await layoutStorage.isValid();
       }
     } else if (isolateMessage is RemoveLayoutMessage) {
-      response = await layoutStorage.removeLayout(pComponentId: isolateMessage.componentId);
+      response = await layoutStorage.removeLayout(componentId: isolateMessage.componentId);
     } else if (isolateMessage is DeleteScreenMessage) {
-      response = await layoutStorage.deleteScreen(pComponentId: isolateMessage.componentId);
+      response = await layoutStorage.deleteScreen(componentId: isolateMessage.componentId);
     }
 
-    isolateMessage.sendResponse(pResponse: response, pSendPort: isolateMessageWrapper.sendPort);
+    isolateMessage.sendResponse(response: response, sendPort: isolateMessageWrapper.sendPort);
   });
 }

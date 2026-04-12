@@ -25,9 +25,9 @@ class SortDefinition {
 
   SortDefinition({required this.columnName, this.mode = SortMode.ascending});
 
-  SortDefinition.fromJson(Map<String, dynamic> pJson)
-      : columnName = pJson[ApiObjectProperty.columnName],
-        mode = _parseSortMode(pJson[ApiObjectProperty.mode]);
+  SortDefinition.fromJson(Map<String, dynamic> json)
+      : columnName = json[ApiObjectProperty.columnName],
+        mode = _parseSortMode(json[ApiObjectProperty.mode]);
 
   Map<String, dynamic> toJson() => {
         ApiObjectProperty.columnName: columnName,
@@ -58,8 +58,8 @@ class SortDefinition {
     }
   }
 
-  static SortMode? _parseSortMode(String? pSortMode) {
-    switch (pSortMode) {
+  static SortMode? _parseSortMode(String? sortMode) {
+    switch (sortMode) {
       case null:
         return null;
       case "Descending":

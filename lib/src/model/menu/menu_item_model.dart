@@ -70,32 +70,32 @@ class MenuItemModel {
 
   static Widget getImage(
     BuildContext context, {
-    required MenuItemModel pMenuItemModel,
-    double? pSize,
-    Color? pColor,
+    required MenuItemModel menuItemModel,
+    double? size,
+    Color? color,
   }) {
     Widget? icon;
 
     // Custom menu item
-    if (pMenuItemModel.imageBuilder != null) {
-      icon = pMenuItemModel.imageBuilder!.call(context);
+    if (menuItemModel.imageBuilder != null) {
+      icon = menuItemModel.imageBuilder!.call(context);
     }
 
     if (icon == null) {
       // Server side images
-      if (pMenuItemModel.image != null) {
-        icon = IconUtil.fromString(pMenuItemModel.image)?.icon;
+      if (menuItemModel.image != null) {
+        icon = IconUtil.fromString(menuItemModel.image)?.icon;
       }
     }
 
     return Builder(builder: (context) {
       return CircleAvatar(
         backgroundColor: Colors.transparent,
-        foregroundColor: pColor,
+        foregroundColor: color,
         child: IconTheme(
           data: IconTheme.of(context).copyWith(
-            size: pSize,
-            color: pColor,
+            size: size,
+            color: color,
           ),
           child: icon ?? const FaIcon(FontAwesomeIcons.clone),
         ),

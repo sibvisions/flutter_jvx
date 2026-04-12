@@ -57,8 +57,8 @@ class LayoutPosition implements ICloneable {
   }) : creationDate = creationDate ?? DateTime.now();
 
   /// Clones [LayoutPosition] as a deep copy.
-  factory LayoutPosition.from(LayoutPosition pLayoutPosition) {
-    return pLayoutPosition.clone();
+  factory LayoutPosition.from(LayoutPosition layoutPosition) {
+    return layoutPosition.clone();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

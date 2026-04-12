@@ -89,18 +89,18 @@ abstract class ModelFactory {
   /// Returns a list of changed component json', or null if none are found.
   ///
   /// A component is only recognized as updated if the [ApiObjectProperty.className] is not supplied.
-  static List<dynamic>? retrieveChangedComponents(List<dynamic>? pChangedComponents) {
-    if (pChangedComponents != null) {
-      List<dynamic> changedComponents = [];
+  static List<dynamic>? retrieveChangedComponents(List<dynamic>? changedComponents) {
+    if (changedComponents != null) {
+      List<dynamic> changedComponents_ = [];
 
-      for (dynamic component in pChangedComponents) {
+      for (dynamic component in changedComponents) {
         if (component[ApiObjectProperty.className] == null) {
-          changedComponents.add(component);
+          changedComponents_.add(component);
         }
       }
 
-      if (changedComponents.isNotEmpty) {
-        return changedComponents;
+      if (changedComponents_.isNotEmpty) {
+        return changedComponents_;
       }
     }
     return null;
@@ -109,10 +109,10 @@ abstract class ModelFactory {
   /// Returns a list of new [FlComponentModel] models parsed from json, or null if none are found.
   ///
   /// Components with a [ApiObjectProperty.className] are considered new,
-  static List<FlComponentModel>? retrieveNewComponents(List<dynamic>? pChangedComponents) {
-    if (pChangedComponents != null) {
+  static List<FlComponentModel>? retrieveNewComponents(List<dynamic>? changedComponents) {
+    if (changedComponents != null) {
       List<FlComponentModel> models = [];
-      for (dynamic changedComponent in pChangedComponents) {
+      for (dynamic changedComponent in changedComponents) {
         String? className = changedComponent[ApiObjectProperty.className];
         String? classNameEventSourceRef = changedComponent[ApiObjectProperty.classNameEventSourceRef];
         if (className != null) {

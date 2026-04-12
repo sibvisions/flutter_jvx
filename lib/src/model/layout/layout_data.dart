@@ -140,8 +140,8 @@ class LayoutData implements ICloneable {
   }
 
   /// Clones [LayoutData] as a deep copy.
-  factory LayoutData.from(LayoutData pLayoutData) {
-    return pLayoutData.clone();
+  factory LayoutData.from(LayoutData layoutData) {
+    return layoutData.clone();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -197,24 +197,24 @@ class LayoutData implements ICloneable {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void applyFromOther(LayoutData pLayoutData) {
-    parentId = pLayoutData.parentId;
-    layout = pLayoutData.layout?.clone();
-    children = List.of(pLayoutData.children);
-    constraints = pLayoutData.constraints;
-    minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null;
-    maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null;
-    preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null;
-    calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null;
-    lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null;
-    insets = pLayoutData.insets != EdgeInsets.zero ? pLayoutData.insets.copyWith() : EdgeInsets.zero;
-    layoutState = pLayoutData.layoutState;
-    layoutPosition = pLayoutData.layoutPosition?.clone();
-    indexOf = pLayoutData.indexOf;
-    heightConstrains = Map.of(pLayoutData.heightConstrains);
-    widthConstrains = Map.of(pLayoutData.widthConstrains);
-    isFixedSize = pLayoutData.isFixedSize;
-    receivedDate = pLayoutData.receivedDate;
+  void applyFromOther(LayoutData layoutData) {
+    parentId = layoutData.parentId;
+    layout = layoutData.layout?.clone();
+    children = List.of(layoutData.children);
+    constraints = layoutData.constraints;
+    minSize = layoutData.minSize != null ? Size.copy(layoutData.minSize!) : null;
+    maxSize = layoutData.maxSize != null ? Size.copy(layoutData.maxSize!) : null;
+    preferredSize = layoutData.hasPreferredSize ? Size.copy(layoutData.preferredSize!) : null;
+    calculatedSize = layoutData.hasCalculatedSize ? Size.copy(layoutData.calculatedSize!) : null;
+    lastCalculatedSize = layoutData.hasLastCalculatedSize ? Size.copy(layoutData.lastCalculatedSize!) : null;
+    insets = layoutData.insets != EdgeInsets.zero ? layoutData.insets.copyWith() : EdgeInsets.zero;
+    layoutState = layoutData.layoutState;
+    layoutPosition = layoutData.layoutPosition?.clone();
+    indexOf = layoutData.indexOf;
+    heightConstrains = Map.of(layoutData.heightConstrains);
+    widthConstrains = Map.of(layoutData.widthConstrains);
+    isFixedSize = layoutData.isFixedSize;
+    receivedDate = layoutData.receivedDate;
   }
 
   /// If this component is a parent.

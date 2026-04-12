@@ -323,7 +323,7 @@ abstract class OfflineUtil {
 
           if (successfulSync) {
             failedStep = "Closing sync connection";
-            FlPanelModel? workScreenModel = IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkScreenClassName);
+            FlPanelModel? workScreenModel = IStorageService().getComponentByScreenClassName(screenClassName: offlineWorkScreenClassName);
 
             if (workScreenModel != null) {
               await servCmd.sendCommand(CloseScreenCommand(
@@ -442,8 +442,8 @@ abstract class OfflineUtil {
         await ProgressDialogService.hide();
 
         DialogResult? result = await servUi.openDialog(
-          pIsDismissible: false,
-          pBuilder: (context) =>
+          isDismissible: false,
+          builder: (context) =>
               AlertDialog(
                 title: Text(FlutterUI.translate("Sync error")),
                 content: Text(
@@ -624,7 +624,7 @@ abstract class OfflineUtil {
   }
 
   static Set<String> getActiveDataProviders(String offlineWorkScreen) {
-    // String dataBookPrefix = ConfigController.appName + "/" + pWorkScreen;
+    // String dataBookPrefix = ConfigController.appName + "/" + workScreen;
     return IDataService().getDataBooks().keys.toList().where((element) {
       var prefixes = element.split("/");
       if (prefixes.length >= 2) {
@@ -695,7 +695,7 @@ abstract class OfflineUtil {
 
         IStorageService servStorage = IStorageService();
 
-        var panelModel = servStorage.getComponentByName(pComponentName: screenName) as FlPanelModel;
+        var panelModel = servStorage.getComponentByName(componentName: screenName) as FlPanelModel;
 
         await servCfg.updateOfflineScreen(panelModel.screenClassName!);
 
@@ -793,7 +793,7 @@ abstract class OfflineUtil {
 
         // Triggers building menu
         servUi.setMenuModel(null);
-        servUi.routeToMenu(pReplaceRoute: true);
+        servUi.routeToMenu(replaceRoute: true);
       }
       catch (e, stack) {
         FlutterUI.logAPI.e("Error while going offline", error: e, stackTrace: stack);
@@ -815,8 +815,8 @@ abstract class OfflineUtil {
         await ProgressDialogService.hide();
 
         await IUiService().openDialog(
-          pIsDismissible: false,
-          pBuilder: (context) =>
+          isDismissible: false,
+          builder: (context) =>
               AlertDialog(
                 title: Text(FlutterUI.translate("Offline Init Error")),
                 content:

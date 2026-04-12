@@ -28,9 +28,9 @@ class LayoutCommandProcessor extends ICommandProcessor<LayoutCommand> {
   @override
   Future<List<BaseCommand>> processCommand(BaseCommand command, BaseCommand? origin) async {
     if (command is PreferredSizeCommand) {
-      return ILayoutService().reportPreferredSize(pLayoutData: command.layoutData);
+      return ILayoutService().reportPreferredSize(layoutData: command.layoutData);
     } else if (command is RegisterParentCommand) {
-      return ILayoutService().reportLayout(pLayoutData: command.layoutData);
+      return ILayoutService().reportLayout(layoutData: command.layoutData);
     } else if (command is LayoutModeCommand) {
       IUiService().updateLayoutMode(command.layoutMode ?? LayoutMode.Small);
     }

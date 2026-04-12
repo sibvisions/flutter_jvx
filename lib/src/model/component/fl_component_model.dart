@@ -263,239 +263,239 @@ abstract class FlComponentModel {
   /// Applies property values from the json sent by the mobile server.
   /// Only applies properties if they exist in the json,
   /// otherwise uses their initiated default values.
-  void applyFromJson(Map<String, dynamic> pJson) {
-    jsonBase = pJson;
+  void applyFromJson(Map<String, dynamic> newJson) {
+    jsonBase = newJson;
 
     //merge to get all properties
-    jsonMerge.addAll(pJson);
+    jsonMerge.addAll(newJson);
 
     id = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.id,
-      pDefault: defaultModel.id,
-      pCurrent: id,
+      json: newJson,
+      key: ApiObjectProperty.id,
+      defaultValue: defaultModel.id,
+      currentValue: id,
     );
     name = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.name,
-      pDefault: defaultModel.name,
-      pCurrent: name,
+      json: newJson,
+      key: ApiObjectProperty.name,
+      defaultValue: defaultModel.name,
+      currentValue: name,
     );
     // Styles have to be read as one of the first properties, as styles can influence how some properties are read/converted
     // E.g. Scaling can be disabled by a style, which influences how the size is read
     styles = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.style,
-      pDefault: defaultModel.styles,
-      pConversion: _parseStyle,
-      pCurrent: styles,
+      json: newJson,
+      key: ApiObjectProperty.style,
+      defaultValue: defaultModel.styles,
+      conversion: _parseStyle,
+      currentValue: styles,
     );
     className = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.className,
-      pDefault: defaultModel.className,
-      pCurrent: className,
+      json: newJson,
+      key: ApiObjectProperty.className,
+      defaultValue: defaultModel.className,
+      currentValue: className,
     );
     parent = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.parent,
-      pDefault: defaultModel.parent,
-      pCurrent: parent,
+      json: newJson,
+      key: ApiObjectProperty.parent,
+      defaultValue: defaultModel.parent,
+      currentValue: parent,
     );
     isRemoved = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.remove,
-      pDefault: defaultModel.isRemoved,
-      pCurrent: isRemoved,
-      pConversion: (e) => ParseUtil.parseBool(e)!,
+      json: newJson,
+      key: ApiObjectProperty.remove,
+      defaultValue: defaultModel.isRemoved,
+      currentValue: isRemoved,
+      conversion: (e) => ParseUtil.parseBool(e)!,
     );
     isDestroyed = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.destroy,
-      pDefault: defaultModel.isDestroyed,
-      pCurrent: isDestroyed,
-      pConversion: (e) => ParseUtil.parseBool(e)!,
+      json: newJson,
+      key: ApiObjectProperty.destroy,
+      defaultValue: defaultModel.isDestroyed,
+      currentValue: isDestroyed,
+      conversion: (e) => ParseUtil.parseBool(e)!,
     );
     isVisible = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.visible,
-      pDefault: defaultModel.isVisible,
-      pCurrent: isVisible,
+      json: newJson,
+      key: ApiObjectProperty.visible,
+      defaultValue: defaultModel.isVisible,
+      currentValue: isVisible,
     );
     isEnabled = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.enabled,
-      pDefault: defaultModel.isEnabled,
-      pCurrent: isEnabled,
+      json: newJson,
+      key: ApiObjectProperty.enabled,
+      defaultValue: defaultModel.isEnabled,
+      currentValue: isEnabled,
     );
     isFocusable = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.focusable,
-      pDefault: defaultModel.isFocusable,
-      pCurrent: isFocusable,
+      json: newJson,
+      key: ApiObjectProperty.focusable,
+      defaultValue: defaultModel.isFocusable,
+      currentValue: isFocusable,
     );
     constraints = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.constraints,
-      pDefault: defaultModel.constraints,
-      pCurrent: constraints,
+      json: newJson,
+      key: ApiObjectProperty.constraints,
+      defaultValue: defaultModel.constraints,
+      currentValue: constraints,
     );
     indexOf = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.indexOf,
-      pDefault: defaultModel.indexOf,
-      pCurrent: indexOf,
+      json: newJson,
+      key: ApiObjectProperty.indexOf,
+      defaultValue: defaultModel.indexOf,
+      currentValue: indexOf,
     );
     tabIndex = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.tabIndex,
-      pDefault: defaultModel.tabIndex,
-      pCurrent: tabIndex,
+      json: newJson,
+      key: ApiObjectProperty.tabIndex,
+      defaultValue: defaultModel.tabIndex,
+      currentValue: tabIndex,
     );
     preferredSize = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.preferredSize,
-      pDefault: defaultModel._preferredSize,
-      pCurrent: _preferredSize,
-      pConversion: _parseSize,
+      json: newJson,
+      key: ApiObjectProperty.preferredSize,
+      defaultValue: defaultModel._preferredSize,
+      currentValue: _preferredSize,
+      conversion: _parseSize,
     );
     minimumSize = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.minimumSize,
-      pDefault: defaultModel._minimumSize,
-      pCurrent: _minimumSize,
-      pConversion: _parseSize,
+      json: newJson,
+      key: ApiObjectProperty.minimumSize,
+      defaultValue: defaultModel._minimumSize,
+      currentValue: _minimumSize,
+      conversion: _parseSize,
     );
     maximumSize = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.maximumSize,
-      pDefault: defaultModel.maximumSize,
-      pCurrent: maximumSize,
-      pConversion: _parseSize,
+      json: newJson,
+      key: ApiObjectProperty.maximumSize,
+      defaultValue: defaultModel.maximumSize,
+      currentValue: maximumSize,
+      conversion: _parseSize,
     );
     bounds = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.bounds,
-      pDefault: defaultModel.bounds,
-      pCurrent: bounds,
-      pConversion: ParseUtil.parseBounds,
+      json: newJson,
+      key: ApiObjectProperty.bounds,
+      defaultValue: defaultModel.bounds,
+      currentValue: bounds,
+      conversion: ParseUtil.parseBounds,
     );
     background = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.background,
-      pDefault: defaultModel.background,
-      pCurrent: background,
-      pConversion: ParseUtil.parseBackgroundColor,
+      json: newJson,
+      key: ApiObjectProperty.background,
+      defaultValue: defaultModel.background,
+      currentValue: background,
+      conversion: ParseUtil.parseBackgroundColor,
     );
     foreground = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.foreground,
-      pDefault: defaultModel.foreground,
-      pCurrent: foreground,
-      pConversion: ParseUtil.parseColor,
+      json: newJson,
+      key: ApiObjectProperty.foreground,
+      defaultValue: defaultModel.foreground,
+      currentValue: foreground,
+      conversion: ParseUtil.parseColor,
     );
     verticalAlignment = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.verticalAlignment,
-      pDefault: defaultModel.verticalAlignment,
-      pCurrent: verticalAlignment,
-      pCondition: (pValue) => pValue < VerticalAlignment.values.length && pValue >= 0,
-      pConversion: VerticalAlignmentE.fromDynamic,
+      json: newJson,
+      key: ApiObjectProperty.verticalAlignment,
+      defaultValue: defaultModel.verticalAlignment,
+      currentValue: verticalAlignment,
+      condition: (value) => value < VerticalAlignment.values.length && value >= 0,
+      conversion: VerticalAlignmentE.fromDynamic,
     );
     horizontalAlignment = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.horizontalAlignment,
-      pDefault: defaultModel.horizontalAlignment,
-      pCurrent: horizontalAlignment,
-      pCondition: (pValue) => pValue < HorizontalAlignment.values.length && pValue >= 0,
-      pConversion: HorizontalAlignmentE.fromDynamic,
+      json: newJson,
+      key: ApiObjectProperty.horizontalAlignment,
+      defaultValue: defaultModel.horizontalAlignment,
+      currentValue: horizontalAlignment,
+      condition: (value) => value < HorizontalAlignment.values.length && value >= 0,
+      conversion: HorizontalAlignmentE.fromDynamic,
     );
     toolTipText = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.toolTipText,
-      pDefault: defaultModel.toolTipText,
-      pCurrent: toolTipText,
+      json: newJson,
+      key: ApiObjectProperty.toolTipText,
+      defaultValue: defaultModel.toolTipText,
+      currentValue: toolTipText,
     );
     classNameEventSourceRef = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.classNameEventSourceRef,
-      pDefault: defaultModel.classNameEventSourceRef,
-      pCurrent: classNameEventSourceRef,
+      json: newJson,
+      key: ApiObjectProperty.classNameEventSourceRef,
+      defaultValue: defaultModel.classNameEventSourceRef,
+      currentValue: classNameEventSourceRef,
     );
     eventFocusGained = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.eventFocusGained,
-      pDefault: defaultModel.eventFocusGained,
-      pConversion: (e) => ParseUtil.parseBool(e)!,
-      pCurrent: eventFocusGained,
+      json: newJson,
+      key: ApiObjectProperty.eventFocusGained,
+      defaultValue: defaultModel.eventFocusGained,
+      conversion: (e) => ParseUtil.parseBool(e)!,
+      currentValue: eventFocusGained,
     );
     eventFocusLost = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.eventFocusLost,
-      pDefault: defaultModel.eventFocusLost,
-      pConversion: (e) => ParseUtil.parseBool(e)!,
-      pCurrent: eventFocusLost,
+      json: newJson,
+      key: ApiObjectProperty.eventFocusLost,
+      defaultValue: defaultModel.eventFocusLost,
+      conversion: (e) => ParseUtil.parseBool(e)!,
+      currentValue: eventFocusLost,
     );
     eventMousePressed = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.eventMousePressed,
-      pDefault: defaultModel.eventMousePressed,
-      pConversion: (e) => ParseUtil.parseBool(e)!,
-      pCurrent: eventMousePressed,
+      json: newJson,
+      key: ApiObjectProperty.eventMousePressed,
+      defaultValue: defaultModel.eventMousePressed,
+      conversion: (e) => ParseUtil.parseBool(e)!,
+      currentValue: eventMousePressed,
     );
     eventMouseReleased = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.eventMouseReleased,
-      pDefault: defaultModel.eventMouseReleased,
-      pConversion: (e) => ParseUtil.parseBool(e)!,
-      pCurrent: eventMouseReleased,
+      json: newJson,
+      key: ApiObjectProperty.eventMouseReleased,
+      defaultValue: defaultModel.eventMouseReleased,
+      conversion: (e) => ParseUtil.parseBool(e)!,
+      currentValue: eventMouseReleased,
     );
     eventMouseClicked = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.eventMouseClicked,
-      pDefault: defaultModel.eventMouseClicked,
-      pConversion: (e) => ParseUtil.parseBool(e)!,
-      pCurrent: eventMouseClicked,
+      json: newJson,
+      key: ApiObjectProperty.eventMouseClicked,
+      defaultValue: defaultModel.eventMouseClicked,
+      conversion: (e) => ParseUtil.parseBool(e)!,
+      currentValue: eventMouseClicked,
     );
     font = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.font,
-      pDefault: defaultModel.font,
-      pConversion: (value) => JVxFont.fromString(cast<String?>(value)),
-      pCurrent: font,
+      json: newJson,
+      key: ApiObjectProperty.font,
+      defaultValue: defaultModel.font,
+      conversion: (value) => JVxFont.fromString(cast<String?>(value)),
+      currentValue: font,
     );
     ariaLabel = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.ariaLabel,
-      pDefault: defaultModel.ariaLabel,
-      pCurrent: ariaLabel,
+      json: newJson,
+      key: ApiObjectProperty.ariaLabel,
+      defaultValue: defaultModel.ariaLabel,
+      currentValue: ariaLabel,
     );
   }
 
   /// If this component is used in a cell editor, some values are overriden.
-  void applyCellEditorOverrides(Map<String, dynamic> pJson) {
+  void applyCellEditorOverrides(Map<String, dynamic> json) {
     Map<String, dynamic> overrideJson = {};
 
-    if (pJson.containsKey(ApiObjectProperty.cellEditorHorizontalAlignment)) {
-      overrideJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.cellEditorHorizontalAlignment];
+    if (json.containsKey(ApiObjectProperty.cellEditorHorizontalAlignment)) {
+      overrideJson[ApiObjectProperty.horizontalAlignment] = json[ApiObjectProperty.cellEditorHorizontalAlignment];
     }
-    if (pJson.containsKey(ApiObjectProperty.cellEditorVerticalAlignment)) {
-      overrideJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.cellEditorVerticalAlignment];
+    if (json.containsKey(ApiObjectProperty.cellEditorVerticalAlignment)) {
+      overrideJson[ApiObjectProperty.verticalAlignment] = json[ApiObjectProperty.cellEditorVerticalAlignment];
     }
-    if (pJson.containsKey(ApiObjectProperty.cellEditorBackground)) {
-      overrideJson[ApiObjectProperty.background] = pJson[ApiObjectProperty.cellEditorBackground];
+    if (json.containsKey(ApiObjectProperty.cellEditorBackground)) {
+      overrideJson[ApiObjectProperty.background] = json[ApiObjectProperty.cellEditorBackground];
     }
-    if (pJson.containsKey(ApiObjectProperty.cellEditorForeground)) {
-      overrideJson[ApiObjectProperty.foreground] = pJson[ApiObjectProperty.cellEditorForeground];
+    if (json.containsKey(ApiObjectProperty.cellEditorForeground)) {
+      overrideJson[ApiObjectProperty.foreground] = json[ApiObjectProperty.cellEditorForeground];
     }
-    if (pJson.containsKey(ApiObjectProperty.cellEditorFont)) {
-      overrideJson[ApiObjectProperty.font] = pJson[ApiObjectProperty.cellEditorFont];
+    if (json.containsKey(ApiObjectProperty.cellEditorFont)) {
+      overrideJson[ApiObjectProperty.font] = json[ApiObjectProperty.cellEditorFont];
     }
-    if (pJson.containsKey(ApiObjectProperty.cellEditorStyle)) {
-      overrideJson[ApiObjectProperty.style] = pJson[ApiObjectProperty.cellEditorStyle];
+    if (json.containsKey(ApiObjectProperty.cellEditorStyle)) {
+      overrideJson[ApiObjectProperty.style] = json[ApiObjectProperty.cellEditorStyle];
     }
-    if (pJson.containsKey(ApiObjectProperty.cellEditorEditable)) {
-      overrideJson[ApiObjectProperty.editable] = pJson[ApiObjectProperty.cellEditorEditable];
+    if (json.containsKey(ApiObjectProperty.cellEditorEditable)) {
+      overrideJson[ApiObjectProperty.editable] = json[ApiObjectProperty.cellEditorEditable];
     }
 
     if (overrideJson.isNotEmpty) {
@@ -504,46 +504,49 @@ abstract class FlComponentModel {
   }
 
   /// Returns the [TextStyle] of the component.
-  TextStyle createTextStyle(
-      {Color? pForeground, double? pFontSize, FontStyle? pFontStyle, FontWeight? pFontWeight, String? pFontFamily}) {
+  TextStyle createTextStyle({
+    Color? foreground,
+    double? fontSize,
+    FontStyle? fontStyle,
+    FontWeight? fontWeight,
+    String? fontFamily
+  }) {
     return TextStyle(
-      color: pForeground ?? (isEnabled ? foreground : JVxColors.toggleColor(JVxColors.COMPONENT_DISABLED)),
-      fontSize: pFontSize ?? font?.fontSize.toDouble(),
-      fontStyle: pFontStyle ?? (font?.isItalic == true ? FontStyle.italic : FontStyle.normal),
-      fontWeight: pFontWeight ?? (font?.isBold == true ? FontWeight.bold : FontWeight.normal),
-      fontFamily: pFontFamily ?? font?.fontName,
+      color: foreground ?? (isEnabled ? foreground : JVxColors.toggleColor(JVxColors.COMPONENT_DISABLED)),
+      fontSize: fontSize ?? font?.fontSize.toDouble(),
+      fontStyle: fontStyle ?? (font?.isItalic == true ? FontStyle.italic : FontStyle.normal),
+      fontWeight: fontWeight ?? (font?.isBold == true ? FontWeight.bold : FontWeight.normal),
+      fontFamily: fontFamily ?? font?.fontName,
       overflow: TextOverflow.ellipsis,
     );
   }
 
   T getPropertyValue<T>({
-    required Map<String, dynamic> pJson,
-    required String pKey,
-    required T pDefault,
-    required T pCurrent,
-    T Function(dynamic)? pConversion,
-    bool Function(dynamic)? pCondition,
+    required Map<String, dynamic> json,
+    required String key,
+    required T defaultValue,
+    required T currentValue,
+    T Function(dynamic)? conversion,
+    bool Function(dynamic)? condition,
   }) {
     return ParseUtil.getPropertyValue(
-      json: pJson,
-      key: pKey,
-      defaultValue: pDefault,
-      currentValue: pCurrent,
-      valueConversion: pConversion,
-      condition: pCondition,
+      json: json,
+      key: key,
+      defaultValue: defaultValue,
+      currentValue: currentValue,
+      valueConversion: conversion,
+      condition: condition,
     );
   }
 
-  Set<String> _parseStyle(dynamic pStyle) {
-    String sStyle = (pStyle as String);
-
-    return sStyle.split(",").toSet();
+  Set<String> _parseStyle(dynamic style) {
+    return (style as String).split(",").toSet();
   }
 
   /// Parses a [Size] object from a string, will only parse correctly if provided string was formatted :
   /// "x,y" - e.g. "200,400" -> Size(200,400), if provided String was null, returned size will also be null
-  Size _parseSize(dynamic pSize) {
-    List<String> split = pSize.split(",");
+  Size _parseSize(dynamic size) {
+    List<String> split = size.split(",");
 
     double width = double.parse(split[0]);
     double height = double.parse(split[1]);
@@ -562,5 +565,5 @@ abstract class FlComponentModel {
   double get scaling => scalingEnabled ? IConfigService().getScaling() : 1.0;
 
   /// If the component exists in the storage service.
-  bool get exists => IStorageService().getComponentModel(pComponentId: id) != null;
+  bool get exists => IStorageService().getComponentModel(componentId: id) != null;
 }

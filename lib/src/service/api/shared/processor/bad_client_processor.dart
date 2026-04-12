@@ -28,8 +28,8 @@ class BadClientProcessor implements IResponseProcessor<BadClientResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(BadClientResponse pResponse, ApiRequest? pRequest) {
-    String? info = pResponse.info;
+  List<BaseCommand> processResponse(BadClientResponse response, ApiRequest? request) {
+    String? info = response.info;
 
     if (FlutterUI.log.cl(Lvl.e)) {
       FlutterUI.log.e("Server Version mismatch: $info");

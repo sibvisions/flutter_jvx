@@ -28,8 +28,8 @@ class ShowDocumentProcessor implements IResponseProcessor<ShowDocumentResponse> 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(ShowDocumentResponse pResponse, ApiRequest? pRequest) {
-    String url = pResponse.url;
+  List<BaseCommand> processResponse(ShowDocumentResponse response, ApiRequest? request) {
+    String url = response.url;
 
     if (url.isNotEmpty) {
       List<String> splitUrl;

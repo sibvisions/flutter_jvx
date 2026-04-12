@@ -160,12 +160,12 @@ abstract class Menu extends StatelessWidget {
     CustomScreen? customScreen = IUiService().getCustomScreen(item.screenLongName);
 
     if (customScreen != null && !customScreen.sendOpenScreenRequests) {
-      IUiService().routeToWorkScreen(pScreenName: item.navigationName);
+      IUiService().routeToWorkScreen(screenName: item.navigationName);
 
       return;
     }
 
-    FlPanelModel? model = IStorageService().getComponentByScreenClassName(pScreenClassName: item.screenLongName);
+    FlPanelModel? model = IStorageService().getComponentByScreenClassName(screenClassName: item.screenLongName);
 
     if (model != null) {
       ICommandService()
@@ -174,7 +174,7 @@ abstract class Menu extends StatelessWidget {
       )
           .then((success) {
         if (success) {
-          IUiService().routeToWorkScreen(pScreenName: item.navigationName, pSecure: model.secure);
+          IUiService().routeToWorkScreen(screenName: item.navigationName, secure: model.secure);
         }
       });
     } else {

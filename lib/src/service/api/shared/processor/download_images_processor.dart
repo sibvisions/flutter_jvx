@@ -26,8 +26,8 @@ class DownloadImagesProcessor extends IResponseProcessor<DownloadImagesResponse>
   ZipDecoder zipDecoder = ZipDecoder();
 
   @override
-  List<BaseCommand> processResponse(DownloadImagesResponse pResponse, ApiRequest? pRequest) {
-    Archive archive = zipDecoder.decodeBytes(pResponse.responseBody);
+  List<BaseCommand> processResponse(DownloadImagesResponse response, ApiRequest? request) {
+    Archive archive = zipDecoder.decodeBytes(response.responseBody);
 
     return [
       SaveApplicationImagesCommand(

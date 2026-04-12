@@ -135,7 +135,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
         && model.yColumnNames.isNotEmpty
         && model.xColumnName.isNotEmpty) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
           dataProvider: model.dataProvider,
@@ -148,18 +148,18 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
   }
 
   void _unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    IUiService().disposeDataSubscription(subscriber: this, dataProvider: model.dataProvider);
   }
 
-  void receiveChartData(DataChunk pChunkData) {
-    dataChunk = pChunkData;
+  void receiveChartData(DataChunk newChunkData) {
+    dataChunk = newChunkData;
 
     computeData();
     setState(() {});
   }
 
-  void receiveSelectedChartData(DataRecord? pDataRecord) {
-    dataRecord = pDataRecord;
+  void receiveSelectedChartData(DataRecord? newDataRecord) {
+    dataRecord = newDataRecord;
 
     if (model.isPieChart() && model.yColumnLabels.length > 1) {
       computeData();
@@ -167,8 +167,8 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     }
   }
 
-  void receiveMetaData(DalMetaData pMetaData) {
-    metaData = pMetaData;
+  void receiveMetaData(DalMetaData newMetaData) {
+    metaData = newMetaData;
 
     computeData();
     setState(() {});
@@ -382,34 +382,34 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     }
   }
 
-  void onIndexSelected(int? pIndex, String? pColumn) {
+  void onIndexSelected(int? index, String? column) {
     if (dataChunk == null || metaData == null) {
       return;
     }
 
-    if (lastIndex == pIndex && lastColumn == pColumn) {
+    if (lastIndex == index && lastColumn == column) {
       return;
     }
 
-    lastIndex = pIndex;
-    lastColumn = pColumn;
+    lastIndex = index;
+    lastColumn = column;
 
-    IUiService().saveAllEditors(pId: model.id, pReason: "Chart [${model.id} record selected").then((success) {
-      if (!success) {
-        return false;
+    IUiService().saveAllEditors(id: model.id, reason: "Chart [${model.id} record selected").then((result) {
+      if (!result.success) {
+        return result;
       }
 
-      ICommandService().sendCommands(createSelectRecordCommands(pIndex, pColumn));
+      return ICommandService().sendCommands(createSelectRecordCommands(index, column));
     });
   }
 
-  List<BaseCommand> createSelectRecordCommands(int? pIndex, String? pColumn) {
+  List<BaseCommand> createSelectRecordCommands(int? index, String? column) {
     List<BaseCommand> commands = [];
 
     var oldFocus = IUiService().getFocus();
     commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Selected record in chart"));
 
-    if (pIndex != null) {
+    if (index != null) {
       commands.add(
         SelectRecordCommand.select(
           reason: "Selected record in chart",
@@ -418,11 +418,11 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
             columnNames: metaData!.primaryKeyColumns,
             values: metaData!.primaryKeyColumns
                 .map((columnName) => dataChunk!
-                    .data[pIndex]![dataChunk!.columnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
+                    .data[index]![dataChunk!.columnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
                 .toList(),
           ),
-          rowNumber: pIndex,
-          selectedColumn: pColumn,
+          rowNumber: index,
+          selectedColumn: column,
         ),
       );
     } else {

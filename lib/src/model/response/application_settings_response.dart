@@ -147,15 +147,15 @@ class ApplicationColors {
         readOnlyBackground = _handleJsonColor(json, ApiObjectProperty.readOnlyBackground, isDark),
         invalidEditorBackground = _handleJsonColor(json, ApiObjectProperty.invalidEditorBackground, isDark);
 
-  static Color? _handleJsonColor(Map<String, dynamic> json, String pPropertyName, bool pIsDark) {
-    String propertyName = pPropertyName;
-    String darkPropertyName = "${propertyName}_$DARK_STRING";
+  static Color? _handleJsonColor(Map<String, dynamic> json, String propertyName, bool isDark) {
+    String propertyName_ = propertyName;
+    String darkPropertyName = "${propertyName_}_$DARK_STRING";
 
-    if (pIsDark) {
+    if (isDark) {
       if (json.keys.contains(darkPropertyName)) {
         return ParseUtil.parseColor(json[darkPropertyName]);
       } else {
-        Color? lightColor = ParseUtil.parseColor(json[pPropertyName]);
+        Color? lightColor = ParseUtil.parseColor(json[propertyName]);
         Color? darkColor;
         if (lightColor != null) {
           HSVColor hsvColor = HSVColor.fromColor(lightColor);
@@ -166,7 +166,7 @@ class ApplicationColors {
         return darkColor;
       }
     } else {
-      return ParseUtil.parseColor(json[pPropertyName]);
+      return ParseUtil.parseColor(json[propertyName]);
     }
   }
 

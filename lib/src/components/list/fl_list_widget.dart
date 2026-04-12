@@ -45,7 +45,7 @@ import 'localwidgets/list_image.dart';
 import 'localwidgets/list_space.dart';
 
 typedef ListTapCallback = void Function(int rowIndex);
-typedef ListLongPressCallback = void Function(int rowIndex, Offset pGlobalPosition);
+typedef ListLongPressCallback = void Function(int rowIndex, Offset globalPosition);
 typedef ListSlideActionFactory = List<SlidableAction> Function(BuildContext context, int row);
 typedef ListScrollCallback = void Function(ScrollNotification scrollNotification);
 typedef ListScrollEndCallback = bool Function();

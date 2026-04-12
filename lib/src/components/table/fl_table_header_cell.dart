@@ -175,7 +175,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
         }
       }
 
-      style = model.createTextStyle(pFontWeight: FontWeight.bold);
+      style = model.createTextStyle(fontWeight: FontWeight.bold);
       Text text = Text(
         cellText,
         style: style,

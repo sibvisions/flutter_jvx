@@ -53,42 +53,42 @@ abstract class IStorageService implements Service {
 
   /// Returns List of all [FlComponentModel] below it.
   List<FlComponentModel> getAllComponentsBelow({
-    required FlComponentModel pParentModel,
-    bool pIgnoreVisibility = false,
-    bool pIncludeRemoved = false,
-    bool pRecursively = true,
+    required FlComponentModel parentModel,
+    bool ignoreVisibility = false,
+    bool includeRemoved = false,
+    bool recursively = true,
   });
 
   /// Returns List of all [FlComponentModel] below it.
   List<FlComponentModel> getAllComponentsBelowById({
-    required String pParentId,
-    bool pIgnoreVisibility = false,
-    bool pIncludeRemoved = false,
-    bool pRecursively = true,
-    bool pIncludeItself = false,
+    required String parentId,
+    bool ignoreVisibility = false,
+    bool includeRemoved = false,
+    bool recursively = true,
+    bool includeItself = false,
   });
 
   /// Returns List of all [FlComponentModel] below it.
   List<FlComponentModel> getAllComponentsBelowByName({
     required String name,
-    bool pIgnoreVisibility = false,
-    bool pIncludeRemoved = false,
-    bool pRecursively = true,
-    bool pIncludeItself = false,
+    bool ignoreVisibility = false,
+    bool includeRemoved = false,
+    bool recursively = true,
+    bool includeItself = false,
   });
 
   /// Returns component model with matching id
-  FlComponentModel? getComponentModel({required String pComponentId});
+  FlComponentModel? getComponentModel({required String componentId});
 
   /// Returns component model with matching name
-  FlComponentModel? getComponentByName({required String pComponentName});
+  FlComponentModel? getComponentByName({required String componentName});
 
   /// Returns panel model with matching [FlPanelModel.screenClassName].
   /// As a long name contains the class name, it is also possible to use it.
-  FlPanelModel? getComponentByScreenClassName({required String pScreenClassName});
+  FlPanelModel? getComponentByScreenClassName({required String screenClassName});
 
   /// Returns panel model with matching [FlPanelModel.screenNavigationName].
-  FlPanelModel? getComponentByNavigationName(String pNavigationName);
+  FlPanelModel? getComponentByNavigationName(String navigationName);
 
   /// Returns all panel models with a [FlPanelModel.screenNavigationName]
   List<FlPanelModel> getScreens();
@@ -100,7 +100,7 @@ abstract class IStorageService implements Service {
   JVxNotifier<FlComponentModel?> getContentPanelNotifier();
 
   /// Returns if the component model is currently shown in the ui
-  bool isVisibleInUI(String pComponentId);
+  bool isVisibleInUI(String componentId);
 
   String convertLongScreenToClassName(String screenLongName);
 

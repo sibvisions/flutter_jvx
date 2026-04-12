@@ -68,10 +68,10 @@ class StorageService implements IStorageService {
     List<FlComponentModel> desktopComponentList = reason.isFull()
         ? [] // Don't keep desktop panel on full clear.
         : getAllComponentsBelowByWhere(
-            pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
-            pIncludeItself: true,
-            pIgnoreVisibility: true,
-            pIncludeRemoved: true,
+            where: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
+            includeItself: true,
+            ignoreVisibility: true,
+            includeRemoved: true,
           );
 
     _componentMap.clear();
@@ -98,7 +98,7 @@ class StorageService implements IStorageService {
     }
 
     // If we don't have the screen yet and it is an update, ignore it.
-    if (isUpdate && getComponentByName(pComponentName: screenName) == null) {
+    if (isUpdate && getComponentByName(componentName: screenName) == null) {
       return [];
     }
 
@@ -233,10 +233,10 @@ class StorageService implements IStorageService {
 
     // Enable to print "tree" of screen
     // getAllComponentsBelowByWhere(
-    //   pWhere: (element) => element.name == screenName,
-    //   pRecursively: true,
-    //   pIncludeItself: true,
-    //   pPrint: true,
+    //   where: (element) => element.name == screenName,
+    //   recursively: true,
+    //   includeItself: true,
+    //   print: true,
     // );
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
@@ -262,10 +262,10 @@ class StorageService implements IStorageService {
 
     for (var screenModel in list) {
       List<FlComponentModel> models = getAllComponentsBelow(
-        pParentModel: screenModel,
-        pIgnoreVisibility: true,
-        pIncludeRemoved: true,
-        pDepth: 0,
+        parentModel: screenModel,
+        ignoreVisibility: true,
+        includeRemoved: true,
+        depth: 0,
       );
       models.forEach((element) {
         _componentMap.remove(element.id);
@@ -282,47 +282,47 @@ class StorageService implements IStorageService {
 
   @override
   List<FlComponentModel> getAllComponentsBelow({
-    required FlComponentModel pParentModel,
-    bool pIgnoreVisibility = false,
-    bool pIncludeRemoved = false,
-    bool pRecursively = true,
-    bool pIncludeItself = false,
-    bool pPrint = false,
-    int pDepth = 0,
+    required FlComponentModel parentModel,
+    bool ignoreVisibility = false,
+    bool includeRemoved = false,
+    bool recursively = true,
+    bool includeItself = false,
+    bool print = false,
+    int depth = 0,
   }) {
     List<FlComponentModel> allDescendants = [];
-    Set<String> directChildren = _childrenTree[pParentModel.id] ?? {};
+    Set<String> directChildren = _childrenTree[parentModel.id] ?? {};
 
-    if (pIncludeItself) {
-      if (kDebugMode && pPrint) {
-        debugPrint(List.filled(pDepth, "-").join() + pParentModel.id);
+    if (includeItself) {
+      if (kDebugMode && print) {
+        debugPrint(List.filled(depth, "-").join() + parentModel.id);
       }
-      allDescendants.add(pParentModel);
+      allDescendants.add(parentModel);
     }
 
     for (String childId in directChildren) {
       FlComponentModel? childModel = _componentMap[childId];
-      if (childModel != null && !pIncludeRemoved && childModel.isRemoved) {
+      if (childModel != null && !includeRemoved && childModel.isRemoved) {
         childModel = null;
       }
       // Tab-set panel set non selected sub-panels as invisible.
       // We always render them though, even the invisible panels,
       // therefore tab-set children are always visible for us.
       if (childModel != null &&
-          (pIgnoreVisibility || childModel.isVisible || pParentModel.className == FlContainerClassname.TABSET_PANEL)) {
+          (ignoreVisibility || childModel.isVisible || parentModel.className == FlContainerClassname.TABSET_PANEL)) {
         allDescendants.add(childModel);
-        if (kDebugMode && pPrint) {
-          debugPrint(List.filled(pDepth + 1, "-").join() + childModel.id);
+        if (kDebugMode && print) {
+          debugPrint(List.filled(depth + 1, "-").join() + childModel.id);
         }
-        if (pRecursively) {
+        if (recursively) {
           allDescendants.addAll(
             getAllComponentsBelow(
-              pParentModel: childModel,
-              pIgnoreVisibility: pIgnoreVisibility,
-              pIncludeRemoved: pIncludeRemoved,
-              pRecursively: pRecursively,
-              pPrint: pPrint,
-              pDepth: pDepth + 1,
+              parentModel: childModel,
+              ignoreVisibility: ignoreVisibility,
+              includeRemoved: includeRemoved,
+              recursively: recursively,
+              print: print,
+              depth: depth + 1,
             ),
           );
         }
@@ -335,63 +335,63 @@ class StorageService implements IStorageService {
   @override
   List<FlComponentModel> getAllComponentsBelowByName({
     required String name,
-    bool pIgnoreVisibility = false,
-    bool pIncludeRemoved = false,
-    bool pRecursively = true,
-    bool pIncludeItself = false,
+    bool ignoreVisibility = false,
+    bool includeRemoved = false,
+    bool recursively = true,
+    bool includeItself = false,
   }) {
     return getAllComponentsBelowByWhere(
-      pWhere: (element) => element.name == name,
-      pIgnoreVisibility: pIgnoreVisibility,
-      pIncludeRemoved: pIncludeRemoved,
-      pRecursively: pRecursively,
-      pIncludeItself: pIncludeItself,
+      where: (element) => element.name == name,
+      ignoreVisibility: ignoreVisibility,
+      includeRemoved: includeRemoved,
+      recursively: recursively,
+      includeItself: includeItself,
     );
   }
 
   @override
   List<FlComponentModel> getAllComponentsBelowById({
-    required String pParentId,
-    bool pIgnoreVisibility = false,
-    bool pIncludeRemoved = false,
-    bool pRecursively = true,
-    bool pIncludeItself = false,
+    required String parentId,
+    bool ignoreVisibility = false,
+    bool includeRemoved = false,
+    bool recursively = true,
+    bool includeItself = false,
   }) {
     return getAllComponentsBelowByWhere(
-      pWhere: (element) => element.id == pParentId,
-      pIgnoreVisibility: pIgnoreVisibility,
-      pIncludeRemoved: pIncludeRemoved,
-      pRecursively: pRecursively,
-      pIncludeItself: pIncludeItself,
+      where: (element) => element.id == parentId,
+      ignoreVisibility: ignoreVisibility,
+      includeRemoved: includeRemoved,
+      recursively: recursively,
+      includeItself: includeItself,
     );
   }
 
   List<FlComponentModel> getAllComponentsBelowByWhere({
-    required bool Function(FlComponentModel) pWhere,
-    bool pIgnoreVisibility = false,
-    bool pIncludeRemoved = false,
-    bool pRecursively = true,
-    bool pIncludeItself = false,
-    bool pPrint = false,
-    int pDepth = 0,
+    required bool Function(FlComponentModel) where,
+    bool ignoreVisibility = false,
+    bool includeRemoved = false,
+    bool recursively = true,
+    bool includeItself = false,
+    bool print = false,
+    int depth = 0,
   }) {
     List<FlComponentModel> list = [];
-    List<FlComponentModel> screenModels = _componentMap.values.where(pWhere).toList();
+    List<FlComponentModel> screenModels = _componentMap.values.where(where).toList();
 
     if (screenModels.length >= 2) {
       FlutterUI.logUI.f("The same screen is found twice in the storage service!!!!");
     } else if (screenModels.length == 1 &&
-        (pIgnoreVisibility || screenModels.first.isVisible) &&
-        (pIncludeRemoved || !screenModels.first.isRemoved)) {
+        (ignoreVisibility || screenModels.first.isVisible) &&
+        (includeRemoved || !screenModels.first.isRemoved)) {
       list.addAll(
         getAllComponentsBelow(
-          pParentModel: screenModels.first,
-          pIgnoreVisibility: pIgnoreVisibility,
-          pIncludeRemoved: pIncludeRemoved,
-          pRecursively: pRecursively,
-          pIncludeItself: pIncludeItself,
-          pPrint: pPrint,
-          pDepth: pDepth,
+          parentModel: screenModels.first,
+          ignoreVisibility: ignoreVisibility,
+          includeRemoved: includeRemoved,
+          recursively: recursively,
+          includeItself: includeItself,
+          print: print,
+          depth: depth,
         ),
       );
     }
@@ -400,18 +400,18 @@ class StorageService implements IStorageService {
   }
 
   @override
-  FlComponentModel? getComponentModel({required String pComponentId}) {
-    return _componentMap[pComponentId];
+  FlComponentModel? getComponentModel({required String componentId}) {
+    return _componentMap[componentId];
   }
 
   @override
-  FlComponentModel? getComponentByName({required String pComponentName}) {
-    return _componentMap.values.firstWhereOrNull((element) => element.name == pComponentName);
+  FlComponentModel? getComponentByName({required String componentName}) {
+    return _componentMap.values.firstWhereOrNull((element) => element.name == componentName);
   }
 
   @override
-  FlPanelModel? getComponentByScreenClassName({required String pScreenClassName}) {
-    String className = convertLongScreenToClassName(pScreenClassName);
+  FlPanelModel? getComponentByScreenClassName({required String screenClassName}) {
+    String className = convertLongScreenToClassName(screenClassName);
 
     return _componentMap.values
         .whereType<FlPanelModel>()
@@ -419,10 +419,10 @@ class StorageService implements IStorageService {
   }
 
   @override
-  FlPanelModel? getComponentByNavigationName(String pNavigationName) {
+  FlPanelModel? getComponentByNavigationName(String navigationName) {
     return _componentMap.values
         .whereType<FlPanelModel>()
-        .firstWhereOrNull((element) => element.screenNavigationName == pNavigationName);
+        .firstWhereOrNull((element) => element.screenNavigationName == navigationName);
   }
 
   @override
@@ -444,8 +444,8 @@ class StorageService implements IStorageService {
   }
 
   @override
-  bool isVisibleInUI(String pComponentId) {
-    FlComponentModel? compModel = _componentMap[pComponentId];
+  bool isVisibleInUI(String componentId) {
+    FlComponentModel? compModel = _componentMap[componentId];
 
     if (compModel == null) {
       return false;
@@ -475,19 +475,19 @@ class StorageService implements IStorageService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _addAsChild(FlComponentModel pChild) {
-    if (pChild.parent != null && pChild.parent!.isNotEmpty) {
-      Set<String> children = _childrenTree[pChild.parent] ?? {};
-      children.add(pChild.id);
-      _childrenTree[pChild.parent!] = children;
+  void _addAsChild(FlComponentModel child) {
+    if (child.parent != null && child.parent!.isNotEmpty) {
+      Set<String> children = _childrenTree[child.parent] ?? {};
+      children.add(child.id);
+      _childrenTree[child.parent!] = children;
     }
   }
 
-  void _removeAsChild(FlComponentModel pChild) {
-    if (pChild.parent != null && pChild.parent!.isNotEmpty) {
-      Set<String> children = _childrenTree[pChild.parent] ?? {};
-      children.remove(pChild.id);
-      _childrenTree[pChild.parent!] = children;
+  void _removeAsChild(FlComponentModel child) {
+    if (child.parent != null && child.parent!.isNotEmpty) {
+      Set<String> children = _childrenTree[child.parent] ?? {};
+      children.remove(child.id);
+      _childrenTree[child.parent!] = children;
     }
   }
 
@@ -504,18 +504,18 @@ class StorageService implements IStorageService {
   List<FlComponentModel> _getComponents(bool isDesktopPanel, bool isContent, String screenName) {
     if (isDesktopPanel) {
       return getAllComponentsBelowByWhere(
-        pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
-        pIncludeItself: true,
+        where: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
+        includeItself: true,
       );
     } else if (isContent) {
       return getAllComponentsBelowByWhere(
-        pWhere: (element) => element.classNameEventSourceRef == FlContainerClassname.DIALOG,
-        pIncludeItself: true,
+        where: (element) => element.classNameEventSourceRef == FlContainerClassname.DIALOG,
+        includeItself: true,
       );
     } else {
       return getAllComponentsBelowByName(
         name: screenName,
-        pIncludeItself: true,
+        includeItself: true,
       );
     }
   }

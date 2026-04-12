@@ -137,7 +137,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
   @override
   void dispose() {
-    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: dataProvider);
+    IUiService().disposeDataSubscription(subscriber: this, dataProvider: dataProvider);
     referencedCellEditor?.dispose();
     textController.dispose();
     super.dispose();
@@ -275,13 +275,13 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
         }
         else {
           future = IUiService().openDialog(
-            pBuilder: (_) => FlLinkedCellPicker(
+            builder: (_) => FlLinkedCellPicker(
               linkedCellEditor: this,
               model: model,
               name: name!,
               editorColumnDefinition: columnDefinition,
             ),
-            pIsDismissible: true,
+            isDismissible: true,
           );
         }
 
@@ -719,7 +719,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   void _subscribe() {
     if ((model.displayReferencedColumnName != null || model.displayConcatMask != null) && dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: dataProvider,
           from: 0,

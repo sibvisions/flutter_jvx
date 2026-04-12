@@ -103,101 +103,101 @@ class FlTableModel extends FlComponentModel {
   FlTableModel get defaultModel => FlTableModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
-    ParseUtil.applyJsonToJson(pJson, json);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
+    ParseUtil.applyJsonToJson(newJson, json);
 
     dataProvider = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.dataBook,
-      pDefault: defaultModel.dataProvider,
-      pCurrent: dataProvider,
+      json: newJson,
+      key: ApiObjectProperty.dataBook,
+      defaultValue: defaultModel.dataProvider,
+      currentValue: dataProvider,
     );
 
     columnNames = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.columnNames,
-      pDefault: defaultModel.columnNames,
-      pCurrent: columnNames,
-      pConversion: (value) => List<String>.from(value),
+      json: newJson,
+      key: ApiObjectProperty.columnNames,
+      defaultValue: defaultModel.columnNames,
+      currentValue: columnNames,
+      conversion: (value) => List<String>.from(value),
     );
 
     columnLabels = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.columnLabels,
-      pDefault: defaultModel.columnLabels,
-      pCurrent: columnLabels,
-      pConversion: (value) => List<String>.from(value),
+      json: newJson,
+      key: ApiObjectProperty.columnLabels,
+      defaultValue: defaultModel.columnLabels,
+      currentValue: columnLabels,
+      conversion: (value) => List<String>.from(value),
     );
 
     autoResize = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.autoResize,
-      pDefault: defaultModel.autoResize,
-      pCurrent: autoResize,
+      json: newJson,
+      key: ApiObjectProperty.autoResize,
+      defaultValue: defaultModel.autoResize,
+      currentValue: autoResize,
     );
 
     editable = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.editable,
-      pDefault: defaultModel.editable,
-      pCurrent: editable,
+      json: newJson,
+      key: ApiObjectProperty.editable,
+      defaultValue: defaultModel.editable,
+      currentValue: editable,
     );
 
     showVerticalLines = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.showVerticalLines,
-      pDefault: defaultModel.showVerticalLines,
-      pCurrent: showVerticalLines,
+      json: newJson,
+      key: ApiObjectProperty.showVerticalLines,
+      defaultValue: defaultModel.showVerticalLines,
+      currentValue: showVerticalLines,
     );
 
     showHorizontalLines = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.showHorizontalLines,
-      pDefault: defaultModel.showHorizontalLines,
-      pCurrent: showHorizontalLines,
+      json: newJson,
+      key: ApiObjectProperty.showHorizontalLines,
+      defaultValue: defaultModel.showHorizontalLines,
+      currentValue: showHorizontalLines,
     );
 
     showSelection = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.showSelection,
-      pDefault: defaultModel.showSelection,
-      pCurrent: showSelection,
+      json: newJson,
+      key: ApiObjectProperty.showSelection,
+      defaultValue: defaultModel.showSelection,
+      currentValue: showSelection,
     );
 
     tableHeaderVisible = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.tableHeaderVisible,
-      pDefault: defaultModel.tableHeaderVisible,
-      pCurrent: tableHeaderVisible,
+      json: newJson,
+      key: ApiObjectProperty.tableHeaderVisible,
+      defaultValue: defaultModel.tableHeaderVisible,
+      currentValue: tableHeaderVisible,
     );
 
     showFocusRect = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.showFocusRect,
-      pDefault: defaultModel.showFocusRect,
-      pCurrent: showFocusRect,
+      json: newJson,
+      key: ApiObjectProperty.showFocusRect,
+      defaultValue: defaultModel.showFocusRect,
+      currentValue: showFocusRect,
     );
 
     sortOnHeaderEnabled = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.sortOnHeaderEnabled,
-      pDefault: defaultModel.sortOnHeaderEnabled,
-      pCurrent: sortOnHeaderEnabled,
+      json: newJson,
+      key: ApiObjectProperty.sortOnHeaderEnabled,
+      defaultValue: defaultModel.sortOnHeaderEnabled,
+      currentValue: sortOnHeaderEnabled,
     );
 
     wordWrapEnabled = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.wordWrapEnabled,
-      pDefault: defaultModel.wordWrapEnabled,
-      pCurrent: wordWrapEnabled,
+      json: newJson,
+      key: ApiObjectProperty.wordWrapEnabled,
+      defaultValue: defaultModel.wordWrapEnabled,
+      currentValue: wordWrapEnabled,
     );
 
     deleteEnabled = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.deleteEnabled,
-      pDefault: defaultModel.deleteEnabled,
-      pCurrent: deleteEnabled,
+      json: newJson,
+      key: ApiObjectProperty.deleteEnabled,
+      defaultValue: defaultModel.deleteEnabled,
+      currentValue: deleteEnabled,
     );
   }
 }

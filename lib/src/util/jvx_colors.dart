@@ -311,23 +311,23 @@ abstract class JVxColors {
     }
   }
 
-  static Color averageBetween(Color pSource, Color pTarget) {
-    final source = HSLColor.fromColor(pSource);
-    final target = HSLColor.fromColor(pTarget);
+  static Color averageBetween(Color source, Color target) {
+    final source_ = HSLColor.fromColor(source);
+    final target_ = HSLColor.fromColor(target);
 
-    final a = (source.alpha + target.alpha) / 2;
-    final h = (source.hue + target.hue) / 2;
-    final s = (source.saturation + target.saturation) / 2;
-    final l = (source.lightness + target.lightness) / 2;
+    final a = (source_.alpha + target_.alpha) / 2;
+    final h = (source_.hue + target_.hue) / 2;
+    final s = (source_.saturation + target_.saturation) / 2;
+    final l = (source_.lightness + target_.lightness) / 2;
 
     return HSLColor.fromAHSL(a, h, s, l).toColor();
   }
 
-  static Color toggleColor(Color pSource) {
-    if (pSource.computeLuminance() > 0.5) {
-      return darken(pSource, 0.15);
+  static Color toggleColor(Color source) {
+    if (source.computeLuminance() > 0.5) {
+      return darken(source, 0.15);
     }
-    return lighten(pSource, 0.15);
+    return lighten(source, 0.15);
   }
 
   static double componentHeight() {

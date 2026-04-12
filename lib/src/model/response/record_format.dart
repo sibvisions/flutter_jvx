@@ -165,9 +165,9 @@ class CellFormat {
   String? style;
   int? leftIndent;
 
-  CellFormat.fromString(String? pFormatString) {
+  CellFormat.fromString(String? formatString) {
 
-    List<String> entries = pFormatString?.asList(";") ?? [];
+    List<String> entries = formatString?.asList(";") ?? [];
 
     for (int entryIndex = 0; entryIndex < entries.length; entryIndex++) {
       dynamic entryValue = entries[entryIndex];

@@ -114,38 +114,38 @@ class BorderLayout extends ILayout implements ICloneable {
   }
 
   @override
-  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData parent, List<LayoutData> children) {
     // Clear constraint map.
     _positions.clear();
-    _parent = pParent;
+    _parent = parent;
 
     String? compConst;
 
-    for (int i = 0; i < pChildren.length; i++) {
-      compConst = pChildren[i].constraints?.toUpperCase();
+    for (int i = 0; i < children.length; i++) {
+      compConst = children[i].constraints?.toUpperCase();
 
       if (compConst != null) {
         if (NORTH == compConst) {
-          _childNorth = pChildren[i];
+          _childNorth = children[i];
         }
         else if (SOUTH == compConst) {
-          _childSouth = pChildren[i];
+          _childSouth = children[i];
         }
         else if (WEST == compConst) {
-          _childWest = pChildren[i];
+          _childWest = children[i];
         }
         else if (EAST == compConst) {
-          _childEast = pChildren[i];
+          _childEast = children[i];
         }
         else if (CENTER == compConst) {
-          _childCenter = pChildren[i];
+          _childCenter = children[i];
         }
       }
     }
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
 
-    pParent.calculatedSize = preferredSize;
+    parent.calculatedSize = preferredSize;
 
     double x = margins.left;
     double y = margins.top;
@@ -153,13 +153,13 @@ class BorderLayout extends ILayout implements ICloneable {
     double height = preferredSize.height;
 
     // If parent has forced this into a size, cant exceed these values.
-    if (pParent.hasPosition) {
-      width = pParent.layoutPosition!.width;
-      height = pParent.layoutPosition!.height;
+    if (parent.hasPosition) {
+      width = parent.layoutPosition!.width;
+      height = parent.layoutPosition!.height;
     }
 
-    width = width - x - margins.right - pParent.insets.horizontal;
-    height = height - y - margins.bottom - pParent.insets.vertical;
+    width = width - x - margins.right - parent.insets.horizontal;
+    height = height - y - margins.bottom - parent.insets.vertical;
 
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;

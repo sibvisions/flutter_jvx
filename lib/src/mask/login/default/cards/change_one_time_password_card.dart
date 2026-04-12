@@ -148,8 +148,8 @@ class _ChangeOneTimePasswordCardState extends State<ChangeOneTimePasswordCard> {
 
     if (newPasswordController.text != newPasswordConfController.text) {
       IUiService().openDialog(
-        pBuilder: (_) => Text(FlutterUI.translate("The passwords are different!")),
-        pIsDismissible: true,
+        builder: (_) => Text(FlutterUI.translate("The passwords are different!")),
+        isDismissible: true,
       );
       return;
     }

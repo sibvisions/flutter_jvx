@@ -55,7 +55,7 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
     return panelWidget;
   }
 
-  static Widget wrapWithStandardBorder(BuildContext context, Widget pPanelWidget) {
+  static Widget wrapWithStandardBorder(BuildContext context, Widget panelWidget) {
     AppStyle style = AppStyle.of(context);
 
     double borderRadius = style.direct.panelBorderRadius();
@@ -72,7 +72,7 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
       ),
-      child: pPanelWidget,
+      child: panelWidget,
     );
   }
 }

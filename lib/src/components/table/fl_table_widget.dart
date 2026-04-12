@@ -40,7 +40,7 @@ import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
 import 'table_size.dart';
 
-typedef TableLongPressCallback = void Function(int rowIndex, String column, ICellEditor cellEditor, Offset pGlobalPosition);
+typedef TableLongPressCallback = void Function(int rowIndex, String column, ICellEditor cellEditor, Offset globalPosition);
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
 typedef TableHeaderTapCallback = void Function(String column);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
@@ -465,16 +465,16 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
   }
 
   /// The item builder of the scrollable positioned list.
-  Widget _tableItem(BuildContext context, int pIndex, bool canScrollHorizontally) {
-    int index = pIndex;
+  Widget _tableItem(BuildContext context, int itemIndex, bool canScrollHorizontally) {
+    int index_ = itemIndex;
 
     if (_itemCount > widget.chunkData.data.length) {
-      index--;
+      index_--;
     }
 
-    if (index < 0) {
+    if (index_ < 0) {
       return _createHeaderRow();
-    } else if (index > widget.chunkData.data.length - 1) {
+    } else if (index_ > widget.chunkData.data.length - 1) {
       // When rebuilding the table, the item count can still be an old one while the data is already updated.
       return const SizedBox(height: 0);
     }
@@ -482,16 +482,16 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     SlidableController? slideCtrl;
 
     if (!canScrollHorizontally && widget.slideActionFactory != null) {
-      if (index > _slideController.length - 1) {
+      if (index_ > _slideController.length - 1) {
         slideCtrl = SlidableController(this);
         _slideController.add(slideCtrl);
       }
       else {
-        slideCtrl = _slideController.elementAt(index);
+        slideCtrl = _slideController.elementAt(index_);
       }
     }
 
-    if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
+    if (widget.chunkData.getRecordStatusRaw(index_)?.contains("DISMISSED") == true) {
       return Container();
     }
 
@@ -529,11 +529,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         }
       },
       tableSize: widget.tableSize,
-      values: widget.chunkData.data[index]!,
-      recordFormat: widget.chunkData.recordFormats?[widget.model.name]?[index],
-      recordReadOnly: widget.chunkData.dataReadOnly?[index],
-      index: index,
-      isSelected: index == widget.selectedRowIndex,
+      values: widget.chunkData.data[index_]!,
+      recordFormat: widget.chunkData.recordFormats?[widget.model.name]?[index_],
+      recordReadOnly: widget.chunkData.dataReadOnly?[index_],
+      index: index_,
+      isSelected: index_ == widget.selectedRowIndex,
       selectedColumn: widget.selectedColumn,
     );
   }

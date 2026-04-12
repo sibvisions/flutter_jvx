@@ -132,11 +132,11 @@ abstract class ComponentsFactory {
 
   /// Used for replace components
   static Widget buildCustomWidget(
-    FlComponentModel pModel,
-    CustomComponent pCustomComponent,
+    FlComponentModel model,
+    CustomComponent customComponent,
     {Key Function(String)? keyProvider,
     bool offstage = false}) {
-    return FlCustomWrapper(model: pModel, key: _createKey(pModel.id, keyProvider), customComponent: pCustomComponent, offstage: offstage);
+    return FlCustomWrapper(model: model, key: _createKey(model.id, keyProvider), customComponent: customComponent, offstage: offstage);
   }
 
   static Key _createKey(String id, Key Function(String)? keyProvider) {

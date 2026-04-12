@@ -40,51 +40,51 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
   @override
   FlCheckBoxCellEditorModel get defaultModel => FlCheckBoxCellEditorModel();
 
-  Set<String> _parseStyle(dynamic pStyle) {
-    String sStyle = (pStyle as String);
+  Set<String> _parseStyle(dynamic style) {
+    String sStyle = (style as String);
 
     return sStyle.split(",").toSet();
   }
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     // ContentType
     selectedValue = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.selectedValue,
-      pDefault: defaultModel.selectedValue,
-      pCurrent: selectedValue,
+      json: newJson,
+      key: ApiObjectProperty.selectedValue,
+      defaultValue: defaultModel.selectedValue,
+      currentValue: selectedValue,
     );
 
     deselectedValue = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.deselectedValue,
-      pDefault: defaultModel.deselectedValue,
-      pCurrent: deselectedValue,
+      json: newJson,
+      key: ApiObjectProperty.deselectedValue,
+      defaultValue: defaultModel.deselectedValue,
+      currentValue: deselectedValue,
     );
 
     text = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.text,
-      pDefault: defaultModel.text,
-      pCurrent: text,
+      json: newJson,
+      key: ApiObjectProperty.text,
+      defaultValue: defaultModel.text,
+      currentValue: text,
     );
 
     imageName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.imageName,
-      pDefault: defaultModel.imageName,
-      pCurrent: imageName,
+      json: newJson,
+      key: ApiObjectProperty.imageName,
+      defaultValue: defaultModel.imageName,
+      currentValue: imageName,
     );
 
     styles = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.style,
-      pDefault: defaultModel.styles,
-      pConversion: _parseStyle,
-      pCurrent: {},
+      json: newJson,
+      key: ApiObjectProperty.style,
+      defaultValue: defaultModel.styles,
+      conversion: _parseStyle,
+      currentValue: {},
     );
   }
 }

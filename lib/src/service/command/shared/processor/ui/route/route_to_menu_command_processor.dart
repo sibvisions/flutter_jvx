@@ -27,7 +27,7 @@ class RouteToMenuCommandProcessor extends ICommandProcessor<RouteToMenuCommand> 
 
   @override
   Future<List<BaseCommand>> processCommand(RouteToMenuCommand command, BaseCommand? origin) {
-    IUiService().routeToMenu(pReplaceRoute: command.replaceRoute);
+    IUiService().routeToMenu(replaceRoute: command.replaceRoute);
 
     return Future.value([]);
   }

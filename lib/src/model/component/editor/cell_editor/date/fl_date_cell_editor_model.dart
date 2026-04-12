@@ -48,69 +48,69 @@ class FlDateCellEditorModel extends ICellEditorModel {
   FlDateCellEditorModel get defaultModel => FlDateCellEditorModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     dateFormat = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.dateFormat,
-      pDefault: defaultModel.dateFormat,
-      pCurrent: dateFormat,
-      pConversion: (value) => value.replaceAll("Y", "y"),
+      json: newJson,
+      key: ApiObjectProperty.dateFormat,
+      defaultValue: defaultModel.dateFormat,
+      currentValue: dateFormat,
+      conversion: (value) => value.replaceAll("Y", "y"),
     );
 
     timeZoneCode = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.timeZone,
-      pDefault: defaultModel.timeZoneCode,
-      pCurrent: timeZoneCode,
+      json: newJson,
+      key: ApiObjectProperty.timeZone,
+      defaultValue: defaultModel.timeZoneCode,
+      currentValue: timeZoneCode,
     );
 
     locale = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.locale,
-      pDefault: defaultModel.locale,
-      pCurrent: locale,
+      json: newJson,
+      key: ApiObjectProperty.locale,
+      defaultValue: defaultModel.locale,
+      currentValue: locale,
     );
 
     isDateEditor = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.isDateEditor,
-      pDefault: defaultModel.isDateEditor,
-      pCurrent: isDateEditor,
+      json: newJson,
+      key: ApiObjectProperty.isDateEditor,
+      defaultValue: defaultModel.isDateEditor,
+      currentValue: isDateEditor,
     );
     isTimeEditor = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.isTimeEditor,
-      pDefault: defaultModel.isTimeEditor,
-      pCurrent: isTimeEditor,
+      json: newJson,
+      key: ApiObjectProperty.isTimeEditor,
+      defaultValue: defaultModel.isTimeEditor,
+      currentValue: isTimeEditor,
     );
 
     isHourEditor = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.isHourEditor,
-      pDefault: defaultModel.isHourEditor,
-      pCurrent: isHourEditor,
+      json: newJson,
+      key: ApiObjectProperty.isHourEditor,
+      defaultValue: defaultModel.isHourEditor,
+      currentValue: isHourEditor,
     );
 
     isMinuteEditor = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.isMinuteEditor,
-      pDefault: defaultModel.isMinuteEditor,
-      pCurrent: isMinuteEditor,
+      json: newJson,
+      key: ApiObjectProperty.isMinuteEditor,
+      defaultValue: defaultModel.isMinuteEditor,
+      currentValue: isMinuteEditor,
     );
 
     isSecondEditor = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.isSecondEditor,
-      pDefault: defaultModel.isSecondEditor,
-      pCurrent: isSecondEditor,
+      json: newJson,
+      key: ApiObjectProperty.isSecondEditor,
+      defaultValue: defaultModel.isSecondEditor,
+      currentValue: isSecondEditor,
     );
     isAmPmEditor = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.isAmPmEditor,
-      pDefault: defaultModel.isAmPmEditor,
-      pCurrent: isAmPmEditor,
+      json: newJson,
+      key: ApiObjectProperty.isAmPmEditor,
+      defaultValue: defaultModel.isAmPmEditor,
+      currentValue: isAmPmEditor,
     );
   }
 }

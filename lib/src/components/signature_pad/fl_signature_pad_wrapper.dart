@@ -158,7 +158,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   void _subscribe() {
     if (model.dataProvider != null && model.columnName != null) {
       IUiService().registerDataSubscription(
-        pDataSubscription: DataSubscription(
+        dataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider!,
           onSelectedRecord: receiveSignatureData,
@@ -169,22 +169,20 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   void _unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    IUiService().disposeDataSubscription(subscriber: this, dataProvider: model.dataProvider);
   }
 
-  void receiveSignatureData(DataRecord? pDataRecord) {
-    _dataRecord = pDataRecord;
+  void receiveSignatureData(DataRecord? dataRecord) {
+    _dataRecord = dataRecord;
     setState(() {});
   }
 
   void _handleClear() {
-    IUiService()
-        .saveAllEditors(
-      pId: model.id,
-      pReason: "Signature pad closed.",
-    )
-        .then((success) {
-      if (success) {
+    IUiService().saveAllEditors(
+      id: model.id,
+      reason: "Signature pad closed.",
+    ).then((result) {
+      if (result.success) {
         BaseCommand? command = deleteSignature();
         if (command != null) {
           ICommandService().sendCommand(command);
@@ -194,13 +192,11 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   void _handleDone() {
-    IUiService()
-        .saveAllEditors(
-      pId: model.id,
-      pReason: "Signature pad closed.",
-    )
-        .then((success) async {
-      if (success) {
+    IUiService().saveAllEditors(
+      id: model.id,
+      reason: "Signature pad closed.",
+    ).then((result) async {
+      if (result.success) {
         BaseCommand? command = await sendSignature();
         if (command != null) {
           await ICommandService().sendCommand(command);

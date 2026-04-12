@@ -31,8 +31,8 @@ class SaveUserDataCommandProcessor extends ICommandProcessor<SaveUserDataCommand
       roles: command.userData.roles,
     );
     await IConfigService().updateUserInfo(
-      pUserInfo: userInfo,
-      pJson: command.userData.json,
+      userInfo: userInfo,
+      json: command.userData.json,
     );
     return [];
   }

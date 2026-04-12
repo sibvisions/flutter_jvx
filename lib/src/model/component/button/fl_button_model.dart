@@ -163,109 +163,109 @@ class FlButtonModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  set background(Color? pColor) {
-    super.background = pColor;
-    labelModel.background = pColor;
+  set background(Color? color) {
+    super.background = color;
+    labelModel.background = color;
   }
 
   @override
-  set foreground(Color? pColor) {
-    super.foreground = pColor;
-    labelModel.foreground = pColor;
+  set foreground(Color? color) {
+    super.foreground = color;
+    labelModel.foreground = color;
   }
 
   @override
-  set font(JVxFont? pFont) {
-    super.font = pFont;
-    labelModel.font = pFont;
+  set font(JVxFont? font) {
+    super.font = font;
+    labelModel.font = font;
   }
 
   @override
   FlButtonModel get defaultModel => FlButtonModel();
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
+  void applyFromJson(Map<String, dynamic> newJson) {
+    super.applyFromJson(newJson);
 
     borderOnMouseEntered = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.borderOnMouseEntered,
-      pDefault: defaultModel.borderOnMouseEntered,
-      pCurrent: borderOnMouseEntered,
+      json: newJson,
+      key: ApiObjectProperty.borderOnMouseEntered,
+      defaultValue: defaultModel.borderOnMouseEntered,
+      currentValue: borderOnMouseEntered,
     );
     borderPainted = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.borderPainted,
-      pDefault: defaultModel.borderPainted,
-      pCurrent: borderPainted,
+      json: newJson,
+      key: ApiObjectProperty.borderPainted,
+      defaultValue: defaultModel.borderPainted,
+      currentValue: borderPainted,
     );
     image = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.image,
-      pDefault: defaultModel.image,
-      pCurrent: image,
+      json: newJson,
+      key: ApiObjectProperty.image,
+      defaultValue: defaultModel.image,
+      currentValue: image,
     );
     imageTextGap = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.imageTextGap,
-      pDefault: defaultModel.imageTextGap,
-      pCurrent: imageTextGap,
-      pConversion: (imageTextGap) => (imageTextGap! * scaling).toInt(),
+      json: newJson,
+      key: ApiObjectProperty.imageTextGap,
+      defaultValue: defaultModel.imageTextGap,
+      currentValue: imageTextGap,
+      conversion: (imageTextGap) => (imageTextGap! * scaling).toInt(),
     );
     mousePressedImage = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.mousePressedImage,
-      pDefault: defaultModel.mousePressedImage,
-      pCurrent: mousePressedImage,
+      json: newJson,
+      key: ApiObjectProperty.mousePressedImage,
+      defaultValue: defaultModel.mousePressedImage,
+      currentValue: mousePressedImage,
     );
 
     mouseOverImage = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.mouseOverImage,
-      pDefault: defaultModel.mouseOverImage,
-      pCurrent: mouseOverImage,
+      json: newJson,
+      key: ApiObjectProperty.mouseOverImage,
+      defaultValue: defaultModel.mouseOverImage,
+      currentValue: mouseOverImage,
     );
     paddings = getPropertyValue(
-        pJson: pJson,
-        pKey: ApiObjectProperty.margins,
-        pDefault: defaultModel._paddings,
-        pCurrent: _paddings,
-        pConversion: (value) => ParseUtil.parseMargins(value)! * scaling);
+        json: newJson,
+        key: ApiObjectProperty.margins,
+        defaultValue: defaultModel._paddings,
+        currentValue: _paddings,
+        conversion: (value) => ParseUtil.parseMargins(value)! * scaling);
 
     dataProvider = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.dataRow,
-      pDefault: defaultModel.dataProvider,
-      pCurrent: dataProvider,
+      json: newJson,
+      key: ApiObjectProperty.dataRow,
+      defaultValue: defaultModel.dataProvider,
+      currentValue: dataProvider,
     );
 
     columnName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.columnName,
-      pDefault: defaultModel.columnName,
-      pCurrent: columnName,
+      json: newJson,
+      key: ApiObjectProperty.columnName,
+      defaultValue: defaultModel.columnName,
+      currentValue: columnName,
     );
 
     latitudeColumnName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.latitudeColumnName,
-      pDefault: defaultModel.latitudeColumnName,
-      pCurrent: latitudeColumnName,
+      json: newJson,
+      key: ApiObjectProperty.latitudeColumnName,
+      defaultValue: defaultModel.latitudeColumnName,
+      currentValue: latitudeColumnName,
     );
 
     longitudeColumnName = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.longitudeColumnName,
-      pDefault: defaultModel.longitudeColumnName,
-      pCurrent: longitudeColumnName,
+      json: newJson,
+      key: ApiObjectProperty.longitudeColumnName,
+      defaultValue: defaultModel.longitudeColumnName,
+      currentValue: longitudeColumnName,
     );
 
     scanFormats = getPropertyValue<List<BarcodeFormat>?>(
-      pJson: pJson,
-      pKey: ApiObjectProperty.scanFormats,
-      pDefault: defaultModel.scanFormats,
-      pCurrent: scanFormats,
-      pConversion: (e) => (e as List<dynamic>?)
+      json: newJson,
+      key: ApiObjectProperty.scanFormats,
+      defaultValue: defaultModel.scanFormats,
+      currentValue: scanFormats,
+      conversion: (e) => (e as List<dynamic>?)
           ?.map((e) => e as String)
           .map<List<BarcodeFormat>?>((e) => ParseUtil.parseScanFormat(e))
           .nonNulls
@@ -280,14 +280,14 @@ class FlButtonModel extends FlComponentModel {
 
     Map<String, dynamic> labelJson = <String, dynamic>{};
 
-    if (pJson.containsKey(ApiObjectProperty.horizontalTextPosition)) {
-      labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
+    if (newJson.containsKey(ApiObjectProperty.horizontalTextPosition)) {
+      labelJson[ApiObjectProperty.horizontalAlignment] = newJson[ApiObjectProperty.horizontalTextPosition];
     }
-    if (pJson.containsKey(ApiObjectProperty.verticalTextPosition)) {
-      labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalTextPosition];
+    if (newJson.containsKey(ApiObjectProperty.verticalTextPosition)) {
+      labelJson[ApiObjectProperty.verticalAlignment] = newJson[ApiObjectProperty.verticalTextPosition];
     }
-    if (pJson.containsKey(ApiObjectProperty.text)) {
-      labelJson[ApiObjectProperty.text] = pJson[ApiObjectProperty.text];
+    if (newJson.containsKey(ApiObjectProperty.text)) {
+      labelJson[ApiObjectProperty.text] = newJson[ApiObjectProperty.text];
     }
 
     if (labelJson.isNotEmpty) {
@@ -296,10 +296,10 @@ class FlButtonModel extends FlComponentModel {
   }
 
   @override
-  void applyCellEditorOverrides(Map<String, dynamic> pJson) {
-    super.applyCellEditorOverrides(pJson);
+  void applyCellEditorOverrides(Map<String, dynamic> json) {
+    super.applyCellEditorOverrides(json);
 
-    Map<String, dynamic> labelJson = Map.from(pJson);
+    Map<String, dynamic> labelJson = Map.from(json);
     //remove alignments because the label is only aligned with horizontalTextPosition and verticalTextPostion, but not
     //with "standard alignments"
     labelJson.remove(ApiObjectProperty.cellEditorHorizontalAlignment);

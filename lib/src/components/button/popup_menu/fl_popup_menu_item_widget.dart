@@ -35,33 +35,33 @@ class FlPopupMenuItemWidget extends PopupMenuItem<String> {
     required super.child,
   });
 
-  factory FlPopupMenuItemWidget.withModel(FlPopupMenuItemModel pModel, bool pForceIconSlot) {
+  factory FlPopupMenuItemWidget.withModel(FlPopupMenuItemModel model, bool forceIconSlot) {
     return FlPopupMenuItemWidget(
-      id: pModel.id,
-      enabled: pModel.isEnabled,
-      value: pModel.name,
-      child: pForceIconSlot
+      id: model.id,
+      enabled: model.isEnabled,
+      value: model.name,
+      child: forceIconSlot
           ? Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                   width: 24,
                   alignment: Alignment.center,
-                  child: _createIcon(pModel.icon),
+                  child: _createIcon(model.icon),
                 ),
-                _createText(pModel),
+                _createText(model),
               ],
             )
-          : _createText(pModel),
+          : _createText(model),
     );
   }
 
-  static Widget _createText(FlPopupMenuItemModel pModel) {
+  static Widget _createText(FlPopupMenuItemModel model) {
     return Padding(
       padding: const EdgeInsets.only(left: 5.0),
       child: Text(
-        pModel.text,
-        style: pModel.createTextStyle(),
+        model.text,
+        style: model.createTextStyle(),
       ),
     );
   }

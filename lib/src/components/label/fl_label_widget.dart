@@ -51,7 +51,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     Widget child;
 
-    child = createTextWidget(model, pSelectable: onTap == null && onTapDown == null && onTapUp == null, pDummy: dummy);
+    child = createTextWidget(model, selectable: onTap == null && onTapDown == null && onTapUp == null, dummy: dummy);
 
     if (model.toolTipText != null) {
       child = getTooltipWidget(child);
@@ -82,22 +82,22 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Tooltip getTooltipWidget(Widget pChild) {
-    return Tooltip(message: model.toolTipText!, child: pChild);
+  Tooltip getTooltipWidget(Widget child) {
+    return Tooltip(message: model.toolTipText!, child: child);
   }
 
-  static Widget createTextWidget(FlLabelModel pModel, {
-    TextStyle? pTextStyle,
-    bool pSelectable = false,
-    bool pDummy = false,
+  static Widget createTextWidget(FlLabelModel model, {
+    TextStyle? textStyle,
+    bool selectable = false,
+    bool dummy = false,
     bool? softwrap,
     int? maxLines,
     TextOverflow? overflow,
   }) {
     Widget textWidget;
 
-    if (!pDummy && ParseUtil.isHTML(pModel.text)) {
-      textWidget = Html(data: pModel.text,
+    if (!dummy && ParseUtil.isHTML(model.text)) {
+      textWidget = Html(data: model.text,
           style: {"body": Style(margin: Margins(left: Margin(0),
               top: Margin(0),
               bottom: Margin(0),
@@ -107,34 +107,34 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       textWidget = Text(
           softWrap: softwrap,
           maxLines: maxLines,
-          pModel.text.replaceAll("\n", ""),
-          style: pTextStyle ?? pModel.createTextStyle(),
+          model.text.replaceAll("\n", ""),
+          style: textStyle ?? model.createTextStyle(),
           overflow: overflow,
-          textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment));
+          textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment));
     }
 
-    if (!pDummy && pSelectable) {
+    if (!dummy && selectable) {
       textWidget = SelectionArea(child: textWidget);
     }
 
     return textWidget;
   }
 
-  static EdgeInsets adjustPaddingWithStyles(FlLabelModel pModel, EdgeInsets pPadding) {
-    EdgeInsets padding = pPadding;
+  static EdgeInsets adjustPaddingWithStyles(FlLabelModel model, EdgeInsets padding) {
+    EdgeInsets usedPadding = padding;
 
-    if (pModel.styles.contains(FlLabelModel.STYLE_NO_BOTTOM_PADDING)) {
-      padding = padding.copyWith(bottom: 0);
-    } else if (pModel.styles.contains(FlLabelModel.STYLE_HALF_BOTTOM_PADDING)) {
-      padding = padding.copyWith(bottom: padding.bottom / 2);
+    if (model.styles.contains(FlLabelModel.STYLE_NO_BOTTOM_PADDING)) {
+      usedPadding = usedPadding.copyWith(bottom: 0);
+    } else if (model.styles.contains(FlLabelModel.STYLE_HALF_BOTTOM_PADDING)) {
+      usedPadding = usedPadding.copyWith(bottom: usedPadding.bottom / 2);
     }
 
-    if (pModel.styles.contains(FlLabelModel.STYLE_NO_TOP_PADDING)) {
-      padding = padding.copyWith(top: 0);
-    } else if (pModel.styles.contains(FlLabelModel.STYLE_HALF_TOP_PADDING)) {
-      padding = padding.copyWith(top: padding.top / 2);
+    if (model.styles.contains(FlLabelModel.STYLE_NO_TOP_PADDING)) {
+      usedPadding = usedPadding.copyWith(top: 0);
+    } else if (model.styles.contains(FlLabelModel.STYLE_HALF_TOP_PADDING)) {
+      usedPadding = usedPadding.copyWith(top: usedPadding.top / 2);
     }
 
-    return padding;
+    return usedPadding;
   }
 }

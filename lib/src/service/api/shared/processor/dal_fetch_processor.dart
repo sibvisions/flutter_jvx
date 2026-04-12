@@ -26,21 +26,21 @@ import '../i_response_processor.dart';
 
 class DalFetchProcessor extends IResponseProcessor<DalFetchResponse> {
   @override
-  List<BaseCommand> processResponse(DalFetchResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(DalFetchResponse response, ApiRequest? request) {
     bool setRootKey = false;
     Filter filter = const Filter.empty();
-    if (pRequest is ApiFetchRequest) {
-      filter = pRequest.filter ?? filter;
-      setRootKey = pRequest.command?.setRootKey ?? setRootKey;
-    } else if (pRequest is ApiReloadDataRequest) {
-      filter = pRequest.filter ?? filter;
-      setRootKey = pRequest.command?.setRootKey ?? setRootKey;
-    } else if (pRequest is ApiSetValuesRequest) {
-      filter = pRequest.filter ?? filter;
+    if (request is ApiFetchRequest) {
+      filter = request.filter ?? filter;
+      setRootKey = request.command?.setRootKey ?? setRootKey;
+    } else if (request is ApiReloadDataRequest) {
+      filter = request.filter ?? filter;
+      setRootKey = request.command?.setRootKey ?? setRootKey;
+    } else if (request is ApiSetValuesRequest) {
+      filter = request.filter ?? filter;
     }
 
     return [SaveFetchDataCommand(
-      response: pResponse,
+      response: response,
       reason: "Server sent FetchData",
       requestFilter: filter,
       setRootKey: setRootKey,

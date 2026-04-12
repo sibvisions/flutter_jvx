@@ -22,10 +22,10 @@ import '../i_response_processor.dart';
 
 class ApplicationMetaDataProcessor implements IResponseProcessor<ApplicationMetaDataResponse> {
   @override
-  List<BaseCommand> processResponse(ApplicationMetaDataResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(ApplicationMetaDataResponse response, ApiRequest? request) {
     return [
       SaveApplicationMetaDataCommand(
-        metaData: pResponse,
+        metaData: response,
         reason: "Metadata received from server",
       ),
     ];

@@ -43,23 +43,23 @@ class ScrollLayout extends ILayout {
   }
 
   @override
-  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
-    LayoutData clonedParentData = pParent.clone();
+  void calculateLayout(LayoutData parent, List<LayoutData> children) {
+    LayoutData clonedParentData = parent.clone();
 
     /// If it does not have a calc size, then we have to have it calculate as infinite
-    clonedParentData.layoutPosition = pParent.hasCalculatedSize
+    clonedParentData.layoutPosition = parent.hasCalculatedSize
         ? LayoutPosition(
-            width: widthOfScrollPanel(pParent),
-            height: heightOfScrollPanel(pParent),
+            width: widthOfScrollPanel(parent),
+            height: heightOfScrollPanel(parent),
             top: 0,
             left: 0,
           )
         : null;
 
-    originalLayout.calculateLayout(clonedParentData, pChildren);
+    originalLayout.calculateLayout(clonedParentData, children);
 
-    clonedParentData.layoutPosition = pParent.layoutPosition;
-    pParent.applyFromOther(clonedParentData);
+    clonedParentData.layoutPosition = parent.layoutPosition;
+    parent.applyFromOther(clonedParentData);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

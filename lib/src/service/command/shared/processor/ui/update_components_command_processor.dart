@@ -80,15 +80,15 @@ class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponent
 
       List<Future> futureList = [];
       if (command.affectedComponents.isNotEmpty) {
-        futureList.addAll(command.affectedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
+        futureList.addAll(command.affectedComponents.map((e) => ILayoutService().markLayoutAsDirty(componentId: e)));
       }
 
       if (command.changedComponents.isNotEmpty) {
-        futureList.addAll(command.changedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
+        futureList.addAll(command.changedComponents.map((e) => ILayoutService().markLayoutAsDirty(componentId: e)));
       }
 
       if (command.deletedComponents.isNotEmpty) {
-        futureList.addAll(command.deletedComponents.map((e) => ILayoutService().removeLayout(pComponentId: e)));
+        futureList.addAll(command.deletedComponents.map((e) => ILayoutService().removeLayout(componentId: e)));
       }
 
       if (futureList.isEmpty) {

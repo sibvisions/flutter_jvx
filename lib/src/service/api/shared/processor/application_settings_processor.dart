@@ -24,14 +24,14 @@ import '../i_response_processor.dart';
 
 class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSettingsResponse> {
   @override
-  List<BaseCommand> processResponse(ApplicationSettingsResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(ApplicationSettingsResponse response, ApiRequest? request) {
     return [
       SaveApplicationSettingsCommand(
-        settings: pResponse,
+        settings: response,
         reason: "Settings received from server",
       ),
       SaveComponentsCommand(
-        components: pResponse.components,
+        components: response.components,
         isDesktopPanel: true,
         isUpdate: false,
         reason: "${ApiResponseNames.applicationSettings} was sent",

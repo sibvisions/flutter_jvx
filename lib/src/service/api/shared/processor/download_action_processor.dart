@@ -22,16 +22,16 @@ import '../i_response_processor.dart';
 
 class DownloadActionProcessor implements IResponseProcessor<DownloadActionResponse> {
   @override
-  List<BaseCommand> processResponse(DownloadActionResponse pResponse, ApiRequest? pRequest) {
-    List<String> urlParamList = pResponse.url.split(";");
+  List<BaseCommand> processResponse(DownloadActionResponse response, ApiRequest? request) {
+    List<String> urlParamList = response.url.split(";");
 
     String url = urlParamList.first;
     bool showFile = urlParamList.last == "SHOW_FILE";
 
     return [
       DownloadActionCommand(
-        fileId: pResponse.fileId,
-        fileName: pResponse.fileName,
+        fileId: response.fileId,
+        fileName: response.fileName,
         url: url,
         showFile: showFile,
         reason: "Upload from server",
