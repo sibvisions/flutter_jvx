@@ -118,12 +118,13 @@ class _EmbeddedCodeScannerState extends State<EmbeddedCodeScanner> with SingleTi
         children: [
           Container(color: Colors.black),
 
-          MobileScanner(
+          //Material is required for text formats, ...
+          Material(child: MobileScanner(
             fit: BoxFit.cover,
             controller: controller,
             onDetect: _onDetect,
             scanWindow: scanWindow,
-          ),
+          )),
 
           CustomPaint(
             painter: ScannerPainter(
