@@ -149,6 +149,7 @@ abstract class OfflineUtil {
               reason: "Going online, for sync",
               username: offlineUsername,
               password: offlinePassword,
+              websocket: false,
               minimal: true
             ),
           );

@@ -31,6 +31,9 @@ class StartupCommand extends ApiCommand {
   /// This can be used to override the default values from the config.
   final String? password;
 
+  /// Whether to start with websocket
+  final bool websocket;
+
   /// Whether to load/init only base resources
   final bool minimal;
 
@@ -42,6 +45,7 @@ class StartupCommand extends ApiCommand {
     this.username,
     this.password,
     this.minimal = false,
+    this.websocket = true,
     required super.reason,
     super.showLoading,
   });
@@ -52,7 +56,7 @@ class StartupCommand extends ApiCommand {
 
   @override
   String propertiesAsString() {
-    return "username: $username, password: ${password != null ? '<set>' : 'null'}, minimal: $minimal, ${super.propertiesAsString()}";
+    return "username: $username, password: ${password != null ? '<set>' : 'null'}, websocket: $websocket, minimal: $minimal, ${super.propertiesAsString()}";
   }
 
 }

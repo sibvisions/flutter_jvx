@@ -76,15 +76,15 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
     Directory? imagesDir = fileManager.getDirectory(imagesPath);
     Directory? templatesDir = fileManager.getDirectory(templatesPath);
 
-    bool fullStartup = origin is StartupCommand && !origin.minimal;
 
-    if (fullStartup) {
+    if (origin is StartupCommand && origin.websocket) {
       // Start WebSocket
       unawaited((servApi.getRepository() as OnlineApiRepository?)?.startWebSocket().catchError(
               (e, stack) => FlutterUI.logAPI.w("Initial WebSocket connection failed", error: e, stackTrace: stack)));
     }
     List<BaseCommand> commands = [];
 
+    bool fullStartup = origin is StartupCommand && !origin.minimal;
     bool loadResources = kIsWeb || fullStartup;
 
     if (loadResources && (kDebugMode || !(languagesDir?.existsSync() ?? false))) {
