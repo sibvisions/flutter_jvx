@@ -124,16 +124,22 @@ class GridMenuGroup extends StatelessWidget {
     Color? tileTitleBackground
   ) {
     double? spacing;
+    double? spacingInner;
 
     if (padding != null) {
       spacing = max(padding.left, padding.right);
+
+      //if no spacing is defined -> use axis spacing
+      if (spacing != 0) {
+        spacingInner = spacing;
+      }
     }
 
     Widget w = SliverGrid(
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: maxCrossAxisExtent,
-        mainAxisSpacing: spacing ?? mainAxisSpacing,
-        crossAxisSpacing: spacing ?? crossAxisSpacing,
+        mainAxisSpacing: spacingInner ?? mainAxisSpacing,
+        crossAxisSpacing: spacingInner ?? crossAxisSpacing,
         childAspectRatio: childAspectRatio,
       ),
       delegate: SliverChildListDelegate.fixed(
