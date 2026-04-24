@@ -57,12 +57,15 @@ class _DrawerMenuState extends State<DrawerMenu> {
   Widget build(BuildContext context) {
     bool isNormalSize = MediaQuery.sizeOf(context).height > 650;
 
-    AppStyle style = AppStyle.of(context);
+    AppStyleDirect style = AppStyle.directOf(context);
+
+    bool isCompactHeader = style.styleAsBool(AppStyle.menuDrawerCompactHeader);
+    bool isCompactFooter = style.styleAsBool(AppStyle.menuDrawerCompactFooter);
 
     return Opacity(
-      opacity: double.parse(style.direct.style(AppStyle.opacitySideMenu) ?? "1"),
+      opacity: double.parse(style.style(AppStyle.opacitySideMenu) ?? "1"),
       child: Drawer(
-        backgroundColor: style.direct.menuDrawerBackground() ?? (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : JVxColors.darken(Theme.of(context).colorScheme.surface, 0.05)),
+        backgroundColor: style.menuDrawerBackground() ?? (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : JVxColors.darken(Theme.of(context).colorScheme.surface, 0.05)),
         child: SafeArea(
           top: false,
           left: false,
@@ -72,15 +75,24 @@ class _DrawerMenuState extends State<DrawerMenu> {
             builder: (context, isOffline, child) {
               return Column(
                 children: [
-                  _buildDrawerHeader(context, isNormalSize),
+                  _buildDrawerHeader(context, isNormalSize && !isCompactHeader),
                   Expanded(child: _buildMenu(context, isNormalSize)),
-                  if (isNormalSize) ..._buildDrawerFooter(context, isOffline, isNormalSize),
-                  if (!isNormalSize)
-                    SizedBox(
-                      height: 56,
-                      child: Row(
-                        children: _buildDrawerFooter(context, isOffline, isNormalSize),
-                      ),
+                  if (isNormalSize && !isCompactFooter) ..._buildDrawerFooter(context, isOffline, true),
+                  if (!isNormalSize || isCompactFooter)
+                    Column(
+                      spacing: 0,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildFooterDivider(context),
+                        SizedBox(
+                          height: 56,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children:_buildDrawerFooter(context, isOffline, false),
+                          ),
+                        ),
+                        _buildFooterDivider(context),
+                      ],
                     ),
                 ],
               );
@@ -133,7 +145,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
           child: _buildHeaderText(
             text: IConfigService().userInfo.value?.displayName ?? " ",
             context: context,
-            constraints: const BoxConstraints(maxWidth: 120),
+            constraints: const BoxConstraints(maxWidth:190),
+            fontSize: 25,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -164,8 +177,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-            AspectRatio(
-              aspectRatio: 1.0,
+
+            SizedBox(
+              width: isNormalSize ? 85 : 70,
+              height: isNormalSize ? 85 : 70,
               child: CircleAvatar(
                 radius: 100,
                 backgroundColor: colTop ?? Theme.of(context).colorScheme.surface,
@@ -174,7 +189,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                     ? FaIcon(
                   FontAwesomeIcons.solidUser,
                   color: Colors.grey.shade400,
-                  size: 60,
+                  size: isNormalSize ? 50 : 30,
                 )
                     : null,
               ),
@@ -184,16 +199,21 @@ class _DrawerMenuState extends State<DrawerMenu> {
       ),
     );
 
+    EdgeInsets padding = MediaQuery.of(FlutterUI.getCurrentContext()!).viewPadding;
+
+
+    print(padding.right);
+
     if (colTop != null) {
       return Container(
         color: colTop,
-        height: isNormalSize ? 170 : 100,
+        height: isNormalSize ? 170 : 70 + padding.top,
         child: wInner
       );
     }
     else {
       return SizedBox(
-          height: isNormalSize ? 170 : 100,
+          height: isNormalSize ? 170 : 70 + padding.top,
           child: wInner
       );
     }
@@ -234,18 +254,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
   List<Widget> _buildDrawerFooter(BuildContext context, bool isOffline, bool isNormalSize) {
     var footerEntries = [
-      _buildFooterDivider(context),
-      _buildFooterEntry(
-        context: context,
-        text: FlutterUI.translate("Settings"),
-        leadingIcon: Icons.settings_outlined,
-        onTap: widget.onSettingsPressed,
-        isNormalSize: isNormalSize,
-      ),
+      if (isNormalSize) _buildFooterDivider(context),
     ];
     if (!isOffline) {
       footerEntries.addAll([
-        _buildFooterDivider(context),
         _buildFooterEntry(
           context: context,
           text: FlutterUI.translate("Change password"),
@@ -255,6 +267,23 @@ class _DrawerMenuState extends State<DrawerMenu> {
         ),
       ]);
     }
+
+    if (!isNormalSize) {
+      footerEntries.add(_buildFooterVerticalDivider(context));
+    }
+    else {
+      footerEntries.add(_buildFooterDivider(context));
+    }
+
+    footerEntries.add(
+      _buildFooterEntry(
+        context: context,
+        text: FlutterUI.translate("Settings"),
+        leadingIcon: Icons.settings_outlined,
+        onTap: widget.onSettingsPressed,
+        isNormalSize: isNormalSize,
+      )
+    );
 
     if (isNormalSize) {
       final List<Widget> children = [];
@@ -291,12 +320,17 @@ class _DrawerMenuState extends State<DrawerMenu> {
       }
     } else {
       footerEntries.addAll([
+        _buildFooterVerticalDivider(context),
         if (IUiService().canRouteToAppOverview()) _buildAppsEntry(context, isNormalSize),
+        _buildFooterVerticalDivider(context),
         if (!isOffline) _buildLogoutEntry(context, isNormalSize),
       ]);
     }
 
-    footerEntries.add(_buildFooterDivider(context));
+    if (isNormalSize) {
+      footerEntries.add(_buildFooterDivider(context));
+    }
+
     return footerEntries;
   }
 
@@ -345,7 +379,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return Divider(
       // Specifically requested color mix
       color: JVxColors.dividerColor(Theme.of(context)),
-      height: 1,
+      height: 1
     );
   }
 
@@ -364,16 +398,18 @@ class _DrawerMenuState extends State<DrawerMenu> {
     required String text,
     required BuildContext context,
     FontWeight? fontWeight,
+    double? fontSize,
     BoxConstraints? constraints,
   }) {
     Widget child = Container(
       constraints: constraints,
-      width: double.infinity,
+//      width: double.infinity,
       child: FittedBox(
         alignment: Alignment.centerLeft,
         child: Text(
           text,
           style: TextStyle(
+            fontSize: fontSize,
             fontWeight: fontWeight,
           ),
         ),

@@ -78,6 +78,8 @@ class AppStyle extends InheritedWidget {
   static const String menuDrawerBackground = "theme.data.drawer.background";
   static const String menuDrawerBackgroundTop = "theme.data.drawer.backgroundTop";
   static const String menuDrawerMenuIconColor = "theme.data.drawer.menuIconColor";
+  static const String menuDrawerCompactHeader = "theme.data.drawer.compactHeader";
+  static const String menuDrawerCompactFooter = "theme.data.drawer.compactFooter";
 
   static const String menuGridBackground = "theme.data.gridMenu.background";
   static const String menuGridPadding = "theme.data.gridMenu.padding";
