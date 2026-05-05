@@ -32,6 +32,8 @@ import 'custom_component.dart';
 import 'custom_menu_item.dart';
 import 'custom_screen.dart';
 
+typedef ResendRequestFunction = Future<Response> Function({Map<String, String>? headers, Map<String, Cookie>? cookies});
+
 abstract class AppManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -142,7 +144,7 @@ abstract class AppManager {
   void modifyFollowUpCommands(BaseCommand parentCommand, List<BaseCommand> followUpCommands) {}
 
   /// Can be used to modify the responses list after each request
-  void modifyResponses(ApiInteraction responses) {}
+  void modifyResponses(ApiInteraction interaction) {}
 
   /// Can be used to change the request or log request uri
   void beforeRequest(ApiRequest request, Uri uri) {}
@@ -154,12 +156,18 @@ abstract class AppManager {
   Future<Response> handleResponse(
     ApiRequest request,
     Response originalResponse,
-    Future<Response> Function() resendRequest,
+    ResendRequestFunction resendRequest,
   ) =>
       Future.value(originalResponse);
 
+  /// Shows a document and returns [true] if processing should stop (consumed) or [false] if
+  /// processing should continue (not consumed)
+  bool showDocument(ApiRequest? request, String url) {
+    return false;
+  }
+
   /// Is called if a new startup is initiated.
-  void onInitStartup() {}
+  Future<void> onInitStartup() async {}
 
   /// Is called if a new startup is successfully finished.
   void onSuccessfulStartup() {}

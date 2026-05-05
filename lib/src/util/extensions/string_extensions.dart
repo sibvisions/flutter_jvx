@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 
 extension StringExtension on String {
@@ -91,4 +93,28 @@ extension StringExtension on String {
         return Alignment.center; // Fallback
     }
   }
+
+  /// Current string to hex representation
+  String toHex() {
+    final bytes = utf8.encode(this);
+    final StringBuffer buffer = StringBuffer();
+
+    for (final b in bytes) {
+      buffer.write(b.toRadixString(16).padLeft(2, '0'));
+    }
+
+    return buffer.toString();
+  }
+
+  /// Creates a new string from hex representation
+  static String fromHex(String hex) {
+    final List<int> bytes = [];
+
+    for (var i = 0; i < hex.length; i += 2) {
+      bytes.add(int.parse(hex.substring(i, i + 2), radix: 16));
+    }
+
+    return utf8.decode(bytes);
+  }
+
 }

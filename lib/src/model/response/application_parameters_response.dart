@@ -29,11 +29,6 @@ class ApplicationParametersResponse extends ApiResponse {
   /// Tab title
   final String? applicationTitleWeb;
 
-  final String? authenticated;
-
-  /// Which screen to open, is a screen name
-  final String? openScreen;
-
   /// Additional parameters
   final Map<String, dynamic> parameters;
 
@@ -47,8 +42,6 @@ class ApplicationParametersResponse extends ApiResponse {
   ApplicationParametersResponse.fromJson(super.json)
       : applicationTitleName = json[ApiObjectProperty.applicationTitleName],
         applicationTitleWeb = json[ApiObjectProperty.applicationTitleWeb],
-        authenticated = json[ApiObjectProperty.authenticated],
-        openScreen = json[ApiObjectProperty.openScreen],
         designModeAllowed = ParseUtil.parseBool(json[ApiObjectProperty.designMode]),
         parameters = extractParameters(json),
         super.fromJson();
@@ -60,8 +53,6 @@ class ApplicationParametersResponse extends ApiResponse {
     copy.remove(ApiObjectProperty.name);
     copy.remove(ApiObjectProperty.applicationTitleName);
     copy.remove(ApiObjectProperty.applicationTitleWeb);
-    copy.remove(ApiObjectProperty.authenticated);
-    copy.remove(ApiObjectProperty.openScreen);
     copy.remove(ApiObjectProperty.designMode);
 
     return copy;
@@ -74,7 +65,6 @@ class ApplicationParametersResponse extends ApiResponse {
   @override
   String propertiesAsString() {
     return "applicationTitleName: $applicationTitleName, applicationTitleWeb: $applicationTitleWeb, "
-        "authenticated: $authenticated, openScreen: $openScreen, "
         "designModeAllowed: $designModeAllowed, parameters: $parameters, ${super.propertiesAsString()}";
   }
 

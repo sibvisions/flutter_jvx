@@ -115,7 +115,10 @@ dependencies:
   flutter_keyboard_visibility: ^6.0.0
   flutter_slidable: ^4.0.0
   action_slider: ^0.7.0
+
   webview_flutter: ^4.0.0
+  webview_cookie_manager_plus: ^2.0.0
+
   card_loading: ^0.3.0
   flutter_treeview: #^1.0.7+1
     git:

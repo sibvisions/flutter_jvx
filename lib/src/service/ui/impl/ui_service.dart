@@ -83,7 +83,7 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Holds all custom screen modifications
-  AppManager? appManager;
+  AppManager? _appManager;
 
   /// Unmodified menu model sent from server
   MenuModel? _originalMenuModel;
@@ -113,7 +113,7 @@ class UiService implements IUiService {
   final List<String> _activeContents = [];
 
   /// The currently focused object.
-  String? focusedComponentId;
+  String? _focusedComponentId;
 
   /// Provides translations.
   final I18n _i18n = I18n();
@@ -338,12 +338,12 @@ class UiService implements IUiService {
 
   @override
   AppManager? getAppManager() {
-    return appManager;
+    return _appManager;
   }
 
   @override
   void setAppManager(AppManager? appManager) {
-    appManager = appManager;
+    _appManager = appManager;
   }
 
   @override
@@ -921,12 +921,12 @@ class UiService implements IUiService {
 
   @override
   CustomScreen? getCustomScreen(String key) {
-    return appManager?.customScreens[key];
+    return _appManager?.customScreens[key];
   }
 
   @override
   CustomComponent? getCustomComponent(String componentName) {
-    Map<String, CustomComponent>? comps = appManager?.replaceComponents;
+    Map<String, CustomComponent>? comps = _appManager?.replaceComponents;
 
     if (comps != null) {
       return comps[componentName];
@@ -1057,27 +1057,27 @@ class UiService implements IUiService {
   @override
   void setFocus(String componentId) {
     removeFocus();
-    focusedComponentId = componentId;
+    _focusedComponentId = componentId;
   }
 
   @override
   FlComponentModel? getFocus() {
-    if (focusedComponentId == null) {
+    if (_focusedComponentId == null) {
       return null;
     }
 
-    return IStorageService().getComponentModel(componentId: focusedComponentId!);
+    return IStorageService().getComponentModel(componentId: _focusedComponentId!);
   }
 
   @override
   bool hasFocus(String? componentId) {
-    return componentId != null && focusedComponentId == componentId;
+    return componentId != null && _focusedComponentId == componentId;
   }
 
   @override
   void removeFocus([String? componentId]) {
     if (componentId == null || hasFocus(componentId)) {
-      focusedComponentId = null;
+      _focusedComponentId = null;
     }
   }
 
@@ -1336,9 +1336,9 @@ class UiService implements IUiService {
       menuGroupModels.addAll(menuModel.copy().menuGroups);
     }
 
-    if (appManager != null) {
-      appManager!.customScreens.forEach((key, screen) {
-        CustomMenuItem? customMenuItem = appManager!.customMenuItems[key];
+    if (_appManager != null) {
+      _appManager!.customScreens.forEach((key, screen) {
+        CustomMenuItem? customMenuItem = _appManager!.customMenuItems[key];
 
         MenuItemModel? oldMenuItem;
 
@@ -1410,7 +1410,7 @@ class UiService implements IUiService {
 
     MenuModel menuModelNew = MenuModel(menuGroups: menuGroupModels);
 
-    appManager?.modifyMenuModel(menuModelNew);
+    _appManager?.modifyMenuModel(menuModelNew);
 
     return menuModelNew;
   }

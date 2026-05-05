@@ -20,6 +20,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/show_document_response.dart';
+import '../../../ui/i_ui_service.dart';
 import '../i_response_processor.dart';
 
 class ShowDocumentProcessor implements IResponseProcessor<ShowDocumentResponse> {
@@ -42,20 +43,24 @@ class ShowDocumentProcessor implements IResponseProcessor<ShowDocumentResponse> 
         url = splitUrl.first;
       }
 
-      Uri? uri = Uri.tryParse(url);
+      bool consumed = IUiService().getAppManager()?.showDocument(request, url) ?? false;
 
-      if (uri != null) {
-        launchUrl(
-          uri,
-          mode: LaunchMode.externalApplication,
-          webOnlyWindowName: splitUrl.length > 2 ? splitUrl[2] : null,
-        );
-      } else {
-        launchUrlString(
-          url,
-          mode: LaunchMode.externalApplication,
-          webOnlyWindowName: splitUrl.length > 2 ? splitUrl[2] : null,
-        );
+      if (!consumed) {
+        Uri? uri = Uri.tryParse(url);
+
+        if (uri != null) {
+          launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+            webOnlyWindowName: splitUrl.length > 2 ? splitUrl[2] : null,
+          );
+        } else {
+          launchUrlString(
+            url,
+            mode: LaunchMode.externalApplication,
+            webOnlyWindowName: splitUrl.length > 2 ? splitUrl[2] : null,
+          );
+        }
       }
     }
 

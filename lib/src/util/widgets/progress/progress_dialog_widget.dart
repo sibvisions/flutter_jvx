@@ -56,7 +56,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> with SingleTickerP
       CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
 
-    _controller.forward(); // Startet Einblenden
+    _controller.forward();
   }
 
   @override

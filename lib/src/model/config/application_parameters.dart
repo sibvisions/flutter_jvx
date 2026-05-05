@@ -19,16 +19,12 @@ import '../response/application_parameters_response.dart';
 class ApplicationParameters {
   String? applicationTitleName;
   String? applicationTitleWeb;
-  String? authenticated;
-  String? openScreen;
   bool designModeAllowed;
   Map<String, dynamic> parameters;
 
   ApplicationParameters({
     this.applicationTitleName,
     this.applicationTitleWeb,
-    this.authenticated,
-    this.openScreen,
     bool? designModeAllowed,
     Map<String, dynamic>? parameters,
   })  : designModeAllowed = designModeAllowed ?? false,
@@ -37,8 +33,6 @@ class ApplicationParameters {
   void applyResponse(ApplicationParametersResponse other) {
     applicationTitleName = other.applicationTitleName ?? applicationTitleName;
     applicationTitleWeb = other.applicationTitleWeb ?? applicationTitleWeb;
-    authenticated = other.authenticated ?? authenticated;
-    openScreen = other.openScreen ?? openScreen;
     designModeAllowed = other.designModeAllowed ?? designModeAllowed;
     parameters = {...parameters, ...(other.parameters)};
   }
@@ -46,16 +40,12 @@ class ApplicationParameters {
   ApplicationParameters copyWith({
     String? applicationTitleName,
     String? applicationTitleWeb,
-    String? authenticated,
-    String? openScreen,
     bool? designModeAllowed,
     Map<String, dynamic>? parameters,
   }) {
     return ApplicationParameters(
       applicationTitleName: applicationTitleName ?? this.applicationTitleName,
       applicationTitleWeb: applicationTitleWeb ?? this.applicationTitleWeb,
-      authenticated: authenticated ?? this.authenticated,
-      openScreen: openScreen ?? this.openScreen,
       designModeAllowed: designModeAllowed ?? this.designModeAllowed,
       parameters: {
         ...this.parameters,

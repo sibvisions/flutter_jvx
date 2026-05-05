@@ -44,6 +44,7 @@ export 'src/custom/custom_component.dart';
 export 'src/custom/custom_header.dart';
 export 'src/custom/custom_menu_item.dart';
 export 'src/custom/custom_screen.dart';
+export 'src/custom/security/entraid_app_manager.dart';
 export 'src/flutter_ui.dart';
 // Mask
 export 'src/mask/jvx_overlay.dart';
@@ -161,5 +162,6 @@ export 'src/util/widgets/embedded_code_scanner.dart';
 export 'src/util/widgets/embedded_webview.dart';
 export 'src/util/widgets/multi_value_listenable_builder.dart';
 export 'src/util/widgets/progress/progress_button.dart';
-export 'src/util/widgets/progress/progress_dialog_widget.dart';
+export 'src/util/widgets/progress/progress_dialog_service.dart';
+export 'src/util/widgets/web/webview_dialog_service.dart';
 export 'src/util/widgets/status_banner.dart';

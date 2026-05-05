@@ -201,9 +201,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
     EdgeInsets padding = MediaQuery.of(FlutterUI.getCurrentContext()!).viewPadding;
 
-
-    print(padding.right);
-
     if (colTop != null) {
       return Container(
         color: colTop,

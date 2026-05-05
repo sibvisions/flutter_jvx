@@ -35,7 +35,7 @@ import '../../i_command_processor.dart';
 class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   @override
   Future<void> beforeProcessing(StartupCommand command, BaseCommand? origin) async {
-    IUiService().getAppManager()?.onInitStartup();
+    await IUiService().getAppManager()?.onInitStartup();
   }
 
   @override

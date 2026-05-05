@@ -102,6 +102,7 @@ import 'util/widgets/future_nested_navigator.dart';
 import 'util/web/browser_tab_title_util_non_web.dart'
 if (dart.library.js_interop) 'util/web/browser_tab_title_util_web.dart' as browser_tab_title_util;
 import 'util/widgets/progress/progress_dialog_service.dart';
+import 'util/widgets/web/webview_dialog_service.dart';
 
 T? cast<T>(dynamic x) => x is T ? x : null;
 
@@ -1588,6 +1589,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
 
     if (AuthOverlay.isVisible(context)) {
+      return true;
+    }
+
+    if (WebViewDialogService.isVisible()) {
       return true;
     }
 

@@ -26,6 +26,7 @@ import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../config/api/api_route.dart';
+import '../../../../custom/app_manager.dart';
 import '../../../../exceptions/invalid_server_response_exception.dart';
 import '../../../../exceptions/view_exception.dart';
 import '../../../../flutter_ui.dart';
@@ -481,13 +482,15 @@ class OnlineApiRepository extends IRepository {
       headersSupplier: () {
         List<Cookie>? requestCookies;
 
+        AppManager? appman = IUiService().getAppManager();
+
         if (!kIsWeb) {
           requestCookies = getCookies().toList();
-          IUiService().getAppManager()?.modifyCookies(null, requestCookies);
+          appman?.modifyCookies(null, requestCookies);
         }
 
         Map<String, dynamic> requestHeaders = getHeaders();
-        IUiService().getAppManager()?.modifyHeaders(null, requestHeaders);
+        appman?.modifyHeaders(null, requestHeaders);
 
         return {
           if (requestCookies != null) HttpHeaders.cookieHeader: requestCookies.map((e) => e.toString()).join("; "),
@@ -654,18 +657,19 @@ class OnlineApiRepository extends IRepository {
       }
 
       client!.options.baseUrl = IConfigService().baseUrl.value!.toString();
-      sendFunction() => _sendRequest(
-            request,
-            client: client!,
-            headers: _headers,
-            cookies: _cookies,
-            clientId: IUiService().clientId.value,
-          );
+
+      Future<Response> sendFunction({Map<String, Cookie>? cookies, Map<String, String>? headers}) => _sendRequest(
+        request,
+        client: client!,
+        headers: _mergeHeaders(_headers, headers),
+        cookies: _mergeCookies(_cookies, cookies),
+        clientId: IUiService().clientId.value,
+      );
 
       Response response;
+
       try {
         if (retryRequest ?? true) {
-
           response = await retry(
             sendFunction,
             retryIf: (e) => shouldRetry(e),
@@ -693,8 +697,10 @@ class OnlineApiRepository extends IRepository {
         resetAliveInterval();
       }
 
-      if (IUiService().getAppManager() != null) {
-        response = await IUiService().getAppManager()!.handleResponse(request, response, sendFunction);
+      AppManager? appman = IUiService().getAppManager();
+
+      if (appman != null) {
+        response = await appman.handleResponse(request, response, sendFunction);
       }
 
       if (response.statusCode != null && response.statusCode! >= 400 && response.statusCode! <= 599) {
@@ -736,7 +742,18 @@ class OnlineApiRepository extends IRepository {
 
       List<dynamic> jsonResponse = [];
 
-      if (response.statusCode != 204) {
+      int statusCode = response.statusCode ?? 0;
+
+      if (statusCode >= 300 && statusCode < 400
+          //not modified
+          && statusCode != 304) {
+        //no json response
+      }
+      else if (statusCode >= 200 && statusCode < 300
+               // no content
+               && statusCode != 204
+               // partial content
+               && statusCode != 206) {
         var contentTypes = response.headers[Headers.contentTypeHeader];
 
         if (contentTypes == null
@@ -754,19 +771,19 @@ class OnlineApiRepository extends IRepository {
         }
       }
 
-      ApiInteraction apiInteraction = _responseParser(jsonResponse, request: request);
+      ApiInteraction interaction = _responseParser(jsonResponse, request: request);
 
-      IUiService().getAppManager()?.modifyResponses(apiInteraction);
+      appman?.modifyResponses(interaction);
 
       if (IConfigService().offline.value) {
-        var viewResponse = apiInteraction.responses.firstWhereOrNull((element) => element is MessageView);
+        var viewResponse = interaction.responses.firstWhereOrNull((element) => element is MessageView);
         if (viewResponse != null) {
           var messageViewResponse = viewResponse as MessageView;
           throw ViewException("Server sent error: $messageViewResponse");
         }
       }
 
-      return apiInteraction;
+      return interaction;
     } catch (error, stack) {
       if (FlutterUI.logAPI.cl(Lvl.e)) {
         FlutterUI.logAPI.e("Error while sending ${request.runtimeType}\n\n$error\n\n$stack");
@@ -854,24 +871,27 @@ class OnlineApiRepository extends IRepository {
       throw Exception("URI belonging to ${request.runtimeType} not found, add it to the apiConfig!");
     }
 
+    Uri uri = Uri(path: "/${route.route}");
+
+    request.requestBaseUrl = client.options.baseUrl;
+    request.requestPath = uri.path;
+
+    AppManager? appman = IUiService().getAppManager();
+
     List<Cookie>? requestCookies;
     if (!kIsWeb) {
       requestCookies = cookies.values.toList();
-      IUiService().getAppManager()?.modifyCookies(request, requestCookies);
+      appman?.modifyCookies(request, requestCookies);
     }
 
     Map<String, dynamic> requestHeaders = Map.of(headers);
-    IUiService().getAppManager()?.modifyHeaders(request, requestHeaders);
+    appman?.modifyHeaders(request, requestHeaders);
 
     if (compress) {
       requestHeaders["content-type"] = ContentType.binary.mimeType;
     }
 
-    Uri uri = Uri(path: "/${route.route}");
-
-    if (IUiService().getAppManager() != null) {
-      IUiService().getAppManager()!.beforeRequest(request, uri);
-    }
+    appman?.beforeRequest(request, uri);
 
     Response response = await client.requestUri(
       uri,
@@ -979,4 +999,32 @@ class OnlineApiRepository extends IRepository {
 
     return ApiInteraction(responses: parsedResponse, request: request);
   }
+
+  Map<String, Cookie> _mergeCookies(Map<String, Cookie>? existing, Map<String, Cookie>? additional) {
+    Map<String, Cookie> merge = existing ?? {};
+
+    if (additional != null) {
+      merge.addAll(additional);
+    }
+
+    return merge;
+  }
+
+  Map<String, String> _mergeHeaders(Map<String, String>? existing, Map<String, String>? additional) {
+    if (additional == null) {
+      return existing ?? {};
+    }
+    else {
+      if (existing != null) {
+        Map<String, String> merge = Map.of(existing);
+        merge.addAll(additional);
+
+        return merge;
+      }
+      else {
+        return additional;
+      }
+    }
+  }
+
 }

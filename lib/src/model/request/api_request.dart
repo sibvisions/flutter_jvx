@@ -19,6 +19,16 @@ import '../../util/extensions/object_extensions.dart';
 /// Base class for all outgoing api requests
 abstract class ApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The request base Url for
+  String? requestBaseUrl;
+
+  /// The request path
+  String? requestPath;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -36,7 +46,7 @@ abstract class ApiRequest {
 
   @override
   String toString() {
-    return "$className{${toJson()}}";
+    return "{requestBaseUrl=$requestBaseUrl, requestPath=$requestPath, $className{${toJson()}}}";
   }
 
 }
