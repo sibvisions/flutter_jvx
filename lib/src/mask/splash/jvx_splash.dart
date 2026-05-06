@@ -149,9 +149,10 @@ class _JVxSplashState extends State<JVxSplash> {
 
   String _appTitle()
   {
-    return IAppService().temporaryTitle() ?? widget.appName
+    return IAppService().temporaryTitle()
         ?? IUiService().applicationParameters.value.applicationTitleName
         ?? IConfigService().applicationStyle.value?["login.title"]
+        ?? widget.appName
         ?? IConfigService().getAppConfig()?.title
         ?? FlutterUI.packageInfo.appName;
   }

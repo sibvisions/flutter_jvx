@@ -1366,7 +1366,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                           _getStartupErrorDialog(
                             contextD,
                             snapshot,
-                            retry: () => IAppService().startApp(),
+                            //re-use the temporary title, if set
+                            retry: () => IAppService().startApp(appTitle: IAppService().temporaryTitle()),
                             returnToApps: returnToApps,
                           )
                         ];

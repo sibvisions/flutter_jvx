@@ -15,7 +15,6 @@
  */
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -36,6 +35,7 @@ class EntraIDAppManager extends AppManager {
   bool _webAuth = false;
 
   /// for webview http code debug only
+  // ignore: unused_field
   Timer? _patchTimer;
 
   @override
