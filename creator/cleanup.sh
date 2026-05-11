@@ -43,6 +43,7 @@ rm -r $pubCache/hosted/pub.dev/flutter_secure_storage*
 rm -r $pubCache/hosted/pub.dev/local_auth*
 rm -r $pubCache/hosted/pub.dev/flutter_inappwebview*
 rm -r $pubCache/hosted/pub.dev/haptic_feedback*
+rm -r $pubCache/hosted/pub.dev/webview_cookie_manager_plus*
 rm -r $pubCache/git/fix_html-editor-enhanced*
 rm -r $pubCache/git/flutter_keyboard_visibility-*
 
