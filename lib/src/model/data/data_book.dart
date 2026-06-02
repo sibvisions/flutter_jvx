@@ -654,6 +654,10 @@ class DataBook {
 
   /// Encrypts [values] of [columnNames] if necessary.
   Future<List<dynamic>?> encryptValues(List<String> columnNames, List<dynamic> values) async {
+    if (values.isEmpty) {
+      return null;
+    }
+
     List<dynamic>? valuesEncrypted;
 
     if (metaData != null) {
