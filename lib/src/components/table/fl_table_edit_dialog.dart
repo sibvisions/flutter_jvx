@@ -37,6 +37,7 @@ import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import '../editor/cell_editor/linked/fl_linked_cell_editor.dart';
 import '../editor/text_area/fl_text_area_widget.dart';
+import 'fl_table_header_cell.dart';
 import 'fl_table_widget.dart';
 
 /// A dialog that allows editing columns in a table.
@@ -141,7 +142,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   void initState() {
     super.initState();
 
-    widget.newValueNotifier.addListener(receiveNewValues);
+    widget.newValueNotifier.addListener(_receiveNewValues);
 
     //don't use binary columns without image viewer
     for (int i = 0; i < widget.columnDefinitions.length; i++) {
@@ -269,9 +270,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                 width: labelColumnWidth,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 5.0),
-                  child: Text(
-                    columnDefinitions[i].label,
-                    style: widget.model.createTextStyle(),
+                  child: Align(
+                    alignment: AlignmentGeometry.centerLeft,
+                    child: _formatLabel(columnDefinitions[i].label)
                   ),
                 ),
               ),
@@ -349,7 +350,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       _handleCancel(true);
     }
 
-    widget.newValueNotifier.removeListener(receiveNewValues);
+    widget.newValueNotifier.removeListener(_receiveNewValues);
 
     cellEditors.forEach((cellEditor) {
       cellEditor.dispose();
@@ -362,7 +363,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void receiveNewValues() {
+  void _receiveNewValues() {
     Map<String, dynamic>? newValues = widget.newValueNotifier.value;
 
     hasNewValueChanges = false;
@@ -458,6 +459,37 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     }
 
     return true;
+  }
+
+  Widget _formatLabel(String label) {
+    if (label == FlTableHeaderCell.CHECKBOX_SELECTED) {
+      return IgnorePointer(
+          child: Checkbox(
+            value: true,
+            onChanged: (value) {},
+            visualDensity: const VisualDensity(
+                horizontal: VisualDensity.minimumDensity,
+                vertical: VisualDensity.minimumDensity
+            ),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          )
+      );
+    }
+    else if (label == FlTableHeaderCell.CHECKBOX_DESELECTED) {
+      return IgnorePointer(
+        child: Checkbox(
+          value: false,
+          onChanged: (value) {},
+          visualDensity: const VisualDensity(
+            horizontal: VisualDensity.minimumDensity,
+            vertical: VisualDensity.minimumDensity
+          ),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        )
+      );
+    }
+
+    return Text(label, style: widget.model.createTextStyle());
   }
 
 }

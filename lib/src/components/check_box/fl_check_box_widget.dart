@@ -21,6 +21,23 @@ import '../../util/jvx_colors.dart';
 import '../button/radio/fl_radio_button_widget.dart';
 
 class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  const FlCheckBoxWidget({
+    super.key,
+    required super.model,
+    required super.focusNode,
+    required super.radioFocusNode,
+    super.onPress,
+    super.onPressDown,
+    super.onPressUp,
+    super.shrinkSize,
+    super.wrapper
+  });
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,19 +87,4 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
     ));
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  const FlCheckBoxWidget({
-    super.key,
-    required super.model,
-    required super.focusNode,
-    required super.radioFocusNode,
-    super.onPress,
-    super.onPressDown,
-    super.onPressUp,
-    super.shrinkSize,
-    super.wrapper
-  });
 }
