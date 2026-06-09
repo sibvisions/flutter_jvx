@@ -240,6 +240,10 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   Future<bool?> _authenticateUser() async {
+    if (kIsWeb) {
+      return false;
+    }
+
     _auth ??= LocalAuthentication();
 
     try {

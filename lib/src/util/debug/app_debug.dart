@@ -324,7 +324,7 @@ class AppDebug extends StatelessWidget {
 
                 // ignore: use_build_context_synchronously
                 if (!context.mounted) return;
-                if (Platform.isIOS) {
+                if (!kIsWeb && Platform.isIOS) {
                   await showCupertinoDialog(
                     context: context,
                     builder: (context) {

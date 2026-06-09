@@ -1521,7 +1521,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       if (repository is OnlineApiRepository) {
         if (repository.connected) {
           // Workaround for https://github.com/dart-lang/sdk/issues/47807
-          if (Platform.isIOS) {
+          if (!kIsWeb && Platform.isIOS) {
             // Force close sockets
             await repository.stop();
             await repository.start();

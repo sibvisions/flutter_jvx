@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -40,7 +41,7 @@ class AuthService extends ChangeNotifier {
   static final bool biometricOnly = false;
 
   /// whether to use native channel communication
-  static final bool _useChannel = Platform.isIOS || Platform.isAndroid;
+  static final bool _useChannel = !kIsWeb && (Platform.isIOS || Platform.isAndroid);
 
   /// short pause definition
   static final Duration _shortPause = const Duration(seconds: 45);
@@ -78,6 +79,12 @@ class AuthService extends ChangeNotifier {
   AuthService._internal();
 
   Future<void> setup() async {
+    if (kIsWeb) {
+      _isAuthSupported = false;
+      _isBiometricAuthPossible = false;
+      return;
+    }
+
     _isAuthSupported = await _auth.isDeviceSupported();
 
     try {

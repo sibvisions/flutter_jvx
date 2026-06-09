@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:universal_io/io.dart';
@@ -27,7 +28,7 @@ mixin TtsCapability<T extends StatefulWidget> on State<T> {
   Future<void> initTts({String? languageCode}) {
     return ttsInit ??= () async {
       await tts.awaitSpeakCompletion(true);
-      if (Platform.isIOS || Platform.isMacOS) {
+      if (!kIsWeb && (Platform.isIOS || Platform.isMacOS)) {
         await tts.autoStopSharedSession(true);
       }
 

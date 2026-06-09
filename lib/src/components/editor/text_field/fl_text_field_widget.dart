@@ -323,7 +323,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
             try {
               await Clipboard.setData(ClipboardData(text: textController.text));
 
-              if (!Platform.isAndroid) {
+              if (kIsWeb || !Platform.isAndroid) {
                 // ignore: use_build_context_synchronously
                 WidgetUtil.showToast(context, "Copied to clipboard");
               }
