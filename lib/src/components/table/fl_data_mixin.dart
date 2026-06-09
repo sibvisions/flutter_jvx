@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
@@ -234,10 +236,14 @@ mixin FlDataMixin {
       );
     }
 
-    return ICommandService().sendCommands(commands, delayUILocking: true).then((result) {
+    return ICommandService().sendCommands(commands, delayUILocking: true).then((result) async {
       if (result.success) {
         if (afterSelectCommand != null) {
-          afterSelectCommand.call();
+          List<BaseCommand> afterCommands = await afterSelectCommand.call();
+
+          if (afterCommands.isNotEmpty) {
+            unawaited(ICommandService().sendCommands(afterCommands));
+          }
         }
       }
       else {
