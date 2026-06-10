@@ -166,11 +166,11 @@ class CellFormat {
   int? leftIndent;
 
   CellFormat.fromString(String? formatString) {
-
     List<String> entries = formatString?.asList(";") ?? [];
 
     for (int entryIndex = 0; entryIndex < entries.length; entryIndex++) {
       dynamic entryValue = entries[entryIndex];
+
       if (entryValue == null) {
         continue;
       }
@@ -200,7 +200,7 @@ class CellFormat {
           break;
         default:
           if (FlutterUI.log.cl(Lvl.e)) {
-            FlutterUI.log.e("Invalid form index: ($entryIndex)");
+            FlutterUI.log.e("Invalid format index: ($entryIndex)");
           }
       }
     }

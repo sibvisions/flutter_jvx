@@ -317,28 +317,27 @@ class DataBook {
       var recordFormat = recordFormats[key];
 
       if (recordFormat == null) {
-        recordFormat = RecordFormat();
-
-        recordFormats[key] = recordFormat;
+        recordFormats[key] = newRecordFormat;
 
         changed = true;
       }
+      else {
+        RowFormat? oldRowFormat;
 
-      RowFormat? oldRowFormat;
+        for (int rowIndex in recordFormat.keys) {
+          if (!changed) {
+            oldRowFormat = recordFormat[rowIndex];
 
-      for (int rowIndex in recordFormat.keys) {
-        if (!changed) {
-          oldRowFormat = recordFormat[rowIndex];
-
-          if (oldRowFormat == null) {
-            changed = true;
+            if (oldRowFormat == null) {
+              changed = true;
+            }
+            else {
+              changed |= oldRowFormat != newRecordFormat[rowIndex]!;
+            }
           }
-          else {
-            changed |= oldRowFormat == newRecordFormat[rowIndex]!;
-          }
+
+          recordFormat[rowIndex] = newRecordFormat[rowIndex]!;
         }
-
-        recordFormat[rowIndex] = newRecordFormat[rowIndex]!;
       }
     }
 
