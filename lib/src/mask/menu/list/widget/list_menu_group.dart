@@ -22,7 +22,6 @@ import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/response/device_status_response.dart';
 import '../../../../util/jvx_colors.dart';
-import '../../grid/grid_menu.dart';
 import '../../grid/widget/grid_menu_header.dart';
 import '../../menu.dart';
 import 'list_menu_item.dart';
