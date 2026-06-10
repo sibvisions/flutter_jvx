@@ -772,7 +772,6 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   Widget _withBorder(BuildContext context, Widget list) {
     double borderRadius = AppStyle.of(context).direct.listBorderRadius();
 
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),

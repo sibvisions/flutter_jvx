@@ -131,6 +131,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// If the selection has to be cancelled.
   bool cancelSelect = false;
 
+  /// last loading time in millis
+  int _lastLoad = -1;
+
   /// If the table should show a floating insert button
   bool get showFloatingButton =>
       !model.hideFloatButton &&
@@ -140,6 +143,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       // Only shows the floating button if we are bigger than 100x150
       ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
       ((layoutData.layoutPosition?.width ?? 0.0) >= 100);
+
+  /// Whether list is loading data
+  bool _loadingData = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -192,7 +198,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       onEndEditing: setValueOnEndEditing,
       onValueChanged: _setValueChanged,
       onRefresh: refresh,
-      onLoadMore: _loadMore,
+      onEndScroll: _loadMore,
       onLongPress: _onLongPress,
       onTap: _onTimedCellTap,
       onHeaderTap: _sortColumn,
@@ -362,7 +368,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       _closeDialog();
       _recalculateTableSize(recalculateWidth || _calcOnDataReceived || dataChunk.fromStart);
       _calcOnDataReceived = false;
+
+      _loadingData = false;
     } else {
+      _loadingData = false;
+
       setState(() {});
     }
   }
@@ -454,11 +464,20 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   /// Increments the page count and loads more data.
-  void _loadMore() {
-    if (!dataChunk.isAllFetched) {
+  bool _loadMore() {
+    int now = DateTime.now().millisecondsSinceEpoch;
+    if (!dataChunk.isAllFetched && !_loadingData && _lastLoad + 200 < now) {
+
+      _loadingData = true;
+      _lastLoad = now;
+
       pageCount++;
       _subscribe();
+
+      return true;
     }
+
+    return false;
   }
 
   void _onTimedCellTap(int rowIndex, String columnName, ICellEditor cellEditor) {

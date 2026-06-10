@@ -115,6 +115,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   /// if the table has not yet been scrolled.
   int lastScrolledToIndex = -1;
 
+  /// last loading time in millis
+  int _lastLoad = -1;
+
   /// If the last scrolled item got scrolled to the top edge or bottom edge.
   bool? scrolledIndexTopAligned;
 
@@ -130,6 +133,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   bool showSearchInit = false;
   /// whether to show the search field
   bool showSearch = true;
+
+  /// Whether list is loading data
+  bool _loadingData = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Getters
@@ -266,7 +272,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                           autoScrollEnabled: scrollToSelected,
                           metaData: _metaData,
                           chunkData: isConcatMask ? _chunkDataConcatMask! : _chunkData!,
-                          onLoadMore: _loadMore,
+                          onEndScroll: _loadMore,
                           model: tableModel,
                           onTap: _onRowTapped,
                           onRefresh: _refresh,
@@ -404,6 +410,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
 
     if (mounted) {
+      _loadingData = false;
+
       setState(() {});
     }
   }
@@ -560,13 +568,22 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         );
   }
 
-  void _loadMore() {
-    if (_chunkData != null && !_chunkData!.isAllFetched) {
+  bool _loadMore() {
+    int now = DateTime.now().millisecondsSinceEpoch;
+    if (_chunkData != null && !_chunkData!.isAllFetched && !_loadingData && _lastLoad + 200 < now) {
+
+      _loadingData = true;
+      _lastLoad = now;
+
       //don't scroll to selected row if we load more records
       scrollToSelected = false;
       scrollingPage++;
       _subscribe();
+
+      return true;
     }
+
+    return false;
   }
 
   void _subscribe() {

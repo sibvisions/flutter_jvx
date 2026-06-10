@@ -46,6 +46,7 @@ typedef TableHeaderTapCallback = void Function(String column);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
 typedef TableSlideActionFactory = List<Widget> Function(BuildContext context, int row);
 typedef TableScrollCallback = Function(ScrollNotification scrollNotification);
+typedef TableScrollEndCallback = bool Function();
 
 class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,11 +71,11 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The callback for long-press on cells.
   final TableLongPressCallback? onLongPress;
 
-  /// The callback in case of loading more data.
-  final VoidCallback? onLoadMore;
-
   /// The callback in case of user scrolled the table.
   final TableScrollCallback? onScroll;
+
+  /// Gets called when the user scrolled to the edge of the list.
+  final TableScrollEndCallback? onEndScroll;
 
   /// The callback for data refresh
   final Future<void> Function()? onRefresh;
@@ -141,7 +142,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.onHeaderDoubleTap,
     this.onLongPress,
     this.onScroll,
-    this.onLoadMore,
+    this.onEndScroll,
     this.onRefresh,
     this.onEndEditing,
     this.onValueChanged,
@@ -245,6 +246,15 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
 
     List<Widget> children = [LayoutBuilder(builder: _createTable)];
 
+    //show "more records available"
+    if (!widget.chunkData.isAllFetched) {
+      children.add(Positioned(
+        bottom: 2,
+        right: 2,
+        child: Icon(Icons.keyboard_double_arrow_down, size: 15, color: Colors.red[300]!.withAlpha(160)))
+      );
+    }
+
     if (widget.onFloatingPress != null) {
       children.add(createFloatingButton(context));
     }
@@ -333,23 +343,11 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
             : null,
         onTap: () => _closeSlidables(),
         child: NotificationListener<ScrollNotification>(
-          onNotification: (notification) {
-            widget.onScroll?.call(notification);
-
-            if (widget.model.isEnabled &&
-                notification.metrics.extentAfter < 25 &&
-                notification.metrics.axis == Axis.vertical) {
-              /// Scrolled to the bottom
-              widget.onLoadMore?.call();
-
-              //don't bubble upwards to our end notification listener!
-              return true;
-            }
-
-            // Let it bubble upwards
-            return false;
-          },
-          child: table
+          onNotification: (notification) => _onInternalEndScroll(notification),
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (notification) => _onInternalScroll(notification),
+            child: table
+          ),
         ),
       ),
     );
@@ -604,6 +602,26 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
         }
       });
     }
+  }
+
+  /// Notifies if the bottom of the list has been reached
+  bool _onInternalEndScroll(ScrollNotification notification) {
+    // 25 is a grace value.
+    if (widget.model.isEnabled &&
+        notification.metrics.extentAfter < 25 &&
+        notification.metrics.axis == Axis.vertical) {
+      /// Scrolled to the bottom
+      return widget.onEndScroll?.call() == true;
+    }
+
+    return false;
+  }
+
+  bool _onInternalScroll(ScrollNotification notification) {
+    widget.onScroll?.call(notification);
+
+    // Let it bubble upwards to our end notification listener!
+    return false;
   }
 
   /// Updates the cached scroll position (in the model) to re-use it if necessary on re-creation
