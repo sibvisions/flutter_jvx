@@ -22,6 +22,7 @@ import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/response/device_status_response.dart';
 import '../../../../util/jvx_colors.dart';
+import '../../grid/grid_menu.dart';
 import '../../grid/widget/grid_menu_header.dart';
 import '../../menu.dart';
 import 'list_menu_item.dart';
@@ -50,6 +51,8 @@ class ListMenuGroup extends StatelessWidget {
   /// The icon color
   final Color? iconColor;
 
+  final EdgeInsets? padding;
+
   final bool decreasedDensity;
   final bool useAlternativeLabel;
 
@@ -71,6 +74,7 @@ class ListMenuGroup extends StatelessWidget {
     this.textStyle,
     this.headerColor,
     this.iconColor,
+    this.padding,
     this.decreasedDensity = false,
     this.useAlternativeLabel = false,
     this.embedded = false,
@@ -117,12 +121,29 @@ class ListMenuGroup extends StatelessWidget {
             embedded: embedded,
           )
         ),
-        SliverList(
+        _wrapWithPadding(context, SliverList(
           delegate: SliverChildListDelegate.fixed(
             listGroupItems,
           ),
-        ),
+        )),
       ],
     );
+  }
+
+  Widget _wrapWithPadding(BuildContext context, Widget widget) {
+    if (padding != null) {
+      return SliverPadding(
+        padding: EdgeInsetsGeometry.fromLTRB(
+          0,
+          padding!.top,
+          0,
+          padding!.bottom
+        ),
+        sliver: widget
+      );
+    }
+    else {
+      return widget;
+    }
   }
 }

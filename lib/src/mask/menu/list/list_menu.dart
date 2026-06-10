@@ -14,10 +14,12 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/menu/menu_item_model.dart';
 import '../../../model/response/device_status_response.dart';
+import '../grid/grid_menu.dart';
 import '../menu.dart';
 import 'widget/list_menu_group.dart';
 import 'widget/list_menu_item.dart';
@@ -73,41 +75,39 @@ class ListMenu extends Menu {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      slivers: grouped && ((groupOnlyOnMultiple && menuModel.menuGroups.length > 1) || !groupOnlyOnMultiple)
-          ? menuModel.menuGroups
-              .map((e) => ListMenuGroup(
-                    menuGroupModel: e,
-                    onClick: onClick,
-                    onClose: onClose,
-                    sticky: sticky,
-                    layoutMode: layoutMode,
-                    textStyle: textStyle,
-                    headerColor: headerColor,
-                    iconColor: iconColor,
-                    decreasedDensity: decreasedDensity,
-                    useAlternativeLabel: useAlternativeLabel,
-                    embedded: embedded,
-                    smallBadge : smallBadge
-                  ))
-              .toList()
+      slivers: grouped && (!groupOnlyOnMultiple || menuModel.menuGroups.length > 1)
+          ? menuModel.menuGroups.mapIndexed((index, e) => ListMenuGroup(
+              menuGroupModel: e,
+              onClick: onClick,
+              onClose: onClose,
+              sticky: sticky,
+              layoutMode: layoutMode,
+              textStyle: textStyle,
+              headerColor: headerColor,
+              iconColor: iconColor,
+              decreasedDensity: decreasedDensity,
+              useAlternativeLabel: useAlternativeLabel,
+              embedded: embedded,
+              smallBadge : smallBadge,
+              padding: index == menuModel.menuGroups.length - 1 ? GridMenu.lastGroupPadding(context, null) : null,
+            )).toList()
           : [
-              SliverFixedExtentList(
+              _wrapWithPadding(context, SliverFixedExtentList(
                 itemExtent: 50,
                 delegate: SliverChildListDelegate.fixed(
                   _getAllMenuItems()
-                      .map((e) => ListMenuItem(
-                            onClick: onClick,
-                            onClose: onClose,
-                            menuItemModel: e,
-                            decreasedDensity: decreasedDensity,
-                            useAlternativeLabel: useAlternativeLabel,
-                            embedded: embedded,
-                            smallBadge: smallBadge,
-                            iconColor: iconColor
-                          ))
-                      .toList(),
+                    .map((e) => ListMenuItem(
+                      onClick: onClick,
+                      onClose: onClose,
+                      menuItemModel: e,
+                      decreasedDensity: decreasedDensity,
+                      useAlternativeLabel: useAlternativeLabel,
+                      embedded: embedded,
+                      smallBadge: smallBadge,
+                      iconColor: iconColor
+                    )).toList(),
                 ),
-              ),
+              )),
             ],
     );
   }
@@ -122,4 +122,24 @@ class ListMenu extends Menu {
 
     return menuItems;
   }
+
+  Widget _wrapWithPadding(BuildContext context, Widget widget) {
+    EdgeInsets? padding = GridMenu.lastGroupPadding(context, null);
+
+    if (padding != null) {
+      return SliverPadding(
+        padding: EdgeInsetsGeometry.fromLTRB(
+          0,
+          padding.top,
+          0,
+          padding.bottom
+        ),
+        sliver: widget
+      );
+    }
+    else {
+      return widget;
+    }
+  }
+
 }

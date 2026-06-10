@@ -73,7 +73,7 @@ class GridMenu extends Menu {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      slivers: grouped && (!groupOnlyOnMultiple || menuModel.menuGroups.length == 1)
+      slivers: grouped && (!groupOnlyOnMultiple || menuModel.menuGroups.length > 1)
           ? menuModel.menuGroups.mapIndexed((index, e) => GridMenuGroup(
               menuGroupModel: e,
               onClick: onClick,
@@ -82,7 +82,7 @@ class GridMenu extends Menu {
               mainAxisSpacing: mainAxisSpacing ?? 1,
               crossAxisSpacing: crossAxisSpacing ?? 1,
               childAspectRatio: childAspectRatio,
-              padding: index == menuModel.menuGroups.length - 1 ? _lastGroupPadding(context) : padding,
+              padding: index == menuModel.menuGroups.length - 1 ? lastGroupPadding(context, padding) : padding,
               borderRadius: borderRadius,
               groupBackground: groupBackground,
               groupColor: groupColor,
@@ -100,7 +100,7 @@ class GridMenu extends Menu {
                 mainAxisSpacing ?? 1,
                 crossAxisSpacing ?? 1,
                 childAspectRatio,
-                padding,
+                lastGroupPadding(context, padding),
                 borderRadius,
                 tileColor,
                 tileBackground,
@@ -126,14 +126,14 @@ class GridMenu extends Menu {
     return menuItems;
   }
 
-  EdgeInsets? _lastGroupPadding(BuildContext context) {
+  static EdgeInsets? lastGroupPadding(BuildContext context, EdgeInsets? padding) {
     EdgeInsets insView = MediaQuery.of(context).viewPadding;
 
     if (insView.bottom > 0) {
       if (padding != null) {
         //enough space for safe-area -> don't change padding
-        if (padding!.bottom < insView.bottom) {
-          return padding!.copyWith(bottom: insView.bottom);
+        if (padding.bottom < insView.bottom) {
+          return padding.copyWith(bottom: insView.bottom);
         }
       }
       else {
