@@ -216,7 +216,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     List<dynamic>? oldValues;
 
-    if (isLinkedEditor()) {
+    //don't use isLinkedEditor because model might be newer than cellEditor instance
+    if (cellEditor is FlLinkedCellEditor) {
       oldValues = (cellEditor as FlLinkedCellEditor).getValues();
     }
 
