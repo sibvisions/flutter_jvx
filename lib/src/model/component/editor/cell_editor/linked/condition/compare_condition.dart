@@ -31,7 +31,7 @@ class CompareCondition extends BaseCondition {
   final bool ignoreNull;
 
   /// The value to use for the compare.
-  final Object value;
+  final dynamic value;
 
   CompareCondition(
     super.type,
