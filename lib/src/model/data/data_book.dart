@@ -251,7 +251,7 @@ class DataBook {
 
       _updateSortDefinitions(fetchResponse.sortDefinitions);
       _updateRecordReadOnly(fetchResponse.recordReadOnly, dataMap, fetchResponse.from);
-      _updateRecordFormats(fetchResponse.recordFormats);
+      _updateRecordFormats(fetchResponse.recordFormats, fetchResponse.from);
     }
 
     referencedCellEditors.forEach((refCellEditor) => refCellEditor.buildDataToDisplayMap(this));
@@ -305,7 +305,7 @@ class DataBook {
   }
 
   /// Updates record formats.
-  bool _updateRecordFormats(Map<String, RecordFormat>? formats) {
+  bool _updateRecordFormats(Map<String, RecordFormat>? formats, int startIndex) {
     if (formats == null) {
       return false;
     }
@@ -313,30 +313,37 @@ class DataBook {
     bool changed = false;
 
     for (String key in formats.keys) {
-      var newRecordFormat = formats[key]!;
+      var newRecordFormat = formats[key];
       var recordFormat = recordFormats[key];
 
       if (recordFormat == null) {
-        recordFormats[key] = newRecordFormat;
+        if (newRecordFormat != null) {
+          recordFormats[key] = newRecordFormat;
 
-        changed = true;
+          changed = true;
+        }
       }
       else {
-        RowFormat? oldRowFormat;
+        if (newRecordFormat != null) {
+          RowFormat? oldRowFormat;
 
-        for (int rowIndex in recordFormat.keys) {
-          if (!changed) {
-            oldRowFormat = recordFormat[rowIndex];
+          //copy to avoid modification exception
+          List<int> keys = List.of(newRecordFormat.keys, growable: false);
 
-            if (oldRowFormat == null) {
-              changed = true;
+          for (int rowIndex in newRecordFormat.keys) {
+            if (!changed) {
+              oldRowFormat = recordFormat[rowIndex];
+
+              if (oldRowFormat == null) {
+                changed = true;
+              }
+              else {
+                changed |= oldRowFormat != newRecordFormat[rowIndex];
+              }
             }
-            else {
-              changed |= oldRowFormat != newRecordFormat[rowIndex]!;
-            }
+
+            recordFormat[rowIndex] = newRecordFormat[rowIndex]!;
           }
-
-          recordFormat[rowIndex] = newRecordFormat[rowIndex]!;
         }
       }
     }
@@ -348,7 +355,7 @@ class DataBook {
   bool updateDataChanged({required DalDataProviderChangedResponse changedResponse}) {
     bool changed = _updateSortDefinitions(changedResponse.sortDefinitions);
     changed |= _updateRecordReadOnly(changedResponse.recordReadOnly, records, 0);
-    changed |= _updateRecordFormats(changedResponse.recordFormats);
+    changed |= _updateRecordFormats(changedResponse.recordFormats, 0);
 
     if (changedResponse.deletedRow != null && changedResponse.deletedRow! < records.length) {
       for (int i = changedResponse.deletedRow!; i < records.length - 1; i++) {
