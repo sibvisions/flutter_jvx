@@ -285,6 +285,9 @@ abstract class IFocusableCellEditor<
   /// Whether the first focus request should be ignored
   CellEditorFocusChecker? focusChecker;
 
+  /// Whether the cell editor is disposed
+  bool disposed = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -340,6 +343,8 @@ abstract class IFocusableCellEditor<
 
   @override
   dispose() {
+    disposed = true;
+
     focusNode.dispose();
   }
 

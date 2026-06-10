@@ -211,8 +211,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   void dispose() {
-    textController.dispose();
     super.dispose();
+
+    textController.dispose();
   }
 
   @override
@@ -317,6 +318,10 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   Future<void> _setValueIntern(dynamic value) async {
     if (isInitialized && await getValue() != value) {
       hasValue = true && value != null;
+
+      if (disposed) {
+        return;
+      }
 
       if (value == null) {
         if (isHtml) {
