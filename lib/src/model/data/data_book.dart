@@ -327,9 +327,6 @@ class DataBook {
         if (newRecordFormat != null) {
           RowFormat? oldRowFormat;
 
-          //copy to avoid modification exception
-          List<int> keys = List.of(newRecordFormat.keys, growable: false);
-
           for (int rowIndex in newRecordFormat.keys) {
             if (!changed) {
               oldRowFormat = recordFormat[rowIndex];
