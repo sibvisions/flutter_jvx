@@ -41,7 +41,7 @@ dependencies:
   # Device Identification
   package_info_plus: '>=4.0.2 <=11.0.0'
   device_info_plus: '>=8.0.0 <=13.0.0'
-  android_id: ^0.5.0
+  flutter_device_platform_id: ^1.0.0
 
   # Util
   dio: ^5.9.0

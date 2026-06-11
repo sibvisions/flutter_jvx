@@ -24,7 +24,7 @@ rm -r $pubCache/hosted/pub.dev/geolocator_*
 rm -r $pubCache/hosted/pub.dev/connectivity_plus*
 rm -r $pubCache/hosted/pub.dev/path_provider_foundation-*
 rm -r $pubCache/hosted/pub.dev/flutter_timezone*
-rm -r $pubCache/hosted/pub.dev/flutter_inappwebview*
+rm -r $pubCache/hosted/pub.dev/zikzak_inappwebview*
 rm -r $pubCache/hosted/pub.dev/flutter_tts*
 rm -r $pubCache/hosted/pub.dev/speech_to_text*
 rm -r $pubCache/hosted/pub.dev/file_saver*
@@ -35,13 +35,12 @@ rm -r $pubCache/hosted/pub.dev/screen_brightness*
 rm -r $pubCache/hosted/pub.dev/open_filex*
 rm -r $pubCache/hosted/pub.dev/pointer_interceptor*
 rm -r $pubCache/hosted/pub.dev/webview_flutter*
-rm -r $pubCache/hosted/pub.dev/android_id*
+rm -r $pubCache/hosted/pub.dev/flutter_device_platform_id*
 rm -r $pubCache/hosted/pub.dev/app_links*
 rm -r $pubCache/hosted/pub.dev/screenshot*
 rm -r $pubCache/hosted/pub.dev/web-*
 rm -r $pubCache/hosted/pub.dev/flutter_secure_storage*
 rm -r $pubCache/hosted/pub.dev/local_auth*
-rm -r $pubCache/hosted/pub.dev/flutter_inappwebview*
 rm -r $pubCache/hosted/pub.dev/haptic_feedback*
 rm -r $pubCache/hosted/pub.dev/webview_cookie_manager_plus*
 rm -r $pubCache/git/fix_html-editor-enhanced*
