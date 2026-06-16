@@ -185,4 +185,14 @@ abstract class AppManager {
 
   /// Is called when going to the login.
   void onLoginPage() {}
+
+  /// Gets a custom handler for server-side push messages
+  PushMessageHandler? getPushMessageHandler() => null;
+}
+
+abstract class PushMessageHandler {
+
+  /// Handles given message and returns [true] if message shouldn't be handled by default
+  /// handler. If [false] the message will be handled by default implementation.
+  bool handleMessage(dynamic data);
 }

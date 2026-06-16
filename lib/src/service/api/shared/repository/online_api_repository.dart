@@ -499,53 +499,17 @@ class OnlineApiRepository extends IRepository {
       },
       connectTimeout: ParseUtil.validateDuration(IConfigService().getAppConfig()?.connectTimeout),
       onData: (data) {
-        if (data is Uint8List) {
-          try {
-            var jsonData = jsonDecode(String.fromCharCodes(data));
+        if (data is String) {
+          FlutterUI.logAPI.d("Received push message '$data'");
+        }
+        else {
+          FlutterUI.logAPI.d("Received push message in binary format!");
+        }
 
-            String? command = jsonData["command"];
-            String? className = jsonData["arguments"]?["className"];
+        PushMessageHandler? msgHandler = IUiService().getAppManager()?.getPushMessageHandler();
 
-            if (command == "dyn:relaunch") {
-              IAppService().startApp();
-            } else if (command == "dyn:reloadCss") {
-              // not relevant for mobile
-            } else if (command == "dyn:previewScreen" && className != null) {
-              String? screenLongName = IUiService().getMenuModel().getMenuItemByClassName(className)?.screenLongName;
-              if (screenLongName != null) {
-                ICommandService().sendCommand(
-                  OpenScreenCommand(
-                    className: className,
-                    reason: "Open screen because server sent dyn:previewScreen",
-                  ),
-                );
-              } else {
-                ICommandService().sendCommand(
-                  ReloadMenuCommand(
-                    reason: "Reload menu because server sent dyn:previewScreen and screen was unknown",
-                  ),
-                );
-              }
-            } else if (command == "api/menu") {
-              ICommandService().sendCommand(
-                ReloadMenuCommand(
-                  reason: "Reload menu because server sent api/menu",
-                ),
-              );
-            } else if (command == "api/reopenScreen" && className != null) {
-              if (IStorageService().getComponentByScreenClassName(screenClassName: className) != null) {
-                ICommandService().sendCommand(
-                  OpenScreenCommand(
-                    reopen: true,
-                    className: className,
-                    reason: "Reload/Reopen screen because server sent api/reopenScreen",
-                  ),
-                );
-              }
-            }
-          } on FormatException {
-            // Not a valid json -> ignore and continue
-          }
+        if (msgHandler != null && msgHandler.handleMessage(data)) {
+          return;
         }
 
         if (data == "api/changes") {
