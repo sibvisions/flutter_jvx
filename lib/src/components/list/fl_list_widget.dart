@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -477,7 +478,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     _runtime.update(FlListWidget._localName, _createLocalWidgets());
   }
 
-  /// Updates UI template engine
+  /// Updates UI template engine (remote widget library)
   void _updateUITemplateEngine() {
     newUITemplate = false;
 
@@ -486,10 +487,12 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     if (tpl is String) {
       _runtime.update(FlListWidget.mainName, parseLibraryFile(tpl));
     }
-    else {
+    else if (tpl is Uint8List){
       _runtime.update(FlListWidget.mainName, decodeLibraryBlob(tpl));
     }
-    // Remote widget library
+    else {
+      FlutterUI.log.e("Got unsupported value: $tpl for template $uiTemplateName!");
+    }
   }
 
   Widget _buildList(
