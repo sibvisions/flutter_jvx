@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -208,13 +209,14 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                       fit: BoxFit.fill,
                     ),
                   SafeArea(
+                    bottom: false,
                     child: FutureBuilder(
                       future: future,
                       builder: (context, snapshot) {
                         bool showAddOnFront = (apps?.isEmpty ?? false);
 
                         return Padding(
-                          padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
+                          padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0),
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
@@ -222,7 +224,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                 child: Column(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
+                                      padding: const EdgeInsets.only(top: 3, left: 8.0),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
@@ -239,7 +241,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                     ),
                                     Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top: 16.0),
+                                        padding: const EdgeInsets.only(top: 8.0),
                                         child: _buildAppList(
                                           context,
                                           snapshot,
@@ -330,11 +332,11 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
             SliverPadding(
               // Padding to keep card effects visible (prevent cropping),
               // top padding is roughly half the size of the default check mark.
-              padding: const EdgeInsets.only(
-                top: 12,
+              padding: EdgeInsets.only(
+                top: 20,
                 left: 8.0,
                 right: 8.0,
-                bottom: 8.0,
+                bottom: max(MediaQuery.of(context).viewPadding.bottom, 8.0),
               ),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -449,6 +451,11 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
             : ListTileTheme.merge(
                 iconColor: Theme.of(context).colorScheme.primary,
                 child: PopupMenuButton(
+                  style: IconButton.styleFrom(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: EdgeInsets.zero,
+                    fixedSize: const Size(48, 48)
+                  ),
                   icon: FaIcon(
                     FontAwesomeIcons.ellipsisVertical,
                     color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary :
