@@ -18,7 +18,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:webview_cookie_manager_plus/webview_cookie_manager_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../model/api_interaction.dart';
@@ -74,7 +73,7 @@ class EntraIDAppManager extends AppManager {
 
       if (originalResponse.statusCode == 302 && location != null && location.contains("login.microsoftonline.com") == true) {
         // access to cookies
-        final cookieManager = WebviewCookieManager();
+        final cookieManager = WebViewCookieManager();
 
         WebViewController controller = WebViewController();
         await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
@@ -97,7 +96,7 @@ class EntraIDAppManager extends AppManager {
           onWebResourceError: (WebResourceError error) async {
             log("Authentication - webviewHttpError: ${error.errorCode} ${error.errorType} ${error.description}", error: error);
 
-            var cookies = await cookieManager.getCookies(location);
+            var cookies = await cookieManager.getCookies(domain: Uri.parse(location));
 
             log("Authentication - cookies: ${cookies.toString()}");
           },
@@ -114,7 +113,7 @@ class EntraIDAppManager extends AppManager {
                     || uri.queryParameters["error_subcode"] == null) {
                   log("Authentication - redirect to: $url");
 
-                  var cookies = await cookieManager.getCookies(location);
+                  var cookies = await cookieManager.getCookies(domain: Uri.parse(location));
 
                   log("Authentication - cookies: ${cookies.toString()}");
 
