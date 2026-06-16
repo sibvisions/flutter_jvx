@@ -43,8 +43,6 @@ class SaveApplicationTemplatesCommandProcessor extends ICommandProcessor<SaveApp
       await fileManager.saveFile(path, content: content);
     }
 
-    IConfigService().imagesChanged();
-
     return [];
   }
 }

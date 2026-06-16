@@ -349,7 +349,8 @@ class FlutterUI extends StatefulWidget {
     }
   }
 
-  void _disposeTempraryPush() {
+  /// Disposes temporary push subscription
+  void _disposeTemporaryPush() {
     if (onNewTokenSubscription != null) {
       onNewTokenSubscription!();
     }
@@ -1835,7 +1836,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       PushUtil.handleTokenUpdate(token);
     });
 
-    widget._disposeTempraryPush();
+    widget._disposeTemporaryPush();
 
     notificationTapSubscription = Push.instance.addOnNotificationTap((data) {
       bool payload = data.containsKey("payload");
