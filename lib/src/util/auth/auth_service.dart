@@ -35,7 +35,7 @@ class AuthService extends ChangeNotifier {
   static final Map<String, ({DateTime creation, Duration? expires, bool afterResume})> _globalAuthTime = {};
 
   /// the method channel for platform/native communication
-  static const platformChannel = MethodChannel('com.sibvisions.flutter_jvx/security');
+  static const _platformChannel = MethodChannel('com.sibvisions.flutter_jvx/security');
 
   /// whether we use only biometric auth
   static final bool biometricOnly = false;
@@ -238,7 +238,7 @@ class AuthService extends ChangeNotifier {
 
   void setSecure(bool secure) {
     if (_useChannel) {
-      platformChannel.invokeMethod('setSecure', secure);
+      _platformChannel.invokeMethod('setSecure', secure);
     }
   }
 
@@ -391,7 +391,7 @@ class AuthService extends ChangeNotifier {
       notifyListeners();
 
       if (_useChannel) {
-        await platformChannel.invokeMethod('setAuthStatus', currentAuthStatus);
+        await _platformChannel.invokeMethod('setAuthStatus', currentAuthStatus);
       }
 
       authenticated = await _auth.authenticate(
@@ -401,9 +401,9 @@ class AuthService extends ChangeNotifier {
       );
 
       if (_useChannel && authenticated) {
-        await platformChannel.invokeMethod('hideBlur');
+        await _platformChannel.invokeMethod('hideBlur');
 
-        await platformChannel.invokeMethod('setAuthStatus', false);
+        await _platformChannel.invokeMethod('setAuthStatus', false);
         currentAuthStatus = false;
       }
 
@@ -452,7 +452,7 @@ class AuthService extends ChangeNotifier {
     }
     finally {
       if (_useChannel && currentAuthStatus) {
-        await platformChannel.invokeMethod('setAuthStatus', false);
+        await _platformChannel.invokeMethod('setAuthStatus', false);
       }
     }
   }
@@ -476,6 +476,12 @@ class AuthService extends ChangeNotifier {
     }
 
     return Container(color: Theme.of(context).colorScheme.surface);
+  }
+
+  static Future<void> hideBlur() async {
+    if (_useChannel) {
+      await _platformChannel.invokeMethod('hideBlur');
+    }
   }
 
 }

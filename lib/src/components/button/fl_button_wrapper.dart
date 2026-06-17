@@ -16,6 +16,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:action_slider/action_slider.dart';
@@ -23,6 +24,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
@@ -217,6 +219,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   Future<CommandResult> sendButtonPressed([String? overwrittenButtonPressId]) {
     if (model.isSecure) {
       return _authenticateUser().then((authenticated) async {
+        await AuthService.hideBlur();
+
         if (authenticated == null) {
           IUiService().showJVxDialog(ErrorDialog(title:
             FlutterUI.translate("Error"),
