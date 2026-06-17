@@ -71,6 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late bool singleAppMode;
 
   bool? sectokenAvailable;
+  bool? buptokenAvailable;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -101,6 +102,14 @@ class _SettingsPageState extends State<SettingsPage> {
       if (value != null && value.isNotEmpty) {
         setState(() {
           sectokenAvailable = true;
+        });
+      }
+    });
+
+    servCfg.getConfigHandler().getValueSecure("$appId.bupToken").then((value) {
+      if (value != null && value.isNotEmpty) {
+        setState(() {
+          buptokenAvailable = true;
         });
       }
     });
@@ -237,7 +246,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildInformation() {
     if (IConfigService().privacyPolicy.value != null) {
       SettingItem privacyPolicy = SettingItem(
-        frontIcon: const FaIcon(FontAwesomeIcons.link, size: 19),
+        frontFaIcon: const FaIcon(FontAwesomeIcons.link, size: 19),
         endIcons: const [FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: linkIconSize, color: Colors.grey)],
         title: FlutterUI.translateLocal("Privacy Policy"),
         onPressed: (context, value) => launchUrl(
@@ -271,7 +280,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (!hideAppDetails) {
       appNameSetting = SettingItem(
         enabled: false,
-        frontIcon: const FaIcon(FontAwesomeIcons.cubes),
+        frontFaIcon: const FaIcon(FontAwesomeIcons.cubes),
         title: FlutterUI.translateLocal("App name"),
         value: appName ?? "",
       );
@@ -282,7 +291,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (!hideAppDetails) {
       baseUrlSetting = SettingItem(
         enabled: false,
-        frontIcon: const FaIcon(FontAwesomeIcons.globe),
+        frontFaIcon: const FaIcon(FontAwesomeIcons.globe),
         title: urlTitle,
         value: baseUrl?.toString() ?? "",
       );
@@ -418,34 +427,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (sectokenAvailable == true) {
       encryptionSetting = SettingItem(
-        frontIcon: FaIcon(FontAwesomeIcons.keycdn, color: Theme.of(context).colorScheme.primary),
+        frontFaIcon: FaIcon(FontAwesomeIcons.keycdn, color: Theme.of(context).colorScheme.primary),
         title: FlutterUI.translateLocal("Encryption token is set"),
         onLongPressed: (context, value) async {
-          final bool? delete = await showDialog<bool>(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text(FlutterUI.translateLocal("Delete token")),
-              content: Text(FlutterUI.translateLocal("Do you want to delete the token?")),
-              actionsPadding: EdgeInsets.only(bottom: Theme.of(context).dialogTheme.actionsPadding?.vertical ?? 15, left: 8, right: 8),
-              actions: [
-                Row(
-                  spacing: 0,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      style: JVxColors.isLightTheme(context) ? TextButton.styleFrom(foregroundColor: Colors.black54) : TextButton.styleFrom(foregroundColor: Colors.grey.shade600),
-                      child: Text(FlutterUI.translateLocal("Yes")),
-                    ),
-                    Spacer(),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text(FlutterUI.translateLocal("No")),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
+          final bool? delete = await _showDeleteTokenDialog(context);
 
           if (delete == true) {
             sectokenAvailable = !await IConfigService().getConfigHandler().setValueSecure("$appId.encToken", null);
@@ -459,10 +444,29 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
+    Widget? backupSetting;
+
+    if (buptokenAvailable == true) {
+      backupSetting = SettingItem(
+        frontIcon: Icon(Icons.security_outlined, color: Theme.of(context).colorScheme.primary),
+        title: FlutterUI.translateLocal("Backup token is set"),
+        onLongPressed: (context, value) async {
+          final bool? delete = await _showDeleteTokenDialog(context);
+
+          if (delete == true) {
+            buptokenAvailable = !await IConfigService().getConfigHandler().setValueSecure("$appId.bupToken", null);
+
+            setState(() {});
+          }
+        },
+      );
+    }
+
     var items = [
       if (singleAppSetting != null) singleAppSetting,
       if (themeSetting != null) themeSetting,
       if (encryptionSetting != null) encryptionSetting,
+      if (backupSetting != null) backupSetting,
     ];
 
     if (items.isEmpty) {
@@ -494,7 +498,7 @@ class _SettingsPageState extends State<SettingsPage> {
     ValueWidgetBuilder<T>? itemBuilder,
   }) =>
       SettingItem<T>(
-        frontIcon: FaIcon(frontIcon, color: Theme.of(context).colorScheme.primary),
+        frontFaIcon: FaIcon(frontIcon, color: Theme.of(context).colorScheme.primary),
         endIcons: [
           ...?endIcons,
           const FaIcon(FontAwesomeIcons.circleChevronDown, size: arrowIconSize, color: Colors.grey),
@@ -554,7 +558,7 @@ class _SettingsPageState extends State<SettingsPage> {
         future: versionFuture,
         builder: (context, snapshot) {
           return SettingItem(
-            frontIcon: const FaIcon(FontAwesomeIcons.github),
+            frontFaIcon: const FaIcon(FontAwesomeIcons.github),
             endIcons: const [FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: linkIconSize, color: Colors.grey)],
             value: snapshot.data ?? FlutterUI.translateLocal("Loading..."),
             title: FlutterUI.translateLocal("App Version"),
@@ -575,13 +579,13 @@ class _SettingsPageState extends State<SettingsPage> {
         });
 
     SettingItem commitSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
+      frontFaIcon: const FaIcon(FontAwesomeIcons.codeBranch),
       value: IConfigService().getAppConfig()?.versionConfig?.commit ?? "",
       title: FlutterUI.translateLocal("RCS"),
     );
 
     SettingItem buildDataSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.calendar),
+      frontFaIcon: const FaIcon(FontAwesomeIcons.calendar),
       value: IConfigService().getAppConfig()?.versionConfig?.buildDate ?? "",
       title: FlutterUI.translateLocal("Build date"),
     );
@@ -613,7 +617,7 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     SettingItem serverVersion = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.server),
+      frontFaIcon: const FaIcon(FontAwesomeIcons.server),
       title: FlutterUI.translateLocal("Server Version"),
       value: versionValue,
     );
@@ -656,7 +660,7 @@ class _SettingsPageState extends State<SettingsPage> {
   SettingItem<String> _buildWebSocketStatus(bool? connected) {
     String text = FlutterUI.translateLocal(connected != null ? (connected ? "Available" : "Not available") : "Unknown");
     return SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.circleNodes),
+      frontFaIcon: const FaIcon(FontAwesomeIcons.circleNodes),
       title: FlutterUI.translateLocal("Web Socket"),
       value: text,
       onPressed: !(connected ?? false) && IApiService().getRepository() is OnlineApiRepository
@@ -702,4 +706,33 @@ class _SettingsPageState extends State<SettingsPage> {
       }
     }
   }
+
+  Future<bool?> _showDeleteTokenDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(FlutterUI.translateLocal("Delete token")),
+        content: Text(FlutterUI.translateLocal("Do you want to delete the token?")),
+        actionsPadding: EdgeInsets.only(bottom: Theme.of(context).dialogTheme.actionsPadding?.vertical ?? 15, left: 8, right: 8),
+        actions: [
+          Row(
+            spacing: 0,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: JVxColors.isLightTheme(context) ? TextButton.styleFrom(foregroundColor: Colors.black54) : TextButton.styleFrom(foregroundColor: Colors.grey.shade600),
+                child: Text(FlutterUI.translateLocal("Yes")),
+              ),
+              Spacer(),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(FlutterUI.translateLocal("No")),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
 }

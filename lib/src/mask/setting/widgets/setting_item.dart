@@ -22,8 +22,11 @@ class SettingItem<T> extends StatelessWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// FontAwesome Icon displayed at the front
+  final FaIcon? frontFaIcon;
+
   /// Icon displayed at the front
-  final FaIcon? frontIcon;
+  final Icon? frontIcon;
 
   /// Icon displayed at the end
   final List<Widget>? endIcons;
@@ -59,6 +62,7 @@ class SettingItem<T> extends StatelessWidget {
     this.value,
     this.valueNotifier,
     this.enabled,
+    this.frontFaIcon,
     this.frontIcon,
     this.endIcons,
     this.onPressed,
@@ -75,10 +79,13 @@ class SettingItem<T> extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 21, vertical: 5),
       enabled: enabled ?? true,
-      leading: frontIcon != null
+      leading: frontIcon != null || frontFaIcon != null
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [frontIcon!],
+              children: [
+                if (frontIcon != null) frontIcon!,
+                if (frontFaIcon != null) frontFaIcon!
+              ],
             )
           : null,
       trailing: endIcons?.isNotEmpty ?? false

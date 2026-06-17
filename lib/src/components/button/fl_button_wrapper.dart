@@ -50,6 +50,7 @@ import '../../service/data/i_data_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/auth/auth_service.dart';
+import '../../util/data_book_util.dart';
 import '../../util/html_vault.dart';
 import '../../util/i_types.dart';
 import '../../util/jvx_colors.dart';
@@ -418,293 +419,43 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     return null;
   }
 
+  /// Exports records as html vault and saves the file
   Future<void> exportOnDevice() async {
-    try {
-      DataBook? book = IDataService().getDataBook(model.dataProvider);
+    try
+    {
+      List<dynamic>? cols = model.jsonMerge[ApiObjectProperty.columnNames];
 
-      if (book != null) {
-        String? password = await IUiService().getInput("File password", "Password", true, icon: Icons.key);
+      List<String>? columnNames;
 
-        if (password == null || password.isEmpty) {
-          return;
+      if (cols != null) {
+        columnNames = List<String>.from(cols);
+      }
+
+      String? htmlEncrypted = await DataBookUtil.exportAsHtmlVault(
+        model.jsonMerge[ApiObjectProperty.title],
+        model.dataProvider,
+        columnNames,
+        null
+      );
+
+      if (htmlEncrypted != null) {
+        String? fileName = model.jsonMerge[ApiObjectProperty.fileName];
+
+        String formattedDate = DateFormat('dd_MM_yyyy').format(DateTime.now());
+
+        fileName ??= "export_$formattedDate.html";
+
+        if (!fileName.contains(".")) {
+          fileName = "$fileName.html";
         }
 
-        List<dynamic>? columnNames = model.jsonMerge[ApiObjectProperty.columnNames];
-
-        if (columnNames != null) {
-          if (!book.isAllFetched) {
-            await ICommandService().sendCommand(
-                FetchCommand(
-                    reason: "Fetching data for export on device",
-                    dataProvider: book.dataProvider,
-                    fromRow: book.records.length,
-                    rowCount: -1
-                )
-            );
-          }
-
-          StringBuffer html = StringBuffer();
-
-          html.write(
-            '''
-            <style>
-              .search-wrapper {
-                display: flex;
-                gap: 10px;
-                margin-top: 2rem;
-                margin-bottom: 1.5rem;
-                width: 100%;
-              }
-            
-              #searchInput {
-                flex: 5; 
-                background: #f1f5f9 !important; 
-                color: #1e293b !important;
-                border: 1px solid #cbd5e1 !important;
-                margin: 0; 
-                padding: 0.75rem;  
-                border-radius: 3px;
-              }
-              
-              #searchInput::placeholder {
-                color: #94a3b8;
-              }
-            
-              #searchClear {
-                flex: 1;
-                padding: 0.75rem;
-                background: #64748b;
-                color: white;
-                border: none;
-                border-radius: 0.5rem;
-                font-weight: 600;
-                cursor: pointer;
-                white-space: nowrap;     
-              }
-              
-              #searchClear:hover {
-                background: #475569;
-              }  
-            
-              .custom-table th.searching {
-                background-color: #f0fdf4 !important; 
-                border-bottom: 3px solid #22c55e !important; 
-                color: #1e293b !important;
-                 
-                transition: all 0.3s ease;
-              }  
-            
-              .custom-table {
-                -webkit-overflow-scrolling: touch; 
-                overflow-x: auto; 
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0;
-                border: 1px solid #d1d1d1;
-                border-radius: 12px;
-                overflow: hidden;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-              }
-            
-              .custom-table th, 
-              .custom-table td {
-                padding: 14px;
-                text-align: left;
-                border-bottom: 1px solid #d1d1d1;
-                border-right: 1px solid #d1d1d1;
-              }
-            
-              /* remove right border of last column */
-              .custom-table th:last-child, 
-              .custom-table td:last-child {
-                border-right: none;
-              }
-            
-              /* remove bottom border or last row */
-              .custom-table tr:last-child td {
-                border-bottom: none;
-              }
-            
-              /* header */
-              .custom-table th {
-                background-color: #ececec;
-                color: #444;
-                font-weight: 600;
-              }
-            
-              /* odd/even background */
-              .custom-table tbody tr:nth-child(odd) {
-                background-color: #fcfcfc;
-              }
-            
-              /* hover for visibility */
-              .custom-table tbody tr:hover {
-                background-color: #f5f5f5;
-              }
-              
-              p.title {
-                margin-top: 0;
-                font-size: 17px;
-                font-weight: 600;
-                margin-bottom: 20px;
-              }
-            </style>
-            '''
-          );
-
-          String? title = model.jsonMerge[ApiObjectProperty.title];
-
-          html.write("<p class='title'>$title</p>");
-
-          //Search
-
-          html.write(
-            '''
-            <div class="search-wrapper">
-            <input type="text" id="searchInput" class="table-search" placeholder="Enter search value">
-            <button id="searchClear" class="clear-btn">Clear</button>
-            </div>
-            '''
-          );
-
-          // Header
-
-          List<dynamic> columnNamesCopy = List.of(columnNames);
-
-          List<String> headers = [];
-          Map<String, String> alignments = {};
-
-          html.write("<table class='custom-table'><tr>");
-
-          for (String name in columnNamesCopy) {
-            if (book.metaData != null) {
-              ColumnDefinition? colDef = book.metaData!.columnDefinitions.byName(name);
-
-              if (colDef != null) {
-                html.write("<th>${colDef.label}</th>");
-
-                if (colDef.dataTypeIdentifier == ITypes.DECIMAL
-                    || colDef.dataTypeIdentifier == ITypes.BIGINT) {
-                  alignments[name] = "right";
-                }
-                else {
-                  alignments[name] = "left";
-                }
-              }
-              else {
-                //no column definition -> don't export
-                columnNames.remove(name);
-              }
-            }
-            else {
-              alignments[name] = "left";
-
-              //no metadata -> try to export
-              headers.add(name);
-            }
-          }
-
-          html.write("</tr>");
-
-          // Records
-          List<dynamic>? record;
-
-          for (int i = 0; i < book.records.length; i++) {
-            record = book.records[i];
-
-            if (record != null) {
-              int? idx;
-
-              html.write("<tr>");
-              for (String name in columnNames) {
-                html.write("<td style='text-align: ${alignments[name]};'>");
-
-                idx = book.metaData?.columnDefinitions.indexByName(name);
-
-                if (idx != null && idx >= 0) {
-                  html.write(record[idx] ?? "");
-                }
-                else {
-                  html.write("");
-                }
-
-                html.write("</td>");
-              }
-
-              html.write("</tr>");
-            }
-          }
-
-          html.write("</table>");
-
-          html.write(
-            '''
-            <script>
-                (function() {
-                    const input = document.getElementById('searchInput');
-                    const btn = document.getElementById('searchClear');
-                    const table = document.querySelector(".custom-table");
-            
-                    // Alread initialized or missing elements -> stop
-                    if (!input || !table || input.dataset.initialized === "true") {
-                        return; 
-                    }
-            
-                    // Mark initialized and avoid multiple initialization
-                    input.dataset.initialized = "true";
-            
-                    const rows = Array.from(table.querySelectorAll("tr")).slice(1);
-                    const headers = table.querySelectorAll("th");
-            
-                    const performFilter = () => {
-                        const filter = input.value.toLowerCase();
-                        const isSearching = filter.length > 0;
-            
-                        headers.forEach(th => {
-                            isSearching ? th.classList.add('searching') : th.classList.remove('searching');
-                        });
-            
-                        rows.forEach(row => {
-                            row.style.display = row.textContent.toLowerCase().includes(filter) ? "" : "none";
-                        });
-                    };
-            
-                    input.addEventListener('input', performFilter);
-                    
-                    if(btn) {
-                        btn.addEventListener('click', () => {
-                            input.value = '';
-                            performFilter();
-                            input.focus();
-                        });
-                    }
-                    
-                    console.log("Search successfully bound.");
-                })();
-            </script>             
-            '''
-          );
-
-          String htmlEncrypted = await HtmlVault.create(htmlContent: html.toString(), password: password);
-
-          String? fileName = model.jsonMerge[ApiObjectProperty.fileName];
-
-          String formattedDate = DateFormat('dd_MM_yyyy').format(DateTime.now());
-
-          fileName ??= "export_$formattedDate.html";
-
-          if (!fileName.contains(".")) {
-            fileName = "$fileName.html";
-          }
-
-          await ICommandService().sendCommand(SaveOrShowFileCommand(
-              fileId: "exportOnDevice",
-              fileName: fileName,
-              content: utf8.encode(htmlEncrypted),
-              showFile: false,
-              reason: "Export on device"
-          ));
-        }
+        await ICommandService().sendCommand(SaveOrShowFileCommand(
+            fileId: "exportOnDevice",
+            fileName: fileName,
+            content: utf8.encode(htmlEncrypted),
+            showFile: false,
+            reason: "Export on device"
+        ));
       }
     }
     finally {

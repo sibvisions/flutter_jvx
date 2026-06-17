@@ -141,6 +141,7 @@ export 'src/service/ui/protect_config.dart';
 export 'src/service/ui/impl/ui_service.dart';
 // Util
 export 'src/util/config_util.dart';
+export 'src/util/data_book_util.dart';
 export 'src/util/debug/app_debug.dart';
 export 'src/util/extensions/list_extensions.dart';
 export 'src/util/extensions/string_extensions.dart';
