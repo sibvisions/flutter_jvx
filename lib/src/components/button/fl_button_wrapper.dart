@@ -16,7 +16,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:action_slider/action_slider.dart';
@@ -24,7 +23,6 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
@@ -34,27 +32,21 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../flutter_ui.dart';
 import '../../mask/error/error_dialog.dart';
-import '../../model/command/api/fetch_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/command/config/save_download_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
-import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
-import '../../service/data/i_data_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/auth/auth_service.dart';
 import '../../util/data_book_util.dart';
-import '../../util/html_vault.dart';
-import '../../util/i_types.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
@@ -298,18 +290,18 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       }
 
       if (model.isHyperLink) {
-        openUrl();
+        _openUrl();
       } else if (!kIsWeb) {
         if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
-          goOffline();
+          _goOffline();
         } else if (model.classNameEventSourceRef == FlButtonWidget.SCANNER_BUTTON || model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
-          openScanner();
+          _openScanner();
         } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
-          callNumber();
+          _callNumber();
         } else if (model.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_BUTTON) {
           setState(() => _isLoading = true);
 
-          exportOnDevice();
+          _exportOnDevice();
         }
       }
 
@@ -323,7 +315,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     BaseCommand? commandAfterPress;
 
     if (model.classNameEventSourceRef == FlButtonWidget.GEO_LOCATION_BUTTON) {
-      commandAfterPress = await locateDevice();
+      commandAfterPress = await _locateDevice();
 
       if (commandAfterPress == null) {
         return commands;
@@ -349,15 +341,15 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     return commands;
   }
 
-  void openScanner() {
+  void _openScanner() {
     IUiService().openDialogFullScreen(
       transitionDuration: Duration.zero,
       isDismissible: true,
-      builder: (_) => EmbeddedCodeScanner(formats: model.scanFormats ?? const [BarcodeFormat.all], callback: sendScannerResult),
+      builder: (_) => EmbeddedCodeScanner(formats: model.scanFormats ?? const [BarcodeFormat.all], callback: _sendScannerResult),
     );
   }
 
-  void sendScannerResult(List<Barcode> barcodes) {
+  void _sendScannerResult(List<Barcode> barcodes) {
     if (barcodes.isNotEmpty) {
       ICommandService().sendCommand(
         SetValuesCommand(
@@ -371,7 +363,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     }
   }
 
-  void callNumber() {
+  void _callNumber() {
     String tel = "";
     if (dataRecord != null) {
       tel = dataRecord!.values[0];
@@ -379,7 +371,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     launchUrlString("tel://$tel");
   }
 
-  void openUrl() {
+  void _openUrl() {
     String url = model.labelModel.text;
 
     if (!url.startsWith("http")) {
@@ -391,7 +383,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     );
   }
 
-  void goOffline() {
+  void _goOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workScreenName = state.pathParameters[MainLocation.screenNameKey]!;
     FlPanelModel? screenModel = IStorageService().getComponentByNavigationName(workScreenName);
@@ -399,11 +391,11 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     OfflineUtil.initOffline(screenModel!.name);
   }
 
-  Future<BaseCommand?> locateDevice() async {
+  Future<BaseCommand?> _locateDevice() async {
     Position? position;
 
     try {
-      position = await getPosition();
+      position = await _getPosition();
       if (FlutterUI.logUI.cl(Lvl.d)) {
         FlutterUI.logUI.d("Received geolocation data: $position");
       }
@@ -424,7 +416,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   /// Exports records as html vault and saves the file
-  Future<void> exportOnDevice() async {
+  Future<void> _exportOnDevice() async {
     try
     {
       List<dynamic>? cols = model.jsonMerge[ApiObjectProperty.columnNames];
@@ -471,7 +463,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   ///
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
-  Future<Position> getPosition() async {
+  Future<Position> _getPosition() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       throw Exception("Location services are disabled");
@@ -492,4 +484,5 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
     return Geolocator.getCurrentPosition();
   }
+
 }

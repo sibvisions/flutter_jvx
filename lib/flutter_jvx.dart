@@ -152,6 +152,7 @@ export 'src/util/icon_util.dart';
 export 'src/util/i_clonable.dart';
 export 'src/util/image/image_loader.dart';
 export 'src/util/jvx_colors.dart';
+export 'src/util/crypto_util.dart';
 export 'src/util/loading_handler/i_command_progress_handler.dart';
 export 'src/util/misc/debouncer.dart';
 export 'src/util/misc/dialog_result.dart';

@@ -178,6 +178,51 @@ abstract class CryptoUtil {
     return base64Decoded;
   }
 
+  /// Generates a random password
+  static String generatePassword({
+    int? length,
+    String? allowedChars,
+    String? specialChars,
+    int? minSpecialChars,
+  }) {
+    // Falls ein Parameter null ist, greift der Wert hinter dem ??
+    final int length_ = length ?? 12;
+    final String allowedChars_ = allowedChars ?? 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final String specialChars_ = specialChars ?? r'$!@#%^&*()_+{}[]|:;<>,.?/~';
+    final int minSpecialChars_ = minSpecialChars ?? 2;
+
+    if (length_ < minSpecialChars_) {
+      throw ArgumentError('Total length cannot be less than the minimum number of special characters.');
+    }
+    if (allowedChars_.isEmpty && minSpecialChars_ < length_) {
+      throw ArgumentError('Allowed characters list cannot be empty when password length needs to be filled.');
+    }
+    if (specialChars_.isEmpty && minSpecialChars_ > 0) {
+      throw ArgumentError('Special characters list cannot be empty when a minimum number of special characters is required.');
+    }
+
+    final Random random = Random.secure();
+    List<String> passwordChars = [];
+
+    // Add special chars
+    for (int i = 0; i < minSpecialChars_; i++) {
+      int index = random.nextInt(specialChars_.length);
+      passwordChars.add(specialChars_[index]);
+    }
+
+    // fill with other chars
+    int remainingLength = length_ - minSpecialChars_;
+    for (int i = 0; i < remainingLength; i++) {
+      int index = random.nextInt(allowedChars_.length);
+      passwordChars.add(allowedChars_[index]);
+    }
+
+    // mix it
+    passwordChars.shuffle(random);
+
+    return passwordChars.join('');
+  }
+
 }
 
 /// Possible types for crypto values
