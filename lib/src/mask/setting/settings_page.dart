@@ -27,6 +27,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../commands.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/startup_command.dart';
+import '../../routing/locations/main_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/i_app_service.dart';
@@ -438,6 +439,14 @@ class _SettingsPageState extends State<SettingsPage> {
             //close all screens because of changed encryption token
             await IUiService().closeAllScreens(false);
 
+            //will happen if: autologin is enabled, welcome screen is used -> go to settings and clear security token -> no back navigation possible
+            FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
+              //if we only have 1 route left -> no routing possible -> add /home to allow navigation
+              if (location.history.length == 1 && location.history.elementAt(0).routeInformation.uri.toString().endsWith("/settings")) {
+                location.history.insert(0, HistoryElement(RouteInformation(uri: Uri.tryParse("/home"))));
+              }
+            });
+
             setState(() {});
           }
         },
@@ -695,7 +704,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> routeBack() async {
     if (!mounted) return;
-
+    
     if (widget.onClosed != null) {
       widget.onClosed!();
     } else if (!context.beamBack()) {
