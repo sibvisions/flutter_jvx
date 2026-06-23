@@ -35,37 +35,35 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Widget get image {
-    return Builder(builder: (context) {
-      return Theme(
-        data: Theme.of(context).copyWith(
-          disabledColor: JVxColors.COMPONENT_DISABLED,
-        ),
-        child: RadioGroup<bool>(
-            groupValue: model.selected,
-            onChanged: (value) {
-              if (model.isEnabled && onPress != null) {
-                onPress!.call();
-              }
-            },
-            child: wrapShrink(Radio<bool>(
-              materialTapTargetSize: shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : null,
-              visualDensity: shrinkSize == true ?
-              const VisualDensity(
-                  horizontal: VisualDensity.minimumDensity,
-                  vertical: VisualDensity.minimumDensity
-              )
-                  :
-              VisualDensity.compact,
-              value: true,
-              focusNode: radioFocusNode,
-              toggleable: true,
-              enabled: model.isEnabled,
-            )))
+  Widget? getButtonImage(BuildContext context, T model) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        disabledColor: JVxColors.COMPONENT_DISABLED,
+      ),
+      child: RadioGroup<bool>(
+          groupValue: model.selected,
+          onChanged: (value) {
+            if (model.isEnabled && onPress != null) {
+              onPress!.call();
+            }
+          },
+          child: wrapShrink(Radio<bool>(
+            materialTapTargetSize: shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : null,
+            visualDensity: shrinkSize == true ?
+            const VisualDensity(
+                horizontal: VisualDensity.minimumDensity,
+                vertical: VisualDensity.minimumDensity
+            )
+                :
+            VisualDensity.compact,
+            value: true,
+            focusNode: radioFocusNode,
+            toggleable: true,
+            enabled: model.isEnabled,
+          )))
 
-        ,
-      );
-    });
+      ,
+    );
   }
 
   @override

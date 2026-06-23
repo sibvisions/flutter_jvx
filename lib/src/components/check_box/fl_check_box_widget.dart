@@ -20,7 +20,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../util/jvx_colors.dart';
 import '../button/radio/fl_radio_button_widget.dart';
 
-class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
+class FlCheckBoxWidget<T extends FlCheckBoxModel> extends FlRadioButtonWidget<T> {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -43,7 +43,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Widget get image {
+  Widget? getButtonImage(BuildContext context, T model) {
     if (model.isSwitch) {
 
       Widget switchWidget = Switch.adaptive(

@@ -79,10 +79,6 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Widget? get image {
-    return getImage(model);
-  }
-
   bool get isButtonFocusable => model.isFocusable;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,7 +222,11 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     );
   }
 
-  static Widget? getImage(FlButtonModel model) {
+  Widget? getButtonImage(BuildContext context, T model) {
+    return getImage(context, model);
+  }
+
+  static Widget? getImage(BuildContext context, FlButtonModel model) {
     String? imageDefinition = model.className != FlCellEditorClassname.CHECK_BOX_CELL_EDITOR
         ? model.image
         : ((model as FlCheckBoxModel).imageName != null && model.imageName!.isNotEmpty)
@@ -237,10 +237,17 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       Color? color;
 
       if (IconUtil.isFontIcon(imageDefinition)) {
-        if (!model.borderPainted || model.borderOnMouseEntered) {
-          color = JVxColors.LIGHTER_BLACK;
-        } else {
-          color = model.createTextStyle().color;
+        if (model.isEnabled) {
+          if (!model.borderPainted || model.borderOnMouseEntered) {
+            color = JVxColors.LIGHTER_BLACK;
+          } else {
+            color = model
+                .createTextStyle()
+                .color;
+          }
+        }
+        else {
+          color = Theme.of(context).disabledColor;
         }
       }
 
@@ -254,7 +261,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   /// Returns the icon and/or the text of the button.
   Widget? createButtonChild(BuildContext context) {
-    return createChildWidget(context, model, image);
+    return createChildWidget(context, model, getButtonImage(context, model));
   }
 
   Widget createDirectButtonChild(BuildContext context) {

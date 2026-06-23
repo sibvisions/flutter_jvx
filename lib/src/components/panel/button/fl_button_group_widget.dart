@@ -56,7 +56,7 @@ class FlButtonGroupWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
 
     for (Widget w in children) {
       if (w is FlButtonWrapper) {
-        Widget button = FlButtonWidget.createChildWidget(context, w.model, FlButtonWidget.getImage(w.model)) ?? Text("");
+        Widget button = FlButtonWidget.createChildWidget(context, w.model, FlButtonWidget.getImage(context, w.model)) ?? Text("");
 
         widgets.add(Padding(
             padding: EdgeInsets.only(left: 8, right: 8),
