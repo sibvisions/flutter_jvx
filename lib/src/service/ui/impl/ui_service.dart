@@ -1271,17 +1271,17 @@ class UiService implements IUiService {
       await ICommandService().sendCommands(closeCommands);
     }
 
-      for (String name in names) {
-        FlutterUI
-            .getBeamerDelegate()
-            .beamingHistory
-            .whereType<MainLocation>()
-            .forEach((location) {
-          location.history.removeWhere(
-                (element) => element.routeInformation.uri.toString().endsWith(name),
-          );
-        });
-      }
+    for (String name in names) {
+      FlutterUI
+          .getBeamerDelegate()
+          .beamingHistory
+          .whereType<MainLocation>()
+          .forEach((location) {
+        location.history.removeWhere(
+              (element) => element.routeInformation.uri.toString().endsWith(name),
+        );
+      });
+    }
 
     FrameState? frame = Frame.maybeOf(FlutterUI.getCurrentContext());
 
