@@ -260,9 +260,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   bool isLinkedEditor() {
-    return (cellEditor is FlLinkedCellEditor) ||
-           (model.json[ApiObjectProperty.cellEditor][ApiObjectProperty.className] ==
-            FlCellEditorClassname.LINKED_CELL_EDITOR);
+    return cellEditor is! FlDummyCellEditor &&
+           ((cellEditor is FlLinkedCellEditor) ||
+            (model.json[ApiObjectProperty.cellEditor][ApiObjectProperty.className] == FlCellEditorClassname.LINKED_CELL_EDITOR));
   }
 
   /// Unsubscribes the callback of the cell editor from value changes.
@@ -410,20 +410,32 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void recreateCellEditor([bool subscribe = true]) {
     cellEditor.dispose();
 
-    Map<String, dynamic> jsonCellEditor = Map.of(model.json[ApiObjectProperty.cellEditor]);
-    cellEditor = ICellEditor.getCellEditor(
-      name: model.name,
-      cellEditorJson: jsonCellEditor,
-      columnName: model.columnName,
-      dataProvider: model.dataProvider,
-      //try to use columnDefinition if available
-      columnDefinition: IDataService().getDataBook(model.dataProvider)?.metaData?.columnDefinitions.byName(model.columnName),
-      onChange: onChange,
-      onEndEditing: onEndEditing,
-      onFocusChanged: _onFocusChange,
-      recalculateCallback: recalculateSize,
-      isInTable: false,
-    );
+    Map<String, dynamic>? ced = model.json[ApiObjectProperty.cellEditor];
+
+    if (ced != null) {
+      Map<String, dynamic> jsonCellEditor = Map.of(ced);
+
+      cellEditor = ICellEditor.getCellEditor(
+        name: model.name,
+        cellEditorJson: jsonCellEditor,
+        columnName: model.columnName,
+        dataProvider: model.dataProvider,
+        //try to use columnDefinition if available
+        columnDefinition: IDataService()
+            .getDataBook(model.dataProvider)
+            ?.metaData
+            ?.columnDefinitions
+            .byName(model.columnName),
+        onChange: onChange,
+        onEndEditing: onEndEditing,
+        onFocusChanged: _onFocusChange,
+        recalculateCallback: recalculateSize,
+        isInTable: false,
+      );
+    }
+    else {
+      cellEditor = FlDummyCellEditor();
+    }
 
     cellEditor.model.styles.addAll(model.styles);
 
