@@ -31,9 +31,10 @@ class FlDummyWidget extends FlStatelessWidget<FlComponentModel> {
       color: kDebugMode
           ? Color((Random().nextDouble() * 0xFFFFFF).toInt()).withAlpha(Color.getAlphaFromOpacity(1.0))
           : Theme.of(context).colorScheme.surface,
-      alignment: Alignment.bottomLeft,
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(left: 10, top: 10),
       child: Text(
-        "Dummy for ${model.id}",
+        "Dummy for ${model.id.isEmpty ? '<no id>' : model.id}",
         textAlign: TextAlign.end,
       ),
     );

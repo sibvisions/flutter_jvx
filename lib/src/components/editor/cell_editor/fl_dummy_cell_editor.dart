@@ -20,6 +20,7 @@ import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../dummy/fl_dummy_widget.dart';
+import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
 class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dynamic> {
@@ -68,7 +69,7 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dyna
 
   @override
   double? getEditorHeight(Map<String, dynamic>? json) {
-    return null;
+    return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
   }
 
   static void _doNothing(dynamic ignore, [String? action]) {}
