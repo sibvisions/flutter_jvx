@@ -386,19 +386,26 @@ class _ManualCardState extends State<ManualCard> {
       createAuthKey: useBiometric || (showRememberMe && rememberMeChecked),
     ).then((success) {
       if (success) {
-        setState(() {
+        if (mounted) {
+          setState(() {
+            _isAuthenticating = false;
+            progressButtonState = ButtonState.success;
+          });
+        }
+        else {
           _isAuthenticating = false;
-          progressButtonState = ButtonState.success;
-        });
+        }
       } else {
         HapticUtil.heavy();
 
-        _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
+        if (mounted) {
+          _timerReset = Timer(const Duration(seconds: 3), _resetButtonByTimeout);
 
-        setState(() {
-          _isAuthenticating = false;
-          progressButtonState = ButtonState.fail;
-        });
+          setState(() {
+            _isAuthenticating = false;
+            progressButtonState = ButtonState.fail;
+          });
+        }
       }
     });
   }
