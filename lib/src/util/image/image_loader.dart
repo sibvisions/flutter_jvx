@@ -199,15 +199,19 @@ abstract class ImageLoader {
       if (data.lengthInBytes < 512000) {
         //we need a listener wrapper to update the cache with size
         listener_ = (Size size, bool synchronousCall) {
-          _imageCache[cacheKey] = (memImage!, size);
+          if (!kDebugMode) {
+            _imageCache[cacheKey] = (memImage!, size);
+          }
 
-          //foward to original listener
+          //forward to original listener
           if (imageStreamListener != null) {
             imageStreamListener(size, synchronousCall);
           }
         };
 
-        _imageCache[cacheKey] = (memImage, null);
+        if (!kDebugMode) {
+          _imageCache[cacheKey] = (memImage, null);
+        }
       }
 
       if (width_ != null || height_ != null) {

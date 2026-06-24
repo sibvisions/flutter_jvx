@@ -22,7 +22,6 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../service/ui/i_ui_service.dart';
-import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../label/fl_label_widget.dart';
 
