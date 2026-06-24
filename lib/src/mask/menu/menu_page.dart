@@ -267,6 +267,15 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
               Color? headerColor = ParseUtil.parseHexColor(appStyle.style(AppStyle.menuTitleColor));
 
+              Color? foreground;
+
+              //If we have no header color or a light header color -> use black for the foreground color
+              if (headerColor != null &&
+                  JVxColors.isLight() &&
+                  ThemeData.estimateBrightnessForColor(headerColor) == Brightness.light) {
+                foreground = JVxColors.LIGHTER_BLACK;
+              }
+
               Widget menu = Scaffold(
                 drawerEnableOpenDragGesture: false,
                 endDrawerEnableOpenDragGesture: false,
@@ -279,6 +288,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
                   titleSpacing: leading != null ? 0.0 : 8,
+                  foregroundColor: foreground,
                   backgroundColor: isOffline && !OfflineUtil.isGoingOffline ? OfflineUtil.backgroundColor : headerColor,
                   actions: actions,
                 ),

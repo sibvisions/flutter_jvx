@@ -198,8 +198,11 @@ abstract class FrameState extends State<Frame> {
     Widget? leading,
     Widget? title,
     double? titleSpacing,
+    Color? foregroundColor,
     Color? backgroundColor,
     List<Widget>? actions,
+    IconThemeData? actionsIconTheme,
+    IconThemeData? iconTheme
   });
 
   Widget wrapBody(Widget body) => body;

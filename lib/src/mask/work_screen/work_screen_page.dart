@@ -39,6 +39,7 @@ import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
+import '../../util/jvx_colors.dart';
 import '../../util/jvx_logger.dart';
 import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
@@ -245,7 +246,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               title = Text(screenTitle!);
             }
 
-            Widget? leading = _buildLeading();
+            Widget? leading = _buildLeading(context);
 
             String? customScreenTitle = customScreen?.screenTitle;
 
@@ -276,12 +277,22 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
             bool showOfflineBar = isOffline && !OfflineUtil.isGoingOffline;
 
+            Color? foreground;
+
+            //If we have no header color or a light header color -> use black for the foreground color
+            if (headerColor != null &&
+                JVxColors.isLight() &&
+                ThemeData.estimateBrightnessForColor(headerColor) == Brightness.light) {
+              foreground = JVxColors.LIGHTER_BLACK;
+            }
+
             PreferredSizeWidget? appBar = frame?.getAppBar(
                 context: context,
                 leading: leading,
                 titleSpacing: leading != null ? 0 : 8,
                 title: title,
                 actions: actions,
+                foregroundColor: foreground,
                 backgroundColor: showOfflineBar ? OfflineUtil.backgroundColor : headerColor
             );
 
@@ -560,7 +571,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     );
   }
 
-  Widget? _buildLeading() {
+  Widget? _buildLeading(BuildContext context) {
     if (model?.isCloseAble == false) {
       return null;
     }
@@ -573,7 +584,9 @@ class WorkScreenPageState extends State<WorkScreenPage> {
         message: MaterialLocalizations.of(context).backButtonTooltip,
         child: const Padding(
           padding: EdgeInsets.all(8),
-          child: Center(child: BackButtonIcon()),
+          child: Center(child:
+            BackButtonIcon()
+          ),
         ),
       ),
     );

@@ -47,8 +47,11 @@ class MobileFrameState extends FrameState {
     Widget? leading,
     Widget? title,
     double? titleSpacing,
+    Color? foregroundColor,
     Color? backgroundColor,
     List<Widget>? actions,
+    IconThemeData? actionsIconTheme,
+    IconThemeData? iconTheme
   }) {
     return AppBar(
       leading: leading,
@@ -56,6 +59,9 @@ class MobileFrameState extends FrameState {
       centerTitle: false,
       titleSpacing: titleSpacing,
       actions: actions,
+      iconTheme: iconTheme,
+      actionsIconTheme: actionsIconTheme,
+      foregroundColor: foregroundColor,
       backgroundColor: backgroundColor,
       elevation: 0,
       automaticallyImplyLeading: false,

@@ -104,8 +104,11 @@ class WebFrameState extends FrameState {
     Widget? leading,
     Widget? title,
     double? titleSpacing,
+    Color? foregroundColor,
     Color? backgroundColor,
     List<Widget>? actions,
+    IconThemeData? actionsIconTheme,
+    IconThemeData? iconTheme
   }) {
     var profileImage = IConfigService().userInfo.value?.profileImage;
     AppStyle appStyle = AppStyle.of(context);
@@ -276,6 +279,9 @@ class WebFrameState extends FrameState {
           ),
         ),
       ],
+      iconTheme: iconTheme,
+      actionsIconTheme: actionsIconTheme,
+      foregroundColor: foregroundColor,
       backgroundColor: IConfigService().offline.value && !OfflineUtil.isGoingOffline? OfflineUtil.backgroundColor : topMenuColor,
       elevation: IConfigService().offline.value ? 0 : null,
       automaticallyImplyLeading: false,
