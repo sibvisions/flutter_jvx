@@ -47,8 +47,7 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
       labelWidget = Padding(
         padding: const EdgeInsets.fromLTRB(2, 2, 2, 5),
         child: FlLabelWidget.createTextWidget(model,
-                                              textStyle: model.createTextStyle(foreground: model.foreground ??
-                                               (JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).textTheme.labelSmall!.color)),
+                                              textStyle: model.createTextStyle(foreground: model.foreground ?? Theme.of(context).textTheme.labelSmall!.color),
                                               selectable: true,
         ),
       );
