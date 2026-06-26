@@ -176,6 +176,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   @override
   Widget build(BuildContext context) {
     Widget? widget;
+
     if (currentState != (ALL_COMPLETE)) {
       widget = const Center(child: CircularProgressIndicator());
     }
@@ -364,7 +365,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     }
 
     if (recalculateWidth || _calcOnDataReceived || changedDataCount || dataChunk.fromStart) {
-
       _closeDialog();
       _recalculateTableSize(recalculateWidth || _calcOnDataReceived || dataChunk.fromStart);
       _calcOnDataReceived = false;
@@ -423,6 +423,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// Receives the meta data of the table.
   void _receiveMetaData(DalMetaData newMetaData) {
     bool hasToCalc = (currentState & LOADED_META_DATA) != LOADED_META_DATA;
+
     currentState |= LOADED_META_DATA;
 
     metaData = newMetaData;

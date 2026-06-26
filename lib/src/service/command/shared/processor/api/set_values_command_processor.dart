@@ -25,7 +25,6 @@ import '../../i_command_processor.dart';
 class SetValuesCommandProcessor extends ICommandProcessor<SetValuesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetValuesCommand command, BaseCommand? origin) async {
-
     DataBook? book = IDataService().getDataBook(command.dataProvider);
 
     List<dynamic>? valuesEncrypted;
