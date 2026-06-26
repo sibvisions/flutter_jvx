@@ -20,6 +20,7 @@ import 'package:collection/collection.dart';
 
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/fetch_command.dart';
+import '../../../../../model/command/api/metadata_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/data_command.dart';
 import '../../../../../model/command/data/delete_provider_data_command.dart';
@@ -45,6 +46,8 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
       FlutterUI.logCommand.d("Execute data command ${command.runtimeType}");
     }
 
+    //MARK: update databook with responses
+
     if (command is SaveMetaDataCommand) {
       return _saveMetaData(command);
     } else if (command is SaveFetchDataCommand) {
@@ -65,26 +68,21 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _getMetaData(GetMetaDataCommand command) async {
-    bool needFetch = IDataService().getDataBook(command.dataProvider) == null;
+    DataBook? book = IDataService().getDataBook(command.dataProvider);
 
-    if (needFetch) {
+    if (book == null || book.metaData == null) {
       return [
-        FetchCommand(
+        MetaDataCommand(
           dataProvider: command.dataProvider,
-          fromRow: -1,
-          rowCount: 0,
-          reason: "Fetch for ${command.runtimeType}",
-          includeMetaData: true,
+          reason: "MetaData for ${command.runtimeType}",
         )
       ];
     }
 
-    DalMetaData metaData = IDataService().getMetaData(command.dataProvider)!;
-
     IUiService().sendSubsMetaData(
       subId: command.subId!,
       dataProvider: command.dataProvider,
-      metaData: metaData,
+      metaData: book.metaData!,
     );
 
     return [];
@@ -102,7 +100,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveMetaData(SaveMetaDataCommand command) async {
-    IDataService().updateMetaData(changedResponse: command.response);
+    IDataService().updateMetaData(response: command.response);
 
     IUiService().notifyMetaDataChange(command.response.dataProvider);
 
@@ -146,15 +144,13 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _getDataChunk(GetDataChunkCommand command) async {
-    bool needFetch = IDataService().dataBookNeedsFetch(
-      from: command.from!,
-      to: command.to,
+    FetchState state = IDataService().getFetchState(
       dataProvider: command.dataProvider,
+      from: command.from!,
+      to: command.to
     );
 
-    if (needFetch) {
-      bool includeMetaData = IDataService().getDataBook(command.dataProvider) == null;
-
+    if (state == FetchState.NotAvailable) {
       DataBook? dataBook = IDataService().getDataBook(command.dataProvider);
       int fromRow = dataBook?.records.keys.maxOrNull ?? command.from!;
 
@@ -164,24 +160,26 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
           rowCount: command.to != null ? command.to! - fromRow : -1,
           dataProvider: command.dataProvider,
           reason: "Fetch for ${command.runtimeType}",
-          includeMetaData: includeMetaData,
+          includeMetaData: dataBook == null,
         )
       ];
     }
+    else if (state == FetchState.Available) {
+      DataChunk dataChunk = IDataService().getDataChunk(
+        columnNames: command.dataColumns,
+        from: command.from!,
+        to: command.to,
+        dataProvider: command.dataProvider,
+        fromStart: command.fromStart
+      );
 
-    DataChunk dataChunk = IDataService().getDataChunk(
-      columnNames: command.dataColumns,
-      from: command.from!,
-      to: command.to,
-      dataProvider: command.dataProvider,
-      fromStart : command.fromStart
-    );
+      IUiService().sendSubsDataChunk(
+        dataChunk: dataChunk,
+        dataProvider: command.dataProvider,
+        subId: command.subId!,
+      );
+    }
 
-    IUiService().sendSubsDataChunk(
-      dataChunk: dataChunk,
-      dataProvider: command.dataProvider,
-      subId: command.subId!,
-    );
     return [];
   }
 

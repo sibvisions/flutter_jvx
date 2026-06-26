@@ -38,11 +38,13 @@ import '../../../mask/work_screen/content.dart';
 import '../../../model/command/api/close_content_command.dart';
 import '../../../model/command/api/close_screen_command.dart';
 import '../../../model/command/api/fetch_command.dart';
+import '../../../model/command/api/metadata_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_page_chunk_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
+import '../../../model/command/data/save_meta_data_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -547,43 +549,66 @@ class UiService implements IUiService {
     _dataSubscriptions.add(dataSubscription);
 
     if (immediatelyRetrieveData) {
-      DataBook? dataBook = IDataService().getDataBook(dataSubscription.dataProvider);
-      bool needsToFetch = IDataService().dataBookNeedsFetch(
+      ICommandService servCmd = ICommandService();
+      IDataService servData = IDataService();
+
+      DataBook? dataBook = servData.getDataBook(dataSubscription.dataProvider);
+
+      FetchState state = servData.getFetchState(
+        dataProvider: dataSubscription.dataProvider,
         from: dataSubscription.from,
         to: dataSubscription.to,
-        dataProvider: dataSubscription.dataProvider,
       );
-      bool fetchMetaData = dataBook?.metaData == null;
 
-      //if we fetch metadata, it's not necessary to send GetMetaDataCommand again
-      //if we don't fetch metadata, we have
+      bool hasMetaData = dataBook?.metaData != null;
 
-      if (needsToFetch || fetchMetaData) {
-        //metadata before data!
-        if (!fetchMetaData && dataSubscription.onMetaData != null) {
+      if (state == FetchState.NotAvailable || (!hasMetaData && state == FetchState.Available)) {
+        if (hasMetaData && dataSubscription.onMetaData != null) {
           //in this case, we have metadata and we should handle it
-
-          ICommandService().sendCommand(GetMetaDataCommand(
+          servCmd.sendCommand(GetMetaDataCommand(
             reason: "Subscription added",
             dataProvider: dataSubscription.dataProvider,
             subId: dataSubscription.id,
           ));
         }
 
-        //this command triggers metadata update, if we fetch metadata
-        ICommandService().sendCommand(FetchCommand(
-          dataProvider: dataSubscription.dataProvider,
-          fromRow: dataBook?.records.keys.maxOrNull ?? dataSubscription.from,
-          rowCount: dataSubscription.to != null
-              ? dataSubscription.to! - dataSubscription.from
-              : IUiService().getSubscriptionRowCount(dataSubscription.dataProvider),
-          reason: "Fetch for DataSubscription [${dataSubscription.dataProvider}]",
-          includeMetaData: fetchMetaData,
-        ));
-      } else {
+        bool needMetaData = !hasMetaData &&
+                            state == FetchState.Available &&
+                            servCmd.getDataProviderCommandState<SaveMetaDataCommand>(dataSubscription.dataProvider) == CommandState.NotAvailable;
+
+        if (state == FetchState.NotAvailable) {
+          //this command triggers metadata update, if we fetch metadata
+          servCmd.sendCommand(FetchCommand(
+            dataProvider: dataSubscription.dataProvider,
+            fromRow: dataBook?.records.keys.maxOrNull ?? dataSubscription.from,
+            rowCount: dataSubscription.to != null
+                ? dataSubscription.to! - dataSubscription.from
+                : IUiService().getSubscriptionRowCount(dataSubscription.dataProvider),
+            reason: "Fetch for DataSubscription [${dataSubscription.dataProvider}]",
+            includeMetaData: needMetaData,
+          ));
+        }
+        else if (needMetaData) {
+          servCmd.sendCommand(MetaDataCommand(
+            dataProvider: dataSubscription.dataProvider,
+            reason: "MetaData for DataSubscription [${dataSubscription.dataProvider}]",
+          ));
+        }
+      }
+      else if (state == FetchState.Queued) {
+        if (hasMetaData && dataSubscription.onMetaData != null) {
+          //in this case, we have metadata and we should handle it
+          servCmd.sendCommand(GetMetaDataCommand(
+            reason: "Subscription added",
+            dataProvider: dataSubscription.dataProvider,
+            subId: dataSubscription.id,
+          ));
+        }
+      }
+      else if (state == FetchState.Available) {
         //metadata before data!
         if (dataSubscription.onMetaData != null) {
-          ICommandService().sendCommand(GetMetaDataCommand(
+          servCmd.sendCommand(GetMetaDataCommand(
             reason: "Subscription added",
             dataProvider: dataSubscription.dataProvider,
             subId: dataSubscription.id,
@@ -591,7 +616,7 @@ class UiService implements IUiService {
         }
 
         if (dataSubscription.from != -1 && dataSubscription.onDataChunk != null) {
-          ICommandService().sendCommand(GetDataChunkCommand(
+          servCmd.sendCommand(GetDataChunkCommand(
             reason: "Subscription added",
             dataProvider: dataSubscription.dataProvider,
             from: dataSubscription.from,
@@ -602,7 +627,7 @@ class UiService implements IUiService {
         }
 
         if (dataSubscription.onSelectedRecord != null) {
-          ICommandService().sendCommand(GetSelectedDataCommand(
+          servCmd.sendCommand(GetSelectedDataCommand(
             subId: dataSubscription.id,
             reason: "Subscription added",
             dataProvider: dataSubscription.dataProvider,
@@ -613,7 +638,7 @@ class UiService implements IUiService {
 
       if (dataSubscription.onPage != null) {
         dataBook?.pageRecords.keys.forEach((pageKey) {
-          ICommandService().sendCommand(GetPageChunkCommand(
+          servCmd.sendCommand(GetPageChunkCommand(
             reason: "Subscription added",
             dataProvider: dataSubscription.dataProvider,
             from: dataSubscription.from,

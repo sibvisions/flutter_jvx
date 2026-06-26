@@ -116,14 +116,9 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   }
 
   @override
-  Future<void> afterProcessing(StartupCommand command, BaseCommand? origin) async {
+  Future<void> afterProcessing(StartupCommand command, BaseCommand? origin, Object? error) async {
     FlutterUI.clearHistory();
-  }
-
-  @override
-  Future<void> onFinish(StartupCommand command) async {
     FlutterUI.clearLocationHistory();
-
-    IUiService().getAppManager()?.onSuccessfulStartup();
   }
+
 }

@@ -37,6 +37,11 @@ abstract class BaseCommand {
   /// If the ui lock is delayed until the loading bar is shown.
   bool delayUILocking;
 
+  bool? _failed;
+
+  bool get successful => _failed == true;
+  bool get processed => _failed != null;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,6 +71,24 @@ abstract class BaseCommand {
   /// Gets a string with all properties
   String propertiesAsString() {
     return "id: $id, reason: $reason, showLoading: $showLoading, delayUILocking: $delayUILocking, loadingDelay: $loadingDelay";
+  }
+
+  /// Invoked before processor reads this command
+  void beforeProcess(BaseCommand? origin) {
+    _failed = false;
+  }
+
+  /// Invoked after processor read this command
+  void afterProcess(BaseCommand? origin, bool success) {
+    _failed = !success;
+  }
+
+  /// Invoked after all commands of same request are finished
+  Future<void> finishedProcessing() async {
+  }
+
+  /// Invoked if command is not processed because of missing processor
+  Future<void> noProcessing() async {
   }
 
 }

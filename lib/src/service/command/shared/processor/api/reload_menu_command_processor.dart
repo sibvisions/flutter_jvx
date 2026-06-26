@@ -16,37 +16,15 @@
 
 import 'dart:async';
 
-import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/api/reload_menu_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_reload_menu_request.dart';
 import '../../../../api/i_api_service.dart';
-import '../../../../ui/i_ui_service.dart';
-import '../../../i_command_service.dart';
 import '../../i_command_processor.dart';
 
 class ReloadMenuCommandProcessor extends ICommandProcessor<ReloadMenuCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ReloadMenuCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiReloadMenuRequest());
-  }
-
-  @override
-  Future<void> onFinish(ReloadMenuCommand command) async {
-    if (command.screenLongName != null) {
-      if (IUiService().getMenuModel().containsMenuItemWithLongName(command.screenLongName!)) {
-        unawaited(ICommandService().sendCommand(OpenScreenCommand(
-          longName: command.screenLongName!,
-          reason: command.reason,
-        )));
-      }
-    } else if (command.screenClassName != null) {
-      if (IUiService().getMenuModel().getMenuItemByClassName(command.screenClassName!) != null) {
-        unawaited(ICommandService().sendCommand(OpenScreenCommand(
-          className: command.screenClassName!,
-          reason: command.reason,
-        )));
-      }
-    }
   }
 }

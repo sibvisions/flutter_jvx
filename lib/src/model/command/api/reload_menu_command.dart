@@ -14,6 +14,9 @@
  * the License.
  */
 
+import 'dart:async';
+
+import '../../../../flutter_jvx.dart';
 import 'application_command.dart';
 
 /// The command for reloading menu.
@@ -46,6 +49,25 @@ class ReloadMenuCommand extends ApplicationCommand {
   @override
   String propertiesAsString() {
     return "screenLongName: $screenLongName, screenClassName: $screenClassName, ${super.propertiesAsString()}";
+  }
+
+  @override
+  Future<void> finishedProcessing() async {
+    if (screenLongName != null) {
+      if (IUiService().getMenuModel().containsMenuItemWithLongName(screenLongName!)) {
+        unawaited(ICommandService().sendCommand(OpenScreenCommand(
+          longName: screenLongName!,
+          reason: reason,
+        )));
+      }
+    } else if (screenClassName != null) {
+      if (IUiService().getMenuModel().getMenuItemByClassName(screenClassName!) != null) {
+        unawaited(ICommandService().sendCommand(OpenScreenCommand(
+          className: screenClassName!,
+          reason: reason,
+        )));
+      }
+    }
   }
 
 }

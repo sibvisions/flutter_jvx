@@ -55,6 +55,7 @@ import '../../../../model/request/api_download_translation_request.dart';
 import '../../../../model/request/api_exit_request.dart';
 import '../../../../model/request/api_feedback_request.dart';
 import '../../../../model/request/api_fetch_request.dart';
+import '../../../../model/request/api_metadata_request.dart';
 import '../../../../model/request/api_filter_request.dart';
 import '../../../../model/request/api_focus_gained_request.dart';
 import '../../../../model/request/api_focus_lost_request.dart';
@@ -166,6 +167,7 @@ class OnlineApiRepository extends IRepository {
     ApiNavigationRequest: (_) => APIRoute.POST_NAVIGATION,
     ApiReloadMenuRequest: (_) => APIRoute.POST_MENU,
     ApiFetchRequest: (_) => APIRoute.POST_FETCH,
+    ApiMetaDataRequest: (_) => APIRoute.POST_METADATA,
     ApiLogoutRequest: (_) => APIRoute.POST_LOGOUT,
     ApiFilterRequest: (_) => APIRoute.POST_FILTER,
     ApiSelectRecordTreeRequest: (_) => APIRoute.POST_SELECT_TREE,
@@ -678,6 +680,8 @@ class OnlineApiRepository extends IRepository {
           FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode} with body: $body");
         }
 
+        //MARK: access http response
+
         if (response.statusCode == 400 && request is ApiStartupRequest) {
           APIRoute? route = uriMap[request.runtimeType]?.call(request);
           String routeString = route!.route.replaceAll("api", "");
@@ -723,6 +727,8 @@ class OnlineApiRepository extends IRepository {
         }
         else if (contentTypes.contains(ContentType.binary.value)) {
           compress = true;
+
+          //MARK: parse and check JSON from response
 
           jsonResponse = _parseAndCheckJson(utf8.decode(GZipCodec().decode(response.data)));
         }

@@ -43,4 +43,6 @@ abstract class IApiService implements Service {
   void setRepository(IRepository repository);
 
   void setController(IController controller);
+
+  IController? getController();
 }

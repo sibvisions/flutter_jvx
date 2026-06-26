@@ -15,10 +15,10 @@
  */
 
 import '../../response/dal_meta_data_response.dart';
-import 'data_command.dart';
+import 'dataprovider_command.dart';
 
 /// The command to save metatada in cache.
-class SaveMetaDataCommand extends DataCommand {
+class SaveMetaDataCommand extends DataProviderCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,7 +34,7 @@ class SaveMetaDataCommand extends DataCommand {
     required this.response,
     required super.reason,
     super.showLoading,
-  });
+  }) : super(dataProvider: response.dataProvider);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overriden methods

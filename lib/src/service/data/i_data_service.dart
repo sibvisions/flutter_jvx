@@ -27,6 +27,15 @@ import '../../model/response/dal_data_provider_changed_response.dart';
 import '../../model/response/dal_meta_data_response.dart';
 import '../service.dart';
 
+enum FetchState {
+  /// Data available
+  Available,
+  /// Data will be available "later"
+  Queued,
+  /// No data available
+  NotAvailable
+}
+
 /// Interface for a dataService meant to handle all dataBook related tasks,
 abstract class IDataService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +50,7 @@ abstract class IDataService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Establishes the meta data of the given dataBook
-  bool updateMetaData({required DalMetaDataResponse changedResponse});
+  bool updateMetaData({required DalMetaDataResponse response});
 
   /// Establishes the meta data of the given dataBook
   bool setMetaData(DalMetaData metaData);
@@ -53,7 +62,7 @@ abstract class IDataService implements Service {
   Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand command});
 
   /// Updates parts of dataBook with changed data.
-  bool updateDataChanged({required DalDataProviderChangedResponse changedResponse});
+  Future<bool> updateDataChanged({required DalDataProviderChangedResponse changedResponse});
 
   /// Updates parts of dataBook with new selection data.
   bool updateSelectionChanged({required DalDataProviderChangedResponse changedResponse});
@@ -81,8 +90,8 @@ abstract class IDataService implements Service {
   /// Returns null if there is no dataBook with [dataProvider].
   DalMetaData? getMetaData(String dataProvider);
 
-  /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
-  bool dataBookNeedsFetch({
+  /// Gets the fetch state of a specific provider for range.
+  FetchState getFetchState({
     required String dataProvider,
     required int from,
     int? to,
@@ -124,9 +133,15 @@ abstract class IDataService implements Service {
   /// Not every LinkedCellEditor should do this, which is why it is done in the referenced data book centrally.
   ///
   ReferencedCellEditor createReferencedCellEditors(
-      FlLinkedCellEditorModel cellEditorModel, String dataProvider, String columnName);
+    List<String>? cache,
+    FlLinkedCellEditorModel cellEditorModel,
+    String dataProvider,
+    String columnName
+  );
 
+  /// Sets state of databook to fetching to row [to]
   void setDataBookFetching(String dataProvider, int to);
 
+  /// Unsets fetching state of databook
   void removeDataBookFetching(String dataProvider, int to);
 }

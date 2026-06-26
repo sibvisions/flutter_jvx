@@ -35,6 +35,7 @@ import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/api/exit_command.dart';
 import '../../../../../model/command/api/feedback_command.dart';
 import '../../../../../model/command/api/fetch_command.dart';
+import '../../../../../model/command/api/metadata_command.dart';
 import '../../../../../model/command/api/filter_command.dart';
 import '../../../../../model/command/api/focus_gained_command.dart';
 import '../../../../../model/command/api/focus_lost_command.dart';
@@ -86,6 +87,7 @@ import 'download_translation_command_processor.dart';
 import 'exit_command_processor.dart';
 import 'feedback_command_processor.dart';
 import 'fetch_command_processor.dart';
+import 'metadata_command_processor.dart';
 import 'filter_command_processor.dart';
 import 'focus_gained_command_processor.dart';
 import 'focus_lost_command_processor.dart';
@@ -163,6 +165,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final SetValuesCommandProcessor _setValuesProcessor = SetValuesCommandProcessor();
   final FilterCommandProcessor _filterProcessor = FilterCommandProcessor();
   final FetchCommandProcessor _fetchProcessor = FetchCommandProcessor();
+  final MetaDataCommandProcessor _metaDataProcessor = MetaDataCommandProcessor();
   final SelectRecordCommandProcessor _selectRecordProcessor = SelectRecordCommandProcessor();
   final DeleteRecordCommandProcessor _deleteRecordCommandProcessor = DeleteRecordCommandProcessor();
   final DalSaveCommandProcessor _dalSaveProcessor = DalSaveCommandProcessor();
@@ -216,6 +219,8 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _filterProcessor;
     } else if (command is FetchCommand) {
       return _fetchProcessor;
+    } else if (command is MetaDataCommand) {
+      return _metaDataProcessor;
     } else if (command is LogoutCommand) {
       return _logoutProcessor;
     } else if (command is SelectRecordCommand) {

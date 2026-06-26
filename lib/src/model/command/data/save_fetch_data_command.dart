@@ -14,12 +14,14 @@
  * the License.
  */
 
+import '../../../service/data/i_data_service.dart';
 import '../../request/filter.dart';
 import '../../response/dal_fetch_response.dart';
-import 'data_command.dart';
+import '../base_command.dart';
+import 'dataprovider_command.dart';
 
 /// The command to save fetched records in cache.
-class SaveFetchDataCommand extends DataCommand {
+class SaveFetchDataCommand extends DataProviderCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,7 +46,7 @@ class SaveFetchDataCommand extends DataCommand {
     this.setRootKey = false,
     required super.reason,
     super.showLoading,
-  });
+  }) : super(dataProvider: response.dataProvider);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overriden methods
@@ -53,5 +55,17 @@ class SaveFetchDataCommand extends DataCommand {
   @override
   String propertiesAsString() {
     return "requestFilter: $requestFilter, response: $response, setRootKey: $setRootKey, ${super.propertiesAsString()}";
+  }
+
+  @override
+  void beforeProcess(BaseCommand? origin) {
+    super.beforeProcess(origin);
+
+    IDataService().setDataBookFetching(dataProvider, response.isAllFetched == true ? -1 : response.to);
+  }
+
+  @override
+  Future<void> finishedProcessing() async {
+    IDataService().removeDataBookFetching(dataProvider, response.isAllFetched == true ? -1 : response.to);
   }
 }

@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../../service/ui/i_ui_service.dart';
 import 'api_command.dart';
 
 class StartupCommand extends ApiCommand {
@@ -57,6 +58,11 @@ class StartupCommand extends ApiCommand {
   @override
   String propertiesAsString() {
     return "username: $username, password: ${password != null ? '<set>' : 'null'}, websocket: $websocket, minimal: $minimal, ${super.propertiesAsString()}";
+  }
+
+  @override
+  Future<void> finishedProcessing() async {
+    IUiService().getAppManager()?.onSuccessfulStartup();
   }
 
 }

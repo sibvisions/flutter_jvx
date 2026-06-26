@@ -731,7 +731,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       // Checks if the column of the metadata has a link reference
       // If not, then we have to create the referenced cell editor ourselves
       if (model.linkReference == effectiveLinkReference) {
-        referencedCellEditor = IDataService().createReferencedCellEditors(model, dataProvider, columnName);
+        referencedCellEditor = IDataService().createReferencedCellEditors(null, model, dataProvider, columnName);
       }
     }
   }

@@ -30,8 +30,8 @@ class ExitCommandProcessor extends ICommandProcessor<ExitCommand> {
   }
 
   @override
-  Future<void> afterProcessing(ExitCommand command, BaseCommand? origin) async {
-    //nothing to use!
+  Future<void> afterProcessing(ExitCommand command, BaseCommand? origin, Object? error) async {
+    //not usable after processing
     IUiService().updateClientId(null);
   }
 }

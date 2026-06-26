@@ -26,6 +26,7 @@ import '../../../flutter_ui.dart';
 import '../../../model/command/api/fetch_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/save_fetch_data_command.dart';
+import '../../../model/command/data/save_meta_data_command.dart';
 import '../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';
@@ -82,7 +83,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateDataChanged({required DalDataProviderChangedResponse changedResponse}) {
+  Future<bool> updateDataChanged({required DalDataProviderChangedResponse changedResponse}) async {
     DataBook? dataBook = dataBooks[changedResponse.dataProvider];
     if (dataBook == null) {
       return false;
@@ -129,23 +130,23 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateMetaData({required DalMetaDataResponse changedResponse}) {
-    DataBook? dataBook = dataBooks[changedResponse.dataProvider];
+  bool updateMetaData({required DalMetaDataResponse response}) {
+    DataBook? dataBook = dataBooks[response.dataProvider];
 
     if (dataBook == null) {
-      DalMetaData metaData = DalMetaData(changedResponse.dataProvider);
-      metaData.applyMetaDataResponse(changedResponse);
+      DalMetaData metaData = DalMetaData(response.dataProvider);
+      metaData.applyMetaDataResponse(response);
 
       dataBook = DataBook(
-        dataProvider: changedResponse.dataProvider,
+        dataProvider: response.dataProvider,
         metaData: metaData
       );
 
       dataBooks[dataBook.dataProvider] = dataBook;
     }
     else {
-      dataBook.metaData ??= DalMetaData(changedResponse.dataProvider);
-      dataBook.metaData!.applyMetaDataResponse(changedResponse);
+      dataBook.metaData ??= DalMetaData(response.dataProvider);
+      dataBook.metaData!.applyMetaDataResponse(response);
     }
 
     return true;
@@ -167,10 +168,12 @@ class DataService implements IDataService {
       dataBook.metaData = metaData;
     }
 
+    List<String> cache = [];
+
     metaData.columnDefinitions.forEach((colDef) {
       if (colDef.cellEditorModel is FlLinkedCellEditorModel) {
         IDataService().createReferencedCellEditors(
-            colDef.cellEditorModel as FlLinkedCellEditorModel, metaData.dataProvider, colDef.name);
+          cache, colDef.cellEditorModel as FlLinkedCellEditorModel, metaData.dataProvider, colDef.name);
       }
     });
 
@@ -311,17 +314,25 @@ class DataService implements IDataService {
   }
 
   @override
-  bool dataBookNeedsFetch({
-    required int from,
+  FetchState getFetchState({
     required String dataProvider,
+    required int from,
     int? to,
   }) {
     if (from <= -1) {
-      return false;
+      return FetchState.Available;
+    }
+
+    CommandState state = ICommandService().getFetchCommandState(dataProvider, from, to);
+    if (state == CommandState.Finished) {
+      return FetchState.Available;
+    }
+    else if (state == CommandState.Waiting) {
+      return FetchState.Queued;
     }
 
     if (!dataBooks.containsKey(dataProvider)) {
-      return true;
+      return FetchState.NotAvailable;
     }
 
     DataBook dataBook = dataBooks[dataProvider]!;
@@ -329,21 +340,38 @@ class DataService implements IDataService {
     // If all has already been fetched, then there is no point in fetching more,
     // If not all data is fetched and to is null (all possible data is being requested), more should be fetched
     if (dataBook.isAllFetched) {
-      return false;
+      return FetchState.Available;
     } else if ((to == null || to == -1)) {
-      return !fetchingDataBooks.containsKey(dataProvider) || fetchingDataBooks[dataProvider] != -1;
+      if (fetchingDataBooks.containsKey(dataProvider)) {
+        int fetchTo = fetchingDataBooks[dataProvider]!;
+
+        //-1 means fetch all
+        if (fetchTo == -1 || fetchTo >= from) {
+          return FetchState.Queued;
+        }
+      }
+
+      return FetchState.NotAvailable;
     }
 
     // Check all indexes if they are present.
     for (int i = from; i < to; i++) {
       var record = dataBook.records[i];
       if (record == null) {
-        return !fetchingDataBooks.containsKey(dataProvider) || to > (fetchingDataBooks[dataProvider]!);
+        if (fetchingDataBooks.containsKey(dataProvider)) {
+          int fetchTo = fetchingDataBooks[dataProvider]!;
+
+          if (fetchTo== -1 || fetchTo <= to) {
+            return FetchState.Queued;
+          }
+        }
+
+        return FetchState.NotAvailable;
       }
     }
 
     // Returns false if all needed rows are already fetched.
-    return false;
+    return FetchState.Available;
   }
 
   @override
@@ -408,12 +436,11 @@ class DataService implements IDataService {
   }
 
   @override
-  ReferencedCellEditor createReferencedCellEditors(
+  ReferencedCellEditor createReferencedCellEditors(List<String>? cache,
       FlLinkedCellEditorModel cellEditorModel, String dataProvider, String columnName) {
     var linkReference = cellEditorModel.linkReference;
 
-    DataBook referencedDataBook =
-        dataBooks[linkReference.referencedDataBook] ??= DataBook(dataProvider: linkReference.referencedDataBook);
+    DataBook referencedDataBook = dataBooks[linkReference.referencedDataBook] ??= DataBook(dataProvider: linkReference.referencedDataBook);
 
     ReferencedCellEditor referencedCellEditor = ReferencedCellEditor(cellEditorModel, columnName, dataProvider);
 
@@ -423,18 +450,26 @@ class DataService implements IDataService {
       linkReference.columnNames.add(columnName);
     }
 
-    var dataBook = getDataBook(linkReference.referencedDataBook);
-    if (dataBookNeedsFetch(from: 0, dataProvider: linkReference.referencedDataBook, to: -1) ||
-        (dataBook != null && dataBook.metaData == null)) {
-      ICommandService().sendCommand(
-        FetchCommand(
-          includeMetaData: true,
-          fromRow: 0,
-          rowCount: -1,
-          dataProvider: linkReference.referencedDataBook,
-          reason: "Created referenced cell editor on data book without metadata",
-        ),
-      );
+    if (referencedDataBook.metaData == null ||
+        getFetchState(dataProvider: linkReference.referencedDataBook, from: 0, to: -1) == FetchState.NotAvailable) {
+      String cacheKey = linkReference.referencedDataBook;
+      //don't fetch same data provider multiple times within same cache cycle
+      if (cache != null && !cache.contains(cacheKey)) {
+        cache.add(cacheKey);
+
+        ICommandService servCmd = ICommandService();
+
+        servCmd.sendCommand(
+          FetchCommand(
+            includeMetaData: referencedDataBook.metaData == null
+                             && servCmd.getDataProviderCommandState<SaveMetaDataCommand>(referencedDataBook.dataProvider) == CommandState.NotAvailable,
+            fromRow: 0,
+            rowCount: -1,
+            dataProvider: linkReference.referencedDataBook,
+            reason: "Created referenced cell editor on data book without metadata",
+          ),
+        );
+      }
     } else {
       referencedCellEditor.buildDataToDisplayMap(referencedDataBook);
     }

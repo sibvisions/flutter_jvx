@@ -16,6 +16,7 @@
 
 import '../../../service/data/i_data_service.dart';
 import '../../request/filter.dart';
+import '../base_command.dart';
 import 'filter_command.dart';
 import 'dal_command.dart';
 
@@ -62,12 +63,7 @@ class FetchCommand extends DalCommand {
     this.offline = false,
     required super.reason,
     super.showLoading,
-  }) {
-    IDataService().setDataBookFetching(
-      dataProvider,
-      rowCount == -1 ? rowCount : fromRow + rowCount,
-    );
-  }
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -77,6 +73,18 @@ class FetchCommand extends DalCommand {
   String propertiesAsString() {
     return "fromRow: $fromRow, rowCount: $rowCount, includeMetaData: $includeMetaData, "
            "filter: $filter, reload:$reload, setRootKey: $setRootKey, offline: $offline, ${super.propertiesAsString()}";
+  }
+
+  @override
+  void beforeProcess(BaseCommand? origin) {
+    super.beforeProcess(origin);
+
+    IDataService().setDataBookFetching(dataProvider, rowCount == -1 ? -1 : fromRow + rowCount);
+  }
+
+  @override
+  Future<void> finishedProcessing() async {
+    IDataService().removeDataBookFetching(dataProvider, rowCount == -1 ? -1 : fromRow + rowCount);
   }
 
 }

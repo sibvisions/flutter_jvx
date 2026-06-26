@@ -17,7 +17,18 @@
 import 'dart:async';
 
 import '../../model/command/base_command.dart';
+import '../../model/command/data/dataprovider_command.dart';
+import '../../model/command/data/save_fetch_data_command.dart';
 import '../service.dart';
+
+enum CommandState {
+  Finished,
+  Waiting,
+  NotAvailable;
+
+  bool get isWaiting => this == Waiting;
+  bool get isAvailable => this != NotAvailable;
+}
 
 /// Defines the base construct of a [ICommandService]
 /// Command service is used to facilitate communication between different services.
@@ -69,6 +80,12 @@ abstract class ICommandService implements Service {
     bool? delayUILocking,
     bool? showLoading,
   });
+
+  /// Gets the [T] command state with given [dataProvider] name
+  CommandState getDataProviderCommandState<T extends DataProviderCommand>(String dataProvider);
+
+  /// Gets the [T] command state with given [dataProvider] name and [from], [to]
+  CommandState getFetchCommandState<T extends SaveFetchDataCommand>(String dataProvider, int from, int? to);
 }
 
 class CommandResult {

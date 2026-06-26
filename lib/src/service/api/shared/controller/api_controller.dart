@@ -90,6 +90,9 @@ class ApiController implements IController {
   /// Maps response names to their processor
   late final HashMap<String, IResponseProcessor> responseToProcessorMap;
 
+  /// the processResponse execution count
+  final List<ApiInteraction> _interactions = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,18 +137,60 @@ class ApiController implements IController {
 
   @override
   Future<List<BaseCommand>> processResponse(ApiInteraction apiInteraction) async {
-    List<BaseCommand> commands = [];
 
-    for (ApiResponse response in apiInteraction.responses) {
-      IResponseProcessor? processor = responseToProcessorMap[response.name];
+    _interactions.add(apiInteraction);
 
-      if (processor != null) {
-        commands.addAll(await processor.processResponse(response, apiInteraction.request));
-      } else {
-        throw Exception("Couldn't find response processor for ${response.name}");
+    //MARK: Iterate json response of http request and create commands
+
+    try {
+      List<BaseCommand> commands = [];
+
+      for (ApiResponse response in apiInteraction.responses) {
+        IResponseProcessor? processor = responseToProcessorMap[response.name];
+
+        if (processor != null) {
+          commands.addAll(await processor.processResponse(response, apiInteraction.request));
+        } else {
+          throw Exception("Couldn't find response processor for ${response.name}");
+        }
+      }
+
+      return commands;
+    }
+    finally {
+      _interactions.remove(apiInteraction);
+    }
+  }
+
+  @override
+  bool isResponseProcessing() {
+    return _interactions.isNotEmpty;
+  }
+
+  @override
+  bool isResponseAvailable(Map<String, dynamic> values) {
+    List<ApiInteraction> copy = List.of(_interactions);
+
+    for (int i = 0; i < copy.length; i++) {
+      List<ApiResponse> responses = copy[i].responses;
+
+      for (int j = 0; j < responses.length; j++) {
+        Map<String, dynamic> json = responses[j].json;
+
+        //nullable because no entries -> not found
+        bool? found;
+
+        for (MapEntry<String, dynamic> entry in values.entries) {
+          found = json.containsKey(entry.key) && json[entry.key] == entry.value && (found ?? true);
+        }
+
+        if (found == true) {
+          return true;
+        }
       }
     }
 
-    return commands;
+    return false;
   }
+
 }

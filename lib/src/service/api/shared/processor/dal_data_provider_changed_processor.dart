@@ -25,8 +25,10 @@ import '../i_response_processor.dart';
 
 class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProviderChangedResponse> {
   @override
-  List<BaseCommand> processResponse(DalDataProviderChangedResponse response, ApiRequest? request) {
+  Future<List<BaseCommand>> processResponse(DalDataProviderChangedResponse response, ApiRequest? request) async {
     List<BaseCommand> commands = [];
+
+    IDataService servData = IDataService();
 
     // If -1 then delete all saved data and re-fetch
     if (response.reload == -1) {
@@ -36,37 +38,42 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
         deleteAll: true,
       ));
 
-      bool fetchMetaData = IDataService().getMetaData(response.dataProvider) == null;
+      bool hasMetaData = servData.getMetaData(response.dataProvider) != null;
 
-      if (!fetchMetaData) {
-        if (IDataService().updateMetaDataChanged(changedResponse: response)) {
-          IUiService().notifyMetaDataChange(response.dataProvider);
-        }
+      IUiService servUi = IUiService();
+
+      if (hasMetaData && servData.updateMetaDataChanged(changedResponse: response)) {
+        servUi.notifyMetaDataChange(response.dataProvider);
       }
 
-      IUiService().notifySubscriptionsOfReload(response.dataProvider);
+      servUi.notifySubscriptionsOfReload(response.dataProvider);
 
       commands.add(
         FetchCommand(
           reason: "Data provider changed response was reload -1",
           fromRow: 0,
-          rowCount: IUiService().getSubscriptionRowCount(response.dataProvider),
+          rowCount: servUi.getSubscriptionRowCount(response.dataProvider),
           dataProvider: response.dataProvider,
           //if no metadata available -> include it with next fetch
-          includeMetaData: fetchMetaData,
+          includeMetaData: !hasMetaData,
         ),
       );
     } else {
-      if (IDataService().updateMetaDataChanged(changedResponse: response)) {
-        IUiService().notifyMetaDataChange(response.dataProvider);
+      IUiService? servUi;
+
+      if (servData.updateMetaDataChanged(changedResponse: response)) {
+        servUi ??= IUiService();
+        servUi.notifyMetaDataChange(response.dataProvider);
       }
-      bool dataChanged = IDataService().updateDataChanged(changedResponse: response);
-      bool selectionChanged = IDataService().updateSelectionChanged(changedResponse: response);
+      bool dataChanged = await servData.updateDataChanged(changedResponse: response);
+      bool selectionChanged = servData.updateSelectionChanged(changedResponse: response);
 
       if (dataChanged) {
-        IUiService().notifyDataChange(dataProvider: response.dataProvider);
+        servUi ??= IUiService();
+        servUi.notifyDataChange(dataProvider: response.dataProvider);
       } else if (selectionChanged) {
-        IUiService().notifySelectionChange(response.dataProvider);
+        servUi ??= IUiService();
+        servUi.notifySelectionChange(response.dataProvider);
       }
 
       if (response.reload != null) {

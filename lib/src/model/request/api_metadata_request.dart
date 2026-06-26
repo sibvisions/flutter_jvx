@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2026 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,43 +14,41 @@
  * the License.
  */
 
-import 'dataprovider_command.dart';
+import '../../service/api/shared/api_object_property.dart';
+import '../command/api/metadata_command.dart';
+import 'application_request.dart';
 
-/// The base command for dataprovider interactions.
-abstract class DataProviderDataCommand extends DataProviderCommand {
+class ApiMetaDataRequest extends ApplicationRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the [DataSubscription] requesting data
-  final String? subId;
+  /// Data provider to fetch the data from.
+  final String dataProvider;
 
-  /// From which index data is being requested
-  final int? from;
+  /// Column names to fetch.
+  final List<String>? columnNames;
 
-  /// To which index data is being requested
-  final int? to;
+  final MetaDataCommand? command;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataProviderDataCommand({
-    required super.dataProvider,
-    required super.reason,
-    this.subId,
-    this.from,
-    this.to,
-    super.showLoading,
+  ApiMetaDataRequest({
+    required this.dataProvider,
+    this.columnNames,
+    this.command
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
+  // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String propertiesAsString() {
-    return "dataProvider: $dataProvider, subId: $subId, from: $from, to: $to, ${super.propertiesAsString()}";
-  }
-
+  Map<String, dynamic> toJson() => {
+    ...super.toJson(),
+    ApiObjectProperty.dataProvider: dataProvider,
+    ApiObjectProperty.columnNames: columnNames
+  };
 }

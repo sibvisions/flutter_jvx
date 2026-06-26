@@ -45,6 +45,7 @@ class APIRoute {
   static const APIRoute POST_NAVIGATION = APIRoute(Method.POST, "api/navigation");
   static const APIRoute POST_MENU = APIRoute(Method.POST, "api/menu");
   static const APIRoute POST_FETCH = APIRoute(Method.POST, "api/dal/fetch");
+  static const APIRoute POST_METADATA = APIRoute(Method.POST, "api/dal/metaData");
   static const APIRoute POST_LOGOUT = APIRoute(Method.POST, "api/logout");
   static const APIRoute POST_FILTER = APIRoute(Method.POST, "api/dal/filter");
   static const APIRoute POST_INSERT_RECORD = APIRoute(Method.POST, "api/dal/insertRecord");

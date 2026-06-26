@@ -50,7 +50,7 @@ class ApiService implements IApiService {
   @override
   Future<List<BaseCommand>> sendRequest(ApiRequest request, [bool? retryRequest]) {
     if (_controller == null) throw Exception("Controller not initialized");
-    
+
     return _repository.sendRequest(request, retryRequest).then((value) => _controller!.processResponse(value));
   }
 
@@ -67,6 +67,11 @@ class ApiService implements IApiService {
   @override
   void setController(IController controller) {
     _controller = controller;
+  }
+
+  @override
+  IController? getController() {
+    return _controller;
   }
 
   @override

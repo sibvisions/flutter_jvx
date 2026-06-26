@@ -14,43 +14,24 @@
  * the License.
  */
 
-import 'dataprovider_command.dart';
+import 'data_command.dart';
 
 /// The base command for dataprovider interactions.
-abstract class DataProviderDataCommand extends DataProviderCommand {
+abstract class DataProviderCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the [DataSubscription] requesting data
-  final String? subId;
-
-  /// From which index data is being requested
-  final int? from;
-
-  /// To which index data is being requested
-  final int? to;
+  /// The data provider.
+  final String dataProvider;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataProviderDataCommand({
-    required super.dataProvider,
+  DataProviderCommand({
+    required this.dataProvider,
     required super.reason,
-    this.subId,
-    this.from,
-    this.to,
     super.showLoading,
   });
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String propertiesAsString() {
-    return "dataProvider: $dataProvider, subId: $subId, from: $from, to: $to, ${super.propertiesAsString()}";
-  }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SIB Visions GmbH
+ * Copyright 2026 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,23 +14,20 @@
  * the License.
  */
 
-import '../../../../../model/command/api/reload_data_command.dart';
+import '../../../../../model/command/api/metadata_command.dart';
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/request/api_reload_data_request.dart';
+import '../../../../../model/request/api_metadata_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class ReloadDataCommandProcessor extends ICommandProcessor<ReloadDataCommand> {
+class MetaDataCommandProcessor extends ICommandProcessor<MetaDataCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(ReloadDataCommand command, BaseCommand? origin) async {
+  Future<List<BaseCommand>> processCommand(MetaDataCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
-      ApiReloadDataRequest(
+      ApiMetaDataRequest(
         dataProvider: command.dataProvider,
-        fromRow: command.fromRow,
-        rowCount: command.rowCount,
-        withoutFetch: command.withoutFetch,
-        filter: command.filter,
-        command: command
+        columnNames: command.columnNames,
+        command: command,
       ),
     );
   }

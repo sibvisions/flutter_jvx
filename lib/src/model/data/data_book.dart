@@ -141,8 +141,10 @@ class DataBook {
   DataBook({
     required this.dataProvider,
     DalMetaData? metaData
-  }) : _metaData = metaData,
-       hasMetaData = metaData != null;
+  }) {
+    _metaData = metaData;
+    hasMetaData = metaData != null;
+  }
 
   @override
   String toString() {
@@ -349,7 +351,7 @@ class DataBook {
   }
 
   /// Updates all data from a [DalDataProviderChangedResponse]
-  bool updateDataChanged({required DalDataProviderChangedResponse changedResponse}) {
+  Future<bool> updateDataChanged({required DalDataProviderChangedResponse changedResponse}) async {
     bool changed = _updateSortDefinitions(changedResponse.sortDefinitions);
     changed |= _updateRecordReadOnly(changedResponse.recordReadOnly, records, 0);
     changed |= _updateRecordFormats(changedResponse.recordFormats, 0);
@@ -382,7 +384,7 @@ class DataBook {
       int colIndex = _metaData?.columnDefinitions.indexByName(columnName) ?? -1;
       if (colIndex >= 0) {
         if (_metaData?.columnDefinitions[colIndex].dataTypeIdentifier == ITypes.ENCODED_BINARY) {
-          columnData = decryptValue(columnData);
+          columnData = await decryptValue(columnData);
         }
 
         rowData[colIndex] = columnData;
@@ -672,7 +674,7 @@ class DataBook {
         if (colDef?.dataTypeIdentifier == ITypes.ENCODED_BINARY) {
           valuesEncrypted ??= List.from(values);
 
-          valuesEncrypted[i] = await _encryptValue(valuesEncrypted[i]);
+          valuesEncrypted[i] = await encryptValue(valuesEncrypted[i]);
         }
         else if (colDef?.dataTypeIdentifier == ITypes.BINARY) {
           if (values[i] != null
@@ -694,7 +696,7 @@ class DataBook {
   }
 
   /// Encrypts [value].
-  dynamic _encryptValue(dynamic value) async {
+  dynamic encryptValue(dynamic value, {bool byteMode = false}) async {
     if (value == null || (value is String && value.isEmpty)) {
       return value;
     }
@@ -865,6 +867,10 @@ class DataBook {
       _notDecryptedCache = null;
     }
   }
+
+  bool isEncodedDataType(String columnName) {
+    return _metaData?.columnDefinitions.byName(columnName)?.dataTypeIdentifier == ITypes.ENCODED_BINARY;
+  }
 }
 
 class DalMetaData {
@@ -993,11 +999,17 @@ class DalMetaData {
       createdReferencedCellEditors.forEach((element) => element.dispose());
       createdReferencedCellEditors.clear();
 
+      List<String> cache = [];
+
       columnDefinitions = response.columnDefinitions!;
       columnDefinitions.forEach((colDef) {
         if (colDef.cellEditorModel is FlLinkedCellEditorModel) {
           createdReferencedCellEditors.add(IDataService().createReferencedCellEditors(
-              colDef.cellEditorModel as FlLinkedCellEditorModel, dataProvider, colDef.name));
+            cache,
+            colDef.cellEditorModel as FlLinkedCellEditorModel,
+            dataProvider,
+            colDef.name
+          ));
         }
       });
 
@@ -1178,9 +1190,11 @@ class DalMetaData {
 
             if (foundColumn.cellEditorModel is FlLinkedCellEditorModel) {
               createdReferencedCellEditors.add(IDataService().createReferencedCellEditors(
-                  foundColumn.cellEditorModel as FlLinkedCellEditorModel,
-                  response.dataProvider,
-                  foundColumn.name));
+                null,
+                foundColumn.cellEditorModel as FlLinkedCellEditorModel,
+                response.dataProvider,
+                foundColumn.name
+              ));
             }
 
             isColumnChanged |= true;

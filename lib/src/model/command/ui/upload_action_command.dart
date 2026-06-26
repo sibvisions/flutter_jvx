@@ -25,12 +25,16 @@ class UploadActionCommand extends UiCommand {
   /// File id to save the file back to the server
   final String fileId;
 
+  /// upload URL
+  final String? url;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   UploadActionCommand({
     required this.fileId,
+    this.url,
     required super.reason,
   });
 
@@ -40,6 +44,6 @@ class UploadActionCommand extends UiCommand {
 
   @override
   String propertiesAsString() {
-    return "fileId: $fileId, ${super.propertiesAsString()}";
+    return "fileId: $fileId, url: $url, ${super.propertiesAsString()}";
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2026 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,34 +14,28 @@
  * the License.
  */
 
-import 'dataprovider_command.dart';
+import 'filter_command.dart';
+import 'dal_command.dart';
 
-/// The base command for dataprovider interactions.
-abstract class DataProviderDataCommand extends DataProviderCommand {
+/// The command for requesting metadata.
+class MetaDataCommand extends DalCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the [DataSubscription] requesting data
-  final String? subId;
-
-  /// From which index data is being requested
-  final int? from;
-
-  /// To which index data is being requested
-  final int? to;
+  /// Filter of this fetch. This is only used for tree/page fetches.
+  /// For normal fetches, the filter is should be set with [FilterCommand]
+  final List<String>? columnNames;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataProviderDataCommand({
+  MetaDataCommand({
     required super.dataProvider,
+    this.columnNames,
     required super.reason,
-    this.subId,
-    this.from,
-    this.to,
-    super.showLoading,
+    super.showLoading
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +44,7 @@ abstract class DataProviderDataCommand extends DataProviderCommand {
 
   @override
   String propertiesAsString() {
-    return "dataProvider: $dataProvider, subId: $subId, from: $from, to: $to, ${super.propertiesAsString()}";
+    return "columnNames: $columnNames, ${super.propertiesAsString()}";
   }
 
 }

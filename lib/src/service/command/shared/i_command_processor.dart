@@ -29,8 +29,5 @@ abstract class ICommandProcessor<T extends BaseCommand> {
   Future<List<BaseCommand>> processCommand(T command, BaseCommand? origin);
 
   /// Will be called when the command is done processing.
-  Future<void> afterProcessing(T command, BaseCommand? origin) async {}
-
-  /// Will be called when all follow-up commands have been fully processed and the command therefore is done processing.
-  Future<void> onFinish(T command) async {}
+  Future<void> afterProcessing(T command, BaseCommand? origin, Object? error) async {}
 }

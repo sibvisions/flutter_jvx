@@ -33,6 +33,8 @@ import '../../../model/command/api/feedback_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
 import '../../../model/command/data/data_command.dart';
+import '../../../model/command/data/dataprovider_command.dart';
+import '../../../model/command/data/save_fetch_data_command.dart';
 import '../../../model/command/iqueue_command.dart';
 import '../../../model/command/layout/layout_command.dart';
 import '../../../model/command/storage/delete_screen_command.dart';
@@ -86,6 +88,9 @@ class CommandService implements ICommandService {
 
   /// List of all progress handler for commands
   final List<ICommandProgressHandler> progressHandler = [];
+
+  /// All available commands
+  final List<BaseCommand> _availableCommands = [];
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -178,6 +183,21 @@ class CommandService implements ICommandService {
       wasConnected = repository.connected;
     }
 
+    ICommandProcessor<BaseCommand>? processor = _getProcessor(command);
+
+    if (processor == null) {
+      unawaited(command.noProcessing());
+
+      return false;
+    }
+
+    List<BaseCommand> processQueue = [];
+    processQueue.add(command);
+
+    _availableCommands.add(command);
+
+    List<BaseCommand> followCommandsAll = [];
+
     try {
       command.delayUILocking = delayUILocking ?? command.delayUILocking;
       command.showLoading = showLoading ?? command.showLoading;
@@ -201,30 +221,41 @@ class CommandService implements ICommandService {
         FlutterUI.logCommand.d("Started ${command.runtimeType}-chain");
       }
 
-      List<BaseCommand>? followCommands = await _processCommand(command, null);
       IErrorCommand? firstErrorCommand;
 
-      while (followCommands != null) {
-        firstErrorCommand ??= followCommands.whereType<IErrorCommand>().firstOrNull;
+      List<BaseCommand>? followCommands = await _processCommand(processor, command, null);
 
-        List<BaseCommand>? newFollowCommands;
-
-        for (BaseCommand followCommand in followCommands) {
-          if (wasConnected && repository is OnlineApiRepository) {
-            wasConnected = repository.connected;
-          }
-
-          List<BaseCommand>? newCommands = await _processCommand(followCommand, command);
-          if (newCommands != null) {
-            newFollowCommands ??= [];
-            newFollowCommands.addAll(newCommands);
-          }
-        }
-
-        followCommands = newFollowCommands;
+      if (followCommands != null) {
+        followCommandsAll.addAll(followCommands);
+        _availableCommands.addAll(followCommands);
       }
 
-      await getProcessor(command)?.onFinish(command);
+      while (followCommands != null && followCommands.isNotEmpty) {
+        firstErrorCommand ??= followCommands
+            .whereType<IErrorCommand>()
+            .firstOrNull;
+
+        BaseCommand followCommand = followCommands.removeAt(0);
+
+        if (wasConnected && repository is OnlineApiRepository) {
+          wasConnected = repository.connected;
+        }
+
+        ICommandProcessor<BaseCommand>? processorFollow = _getProcessor(followCommand);
+
+        if (processorFollow != null) {
+          processQueue.add(followCommand);
+
+          List<BaseCommand>? newCommands = await _processCommand(processorFollow, followCommand, command);
+
+          if (newCommands != null && newCommands.isNotEmpty) {
+            followCommands.addAll(newCommands);
+          }
+        }
+        else {
+          unawaited(followCommand.noProcessing());
+        }
+      }
 
       if (FlutterUI.logCommand.cl(Lvl.d)) {
         FlutterUI.logCommand.d("Finished ${command.runtimeType}-chain");
@@ -282,6 +313,19 @@ class CommandService implements ICommandService {
         return false;
       }
     } finally {
+      _availableCommands.removeWhere((element) {
+        return element == command || followCommandsAll.contains(element);
+      });
+
+      try {
+        for (int i = 0; i < processQueue.length; i++) {
+          unawaited(processQueue[i].finishedProcessing());
+        }
+      }
+      catch (e) {
+        FlutterUI.logCommand.d("Error notifying finished processing");
+      }
+
       try {
         progressHandler.forEach((element) => element.notifyProgressEnd(command));
       } catch (e) {
@@ -294,24 +338,16 @@ class CommandService implements ICommandService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<List<BaseCommand>?> _processCommand(BaseCommand command, BaseCommand? origin) async {
+  Future<List<BaseCommand>?> _processCommand(ICommandProcessor<BaseCommand> processor, BaseCommand command, BaseCommand? origin) async {
     if (command is ApiCommand && command is! DeviceStatusCommand) {
       FlutterUI.logCommand.i("Processing ${command.runtimeType} (${command.reason})");
-    }
-
-    ICommandProcessor<BaseCommand>? processor = getProcessor(command);
-
-    if (processor == null) {
-      if (FlutterUI.logCommand.cl(Lvl.e)) {
-        FlutterUI.logCommand.e("Command (${command.runtimeType}) without Processor found");
-      }
-
-      return null;
     }
 
     List<BaseCommand> commands;
 
     try {
+      command.beforeProcess(origin);
+
       await processor.beforeProcessing(command, origin);
 
       commands = await processor.processCommand(command, origin);
@@ -319,7 +355,10 @@ class CommandService implements ICommandService {
       if (FlutterUI.logCommand.cl(Lvl.d)) {
         FlutterUI.logCommand.d("After processing ${command.runtimeType}");
       }
-      await processor.afterProcessing(command, origin);
+
+      await processor.afterProcessing(command, origin, null);
+
+      command.afterProcess(origin, true);
 
       // Exit doesn't require additional handling -> just done
       if (command is ExitCommand) {
@@ -339,13 +378,17 @@ class CommandService implements ICommandService {
         FlutterUI.logAPI.e("Error while processing ${command.runtimeType} with ${processor.runtimeType} $error $stackTrace");
       }
 
+      await processor.afterProcessing(command, origin, error);
+
+      command.afterProcess(origin, false);
+
       rethrow;
     }
 
     return commands;
   }
 
-  ICommandProcessor<BaseCommand>? getProcessor(BaseCommand command) {
+  ICommandProcessor<BaseCommand>? _getProcessor(BaseCommand command) {
     ICommandProcessor? processor;
     if (command is ApiCommand) {
       processor = _apiProcessor.getProcessor(command);
@@ -360,6 +403,12 @@ class CommandService implements ICommandService {
     } else if (command is DataCommand) {
       processor = _dataProcessor.getProcessor(command);
     }
+    else {
+      if (FlutterUI.logCommand.cl(Lvl.e)) {
+        FlutterUI.logCommand.e("Command (${command.runtimeType}) without Processor found!");
+      }
+    }
+
     return processor;
   }
 
@@ -397,5 +446,45 @@ class CommandService implements ICommandService {
     }).forEach((element) {
       element.popPage = false;
     });
+  }
+
+  @override
+  CommandState getDataProviderCommandState<T extends DataProviderCommand>(String dataProvider) {
+    if (_availableCommands.isEmpty) {
+      return CommandState.NotAvailable;
+    }
+
+    List<BaseCommand> copy = List.of(_availableCommands);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i] is T && (copy[i] as T).dataProvider == dataProvider) {
+        return copy[i].processed ? CommandState.Finished : CommandState.Waiting;
+      }
+    }
+
+    return CommandState.NotAvailable;
+  }
+
+  @override
+  CommandState getFetchCommandState<T extends SaveFetchDataCommand>(String dataProvider, int from, int? to) {
+  if (_availableCommands.isEmpty) {
+      return CommandState.NotAvailable;
+    }
+
+    List<BaseCommand> copy = List.of(_availableCommands);
+
+    for (int i = 0; i < copy.length; i++) {
+      if (copy[i] is T) {
+        SaveFetchDataCommand cmd = copy[i] as T;
+
+        if (cmd.dataProvider == dataProvider &&
+            cmd.response.from <= from &&
+            (to == null || cmd.response.to >= to)) {
+          return copy[i].processed ? CommandState.Finished : CommandState.Waiting;
+        }
+      }
+    }
+
+    return CommandState.NotAvailable;
   }
 }

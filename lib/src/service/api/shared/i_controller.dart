@@ -20,4 +20,11 @@ import '../../../model/command/base_command.dart';
 abstract class IController {
   /// Process an [ApiInteraction] into a list of [BaseCommand]s
   Future<List<BaseCommand>> processResponse(ApiInteraction apiInteraction);
+
+  /// Whether response processing is running
+  bool isResponseProcessing();
+
+  /// Search if a response is available in the current queue, by key and value of
+  /// a property
+  bool isResponseAvailable(Map<String, dynamic> values);
 }

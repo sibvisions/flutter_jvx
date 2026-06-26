@@ -16,6 +16,7 @@
 
 import '../../../service/data/i_data_service.dart';
 import '../../request/filter.dart';
+import '../base_command.dart';
 import 'dal_command.dart';
 
 /// The command for reloading data provider.
@@ -53,12 +54,7 @@ class ReloadDataCommand extends DalCommand {
     this.setRootKey = false,
     required super.reason,
     super.showLoading,
-  }) {
-    IDataService().setDataBookFetching(
-      dataProvider,
-      rowCount == -1 ? rowCount : fromRow + rowCount,
-    );
-  }
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -69,4 +65,17 @@ class ReloadDataCommand extends DalCommand {
     return "fromRow: $fromRow, rowCount: $rowCount, withoutFetch: $withoutFetch, "
            "filter: $filter, setRootKey: $setRootKey, ${super.propertiesAsString()}";
   }
+
+  @override
+  void beforeProcess(BaseCommand? origin) {
+    super.beforeProcess(origin);
+
+    IDataService().setDataBookFetching(dataProvider, rowCount == -1 ? -1 : fromRow + rowCount);
+  }
+
+  @override
+  Future<void> finishedProcessing() async {
+    IDataService().removeDataBookFetching(dataProvider, rowCount == -1 ? -1 : fromRow + rowCount);
+  }
+
 }
