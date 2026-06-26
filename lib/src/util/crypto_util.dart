@@ -50,8 +50,8 @@ abstract class CryptoUtil {
     );
   }
 
-  /// Encrypts a [text] with [keyCode]
-  static Future<String> encrypt(String text, String keyCode) async {
+  /// Encrypts a binary or string with [keyCode]
+  static Future<String> encrypt(dynamic value, String keyCode) async {
     try {
       final algorithm = AesGcm.with256bits();
       final salt = _generateSalt(16);
@@ -61,7 +61,7 @@ abstract class CryptoUtil {
       final nonce = algorithm.newNonce();
 
       final secretBox = await algorithm.encrypt(
-        utf8.encode(text),
+        value is Uint8List ? value : utf8.encode(value.toString()),
         secretKey: key,
         nonce: nonce);
 
@@ -122,7 +122,7 @@ abstract class CryptoUtil {
         secretKey: key,
       );
 
-      return DecryptedValue(value: utf8.decode(decrypted));
+      return DecryptedValue(value: decrypted);
     } on SecretBoxAuthenticationError catch (se) {
       FlutterUI.log.w(se);
 

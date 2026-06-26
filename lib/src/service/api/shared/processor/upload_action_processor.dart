@@ -26,6 +26,7 @@ class UploadActionProcessor implements IResponseProcessor<UploadActionResponse> 
     return [
       UploadActionCommand(
         fileId: response.fileId,
+        url: response.url,
         reason: "Upload from server",
       )
     ];

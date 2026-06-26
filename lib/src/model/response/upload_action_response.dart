@@ -25,17 +25,22 @@ class UploadActionResponse extends ApiResponse {
   /// File id to save the file back to the server
   final String fileId;
 
+  /// upload URL
+  final String? url;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   UploadActionResponse({
     required this.fileId,
+    this.url,
     required super.name,
   });
 
   UploadActionResponse.fromJson(super.json)
       : fileId = json[ApiObjectProperty.fileId],
+        url = json[ApiObjectProperty.url],
         super.fromJson();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,7 +49,7 @@ class UploadActionResponse extends ApiResponse {
 
   @override
   String propertiesAsString() {
-    return "fileId: $fileId, ${super.propertiesAsString()}";
+    return "fileId: $fileId, url: $url, ${super.propertiesAsString()}";
   }
 
 }
