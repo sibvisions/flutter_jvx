@@ -817,26 +817,41 @@ class DataBook {
 
     dynamic encodedValue = value;
 
-    Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(value);
-
-    if (base64Decoded != null) {
+    if (value is Uint8List) {
       try {
-        encodedValue = utf8.decode(base64Decoded);
+        value = utf8.decode(value);
       }
-      catch (ex) {
-        FlutterUI.log.d(ex);
+      catch (error) {
+        //not a string
       }
     }
 
-    if (token != null && token!.isNotEmpty) {
-      return CryptoUtil.decrypt(encodedValue, token!);
-    }
-    else if (CryptoUtil.maybeEncrypted(encodedValue)) {
+    if (value is String) {
+      Uint8List? base64Decoded = CryptoUtil.tryDecodeBase64(value);
 
-      return DecryptedValue(value: value, type: CryptoValueType.Encrypted);
+      if (base64Decoded != null) {
+        try {
+          encodedValue = utf8.decode(base64Decoded);
+        }
+        catch (ex) {
+          FlutterUI.log.d(ex);
+        }
+      }
     }
 
-    return DecryptedValue(value: encodedValue ?? value, type: CryptoValueType.PlainText);
+    if (encodedValue is String) {
+      if (token != null && token!.isNotEmpty) {
+        return CryptoUtil.decrypt(encodedValue, token!);
+      }
+      else if (CryptoUtil.maybeEncrypted(encodedValue)) {
+        return DecryptedValue(value: value, type: CryptoValueType.Encrypted);
+      }
+    }
+    else {
+      return DecryptedValue(value: value, type: CryptoValueType.DecryptFailure);
+    }
+
+    return DecryptedValue(value: encodedValue, type: CryptoValueType.PlainText);
   }
 
   Future<void> _decryptCachedValues() async {
