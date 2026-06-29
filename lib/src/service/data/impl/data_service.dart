@@ -69,7 +69,7 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand command}) async {
+  Future<List<BaseCommand>> updateFromFetch(SaveFetchDataCommand command) async {
     DataBook dataBook = dataBooks[command.response.dataProvider] ??= DataBook(dataProvider: command.response.dataProvider);
 
     if (command.response.clear) {
@@ -79,11 +79,14 @@ class DataService implements IDataService {
 
     await dataBook.updateFromFetch(command: command);
 
+    //Fetch done
+    removeDataBookFetching(command.dataProvider, command.response.isAllFetched == true ? -1 : command.response.to);
+
     return [];
   }
 
   @override
-  Future<bool> updateDataChanged({required DalDataProviderChangedResponse changedResponse}) async {
+  Future<bool> updateDataChanged(DalDataProviderChangedResponse changedResponse) async {
     DataBook? dataBook = dataBooks[changedResponse.dataProvider];
     if (dataBook == null) {
       return false;
@@ -93,7 +96,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateSelectionChanged({required DalDataProviderChangedResponse changedResponse}) {
+  bool updateSelectionChanged(DalDataProviderChangedResponse changedResponse) {
     DataBook? dataBook = dataBooks[changedResponse.dataProvider];
     if (dataBook == null) {
       return false;
@@ -130,7 +133,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateMetaData({required DalMetaDataResponse response}) {
+  bool updateMetaData(DalMetaDataResponse response) {
     DataBook? dataBook = dataBooks[response.dataProvider];
 
     if (dataBook == null) {
@@ -181,7 +184,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateMetaDataChanged({required DalDataProviderChangedResponse changedResponse}) {
+  bool updateMetaDataChanged(DalDataProviderChangedResponse changedResponse) {
     DalMetaData? metaData = dataBooks[changedResponse.dataProvider]?.metaData;
 
     if (metaData == null) {
