@@ -243,7 +243,14 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   String formatValue(dynamic value) {
-    return value?.toString() ?? "";
+    if (value is Uint8List) {
+      return utf8.decode(value);
+    }
+    else if (value is! String) {
+      return value?.toString() ?? "";
+    }
+
+    return value;
   }
 
   @override
