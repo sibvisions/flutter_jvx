@@ -50,22 +50,22 @@ abstract class IDataService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Establishes the meta data of the given dataBook
-  bool updateMetaData({required DalMetaDataResponse response});
+  bool updateMetaData(DalMetaDataResponse response);
 
   /// Establishes the meta data of the given dataBook
   bool setMetaData(DalMetaData metaData);
 
   /// Updates parts of the meta data of a given dataBook
-  bool updateMetaDataChanged({required DalDataProviderChangedResponse changedResponse});
+  bool updateMetaDataChanged(DalDataProviderChangedResponse changedResponse);
 
   /// Updates dataBook with fetched data,
-  Future<List<BaseCommand>> updateFromFetch({required SaveFetchDataCommand command});
+  Future<List<BaseCommand>> updateFromFetch(SaveFetchDataCommand command);
 
   /// Updates parts of dataBook with changed data.
-  Future<bool> updateDataChanged({required DalDataProviderChangedResponse changedResponse});
+  Future<bool> updateDataChanged(DalDataProviderChangedResponse changedResponse);
 
   /// Updates parts of dataBook with new selection data.
-  bool updateSelectionChanged({required DalDataProviderChangedResponse changedResponse});
+  bool updateSelectionChanged(DalDataProviderChangedResponse changedResponse);
 
   /// Returns column data of the selected row of the dataProvider
   DataRecord? getSelectedRowData({

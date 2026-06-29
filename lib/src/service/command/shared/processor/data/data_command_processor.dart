@@ -100,7 +100,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveMetaData(SaveMetaDataCommand command) async {
-    IDataService().updateMetaData(response: command.response);
+    IDataService().updateMetaData(command.response);
 
     IUiService().notifyMetaDataChange(command.response.dataProvider);
 
@@ -108,7 +108,7 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand command) async {
-    await IDataService().updateFromFetch(command: command);
+    await IDataService().updateFromFetch(command);
 
     return [];
   }

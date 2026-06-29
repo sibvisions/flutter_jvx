@@ -42,7 +42,7 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
 
       IUiService servUi = IUiService();
 
-      if (hasMetaData && servData.updateMetaDataChanged(changedResponse: response)) {
+      if (hasMetaData && servData.updateMetaDataChanged(response)) {
         servUi.notifyMetaDataChange(response.dataProvider);
       }
 
@@ -61,12 +61,12 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
     } else {
       IUiService? servUi;
 
-      if (servData.updateMetaDataChanged(changedResponse: response)) {
+      if (servData.updateMetaDataChanged(response)) {
         servUi ??= IUiService();
         servUi.notifyMetaDataChange(response.dataProvider);
       }
-      bool dataChanged = await servData.updateDataChanged(changedResponse: response);
-      bool selectionChanged = servData.updateSelectionChanged(changedResponse: response);
+      bool dataChanged = await servData.updateDataChanged(response);
+      bool selectionChanged = servData.updateSelectionChanged(response);
 
       if (dataChanged) {
         servUi ??= IUiService();
