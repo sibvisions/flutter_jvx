@@ -178,6 +178,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     Widget? widget;
 
     if (currentState != (ALL_COMPLETE)) {
+      if (currentState != 0) {
+        if (kDebugMode) {
+          print("Incomplete build state of table wrapper: $currentState MD = ${metaData.dataProvider.isNotEmpty} REC = ${dataChunk.columnDefinitions.isNotEmpty}");
+        }
+      }
+
       widget = const Center(child: CircularProgressIndicator());
     }
 
