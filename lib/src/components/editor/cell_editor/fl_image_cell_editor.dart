@@ -94,7 +94,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
     );
 
     if (model.hasStandardBorder && context != null) {
-      w = FlPanelWidget.wrapWithStandardBorder(context, w);
+      w = FlPanelWidget.wrapWithStandardBorder(context, w, padding: EdgeInsets.all(4));
     }
 
     return w;

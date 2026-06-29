@@ -55,12 +55,13 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
     return panelWidget;
   }
 
-  static Widget wrapWithStandardBorder(BuildContext context, Widget panelWidget) {
+  static Widget wrapWithStandardBorder(BuildContext context, Widget panelWidget, {EdgeInsetsGeometry? padding}) {
     AppStyle style = AppStyle.of(context);
 
     double borderRadius = style.direct.panelBorderRadius();
 
     return Container(
+      padding: padding,
       foregroundDecoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius - JVxColors.BORDER_WIDTH_DEFAULT),
         border: Border.all(

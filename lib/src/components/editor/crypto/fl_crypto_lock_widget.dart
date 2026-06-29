@@ -20,12 +20,15 @@ import '../../../flutter_ui.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../util/icon_util.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
+import '../../panel/fl_panel_widget.dart';
+import '../cell_editor/fl_image_cell_editor.dart';
 import '../cell_editor/fl_text_cell_editor.dart';
 import '../cell_editor/i_cell_editor.dart';
 import '../password_field/fl_password_field_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
 
 class FlCryptoLockWidget extends FlStatelessWidget<FlComponentModel> {
+
   final ICellEditor cellEditor;
 
   const FlCryptoLockWidget({
@@ -51,28 +54,52 @@ class FlCryptoLockWidget extends FlStatelessWidget<FlComponentModel> {
     editModel.styles.add("${FlComponentModel.STYLE_BORDER_COLOR_DISABLED}#607D8BCC");
     editModel.styles.add("${FlComponentModel.STYLE_TEXT_COLOR_DISABLED}#607D8B99");
 
-    if (editModel is FlPasswordFieldModel) {
-      return FlPasswordWidget(
-          model: editModel,
-          valueChanged: _doNotChange,
-          endEditing: _doNotEdit,
-          focusNode: FocusNode(),
-          textController: TextEditingController(text: FlutterUI.translate("Encrypted")),
-          onlyPlainText: true,
-          hideSuffixIcons: true,
-          hidePasswordStrengthLabel: true,
-          hidePasswordStrengthColor: true
+    if (cellEditor is FlImageCellEditor) {
+      FlPanelModel model = FlPanelModel();
+      model.isEnabled = false;
+
+      model.styles.addAll((cellEditor as FlImageCellEditor).model.styles);
+
+      editModel.isBorderVisible = false;
+
+      return FlPanelWidget(
+        model: model,
+        children: [
+          FlTextFieldWidget(
+            model: editModel,
+            valueChanged: _doNotChange,
+            endEditing: _doNotEdit,
+            focusNode: FocusNode(),
+            textController: TextEditingController(text: FlutterUI.translate("Encrypted")),
+            hideSuffixIcons: true,
+          )
+        ]
       );
     }
     else {
-      return FlTextFieldWidget(
-        model: editModel,
-        valueChanged: _doNotChange,
-        endEditing: _doNotEdit,
-        focusNode: FocusNode(),
-        textController: TextEditingController(text: FlutterUI.translate("Encrypted")),
-        hideSuffixIcons: true
-      );
+      if (editModel is FlPasswordFieldModel) {
+        return FlPasswordWidget(
+            model: editModel,
+            valueChanged: _doNotChange,
+            endEditing: _doNotEdit,
+            focusNode: FocusNode(),
+            textController: TextEditingController(text: FlutterUI.translate("Encrypted")),
+            onlyPlainText: true,
+            hideSuffixIcons: true,
+            hidePasswordStrengthLabel: true,
+            hidePasswordStrengthColor: true
+        );
+      }
+      else {
+        return FlTextFieldWidget(
+            model: editModel,
+            valueChanged: _doNotChange,
+            endEditing: _doNotEdit,
+            focusNode: FocusNode(),
+            textController: TextEditingController(text: FlutterUI.translate("Encrypted")),
+            hideSuffixIcons: true
+        );
+      }
     }
   }
 
