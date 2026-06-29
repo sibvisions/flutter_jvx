@@ -128,8 +128,8 @@ abstract class CryptoUtil {
 
       //Wrong key (keyCode or salt)
       return DecryptedValue(value: encrypted, type: CryptoValueType.DecryptFailure);
-    } catch (e) {
-      FlutterUI.log.e(e);
+    } catch (e, stack) {
+      FlutterUI.log.e(e, error: e, stackTrace: stack);
 
       return DecryptedValue(value: encrypted, type: CryptoValueType.DecryptFailure);
     }
