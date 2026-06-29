@@ -106,6 +106,7 @@ class LayoutService implements ILayoutService {
     // If child lost its position, give it back the old one.
     if (oldLayoutData != null && !layoutData.hasPosition && oldLayoutData.hasPosition == true) {
       layoutData.layoutPosition = oldLayoutData.layoutPosition;
+
       commands.add(UpdateLayoutPositionCommand(layoutDataList: [layoutData], reason: "Receive old position"));
     }
 
@@ -141,11 +142,14 @@ class LayoutService implements ILayoutService {
         FlutterUI.logLayout.d("${layoutData.id} size: ${layoutData.bestSize} is same as before");
       }
 
+      List<LayoutData> children = _getChildren(layoutData);
+
       //this is important for replaced components e.g. Custom contacts of example application
       //because custom component won't receive the layout position - because it's a custom widget
       List<LayoutData> updateChildren = [];
       updateChildren.add(layoutData);
-      updateChildren.addAll(_getChildren(parentLayout: layoutData));
+      updateChildren.addAll(children);
+
       updateChildren = updateChildren.where((entry) => (entry.receivedDate == null && !entry.preparedForSubmission &&
                                                         entry.hasPosition && entry.hasNewCalculatedSize)).toList();
 
@@ -161,7 +165,11 @@ class LayoutService implements ILayoutService {
         FlutterUI.logLayout.d("${layoutData.name}|${layoutData.id} parent already has a position!");
       }
 
-      return commands;
+      //send if commands are available
+      //or parent has children (if component is not a container -> perform layout)
+      if (commands.isNotEmpty || children.isNotEmpty) {
+        return commands;
+      }
     }
 
     parentData.layoutState = LayoutState.VALID;
@@ -238,7 +246,7 @@ class LayoutService implements ILayoutService {
       return false;
     }
 
-    List<LayoutData> descendants = _getDescendants(parentLayout: deleted);
+    List<LayoutData> descendants = _getDescendants(deleted);
     descendants.forEach((element) {
       _layoutDataSet.remove(element.id);
     });
@@ -281,7 +289,7 @@ class LayoutService implements ILayoutService {
       LayoutData panel = LayoutData.from(layoutData);
 
       // Copy of children with deleted positions
-      List<LayoutData> children = _getChildren(parentLayout: panel).map((data) => LayoutData.from(data)).toList();
+      List<LayoutData> children = _getChildren(panel).map((data) => LayoutData.from(data)).toList();
 
       // All newly constraint children
       List<LayoutData> newlyConstraintChildren = [];
@@ -368,7 +376,7 @@ class LayoutService implements ILayoutService {
       return false;
     }
 
-    List<LayoutData> children = _getChildren(parentLayout: layoutData);
+    List<LayoutData> children = _getChildren(layoutData);
 
     if (children.length != layoutData.children.length) {
       int diff = layoutData.children.length - children.length;
@@ -406,7 +414,7 @@ class LayoutService implements ILayoutService {
     });
   }
 
-  List<LayoutData> _getChildren({required LayoutData parentLayout}) {
+  List<LayoutData> _getChildren(LayoutData parentLayout) {
     List<LayoutData> childrenData = [];
 
     for (String childId in parentLayout.children) {
@@ -419,14 +427,14 @@ class LayoutService implements ILayoutService {
     return childrenData;
   }
 
-  List<LayoutData> _getDescendants({required LayoutData parentLayout}) {
+  List<LayoutData> _getDescendants(LayoutData parentLayout) {
     List<LayoutData> childrenData = [];
 
     for (String childId in parentLayout.children) {
       LayoutData? childData = _layoutDataSet[childId];
       if (childData != null) {
         childrenData.add(childData);
-        childrenData.addAll(_getDescendants(parentLayout: childData));
+        childrenData.addAll(_getDescendants(childData));
       }
     }
 
