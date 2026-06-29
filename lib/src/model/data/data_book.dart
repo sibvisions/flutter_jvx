@@ -384,7 +384,33 @@ class DataBook {
       int colIndex = _metaData?.columnDefinitions.indexByName(columnName) ?? -1;
       if (colIndex >= 0) {
         if (_metaData?.columnDefinitions[colIndex].dataTypeIdentifier == ITypes.ENCODED_BINARY) {
-          columnData = await decryptValue(columnData);
+          DecryptedValue decValue = await decryptValue(columnData);
+
+          if (decValue.type != CryptoValueType.DecryptFailure &&
+              decValue.type != CryptoValueType.Encrypted) {
+            Map<int, List<String>>? locks = _cryptoLock[null];
+
+            if (locks == null) {
+              locks = HashMap();
+              _cryptoLock[null] = locks;
+            }
+
+            List<String>? rowLocks = locks[changedResponse.selectedRow!];
+
+            if (rowLocks == null) {
+              rowLocks = List.filled(3, columnName, growable: true);
+
+              locks[changedResponse.selectedRow!] = rowLocks;
+            }
+            else if (!rowLocks.contains(columnName)) {
+              rowLocks.add(columnName);
+            }
+          }
+          else {
+            _cryptoLock[null]?[changedResponse.selectedRow!]?.remove(columnName);
+
+            columnData = decValue.value;
+          }
         }
 
         rowData[colIndex] = columnData;
@@ -819,7 +845,7 @@ class DataBook {
 
     if (value is Uint8List) {
       try {
-        value = utf8.decode(value);
+        encodedValue = utf8.decode(value);
       }
       catch (error) {
         //not a string
