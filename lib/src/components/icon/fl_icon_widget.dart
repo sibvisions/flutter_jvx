@@ -256,9 +256,6 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   }
 
   editor.I18n _editorTranslation() {
-
-    print(FlutterUI.translate("Paint"));
-
     return editor.I18n(
       layerInteraction: editor.I18nLayerInteraction(
         remove: FlutterUI.translate("Remove"),
@@ -448,8 +445,6 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       remove: FlutterUI.translate("Remove"),
       doneLoadingMsg: FlutterUI.translate("Changes are being applied")
     );
-
-    return const editor.I18n();
   }
 }
 
