@@ -334,7 +334,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Sets the state of the widget and sends a set value command.
-  Future<void> onEndEditing(dynamic value, [String? action]) async {
+  Future<void> _onEndEditing(dynamic value, [String? action]) async {
     onChangeTimer?.cancel();
     if (_isSameValue(value) || !model.isEnabled) {
       setState(() {});
@@ -349,21 +349,30 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         return result;
       }
 
+      bool noFocusHandling = "navigation-none" == action;
+
       List<BaseCommand> commands = [];
 
-      var oldFocus = IUiService().getFocus();
-      commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit focus"));
-
-      commands.add(_sendValueToServer(value));
-
-      if (cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) {
-        SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit unfocus");
+      if (noFocusHandling) {
+        //only set the value
+        commands.add(_sendValueToServer(value));
       }
-      if (oldFocus != null) {
-        commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Value edit focus"));
-      } else {
-        commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit unfocus"));
+      else {
+        var oldFocus = IUiService().getFocus();
+        commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit focus"));
+
+        commands.add(_sendValueToServer(value));
+
+        if (cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) {
+          SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit unfocus");
+        }
+        if (oldFocus != null) {
+          commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Value edit focus"));
+        } else {
+          commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit unfocus"));
+        }
       }
+
       return ICommandService().sendCommands(commands);
     });
 
@@ -427,7 +436,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
             ?.columnDefinitions
             .byName(model.columnName),
         onChange: onChange,
-        onEndEditing: onEndEditing,
+        onEndEditing: _onEndEditing,
         onFocusChanged: _onFocusChange,
         recalculateCallback: recalculateSize,
         isInTable: false,

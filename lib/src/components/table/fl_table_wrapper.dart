@@ -930,7 +930,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
           columnName: colDef.name,
           columnDefinition: colDef,
           isInTable: true,
-          onEndEditing: (value) => onEndEditing(value, rowIndex, colDef.name)
+          onEndEditing: (value, [action]) => onEndEditing(value, rowIndex, colDef.name)
         );
 
         if (cellEditor is FlLinkedCellEditor) {

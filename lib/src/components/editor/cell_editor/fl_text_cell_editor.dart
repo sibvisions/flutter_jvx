@@ -131,7 +131,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
         return FlTextAreaWidget(
           model: widgetModel as FlTextAreaModel,
           valueChanged: (value, [immediate]) => onValueChange(value),
-          endEditing: (value, [action]) => onEndEditing(value),
+          endEditing: (value, [action]) => onEndEditing(value, action),
           focusNode: focusNode,
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
@@ -143,7 +143,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
         return FlHtmlTextFieldWidget(
           model: widgetModel,
           valueChanged: (value, [immediate]) => onValueChange(value),
-          endEditing: (value, [action]) => onEndEditing(value),
+          endEditing: (value, [action]) => onEndEditing(value, action),
           htmlController: htmlController,
           onFocusChanged: focusChanged,
           onInit: () {
@@ -167,7 +167,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
         return FlPasswordWidget(
           model: widgetModel as FlPasswordFieldModel,
           valueChanged: (value, [immediate]) => onValueChange(value),
-          endEditing: (value, [action]) => onEndEditing(value),
+          endEditing: (value, [action]) => onEndEditing(value, action),
           focusNode: focusNode,
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
@@ -183,7 +183,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
         return FlTextFieldWidget(
           model: widgetModel,
           valueChanged: (value, [immediate]) => onValueChange(value),
-          endEditing: (value, [action]) => onEndEditing(value),
+          endEditing: (value, [action]) => onEndEditing(value, action),
           focusNode: focusNode,
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,

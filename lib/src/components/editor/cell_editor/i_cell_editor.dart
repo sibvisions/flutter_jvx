@@ -54,7 +54,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
 
   Function(ReturnValueType?) onValueChange;
 
-  Function(ReturnValueType?) onEndEditing;
+  Function(ReturnValueType?, [String?]) onEndEditing;
 
   ColumnDefinition? columnDefinition;
 
@@ -156,7 +156,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
     RecalculateCallback? recalculateCallback,
     CellEditorFocusChecker? focusChecker,
     Function(dynamic)? onChange,
-    Function(dynamic)? onEndEditing,
+    Function(dynamic, [String?])? onEndEditing,
     Function(bool)? onFocusChanged
   }) {
     String? cellEditorClassName = cellEditorJson[ApiObjectProperty.className];

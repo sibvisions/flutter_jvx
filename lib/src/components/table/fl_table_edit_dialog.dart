@@ -165,7 +165,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         columnDefinition: colDef,
         isInTable: false,
         focusChecker: _focusHandlingEnabled,
-        onEndEditing: (value) {
+        onEndEditing: (value, [action]) {
           //in case of cancel -> don't end editing because it fires events like select record
           //in case of ok -> _handleOk will save values
           if (!isSingleColumnEdit && !cancel && !ok) {

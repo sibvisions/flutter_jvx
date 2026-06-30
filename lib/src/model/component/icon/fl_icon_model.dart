@@ -27,6 +27,12 @@ class FlIconModel extends FlComponentModel {
   /// If the aspect ratio of the image should be preserved.
   bool preserveAspectRatio = false;
 
+  /// If the icon is editable or not.
+  bool isEditable = true;
+
+  /// If the image is a default image
+  bool defaultImage = false;
+
   /// Original size of the image.
   /// This is used to calculate the size of the image in the layout.
   Size originalSize = const Size.square(IconUtil.DEFAULT_ICON_SIZE);
@@ -79,6 +85,13 @@ class FlIconModel extends FlComponentModel {
       defaultValue: defaultModel.preserveAspectRatio,
       currentValue: preserveAspectRatio,
     );
+
+    isEditable = getPropertyValue(
+      json: newJson,
+      key: ApiObjectProperty.editable,
+      defaultValue: defaultModel.isEditable,
+      currentValue: isEditable,
+    );
   }
 
   void _parseDefinition(Map<String, dynamic> json, FlIconModel defaultModel) {
@@ -101,4 +114,14 @@ class FlIconModel extends FlComponentModel {
       }
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// If editing of the text field is possible.
+  bool get isReadOnly {
+    return !isEnabled || !isEditable;
+  }
+
 }

@@ -108,8 +108,9 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
 
     cellChild ??= _createTextWidget();
 
-    Border? border = const Border(
+    Border? border = Border(
       bottom: BorderSide(
+        //color: columnDefinition.nullable == true ? JVxColors.COMPONENT_BORDER : Colors.red,
         color: JVxColors.COMPONENT_BORDER,
       ),
     );

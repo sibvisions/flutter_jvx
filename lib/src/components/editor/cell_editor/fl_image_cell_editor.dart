@@ -53,10 +53,10 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
     required super.dataProvider,
     required super.columnName,
     required super.columnDefinition,
-    super.isInTable,
-    this.recalculateSizeCallback,
     required super.onValueChange,
     required super.onEndEditing,
+    super.isInTable,
+    this.recalculateSizeCallback,
   }) : super(model: FlImageCellEditorModel());
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,6 +88,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
       model: widgetModel,
       imageStreamListener: onImage,
       inTable: isInTable,
+      onEndEditing: onEndEditing,
       wrapper: wrapper,
       showAsAvatar: model.showAsAvatar,
       showAvatarFullSize: model.showAvatarFullSize,
@@ -108,7 +109,13 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
       widgetModel.horizontalAlignment = HorizontalAlignment.LEFT;
     }
 
-    widgetModel.image = _value ?? model.defaultImageName;
+    if (_value != null) {
+      widgetModel.image = _value;
+    }
+    else {
+      widgetModel.image = model.defaultImageName;
+      widgetModel.defaultImage = true;
+    }
     widgetModel.preserveAspectRatio = model.preserveAspectRatio;
 
     return widgetModel;
