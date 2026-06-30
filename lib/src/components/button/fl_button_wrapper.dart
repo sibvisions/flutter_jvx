@@ -75,7 +75,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   LocalAuthentication? _auth;
 
-  bool _isLoading = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -131,7 +131,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         onFocusLost: unfocus,
         model: model,
         focusNode: buttonFocusNode,
-        loading: _isLoading,
+        loading: isLoading,
         onPress: () {
           sendButtonPressed();
         },
@@ -208,7 +208,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  Future<CommandResult> sendButtonPressed([String? overwrittenButtonPressId]) {
+  Future<CommandResult> sendButtonPressed([FlButtonModel? pressModel]) {
     if (model.isSecure) {
       return _authenticateUser().then((authenticated) async {
         await AuthService.hideBlur();
@@ -222,7 +222,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           return CommandResult(success: false);
         }
         else if (authenticated) {
-          return _sendButtonPressedImmediate(overwrittenButtonPressId);
+          return _sendButtonPressedImmediate(pressModel);
         }
 
         return CommandResult(success: false);
@@ -232,7 +232,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         return CommandResult(success: false);
       });
     } else {
-      return _sendButtonPressedImmediate(overwrittenButtonPressId);
+      return _sendButtonPressedImmediate(pressModel);
     }
   }
 
@@ -270,13 +270,13 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     }
   }
 
-  Future<CommandResult> _sendButtonPressedImmediate([String? overwrittenButtonPressId]) {
+  Future<CommandResult> _sendButtonPressedImmediate([FlButtonModel? pressModel]) {
     return IUiService().saveAllEditors(id: model.id, reason: "Button [${model.id} pressed").then((result) async {
       if (!result.success) {
         return result;
       }
 
-      List<BaseCommand> commands = await _createButtonCommands(overwrittenButtonPressId);
+      List<BaseCommand> commands = await _createButtonCommands(pressModel);
 
       if (commands.isNotEmpty) {
         return ICommandService().sendCommands(commands);
@@ -292,29 +292,40 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       if (model.isHyperLink) {
         _openUrl();
       } else if (!kIsWeb) {
-        if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
+        if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON ||
+            pressModel?.classNameEventSourceRef == FlButtonWidget.OFFLINE_ITEM) {
           _goOffline();
-        } else if (model.classNameEventSourceRef == FlButtonWidget.SCANNER_BUTTON || model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
-          _openScanner();
-        } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
+        } else if (pressModel?.classNameEventSourceRef == FlButtonWidget.SCANNER_ITEM ||
+                   pressModel?.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_ITEM) {
+          _openScanner(pressModel!);
+        } else if (model.classNameEventSourceRef == FlButtonWidget.SCANNER_BUTTON ||
+                   model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
+          _openScanner(model);
+        } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON ||
+                   model.classNameEventSourceRef == FlButtonWidget.CALL_ITEM) {
           _callNumber();
-        } else if (model.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_BUTTON) {
-          setState(() => _isLoading = true);
+        } else if (pressModel?.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_ITEM) {
+          setState(() => isLoading = true);
 
-          _exportOnDevice();
+          _exportOnDevice(pressModel!);
         }
+        } else if (model.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_BUTTON) {
+          setState(() => isLoading = true);
+
+          _exportOnDevice(model);
       }
 
       return CommandResult(success: true);
     });
   }
 
-  Future<List<BaseCommand>> _createButtonCommands(String? overwrittenButtonPressId) async {
+  Future<List<BaseCommand>> _createButtonCommands([FlButtonModel? pressModel]) async {
     List<BaseCommand> commands = [];
 
     BaseCommand? commandAfterPress;
 
-    if (model.classNameEventSourceRef == FlButtonWidget.GEO_LOCATION_BUTTON) {
+    if (model.classNameEventSourceRef == FlButtonWidget.GEO_LOCATION_BUTTON ||
+        pressModel?.classNameEventSourceRef == FlButtonWidget.GEO_LOCATION_ITEM) {
       commandAfterPress = await _locateDevice();
 
       if (commandAfterPress == null) {
@@ -327,7 +338,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
     commands.add(
       PressButtonCommand(
-        componentName: overwrittenButtonPressId ?? model.name,
+        componentName: pressModel?.name ?? model.name,
         reason: "Button has been pressed",
       ),
     );
@@ -341,21 +352,23 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     return commands;
   }
 
-  void _openScanner() {
+  void _openScanner(FlButtonModel itemModel) {
     IUiService().openDialogFullScreen(
       transitionDuration: Duration.zero,
       isDismissible: true,
-      builder: (_) => EmbeddedCodeScanner(formats: model.scanFormats ?? const [BarcodeFormat.all], callback: _sendScannerResult),
+      builder: (_) => EmbeddedCodeScanner(formats: itemModel.scanFormats ?? const [BarcodeFormat.all], callback: (barcodes) {
+        _sendScannerResult(itemModel, barcodes);
+      }),
     );
   }
 
-  void _sendScannerResult(List<Barcode> barcodes) {
+  void _sendScannerResult(FlButtonModel itemModel, List<Barcode> barcodes) {
     if (barcodes.isNotEmpty) {
       ICommandService().sendCommand(
         SetValuesCommand(
-          dataProvider: model.dataProvider,
-          editorColumnName: model.columnName,
-          columnNames: [model.columnName],
+          dataProvider: itemModel.dataProvider,
+          editorColumnName: itemModel.columnName,
+          columnNames: [itemModel.columnName],
           values: [barcodes.first.rawValue],
           reason: "Code was scanned",
         ),
@@ -416,10 +429,38 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   /// Exports records as html vault and saves the file
-  Future<void> _exportOnDevice() async {
+  static Future<void> exportOnDevice(String title, String dataProvider, List<String>? columnNames, String? fileName) async {
+    String? htmlEncrypted = await DataBookUtil.exportAsHtmlVault(
+      title,
+      dataProvider,
+      columnNames,
+      null
+    );
+
+    if (htmlEncrypted != null) {
+      String formattedDate = DateFormat('dd_MM_yyyy').format(DateTime.now());
+
+      fileName ??= "export_$formattedDate.html";
+
+      if (!fileName.contains(".")) {
+        fileName = "$fileName.html";
+      }
+
+      await ICommandService().sendCommand(SaveOrShowFileCommand(
+          fileId: "exportOnDevice",
+          fileName: fileName,
+          content: utf8.encode(htmlEncrypted),
+          showFile: false,
+          reason: "Export on device"
+      ));
+    }
+  }
+
+  /// Exports records as html vault and saves the file
+  Future<void> _exportOnDevice(FlButtonModel exportModel) async {
     try
     {
-      List<dynamic>? cols = model.jsonMerge[ApiObjectProperty.columnNames];
+      List<dynamic>? cols = exportModel.jsonMerge[ApiObjectProperty.columnNames];
 
       List<String>? columnNames;
 
@@ -427,35 +468,15 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         columnNames = List<String>.from(cols);
       }
 
-      String? htmlEncrypted = await DataBookUtil.exportAsHtmlVault(
-        model.jsonMerge[ApiObjectProperty.title],
-        model.dataProvider,
+      await exportOnDevice(
+        exportModel.jsonMerge[ApiObjectProperty.title],
+        exportModel.dataProvider,
         columnNames,
-        null
+        exportModel.jsonMerge[ApiObjectProperty.fileName]
       );
-
-      if (htmlEncrypted != null) {
-        String? fileName = model.jsonMerge[ApiObjectProperty.fileName];
-
-        String formattedDate = DateFormat('dd_MM_yyyy').format(DateTime.now());
-
-        fileName ??= "export_$formattedDate.html";
-
-        if (!fileName.contains(".")) {
-          fileName = "$fileName.html";
-        }
-
-        await ICommandService().sendCommand(SaveOrShowFileCommand(
-            fileId: "exportOnDevice",
-            fileName: fileName,
-            content: utf8.encode(htmlEncrypted),
-            showFile: false,
-            reason: "Export on device"
-        ));
-      }
     }
     finally {
-      setState(() => _isLoading = false);
+      setState(() => isLoading = false);
     }
   }
 

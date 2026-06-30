@@ -35,11 +35,17 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static const String OFFLINE_BUTTON = "OfflineButton";
+  static const String OFFLINE_ITEM = "OfflineMenuItem";
   static const String SCANNER_BUTTON = "ScannerButton";
+  static const String SCANNER_ITEM = "ScannerMenuItem";
   static const String QR_SCANNER_BUTTON = "QRScannerButton";
+  static const String QR_SCANNER_ITEM = "QRScannerMenuItem";
   static const String CALL_BUTTON = "CallButton";
+  static const String CALL_ITEM = "CallMenuItem";
   static const String GEO_LOCATION_BUTTON = "GeoLocationButton";
+  static const String GEO_LOCATION_ITEM = "GeoLocationMenuItem";
   static const String EXPORT_ON_DEVICE_BUTTON = "ExportOnDeviceButton";
+  static const String EXPORT_ON_DEVICE_ITEM = "ExportOnDeviceMenuItem";
 
   // ignore: non_constant_identifier_names
   static VoidCallback EMPTY_CALLBACK = () {};
@@ -130,7 +136,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
     focusNode.canRequestFocus = isButtonFocusable;
 
-    if (model.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_BUTTON) {
+    if (model.classNameEventSourceRef == FlButtonWidget.EXPORT_ON_DEVICE_BUTTON ||
+        loading) {
       return ElevatedProgressButton(
         focusNode: focusNode,
         onFocusChange: _onFocusChange,

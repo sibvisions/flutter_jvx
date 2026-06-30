@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -48,6 +47,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     required super.focusNode,
     this.onItemPress,
     required this.popupItems,
+    super.loading,
     super.onPress,
     super.onFocusGained,
     super.onFocusLost,
@@ -62,15 +62,22 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   @override
   Function()? getOnPressed(BuildContext context) {
     if (model.isEnabled) {
-      FlPopupMenuItemWidget? popupItem = popupItems
-          .whereType<FlPopupMenuItemWidget>()
-          .firstWhereOrNull((element) => element.id == model.defaultMenuItem);
+      FlPopupMenuItemWidget? popupItem;
+
+      for (int i = 0; i < popupItems.length && popupItem == null; i++) {
+        if (popupItems[i] is FlPopupMenuItemWidget &&
+            (popupItems[i] as FlPopupMenuItemWidget).id == model.defaultMenuItem) {
+          popupItem = popupItems[i] as FlPopupMenuItemWidget;
+        }
+      }
 
       if (popupItem != null) {
-        return () => onItemPress?.call(popupItem.value!);
+        return () => onItemPress?.call(popupItem!.value!);
       }
+
       return () => openMenu(context);
     }
+
     return null;
   }
 

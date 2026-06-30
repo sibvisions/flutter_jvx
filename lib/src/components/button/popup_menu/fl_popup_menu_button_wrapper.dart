@@ -42,6 +42,12 @@ class FlPopupMenuButtonWrapper extends FlButtonWrapper<FlPopupMenuButtonModel> {
 
 class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends FlButtonWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final Map<String, FlPopupMenuItemModel> _lastItemModels = {};
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -71,8 +77,14 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       onFocusGained: focus,
       onFocusLost: unfocus,
       model: model,
+      loading: isLoading,
       focusNode: buttonFocusNode,
-      onItemPress: sendButtonPressed,
+      onItemPress: (value) {
+        FlPopupMenuButtonModel modelNew = FlPopupMenuButtonModel();
+        modelNew.applyFromJson(_lastItemModels[value]?.jsonMerge ?? {});
+
+        sendButtonPressed(modelNew);
+      },
       popupItems: _createPopupItems(),
     );
 
@@ -99,6 +111,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
 
   List<PopupMenuEntry<String>> _createPopupItems() {
     List<PopupMenuEntry<String>> listOfItems = [];
+
     if (model.isEnabled) {
       List<FlComponentModel> menuItems = [];
 
@@ -117,10 +130,16 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
         menuItems.addAll(listOfPopupMenuItems);
       }
 
+      //if at least one element has an icon, show icon-space for the whole menu (avoids alignment problem)
       bool forceIconSlot = menuItems.any((element) => element is FlPopupMenuItemModel && element.icon != null);
       menuItems.sort((a, b) => a.indexOf.compareTo(b.indexOf));
+
+      _lastItemModels.clear();
+
       for (FlComponentModel popupMenuItemModel in menuItems) {
         if (popupMenuItemModel is FlPopupMenuItemModel) {
+          _lastItemModels[popupMenuItemModel.name] = popupMenuItemModel;
+
           listOfItems.add(FlPopupMenuItemWidget.withModel(popupMenuItemModel, forceIconSlot));
         } else {
           listOfItems.add(
