@@ -27,6 +27,12 @@ class FlImageCellEditorModel extends ICellEditorModel {
   /// The style if the avatar should use full size instead of image size
   static const String STYLE_AVATAR_FULL_SIZE = "f_avatar_full_size";
 
+  /// The style if large view of image is disabled
+  static const String STYLE_ENLARGE_DISABLED = "f_enlarge_disabled";
+
+  /// The style if image editor is enabled
+  static const String STYLE_EDITOR_ENABLED = "f_editor_enabled";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,6 +51,12 @@ class FlImageCellEditorModel extends ICellEditorModel {
 
   /// If image should show a standard border
   bool get hasStandardBorder => styles.contains(FlPanelModel.STYLE_STANDARD_BORDER);
+
+  /// whether large view of icon is disabled
+  bool get isEnlargeDisabled => styles.contains(FlImageCellEditorModel.STYLE_ENLARGE_DISABLED);
+
+  /// whether image edit is enabled
+  bool get isEditorEnabled => styles.contains(FlImageCellEditorModel.STYLE_EDITOR_ENABLED);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

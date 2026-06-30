@@ -119,17 +119,17 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       );
     } else {
 
-      print(model.image);
-
       return GestureDetector(
-        onDoubleTap: image == null && !IconUtil.isFontIcon(model.image) && model.hasImage() && !model.defaultImage &&
+        onDoubleTap: model.isEditorEnabled &&
+                     image == null && !IconUtil.isFontIcon(model.image) && model.hasImage() && !model.defaultImage &&
                      !model.isReadOnly && model.isEditable && onEndEditing != null ?
           () async {
             await _openEditor(context);
           }
           :
           null,
-        onTap: image == null && !IconUtil.isFontIcon(model.image) && model.hasImage() && !model.defaultImage
+        onTap: !model.isEnlargeDisabled &&
+               image == null && !IconUtil.isFontIcon(model.image) && model.hasImage() && !model.defaultImage
             ? () => showDialog(
                   context: context,
                   builder: (context) {

@@ -59,6 +59,12 @@ class FlIconModel extends FlComponentModel {
   /// If avatar should use available size not just the image size
   bool get showAvatarFullSize => styles.contains(FlImageCellEditorModel.STYLE_AVATAR_FULL_SIZE);
 
+  /// whether large view of icon is disabled
+  bool get isEnlargeDisabled => styles.contains(FlImageCellEditorModel.STYLE_ENLARGE_DISABLED);
+
+  /// whether image edit is enabled
+  bool get isEditorEnabled => styles.contains(FlImageCellEditorModel.STYLE_EDITOR_ENABLED);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
