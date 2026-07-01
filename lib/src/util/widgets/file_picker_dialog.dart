@@ -178,19 +178,9 @@ abstract class FilePickerDialog {
                 case UploadType.FILE_SYSTEM:
                     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-                    // https://github.com/miguelpruivo/flutter_file_picker/issues/875
-                    PlatformFile? pickedFile = result?.files.single;
+                    XFile? pickedFile = result?.xFiles.single;
                     if (pickedFile != null) {
-                        if (kIsWeb) {
-                            return XFile.fromData(
-                                pickedFile.bytes!,
-                                name: pickedFile.name,
-                            );
-                        }
-                        return XFile(
-                            pickedFile.path!,
-                            name: pickedFile.name,
-                        );
+                        return pickedFile;
                     }
             }
         } catch (e, stack) {
