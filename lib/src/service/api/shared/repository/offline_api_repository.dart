@@ -27,6 +27,7 @@ import '../../../../model/request/api_delete_record_request.dart';
 import '../../../../model/request/api_fetch_request.dart';
 import '../../../../model/request/api_filter_request.dart';
 import '../../../../model/request/api_insert_record_request.dart';
+import '../../../../model/request/api_metadata_request.dart';
 import '../../../../model/request/api_reload_data_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
@@ -172,6 +173,8 @@ class OfflineApiRepository extends IRepository {
       response = await _delete(request);
     } else if (request is ApiFetchRequest) {
       response = await _fetch(request);
+    } else if (request is ApiMetaDataRequest) {
+      //we don't fetch metadata again from database -> won't change
     } else if (request is ApiReloadDataRequest) {
       response = await _reload(request);
     } else if (request is ApiFilterRequest) {
@@ -482,7 +485,7 @@ class OfflineApiRepository extends IRepository {
           fromRow: 0,
           rowCount: maxFetch,
           dataProvider: dataProvider,
-          includeMetaData: true,
+          includeMetaData: false,
         ),
       );
     }
