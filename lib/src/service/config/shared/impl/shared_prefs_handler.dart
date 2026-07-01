@@ -21,10 +21,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../model/config/user/user_info.dart';
 import '../../../../util/crypto_util.dart';
+import '../../../../util/extensions/string_extensions.dart';
 import '../config_handler.dart';
 
 /// Stores all config and session based data.
@@ -501,13 +501,13 @@ class SharedPrefsHandler implements ConfigHandler {
     String? installId = await _getString("installId");
 
     if (installId == null) {
-      installId = const Uuid().v4();
+      installId = StringExtension.uuid();
 
       //get global id
       String? globalInstallId = await getValue("installId");
 
       if (globalInstallId == null) {
-        globalInstallId = const Uuid().v4();
+        globalInstallId = StringExtension.uuid();
 
         await (setValue("installId", globalInstallId));
       }

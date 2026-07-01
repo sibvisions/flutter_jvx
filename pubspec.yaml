@@ -153,8 +153,6 @@ dependencies:
 
   badges: ^3.2.0
 
-  uuid: ^4.0.0
-
   local_auth: ^3.0.0
 
   cryptography: ^2.0.0
@@ -168,6 +166,7 @@ dependencies:
   haptic_feedback: ^0.6.0
 
   pro_image_editor: ^12.0.0
+  flutter_image_compress_lite: ^2.6.0
 
 dev_dependencies:
   flutter_test:
