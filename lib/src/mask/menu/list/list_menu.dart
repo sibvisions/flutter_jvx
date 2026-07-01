@@ -126,7 +126,23 @@ class ListMenu extends Menu {
   Widget _wrapWithPadding(BuildContext context, Widget widget) {
     EdgeInsets? padding = GridMenu.lastGroupPadding(context, null);
 
-    if (padding != null) {
+    if (embedded) {
+      if (!grouped) {
+        return SliverPadding(
+          padding: EdgeInsetsGeometry.fromLTRB(
+            0,
+            10,
+            0,
+            10
+          ),
+          sliver: widget
+        );
+      }
+      else {
+        return widget;
+      }
+    }
+    else if (padding != null) {
       return SliverPadding(
         padding: EdgeInsetsGeometry.fromLTRB(
           0,

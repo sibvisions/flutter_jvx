@@ -24,6 +24,7 @@ import '../../service/api/i_api_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/jvx_colors.dart';
+import '../../util/parse_util.dart';
 import '../apps/app_overview_page.dart';
 import '../menu/list/list_menu.dart';
 import '../menu/menu.dart';
@@ -217,7 +218,13 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }
 
   Widget _buildMenu(BuildContext context, bool isNormalSize) {
-    AppStyleDirect style = AppStyle.directOf(context);
+    AppStyleDirect appStyle = AppStyle.directOf(context);
+
+    MenuMode mode = MenuMode.fromString(appStyle.style('menu.mode'));
+
+    bool grouped = mode != MenuMode.GRID_GROUPED &&
+                   mode != MenuMode.LIST_GROUPED &&
+                   (ParseUtil.parseBool(appStyle.style('menu.grouped')) ?? false);
 
     return ValueListenableBuilder<MenuModel>(
       valueListenable: IUiService().getMenuNotifier(),
@@ -238,9 +245,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 onClick: Menu.menuItemPressed,
                 onClose: Menu.getCloseScreenAction,
                 useAlternativeLabel: true,
-                grouped: true,
+                grouped: grouped,
                 embedded: true,
-                iconColor: style.menuDrawerMenuIconColor()
+                iconColor: appStyle.menuDrawerMenuIconColor()
               ),
             ),
           ),
