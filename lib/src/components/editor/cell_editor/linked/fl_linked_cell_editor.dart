@@ -675,15 +675,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       context: FlutterUI.getCurrentContext()!,
       backgroundColor: Theme.of(FlutterUI.getCurrentContext()!).dialogTheme.backgroundColor,
       barrierColor: JVxColors.LIGHTER_BLACK.withAlpha(Color.getAlphaFromOpacity(0.75)),
-      topControl: Container(
-        height: 20,
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          height: 6,
-          width: 40,
-          decoration: BoxDecoration(color: Colors.white.withAlpha(Color.getAlphaFromOpacity(0.5)), borderRadius: BorderRadius.circular(6)),
-        ),
-      ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: const RoundedRectangleBorder(
         side: BorderSide.none,
@@ -693,14 +684,35 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       //otherwise the full height will be used - independent of the ContentBottomSheet
       expand: false,
       bounce: false,
+      topControl: const SizedBox.shrink(),
       builder: (context) => SizedBox(
-        height: contentHeight,
-        child: FlLinkedCellPicker(
-          linkedCellEditor: this,
-          model: model,
-          name: name!,
-          editorColumnDefinition: columnDefinition,
-          embeddable: true,
+        height: contentHeight + 18,
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 8, bottom: 4),
+              height: 17,
+              child: Center(
+                child: Container(
+                  width: 36,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withAlpha(90),
+                    borderRadius: BorderRadius.circular(2.5),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: FlLinkedCellPicker(
+                linkedCellEditor: this,
+                model: model,
+                name: name!,
+                editorColumnDefinition: columnDefinition,
+                embeddable: true,
+              )
+            )
+          ]
         )
       ),
     ).then((value) {

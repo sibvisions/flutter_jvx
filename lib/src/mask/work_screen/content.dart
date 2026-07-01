@@ -241,7 +241,6 @@ class ContentBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Widget content = Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -273,6 +272,27 @@ class ContentBottomSheet extends StatelessWidget {
           )
         )
       ),
+    );
+
+    content = Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(top: 8, bottom: 4),
+          height: 17,
+          color: model.useBackgroundInTitle ? model.background ?? Theme.of(context).colorScheme.surface : null,
+          child: Center(
+            child: Container(
+              width: 36,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.black.withAlpha(90),
+                borderRadius: BorderRadius.circular(2.5),
+              ),
+            ),
+          ),
+        ),
+        Expanded(child: content)
+      ],
     );
 
     //should be possible to use a custom height

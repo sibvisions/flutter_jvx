@@ -1143,15 +1143,6 @@ class UiService implements IUiService {
       showBarModalBottomSheet(
         context: FlutterUI.getCurrentContext()!,
         barrierColor: JVxColors.LIGHTER_BLACK.withAlpha(Color.getAlphaFromOpacity(0.75)),
-        topControl: Container(
-          height: 20,
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: 6,
-            width: 40,
-            decoration: BoxDecoration(color: Colors.white.withAlpha(Color.getAlphaFromOpacity(0.5)), borderRadius: BorderRadius.circular(6)),
-          ),
-        ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         shape: const RoundedRectangleBorder(
           side: BorderSide.none,
@@ -1162,6 +1153,7 @@ class UiService implements IUiService {
         expand: panelModel.preferredSize != null ? false : true,
         bounce: false,
         settings: routeSettings,
+        topControl: const SizedBox.shrink(),
         builder: (context) => ContentBottomSheet(
           model: panelModel,
         ),
