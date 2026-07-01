@@ -17,6 +17,7 @@
 import 'dart:math';
 
 import '../../../service/ui/i_ui_service.dart';
+import '../../../util/extensions/string_extensions.dart';
 import '../data_book.dart';
 import 'data_chunk.dart';
 import 'data_record.dart';
@@ -98,8 +99,8 @@ class DataSubscription {
     this.onPage,
     this.to,
     this.dataColumns,
-  })  : id = getRandomString(15),
-        assert(onDataChunk == null || from != -1, "onDataChunk can only be used if from is not -1");
+  })  : assert(onDataChunk == null || from != -1, "onDataChunk can only be used if from is not -1"),
+        id = StringExtension.uuid();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods

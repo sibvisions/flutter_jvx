@@ -15,6 +15,7 @@
  */
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
@@ -115,6 +116,30 @@ extension StringExtension on String {
     }
 
     return utf8.decode(bytes);
+  }
+
+  ///Creates a universal unique identifier (version 4), format: 8-4-4-4-12 hex characters
+  static String uuid() {
+    final Random random = Random.secure();
+    final List<int> values = List<int>.generate(16, (i) => random.nextInt(256));
+
+    // version: 4 (bits 4-7 of 7th Byte: 0100)
+    values[6] = (values[6] & 0x0f) | 0x40;
+
+    // Use variant of IETF (bits 6-7 of 9th byte: 10)
+    values[8] = (values[8] & 0x3f) | 0x80;
+
+    final StringBuffer buffer = StringBuffer();
+    for (int i = 0; i < 16; i++) {
+      if (i == 4 || i == 6 || i == 8 || i == 10) {
+        buffer.write('-');
+      }
+
+      // will create a two character hex string
+      buffer.write(values[i].toRadixString(16).padLeft(2, '0'));
+    }
+
+    return buffer.toString();
   }
 
 }
