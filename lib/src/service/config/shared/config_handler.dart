@@ -31,10 +31,16 @@ abstract class ConfigHandler {
   Future<void> updateThemePreference(ThemeMode? themeMode);
 
   /// Retrieves the configured max. picture resolution.
-  Future<int?> pictureResolution();
+  Future<String?> pictureResolution();
 
   /// Sets the max. picture resolution.
-  Future<void> updatePictureResolution(int pictureResolution);
+  Future<void> updatePictureResolution(String pictureResolution);
+
+  /// Retrieves the configured picture quality.
+  Future<int?> pictureQuality();
+
+  /// Sets the picture quality.
+  Future<void> updatePictureQuality(int pictureQuality);
 
   /// Whether the single app mode is active.
   Future<bool> singleAppMode();

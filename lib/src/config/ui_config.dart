@@ -30,6 +30,9 @@ class UiConfig {
   /// Whether the picture size switch should be visible in [SettingsPage].
   final bool? hidePictureSizeSetting;
 
+  /// Whether the picture quality switch should be visible in [SettingsPage].
+  final bool? hidePictureQualitySetting;
+
   /// Whether the [ThemeMode] switch should be visible in [SettingsPage].
   final bool? hideThemeSetting;
 
@@ -51,28 +54,31 @@ class UiConfig {
   const UiConfig({
     this.hideLanguageSetting,
     this.hidePictureSizeSetting,
+    this.hidePictureQualitySetting,
     this.hideThemeSetting,
     this.showRememberMe,
     this.rememberMeChecked,
   });
 
   const UiConfig.defaults()
-      : this(
-          hideLanguageSetting: false,
-          hidePictureSizeSetting: false,
-          hideThemeSetting: false,
-          showRememberMe: true,
-          rememberMeChecked: false,
-        );
+    : this(
+      hideLanguageSetting: false,
+      hidePictureSizeSetting: false,
+      hidePictureQualitySetting: false,
+      hideThemeSetting: false,
+      showRememberMe: true,
+      rememberMeChecked: false,
+    );
 
   UiConfig.fromJson(Map<String, dynamic> json)
-      : this(
-          hideLanguageSetting: json["hideLanguageSetting"],
-          hidePictureSizeSetting: json["hidePictureSizeSetting"],
-          hideThemeSetting: json["hideThemeSetting"],
-          showRememberMe: json["showRememberMe"],
-          rememberMeChecked: json["rememberMeChecked"],
-        );
+    : this(
+      hideLanguageSetting: json["hideLanguageSetting"],
+      hidePictureSizeSetting: json["hidePictureSizeSetting"],
+      hidePictureQualitySetting: json["hidePictureQualitySetting"],
+      hideThemeSetting: json["hideThemeSetting"],
+      showRememberMe: json["showRememberMe"],
+      rememberMeChecked: json["rememberMeChecked"],
+    );
 
   UiConfig merge(UiConfig? other) {
     if (other == null) return this;
@@ -80,6 +86,7 @@ class UiConfig {
     return UiConfig(
       hideLanguageSetting: other.hideLanguageSetting ?? hideLanguageSetting,
       hidePictureSizeSetting: other.hidePictureSizeSetting ?? hidePictureSizeSetting,
+      hidePictureQualitySetting: other.hidePictureQualitySetting ?? hidePictureQualitySetting,
       hideThemeSetting: other.hideThemeSetting ?? hideThemeSetting,
       showRememberMe: other.showRememberMe ?? showRememberMe,
       rememberMeChecked: other.rememberMeChecked ?? rememberMeChecked,

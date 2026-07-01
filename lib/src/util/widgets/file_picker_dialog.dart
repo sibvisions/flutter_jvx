@@ -23,6 +23,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../flutter_ui.dart';
 import '../../service/config/i_config_service.dart';
+import '../config_util.dart';
 import '../jvx_colors.dart';
 
 enum UploadType {
@@ -152,7 +153,12 @@ abstract class FilePickerDialog {
     }
 
     static Future<XFile?> pick(UploadType type) async {
-        double? maxPictureWidth = IConfigService().pictureResolution.value?.toDouble();
+        Size? resolution = ConfigUtil.getPictureSize(IConfigService().pictureResolution.value);
+
+        int? quality = IConfigService().pictureQuality.value;
+
+        print(resolution);
+        print(quality);
 
         try {
             switch (type) {
@@ -161,7 +167,9 @@ abstract class FilePickerDialog {
 
                     final pickedFile = await picker.pickImage(
                         source: ImageSource.camera,
-                        maxWidth: maxPictureWidth,
+                        maxWidth: resolution?.width,
+                        maxHeight: resolution?.height,
+                        imageQuality: quality,
                         requestFullMetadata: false,
                     );
 
@@ -171,6 +179,9 @@ abstract class FilePickerDialog {
 
                     final pickedFile = await picker.pickImage(
                         source: ImageSource.gallery,
+                        maxWidth: resolution?.width,
+                        maxHeight: resolution?.height,
+                        imageQuality: quality,
                         requestFullMetadata: false,
                     );
 

@@ -33,6 +33,7 @@ import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/config_util.dart';
 import '../../util/extensions/string_extensions.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
@@ -59,8 +60,6 @@ class _SettingsPageState extends State<SettingsPage> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static const double bottomBarHeight = 55;
-
-  final List<int> resolutions = [1024, 640, 320];
 
   late final Future<String> appFuture;
   late final Future<String> versionFuture;
@@ -331,21 +330,50 @@ class _SettingsPageState extends State<SettingsPage> {
 
     Widget? pictureSizeSetting;
     if (!(IConfigService().getAppConfig()?.uiConfig?.hidePictureSizeSetting ?? false)) {
-      var resolution = IConfigService().pictureResolution.value ?? resolutions[0];
-      pictureSizeSetting = _buildPickerItem<int>(
+      String resolution = IConfigService().pictureResolution.value ?? ConfigUtil.resolutions.keys.first;
+
+      pictureSizeSetting = _buildPickerItem<String>(
         context,
         frontIcon: FontAwesomeIcons.image,
         title: "Picture Size",
         value: resolution,
-        itemBuilder: (BuildContext context, int value, Widget? widget) => Text("$value ${FlutterUI.translateLocal("px")}"),
+        itemBuilder: (BuildContext context, String? value, Widget? widget) => Text(value ?? ""),
         onPressed: (context, value) {
-          var items = resolutions.map((e) => "$e ${FlutterUI.translateLocal("px")}").toList();
-          _openDropdown(context, items, "$e ${FlutterUI.translateLocal("px")}", onValue: (selectedResolution) async {
-            resolution = int.parse(selectedResolution.split(" ")[0]);
-            await IConfigService().updatePictureResolution(resolution);
-            setState(() {});
-          });
+          _openDropdown(
+            context,
+            ConfigUtil.resolutions.keys.toList(growable: false),
+            resolution,
+            onValue: (selectedResolution) async {
+              await IConfigService().updatePictureResolution(selectedResolution);
+
+              setState(() {});
+            }
+          );
         },
+      );
+    }
+
+    Widget? pictureQualitySetting;
+    if (!(IConfigService().getAppConfig()?.uiConfig?.hidePictureQualitySetting ?? false)) {
+      int quality = IConfigService().pictureQuality.value ?? 100;
+
+      pictureQualitySetting = SettingItem<int>(
+        title: "Picture Quality",
+        frontIcon: Icon(Icons.filter_hdr_outlined, color: Theme.of(context).colorScheme.primary),
+        itemBuilder: (BuildContext context, int? value, Widget? widget) {
+          return Slider(
+            showValueIndicator: ShowValueIndicator.onDrag,
+            label: "$quality%",
+            padding: EdgeInsetsGeometry.fromLTRB(10, 21, 10, 10),
+            value: quality.toDouble(),
+            min: 20,
+            max: 100,
+            onChanged: (value) async {
+              await IConfigService().updatePictureQuality(value.toInt());
+
+              setState(() {});
+            });
+        }
       );
     }
 
@@ -354,6 +382,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (baseUrlSetting != null) baseUrlSetting,
       if (languageSetting != null) languageSetting,
       if (pictureSizeSetting != null) pictureSizeSetting,
+      if (pictureQualitySetting != null) pictureQualitySetting,
     ];
 
     if (items.isEmpty) {
@@ -406,14 +435,16 @@ class _SettingsPageState extends State<SettingsPage> {
       if (theme == ThemeMode.light) themeIcon = FontAwesomeIcons.solidSun;
       if (theme == ThemeMode.dark) themeIcon = FontAwesomeIcons.solidMoon;
 
+      bool overriden = theme != IConfigService().getThemeMode();
+
       themeSetting = _buildPickerItem<ThemeMode>(
         context,
         frontIcon: themeIcon,
-        endIcons: theme != IConfigService().getThemeMode() ? [_buildOverrideIcon()] : null,
+        endIcons: overriden ? [_buildOverrideIcon()] : null,
         title: "Theme",
         value: theme,
         itemBuilder: (BuildContext context, value, Widget? widget) => Text(themeMapping[value]!),
-        onPressed: (context, value) {
+        onPressed: overriden ? null : (context, value) {
           var items = ThemeMode.values.where((e) => themeMapping.containsKey(e)).map((e) => themeMapping[e]!).toList();
           _openDropdown(context, items, themeMapping[value], onValue: (selectedThemeMode) async {
             theme = themeMapping.entries.firstWhere((entry) => entry.value == selectedThemeMode).key;
@@ -503,14 +534,15 @@ class _SettingsPageState extends State<SettingsPage> {
     List<Widget>? endIcons,
     required String title,
     required T value,
-    required Function(BuildContext context, T value) onPressed,
-    ValueWidgetBuilder<T>? itemBuilder,
+    required Function(BuildContext context, T? value)? onPressed,
+    ValueWidgetBuilder<T?>? itemBuilder,
   }) =>
       SettingItem<T>(
         frontFaIcon: FaIcon(frontIcon, color: Theme.of(context).colorScheme.primary),
         endIcons: [
           ...?endIcons,
-          const FaIcon(FontAwesomeIcons.circleChevronDown, size: arrowIconSize, color: Colors.grey),
+          if (onPressed != null)
+            const FaIcon(FontAwesomeIcons.circleChevronDown, size: arrowIconSize, color: Colors.grey),
         ],
         title: FlutterUI.translateLocal(title),
         value: value,
@@ -521,7 +553,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildOverrideIcon() {
     return Tooltip(
       message: FlutterUI.translateLocal("Overridden by the application"),
-      child: const Icon(Icons.hide_source, size: 18),
+      child: const Icon(Icons.hide_source, size: arrowIconSize),
     );
   }
 

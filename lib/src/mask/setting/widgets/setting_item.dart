@@ -44,13 +44,13 @@ class SettingItem<T> extends StatelessWidget {
   final ValueNotifier<T>? valueNotifier;
 
   /// Provide a custom builder for the inner item
-  final ValueWidgetBuilder<T>? itemBuilder;
+  final ValueWidgetBuilder<T?>? itemBuilder;
 
   /// Will be called when item was pressed
-  final Function(BuildContext context, T value)? onPressed;
+  final Function(BuildContext context, T? value)? onPressed;
 
   /// Will be called when item was long pressed
-  final Function(BuildContext context, T value)? onLongPressed;
+  final Function(BuildContext context, T? value)? onLongPressed;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -103,13 +103,13 @@ class SettingItem<T> extends StatelessWidget {
                 return createSubtitle(context, value)!;
               },
             )
-          : createSubtitle(context, value as T),
-      onTap: () => onPressed?.call(context, (value ?? valueNotifier?.value) as T),
-      onLongPress: () => onLongPressed?.call(context, (value ?? valueNotifier?.value) as T),
+          : createSubtitle(context, value),
+      onTap: onPressed != null ? () => onPressed?.call(context, (value ?? valueNotifier?.value)) : null,
+      onLongPress: onLongPressed != null ? () => onLongPressed?.call(context, (value ?? valueNotifier?.value)) : null,
     );
   }
 
-  Widget? createSubtitle(BuildContext context, T value) {
+  Widget? createSubtitle(BuildContext context, T? value) {
     return itemBuilder?.call(context, value, null) ??
         (value is String ? Text(value.toString().isNotEmpty ? value.toString() : "-") : null);
   }

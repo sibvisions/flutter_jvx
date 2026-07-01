@@ -108,7 +108,9 @@ class ConfigService implements IConfigService {
 
   late ValueNotifier<String?> _applicationTimeZone;
 
-  late ValueNotifier<int?> _pictureResolution;
+  late ValueNotifier<String?> _pictureResolution;
+
+  late ValueNotifier<int?> _pictureQuality;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Non-persistent fields (fields that don't use a backend service)
@@ -135,6 +137,7 @@ class ConfigService implements IConfigService {
 
     _themePreference = ValueNotifier(await _configHandler.themePreference() ?? ThemeMode.system);
     _pictureResolution = ValueNotifier(await _configHandler.pictureResolution());
+    _pictureQuality = ValueNotifier(await _configHandler.pictureQuality());
     _singleAppMode = ValueNotifier(await _configHandler.singleAppMode());
     _defaultApp = ValueNotifier(await _configHandler.defaultApp());
     _lastApp = ValueNotifier(await _configHandler.lastApp());
@@ -397,12 +400,21 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  ValueListenable<int?> get pictureResolution => _pictureResolution;
+  ValueListenable<String?> get pictureResolution => _pictureResolution;
 
   @override
-  Future<void> updatePictureResolution(int pictureResolution) async {
+  Future<void> updatePictureResolution(String pictureResolution) async {
     await _configHandler.updatePictureResolution(pictureResolution);
     _pictureResolution.value = pictureResolution;
+  }
+
+  @override
+  ValueListenable<int?> get pictureQuality => _pictureQuality;
+
+  @override
+  Future<void> updatePictureQuality(int pictureQuality) async {
+    await _configHandler.updatePictureQuality(pictureQuality);
+    _pictureQuality.value = pictureQuality;
   }
 
   @override

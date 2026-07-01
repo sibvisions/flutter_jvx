@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -23,6 +24,20 @@ import '../config/app_config.dart';
 import '../flutter_ui.dart';
 
 abstract class ConfigUtil {
+
+  static final LinkedHashMap<String, Size?> resolutions = LinkedHashMap<String, Size?>.from({
+    "Original" : null,
+    "1920 (FullHD)": Size(1920, 1080),
+    "1200": Size(1200, 630),
+    "1080 (4:5)": Size(1080, 1350),
+    "1080 (9:16)": Size(1080, 1920),
+    "1024": Size(1024, 768),
+    "640": Size(640, 480),
+    "320": Size(320, 240),
+    "640 (16:9)": Size(640, 360),
+    "320 (16:9)": Size(320, 180)
+  });
+
   /// Tries to read app config
   static Future<AppConfig?> readAppConfig() async {
     try {
@@ -62,4 +77,9 @@ abstract class ConfigUtil {
         .loadString("assets/config/$name")
         .then((rawAppConfig) => AppConfig.fromJson(jsonDecode(rawAppConfig)));
   }
+
+  static Size? getPictureSize(String? resolution) {
+    return resolutions[resolution ?? ""] ?? resolutions.values.first;
+  }
+
 }

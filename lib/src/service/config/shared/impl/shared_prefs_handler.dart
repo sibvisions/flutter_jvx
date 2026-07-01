@@ -78,13 +78,35 @@ class SharedPrefsHandler implements ConfigHandler {
   }
 
   @override
-  Future<int?> pictureResolution() async {
-    return _sharedPrefs.getInt("pictureResolution");
+  Future<String?> pictureResolution() async {
+    dynamic res = _sharedPrefs.get("pictureResolution");
+
+    //backwards compatibility
+    if (res is int) {
+      unawaited(_sharedPrefs.remove("pictureResolution"));
+
+      return null;
+    }
+    else if (res is String) {
+      return _sharedPrefs.getString("pictureResolution");
+    }
+
+    return null;
   }
 
   @override
-  Future<void> updatePictureResolution(int pictureResolution) async {
-    await _sharedPrefs.setInt("pictureResolution", pictureResolution);
+  Future<void> updatePictureResolution(String pictureResolution) async {
+    await _sharedPrefs.setString("pictureResolution", pictureResolution);
+  }
+
+  @override
+  Future<void> updatePictureQuality(int pictureQuality) async {
+    await _sharedPrefs.setInt("pictureQuality", pictureQuality);
+  }
+
+  @override
+  Future<int?> pictureQuality() async {
+    return _sharedPrefs.getInt("pictureQuality");
   }
 
   @override

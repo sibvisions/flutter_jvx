@@ -89,11 +89,19 @@ abstract class IConfigService implements Service {
 
   /// Returns the configured max. picture resolution.
   ///
-  /// This is being used to limit the resolution of pictures taken via the in-app camera.
-  ValueListenable<int?> get pictureResolution;
+  /// This is being used to limit the resolution of pictures.
+  ValueListenable<String?> get pictureResolution;
 
   /// Sets the max. picture resolution.
-  Future<void> updatePictureResolution(int pictureResolution);
+  Future<void> updatePictureResolution(String pictureResolution);
+
+  /// Returns the configured picture quality.
+  ///
+  /// This is being used to limit the quality of pictures.
+  ValueListenable<int?> get pictureQuality;
+
+  /// Sets the picture quality.
+  Future<void> updatePictureQuality(int pictureQuality);
 
   /// Returns the last opened app.
   ValueListenable<bool> get singleAppMode;
