@@ -52,6 +52,9 @@ abstract class DataBookUtil {
           );
         }
 
+        //copy asap
+        Map<int, List<dynamic>> recordCopy = Map.of(book.records);
+
         StringBuffer html = StringBuffer();
 
         html.write(
@@ -216,21 +219,42 @@ abstract class DataBookUtil {
         // Records
         List<dynamic>? record;
 
-        for (int i = 0; i < book.records.length; i++) {
-          record = book.records[i];
+        bool replaceOriginalValue = true;
+
+        for (int i = 0; i < recordCopy.length; i++) {
+          record = recordCopy[i];
 
           if (record != null) {
             int? idx;
 
             html.write("<tr>");
+
             for (String name in columnNamesForTable) {
               html.write("<td style='text-align: ${alignments[name]};'>");
 
               idx = book.metaData?.columnDefinitions.indexByName(name);
 
               if (idx != null && idx >= 0) {
-                //replace with encrypted value
-                record[idx] = await book.checkAndDecryptValue(record[idx]);
+                dynamic oldValue = record[idx];
+
+                if (oldValue != null) {
+
+                  record[idx] = await book.checkAndDecryptValue(oldValue);
+
+                  //replace with encrypted value as long as original object instance exists
+
+                  if (replaceOriginalValue) {
+                    //as long as the original value is the same object instance -> update
+                    if (identical(book.records[i]?[idx], oldValue)) {
+                      book.records[i]![idx] = record[idx];
+                    }
+                    else {
+                      //stop with replacing after first problem
+                      // (maybe a new record was inserted)
+                      replaceOriginalValue = false;
+                    }
+                  }
+                }
 
                 html.write(record[idx] ?? "");
               }
