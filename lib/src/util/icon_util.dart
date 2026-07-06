@@ -137,4 +137,24 @@ abstract class IconUtil {
 
         return false;
     }
+
+    ///Gets prefix of font icon definition
+    static String? getFontIconPrefix(dynamic imageDefinition) {
+        if (imageDefinition is! String) {
+            return null;
+        }
+
+        if (imageDefinition.isEmpty) {
+            return null;
+        }
+
+        if (imageDefinition.startsWith(PREFIX_FONT_AWESOME)) {
+            return PREFIX_FONT_AWESOME;
+        }
+        else if (imageDefinition.startsWith(PREFIX_MATERIAL)) {
+            return PREFIX_MATERIAL;
+        }
+
+        return null;
+    }
 }

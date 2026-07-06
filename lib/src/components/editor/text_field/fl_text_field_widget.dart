@@ -264,7 +264,19 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     Color color_ = color ?? JVxColors.COMPONENT_DISABLED;
     Color colorDarkMode_ = colorDarkMode ?? color ?? JVxColors.COMPONENT_DISABLED_LIGHTER;
 
-    return _wrapIcon(ImageLoader.loadImage(imageDefinition, color: JVxColors.isLightTheme(context) ? color_ : colorDarkMode_));
+    if (imageDefinition == "default.progress") {
+      return _wrapIcon(SizedBox(
+        height: 18,
+        width: 18,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: color,
+        )
+      ));
+    }
+    else {
+      return _wrapIcon(ImageLoader.loadImage(imageDefinition, color: JVxColors.isLightTheme(context) ? color_ : colorDarkMode_));
+    }
   }
 
   Widget _wrapIcon(Widget icon) {
@@ -451,8 +463,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
       if (iconName.isNotEmpty) {
         //FontAwesome is our default icon library
-        if (!IconUtil.isFontIcon(iconName)) {
-          iconName ="${IconUtil.PREFIX_FONT_AWESOME}.$iconName";
+        if (!IconUtil.isFontIcon(iconName) && !iconName.contains(".")) {
+          iconName ="${IconUtil.PREFIX_FONT_AWESOME}$iconName";
         }
 
         icons.add(createIcon(

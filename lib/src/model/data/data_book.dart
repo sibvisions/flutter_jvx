@@ -128,10 +128,13 @@ class DataBook {
   List<ReferencedCellEditor> referencedCellEditors = [];
 
   /// current token for encryption
-  String? token;
+  String? _token;
 
   /// Has meta data set.
   bool hasMetaData = false;
+
+  /// Whether decryption is immediate
+  bool get decryptImmediate => "immediate" == _metaData?.dataDecryptionMode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -150,7 +153,7 @@ class DataBook {
   String toString() {
     return "DataBook{dataProvider: $dataProvider, isAllFetched: $isAllFetched, selectedRow: $selectedRow, "
            "records.length: ${records.length}, recordFormats.length: ${recordFormats.length}, "
-           "hasMetaData: $hasMetaData, token set: ${token != null}}";
+           "hasMetaData: $hasMetaData, token set: ${_token != null}}";
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,6 +260,9 @@ class DataBook {
     }
 
     referencedCellEditors.forEach((refCellEditor) => refCellEditor.buildDataToDisplayMap(this));
+
+    //Fetch done
+    IDataService().removeDataBookFetching(command.dataProvider, command.response.isAllFetched == true ? -1 : command.response.to);
 
     IUiService().notifyDataChange(
       dataProvider: dataProvider,
@@ -384,32 +390,39 @@ class DataBook {
       int colIndex = _metaData?.columnDefinitions.indexByName(columnName) ?? -1;
       if (colIndex >= 0) {
         if (_metaData?.columnDefinitions[colIndex].dataTypeIdentifier == ITypes.ENCODED_BINARY) {
-          DecryptedValue decValue = await decryptValue(columnData);
+          if (decryptImmediate) {
+            DecryptedValue decValue = await decryptValue(columnData);
 
-          if (decValue.type != CryptoValueType.DecryptFailure &&
-              decValue.type != CryptoValueType.Encrypted) {
-            Map<int, List<String>>? locks = _cryptoLock[null];
+            if (decValue.type != CryptoValueType.DecryptFailure &&
+                decValue.type != CryptoValueType.Encrypted) {
+              Map<int, List<String>>? locks = _cryptoLock[null];
 
-            if (locks == null) {
-              locks = HashMap();
-              _cryptoLock[null] = locks;
+              if (locks == null) {
+                locks = HashMap();
+                _cryptoLock[null] = locks;
+              }
+
+              List<String>? rowLocks = locks[changedResponse.selectedRow!];
+
+              if (rowLocks == null) {
+                rowLocks = List.filled(3, columnName, growable: true);
+
+                locks[changedResponse.selectedRow!] = rowLocks;
+              }
+              else if (!rowLocks.contains(columnName)) {
+                rowLocks.add(columnName);
+              }
             }
+            else {
+              _cryptoLock[null]?[changedResponse.selectedRow!]?.remove(columnName);
 
-            List<String>? rowLocks = locks[changedResponse.selectedRow!];
-
-            if (rowLocks == null) {
-              rowLocks = List.filled(3, columnName, growable: true);
-
-              locks[changedResponse.selectedRow!] = rowLocks;
-            }
-            else if (!rowLocks.contains(columnName)) {
-              rowLocks.add(columnName);
+              columnData = decValue.value;
             }
           }
           else {
             _cryptoLock[null]?[changedResponse.selectedRow!]?.remove(columnName);
 
-            columnData = decValue.value;
+            columnData = DecryptedValue(type: CryptoValueType.Lazy, value: columnData);
           }
         }
 
@@ -522,7 +535,7 @@ class DataBook {
 
   /// Deletes all current records
   void clearRecords() {
-    token = null;
+    _token = null;
 
     pageRecords.clear();
     records.clear();
@@ -729,15 +742,15 @@ class DataBook {
 
     ConfigHandler cfgHandler = IConfigService().getConfigHandler();
 
-    if (token == null) {
-      token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.encToken");
+    if (_token == null) {
+      _token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.encToken");
 
-      if (token == null) {
+      if (_token == null) {
         try {
-          token ??= await IUiService().getInput("Encryption token", "Token", true, faicon: FontAwesomeIcons.keycdn);
+          _token ??= await IUiService().getInput("Encryption token", "Token", true, faicon: FontAwesomeIcons.keycdn);
 
-          if (token != null && token!.isNotEmpty) {
-            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", token);
+          if (_token != null && _token!.isNotEmpty) {
+            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", _token);
           }
         }
         catch (e) {
@@ -746,8 +759,8 @@ class DataBook {
       }
     }
 
-    if (token != null && token!.isNotEmpty) {
-      return CryptoUtil.encrypt(value, token!);
+    if (_token != null && _token!.isNotEmpty) {
+      return CryptoUtil.encrypt(value, _token!);
     }
     else if (value is! Uint8List
              && !CryptoUtil.isBase64(value))
@@ -772,32 +785,40 @@ class DataBook {
     for (int i = 0; i < colList.length; i++) {
       if (colList[i].dataTypeIdentifier == ITypes.ENCODED_BINARY) {
         newRecord ??= List.from(record);
-        decValue = await decryptValue(newRecord[i]);
 
-        if (decValue.type == CryptoValueType.DecryptFailure
-            || decValue.type == CryptoValueType.Encrypted) {
-          Map<int, List<String>>? locks = _cryptoLock[pageKey];
+        if (decryptImmediate) {
+          decValue = await decryptValue(newRecord[i]);
 
-          if (locks == null) {
-            locks = HashMap();
-            _cryptoLock[pageKey] = locks;
+          if (decValue.type == CryptoValueType.DecryptFailure
+              || decValue.type == CryptoValueType.Encrypted) {
+            Map<int, List<String>>? locks = _cryptoLock[pageKey];
+
+            if (locks == null) {
+              locks = HashMap();
+              _cryptoLock[pageKey] = locks;
+            }
+
+            List<String>? rowLocks = locks[rowNumber];
+
+            if (rowLocks == null) {
+              rowLocks = List.filled(3, colList[i].name, growable: true);
+
+              locks[rowNumber] = rowLocks;
+            }
+            else if (!rowLocks.contains(colList[i].name)) {
+              rowLocks.add(colList[i].name);
+            }
           }
+          else {
+            _cryptoLock[pageKey]?[rowNumber]?.remove(colList[i].name);
 
-          List<String>? rowLocks = locks[rowNumber];
-
-          if (rowLocks == null) {
-            rowLocks = List.filled(3, colList[i].name, growable: true);
-
-            locks[rowNumber] = rowLocks;
-          }
-          else if (!rowLocks.contains(colList[i].name)) {
-            rowLocks.add(colList[i].name);
+            newRecord[i] = decValue.value;
           }
         }
         else {
           _cryptoLock[pageKey]?[rowNumber]?.remove(colList[i].name);
 
-          newRecord[i] = decValue.value;
+          newRecord[i] = DecryptedValue(type: CryptoValueType.Lazy, value: newRecord[i]);
         }
       }
       else if (colList[i].dataTypeIdentifier == ITypes.BINARY) {
@@ -822,17 +843,25 @@ class DataBook {
       return DecryptedValue(value: value, type: CryptoValueType.PlainText);
     }
 
+    if (value is DecryptedValue) {
+      DecryptedValue decValue = value;
+
+      if (decValue.type == CryptoValueType.Lazy) {
+        value = decValue.value;
+      }
+    }
+
     ConfigHandler cfgHandler = IConfigService().getConfigHandler();
 
-    if (token == null) {
-      token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.encToken");
+    if (_token == null) {
+      _token = await cfgHandler.getValueSecure("${await cfgHandler.currentApp()}.encToken");
 
-      if (token == null) {
+      if (_token == null) {
         try {
-          token ??= await IUiService().getInput("Encryption token", "Token", true, faicon: FontAwesomeIcons.keycdn);
+          _token ??= await IUiService().getInput("Encryption token", "Token", true, faicon: FontAwesomeIcons.keycdn);
 
-          if (token != null && token!.isNotEmpty) {
-            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", token);
+          if (_token != null && _token!.isNotEmpty) {
+            await cfgHandler.setValueSecure("${await cfgHandler.currentApp()}.encToken", _token);
           }
         }
         catch (e) {
@@ -866,8 +895,8 @@ class DataBook {
     }
 
     if (encodedValue is String) {
-      if (token != null && token!.isNotEmpty) {
-        return CryptoUtil.decrypt(encodedValue, token!);
+      if (_token != null && _token!.isNotEmpty) {
+        return CryptoUtil.decrypt(encodedValue, _token!);
       }
       else if (CryptoUtil.maybeEncrypted(encodedValue)) {
         return DecryptedValue(value: value, type: CryptoValueType.Encrypted);
@@ -912,6 +941,59 @@ class DataBook {
   bool isEncodedDataType(String columnName) {
     return _metaData?.columnDefinitions.byName(columnName)?.dataTypeIdentifier == ITypes.ENCODED_BINARY;
   }
+
+  dynamic checkAndDecryptValue(dynamic value) async {
+    if (value == null) {
+      return null;
+    }
+    else if (value is DecryptedValue) {
+      DecryptedValue decValue = value;
+
+      if (decValue.type == CryptoValueType.Lazy) {
+
+        decValue = await decryptValue(decValue.value);
+
+        if (decValue.type == CryptoValueType.Decrypted ||
+            decValue.type == CryptoValueType.PlainText) {
+          return decValue.value;
+        }
+
+        return decValue;
+      }
+      else if (decValue.type == CryptoValueType.PlainText ||
+               decValue.type == CryptoValueType.Decrypted) {
+        return decValue.value;
+      }
+    }
+
+    return value;
+  }
+
+  dynamic updateAndDecryptValue(int? rowIndex, String? columnName, dynamic value) async {
+    dynamic oldValue = value;
+
+    dynamic newValue = await checkAndDecryptValue(value);
+
+    if (rowIndex != null && rowIndex >= 0 && columnName != null) {
+      if (!identical(oldValue, newValue)) {
+        //Update record
+        int? colIdx = _metaData?.columnDefinitions.indexByName(columnName);
+
+        if (colIdx != null) {
+          List<dynamic>? row = records[rowIndex];
+
+          if (row != null) {
+            if (identical(row[colIdx], oldValue)) {
+              row[colIdx] = newValue;
+            }
+          }
+        }
+      }
+    }
+
+    return newValue;
+  }
+
 }
 
 class DalMetaData {
@@ -957,6 +1039,9 @@ class DalMetaData {
 
   /// The flags
   List<String>? flags;
+
+  /// The data decryption mode
+  String? dataDecryptionMode;
 
   /// If the data book is readonly.
   bool readOnly = false;
@@ -1009,6 +1094,7 @@ class DalMetaData {
             ? ReferenceDefinition.fromJson(json[ApiObjectProperty.rootReference])
             : null,
         additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
+        dataDecryptionMode = json[ApiObjectProperty.dataDecryptionMode],
         flags = json[ApiObjectProperty.flags],
 
         _json = json["json"] ?? {} {
@@ -1113,6 +1199,12 @@ class DalMetaData {
     }
     if (response.additionalRowVisible != null && additionalRowVisible != response.additionalRowVisible) {
       additionalRowVisible = response.additionalRowVisible!;
+
+      isChanged = true;
+    }
+
+    if (response.dataDecryptionMode != null && dataDecryptionMode != response.dataDecryptionMode) {
+      dataDecryptionMode = response.dataDecryptionMode;
 
       isChanged = true;
     }
@@ -1274,6 +1366,7 @@ class DalMetaData {
     data[ApiObjectProperty.detailReferences] = (detailReferences != null && detailReferences!.isNotEmpty) ? detailReferences!.map((e) => e.toJson()).toList() : null;
     data[ApiObjectProperty.rootReference] = rootReference?.toJson();
     data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
+    data[ApiObjectProperty.dataDecryptionMode] = dataDecryptionMode;
     data[ApiObjectProperty.flags] = flags;
 
     data["json"] = _json;

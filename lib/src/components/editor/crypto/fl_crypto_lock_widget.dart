@@ -31,10 +31,14 @@ class FlCryptoLockWidget extends FlStatelessWidget<FlComponentModel> {
 
   final ICellEditor cellEditor;
 
+  final bool? loading;
+
   const FlCryptoLockWidget({
     super.key,
     required super.model,
-    required this.cellEditor});
+    required this.cellEditor,
+    this.loading
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,14 @@ class FlCryptoLockWidget extends FlStatelessWidget<FlComponentModel> {
     editModel.isEnabled = false;
     editModel.isEditable = false;
     editModel.styles.addAll(super.model.styles);
-    editModel.styles.add("${FlComponentModel.STYLE_PREFIX_ICON}${IconUtil.PREFIX_FONT_AWESOME}keycdn_#607D8B99");
+
+    if (loading == true) {
+      editModel.styles.add("${FlComponentModel.STYLE_PREFIX_ICON}default.progress_#607D8B99");
+    }
+    else {
+      editModel.styles.add("${FlComponentModel.STYLE_PREFIX_ICON}${IconUtil.PREFIX_FONT_AWESOME}keycdn_#607D8B99");
+    }
+
     editModel.styles.add("${FlComponentModel.STYLE_BORDER_COLOR_DISABLED}#607D8BCC");
     editModel.styles.add("${FlComponentModel.STYLE_TEXT_COLOR_DISABLED}#607D8B99");
 
@@ -70,7 +81,7 @@ class FlCryptoLockWidget extends FlStatelessWidget<FlComponentModel> {
             valueChanged: _doNotChange,
             endEditing: _doNotEdit,
             focusNode: FocusNode(),
-            textController: TextEditingController(text: FlutterUI.translate("Encrypted")),
+            textController: TextEditingController(text: FlutterUI.translate(loading == true ? "Decrypting" : "Encrypted")),
             hideSuffixIcons: true,
           )
         ]
@@ -83,7 +94,7 @@ class FlCryptoLockWidget extends FlStatelessWidget<FlComponentModel> {
             valueChanged: _doNotChange,
             endEditing: _doNotEdit,
             focusNode: FocusNode(),
-            textController: TextEditingController(text: FlutterUI.translate("Encrypted")),
+            textController: TextEditingController(text: FlutterUI.translate(loading == true ? "Decrypting" : "Encrypted")),
             onlyPlainText: true,
             hideSuffixIcons: true,
             hidePasswordStrengthLabel: true,
@@ -96,7 +107,7 @@ class FlCryptoLockWidget extends FlStatelessWidget<FlComponentModel> {
             valueChanged: _doNotChange,
             endEditing: _doNotEdit,
             focusNode: FocusNode(),
-            textController: TextEditingController(text: FlutterUI.translate("Encrypted")),
+            textController: TextEditingController(text: FlutterUI.translate(loading == true ? "Decrypting" : "Encrypted")),
             hideSuffixIcons: true
         );
       }

@@ -229,6 +229,9 @@ abstract class DataBookUtil {
               idx = book.metaData?.columnDefinitions.indexByName(name);
 
               if (idx != null && idx >= 0) {
+                //replace with encrypted value
+                record[idx] = await book.checkAndDecryptValue(record[idx]);
+
                 html.write(record[idx] ?? "");
               }
               else {

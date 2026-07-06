@@ -15,8 +15,6 @@
  */
 import 'package:flutter/material.dart';
 
-import '../jvx_colors.dart';
-
 /// Acts like a standard [ElevatedButton] but shows a progress indicator as long as
 /// pressed is executing
 class ElevatedProgressButton extends StatefulWidget {
@@ -154,7 +152,7 @@ class _ElevatedProgressButtonState extends State<ElevatedProgressButton> {
                 width: 18,
                 child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: JVxColors.DARKER_WHITE,
+                    color: Theme.of(context).colorScheme.onPrimary,
                 ),
             )
                 : widget.child,

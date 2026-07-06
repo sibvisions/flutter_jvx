@@ -39,6 +39,7 @@ import '../../../util/column_list.dart';
 import '../../api/shared/api_object_property.dart';
 import '../../command/i_command_service.dart';
 import '../../service.dart';
+import '../../ui/i_ui_service.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
@@ -78,9 +79,6 @@ class DataService implements IDataService {
     }
 
     await dataBook.updateFromFetch(command: command);
-
-    //Fetch done
-    removeDataBookFetching(command.dataProvider, command.response.isAllFetched == true ? -1 : command.response.to);
 
     return [];
   }
@@ -146,17 +144,29 @@ class DataService implements IDataService {
       );
 
       dataBooks[dataBook.dataProvider] = dataBook;
+
+      IUiService().notifyMetaDataChange(response.dataProvider);
+
+      return true;
     }
     else {
       dataBook.metaData ??= DalMetaData(response.dataProvider);
-      dataBook.metaData!.applyMetaDataResponse(response);
+
+      if (dataBook.metaData!.applyMetaDataResponse(response)) {
+        IUiService().notifyMetaDataChange(response.dataProvider);
+
+        return true;
+      }
     }
 
-    return true;
+    return false;
   }
 
   @override
   bool setMetaData(DalMetaData metaData) {
+
+    //very specific and only relevant for offline mode
+
     DataBook? dataBook = dataBooks[metaData.dataProvider];
 
     if (dataBook == null) {
@@ -191,7 +201,14 @@ class DataService implements IDataService {
       return false;
     }
 
-    return metaData.applyMetaDataFromChangedResponse(changedResponse);
+    if (metaData.applyMetaDataFromChangedResponse(changedResponse)) {
+      IUiService().notifyMetaDataChange(changedResponse.dataProvider);
+
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   @override

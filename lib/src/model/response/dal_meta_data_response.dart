@@ -52,6 +52,9 @@ class DalMetaDataResponse extends ApiResponse {
   /// The primary key columns of the dataBook
   List<String>? primaryKeyColumns;
 
+  /// The data decryption mode
+  String? dataDecryptionMode;
+
   /// If the databook is readonly.
   bool? readOnly;
 
@@ -101,6 +104,7 @@ class DalMetaDataResponse extends ApiResponse {
             ? ReferenceDefinition.fromJson(json[ApiObjectProperty.rootReference])
             : null,
         additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
+        dataDecryptionMode = json[ApiObjectProperty.dataDecryptionMode],
         flags = json[ApiObjectProperty.flags] != null ? List<String>.from(json[ApiObjectProperty.flags]) : null,
         super.fromJson();
 
@@ -115,7 +119,7 @@ class DalMetaDataResponse extends ApiResponse {
            "updateEnabled: $updateEnabled, insertEnabled: $insertEnabled, modelDeleteEnabled: $modelDeleteEnabled, "
            "modelInsertEnabled: $modelInsertEnabled, modelUpdateEnabled: $modelUpdateEnabled, primaryKeyColumns: $primaryKeyColumns, "
            "masterReference: $masterReference, detailReferences: $detailReferences, rootReference: $rootReference,"
-           "additionalRowVisible: $additionalRowVisible, flags: $flags, ${super.propertiesAsString()}";
+           "additionalRowVisible: $additionalRowVisible, dataDecryptionMode: $dataDecryptionMode, flags: $flags, ${super.propertiesAsString()}";
   }
 
 }

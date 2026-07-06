@@ -34,6 +34,7 @@ import '../../service/api/shared/fl_component_classname.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/crypto_util.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_logger.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -81,15 +82,22 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   /// Last values
   List<dynamic>? _currentValues;
 
-  FlEditorWrapperState() : super();
-
   /// The onChangeTimer that is used to send the value to the server if saving [savingImmediate] is true.
-  Timer? onChangeTimer;
+  Timer? _onChangeTimer;
 
   DalMetaData? _metaData;
 
   /// The crypto-lock mode
-  bool cryptoLock = false;
+  bool _cryptoLock = false;
+
+  /// The crypto-loading mode
+  bool? _cryptoLoading;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  FlEditorWrapperState() : super();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -148,8 +156,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     Widget? editorWidget;
 
-    if (cryptoLock && _currentValue != null) {
-      editorWidget = FlCryptoLockWidget(model: model, cellEditor: cellEditor);
+    if (_cryptoLock && _currentValue != null) {
+      editorWidget = FlCryptoLockWidget(model: model, loading: _cryptoLoading, cellEditor: cellEditor);
     }
 
     editorWidget ??= cellEditor.createWidget(model.json, wrapper: wrapper, context: context);
@@ -272,10 +280,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
   void onChange(dynamic value) {
-    onChangeTimer?.cancel();
+    _onChangeTimer?.cancel();
 
     if (model.savingImmediate) {
-      onChangeTimer = Timer(const Duration(milliseconds: 300), () => _onValueChanged(value));
+      _onChangeTimer = Timer(const Duration(milliseconds: 300), () => _onValueChanged(value));
 
       // TextField wont update immediately, so we need to force it to update.
     }
@@ -300,6 +308,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   Future<void> setValue(DataRecord? dataRecord) async {
     dynamic oldValue = _currentValue;
 
+    DataBook? book = IDataService().getDataBook(model.dataProvider);
+
     if (dataRecord != null && dataRecord.values.isNotEmpty && dataRecord.columnDefinitions.isNotEmpty) {
       _currentValue = dataRecord.values[dataRecord.columnDefinitions.indexByName(model.columnName)];
     } else {
@@ -308,20 +318,59 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     _currentValues = dataRecord?.values;
 
-    cryptoLock = dataRecord != null && (IDataService().getDataBook(model.dataProvider)?.hasCryptoLock(dataRecord.index, model.columnName) ?? false);
-
-    if (isLinkedEditor()) {
-      cellEditor.setValue((_currentValue, _currentValues));
-      setState(() {});
-    } else {
-
-      dynamic editorValue = await cellEditor.getValue();
-
-      if (_currentValue != oldValue || !_isSameValue(editorValue)) {
-        cellEditor.setValue(_currentValue);
-
-        setState(() {});
+    Future<void> funcSetValue() async {
+      if (book != null) {
+        _currentValue = await book.updateAndDecryptValue(dataRecord?.index, model.columnName, _currentValue);
       }
+
+      if (book != null && _currentValues != null) {
+        //-1 to ignore status info
+        for (int i = 0; i < _currentValues!.length - 1; i++) {
+          _currentValues![i] = await book.updateAndDecryptValue(dataRecord?.index, dataRecord?.columnDefinitions[i].name, _currentValues![i]);
+        }
+      }
+
+      bool? oldCryptoLoading = _cryptoLoading;
+
+      if (_currentValue is DecryptedValue &&
+          ((_currentValue as DecryptedValue).type == CryptoValueType.DecryptFailure ||
+              (_currentValue as DecryptedValue).type == CryptoValueType.Encrypted)) {
+        _cryptoLock = true;
+      }
+      else {
+        _cryptoLock = dataRecord != null && (book?.hasCryptoLock(dataRecord.index, model.columnName) ?? false);
+      }
+
+      _cryptoLoading = null;
+
+      if (isLinkedEditor()) {
+        cellEditor.setValue((_currentValue, _currentValues));
+        setState(() {});
+      } else {
+
+        dynamic editorValue = await cellEditor.getValue();
+
+        if (!_isSameValue(oldValue) || !_isSameValue(editorValue)) {
+          cellEditor.setValue(_currentValue);
+
+          setState(() {});
+        }
+        else if (oldCryptoLoading == true) {
+          setState(() {});
+        }
+      }
+    }
+
+    if (_currentValue is DecryptedValue && (_currentValue as DecryptedValue).type == CryptoValueType.Lazy) {
+      _cryptoLock = true;
+      _cryptoLoading = true;
+
+      setState(() {});
+
+      unawaited(funcSetValue());
+    }
+    else {
+      await funcSetValue();
     }
   }
 
@@ -335,7 +384,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state of the widget and sends a set value command.
   Future<void> _onEndEditing(dynamic value, [String? action]) async {
-    onChangeTimer?.cancel();
+    _onChangeTimer?.cancel();
     if (_isSameValue(value) || !model.isEnabled) {
       setState(() {});
       return;
@@ -475,7 +524,31 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   bool _isSameValue(dynamic value) {
-    return cellEditor.formatValue(value) == cellEditor.formatValue(_currentValue);
+    if (value is DecryptedValue) {
+      if (value.type == CryptoValueType.Decrypted ||
+          value.type == CryptoValueType.PlainText ||
+          value.type == CryptoValueType.Encrypted) {
+        value = value.value;
+      }
+      else if (value.type == CryptoValueType.DecryptFailure) {
+        return true;
+      }
+    }
+
+    dynamic curValue = _currentValue;
+
+    if (curValue is DecryptedValue) {
+      if (curValue.type == CryptoValueType.Decrypted ||
+          curValue.type == CryptoValueType.PlainText ||
+          curValue.type == CryptoValueType.Encrypted) {
+        curValue = curValue.value;
+      }
+      else if (curValue.type == CryptoValueType.DecryptFailure) {
+        return true;
+      }
+    }
+
+    return cellEditor.formatValue(value) == cellEditor.formatValue(curValue);
   }
 
   void _onFocusChange(bool hasFocus) {

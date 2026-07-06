@@ -157,9 +157,6 @@ abstract class FilePickerDialog {
 
         int? quality = IConfigService().pictureQuality.value;
 
-        print(resolution);
-        print(quality);
-
         try {
             switch (type) {
                 case UploadType.CAMERA:

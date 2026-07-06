@@ -130,22 +130,28 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
           null,
         onTap: !model.isEnlargeDisabled &&
                image == null && !IconUtil.isFontIcon(model.image) && model.hasImage() && !model.defaultImage
-            ? () => showDialog(
-                  context: context,
-                  builder: (context) {
-                    return GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: PhotoView(
-                        backgroundDecoration: const BoxDecoration(
-                          color: Colors.transparent,
-                        ),
-                        initialScale: PhotoViewComputedScale.contained * 0.75,
-                        minScale: PhotoViewComputedScale.contained * 0.1,
-                        imageProvider: ImageLoader.getImageProvider(model.image!),
-                      ),
-                    );
-                  },
-                )
+            ? () {
+                    ImageProvider<Object>? prov = ImageLoader.getImageProvider(model.image!);
+
+                    if (prov != null) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: PhotoView(
+                              backgroundDecoration: const BoxDecoration(
+                                color: Colors.transparent,
+                              ),
+                              initialScale: PhotoViewComputedScale.contained * 0.75,
+                              minScale: PhotoViewComputedScale.contained * 0.1,
+                              imageProvider: prov,
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  }
             : null,
         child: child
       );
