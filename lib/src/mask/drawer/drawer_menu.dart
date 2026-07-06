@@ -222,8 +222,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
     MenuMode mode = MenuMode.fromString(appStyle.style('menu.mode'));
 
-    bool grouped = mode != MenuMode.GRID_GROUPED &&
-                   mode != MenuMode.LIST_GROUPED &&
+    bool grouped = mode == MenuMode.GRID_GROUPED ||
+                   mode == MenuMode.LIST_GROUPED ||
                    (ParseUtil.parseBool(appStyle.style('menu.grouped')) ?? false);
 
     return ValueListenableBuilder<MenuModel>(
