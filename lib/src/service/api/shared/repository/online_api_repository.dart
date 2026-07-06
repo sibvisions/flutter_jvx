@@ -81,6 +81,7 @@ import '../../../../model/request/api_rollback_request.dart';
 import '../../../../model/request/api_save_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
 import '../../../../model/request/api_select_record_tree_request.dart';
+import '../../../../model/request/api_set_application_parameter.dart';
 import '../../../../model/request/api_set_parameter.dart';
 import '../../../../model/request/api_set_screen_parameter.dart';
 import '../../../../model/request/api_set_value_request.dart';
@@ -153,6 +154,7 @@ class OnlineApiRepository extends IRepository {
         (request as ApiOpenScreenRequest).reopen ? APIRoute.POST_REOPEN_SCREEN : APIRoute.POST_OPEN_SCREEN,
     ApiActivateScreenRequest: (_) => APIRoute.POST_ACTIVATE_SCREEN,
     ApiSetParameter: (_) => APIRoute.POST_SET_PARAMETER,
+    ApiSetApplicationParameter: (_) => APIRoute.POST_SET_APPLICATION_PARAMETER,
     ApiSetScreenParameter: (_) => APIRoute.POST_SET_SCREEN_PARAMETER,
     ApiSelectTabRequest: (_) => APIRoute.POST_SELECT_TAB,
     ApiPressButtonRequest: (_) => APIRoute.POST_PRESS_BUTTON,

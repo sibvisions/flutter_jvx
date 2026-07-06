@@ -102,8 +102,6 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
   Future<List<BaseCommand>> _saveMetaData(SaveMetaDataCommand command) async {
     IDataService().updateMetaData(command.response);
 
-    IUiService().notifyMetaDataChange(command.response.dataProvider);
-
     return [];
   }
 

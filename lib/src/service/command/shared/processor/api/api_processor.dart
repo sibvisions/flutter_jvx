@@ -58,6 +58,7 @@ import '../../../../../model/command/api/save_command.dart';
 import '../../../../../model/command/api/save_data_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/api/select_record_tree_command.dart';
+import '../../../../../model/command/api/set_application_parameter_command.dart';
 import '../../../../../model/command/api/set_parameter_command.dart';
 import '../../../../../model/command/api/set_screen_parameter_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
@@ -110,6 +111,7 @@ import 'save_command_processor.dart';
 import 'save_data_processor.dart';
 import 'select_record_command_processor.dart';
 import 'select_record_tree_command_processor.dart';
+import 'set_application_parameter_command_processor.dart';
 import 'set_parameter_command_processor.dart';
 import 'set_screen_parameter_command_processor.dart';
 import 'set_value_command_processor.dart';
@@ -144,6 +146,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final LogoutCommandProcessor _logoutProcessor = LogoutCommandProcessor();
 
   final SetParameterCommandProcessor _setParameterProcessor = SetParameterCommandProcessor();
+  final SetApplicationParameterCommandProcessor _setApplicationParameterProcessor = SetApplicationParameterCommandProcessor();
   final OpenScreenCommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
   final CloseScreenCommandProcessor _closeScreenProcessor = CloseScreenCommandProcessor();
   final ActivateScreenCommandProcessor _activateScreenCommandProcessor = ActivateScreenCommandProcessor();
@@ -271,6 +274,8 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _sortProcessor;
     } else if (command is SetParameterCommand) {
       return _setParameterProcessor;
+    } else if (command is SetApplicationParameterCommand) {
+      return _setApplicationParameterProcessor;
     } else if (command is SetScreenParameterCommand) {
       return _setScreenParameterProcessor;
     } else if (command is RestoreDataCommand) {
