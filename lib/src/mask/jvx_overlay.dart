@@ -104,7 +104,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   Timer? _connectedTimer;
   String? _connectedMessage;
 
-  ValueNotifier<bool> backgroundProgress = ValueNotifier<bool>(false);
+  ValueNotifier<int> backgroundProgress = ValueNotifier<int>(0);
 
   void refreshDialogs() {
     _dialogsKey.currentState?.setState(() {});
@@ -397,7 +397,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                     ListenableBuilder(
                       listenable: backgroundProgress,
                       builder: (context, child) {
-                        if (backgroundProgress.value == false) {
+                        if (backgroundProgress.value <= 0) {
                           return Offstage();
                         }
                         else {

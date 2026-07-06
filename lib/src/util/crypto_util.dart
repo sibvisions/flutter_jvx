@@ -228,6 +228,17 @@ abstract class CryptoUtil {
     return passwordChars.join('');
   }
 
+  /// Current string to hex representation
+  static String toHex(List<int> bytes) {
+    final StringBuffer buffer = StringBuffer();
+
+    for (final b in bytes) {
+      buffer.write(b.toRadixString(16).padLeft(2, '0'));
+    }
+
+    return buffer.toString();
+  }
+
 }
 
 /// Possible types for crypto values
