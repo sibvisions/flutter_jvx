@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -32,6 +33,7 @@ import '../service/ui/i_ui_service.dart';
 import '../util/auth/auth_overlay.dart';
 import '../util/auth/auth_service.dart';
 import '../util/jvx_colors.dart';
+import '../util/widgets/blinking_circle.dart';
 import '../util/widgets/status_banner.dart';
 import 'apps/app_overview_page.dart';
 import 'state/app_style.dart';
@@ -101,6 +103,8 @@ class JVxOverlayState extends State<JVxOverlay> {
   bool? _connected;
   Timer? _connectedTimer;
   String? _connectedMessage;
+
+  ValueNotifier<bool> backgroundProgress = ValueNotifier<bool>(false);
 
   void refreshDialogs() {
     _dialogsKey.currentState?.setState(() {});
@@ -390,6 +394,34 @@ class JVxOverlayState extends State<JVxOverlay> {
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
+                    ListenableBuilder(
+                      listenable: backgroundProgress,
+                      builder: (context, child) {
+                        if (backgroundProgress.value == false) {
+                          return Offstage();
+                        }
+                        else {
+                          MediaQueryData mqd = MediaQuery.of(context);
+
+                          BlinkingCircle circle = BlinkingCircle(color: Colors.green, size: 10);
+
+                          if (mqd.orientation == Orientation.portrait) {
+                            return Positioned(
+                              top: MediaQuery.of(context).viewPadding.top - 5,
+                              left: MediaQuery.of(context).viewPadding.left + 5,
+                              child: circle
+                            );
+                          }
+                          else {
+                            return Positioned(
+                                top: MediaQuery.of(context).viewPadding.top + 10,
+                                left: MediaQuery.of(context).viewPadding.left + 5,
+                                child: circle
+                            );
+                          }
+                        }
+                      },
+                    ),
                     if (showInternalUrl)
                       Positioned(
                         top: kToolbarHeight - 16,
