@@ -125,7 +125,7 @@ class LoginPage extends StatefulWidget {
         webOnlyWindowName: FlutterUI.translate("Verification"),
       );
     } else {
-        showBarModalBottomSheet(
+      showBarModalBottomSheet(
         barrierColor: JVxColors.LIGHTER_BLACK.withAlpha(Color.getAlphaFromOpacity(0.75)),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         shape: const RoundedRectangleBorder(
