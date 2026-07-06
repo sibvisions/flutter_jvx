@@ -524,6 +524,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   bool _isSameValue(dynamic value) {
+    if (_cryptoLoading == true || _cryptoLock) {
+      return true;
+    }
+
     if (value is DecryptedValue) {
       if (value.type == CryptoValueType.Decrypted ||
           value.type == CryptoValueType.PlainText ||
