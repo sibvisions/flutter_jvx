@@ -29,6 +29,9 @@ class SaveFetchDataCommand extends DataProviderCommand {
   /// Server response
   final DalFetchResponse response;
 
+  /// A list of "changed by setValues" flags per column in same order as response column names
+  final List<bool>? changed;
+
   /// The last filter used by a request. Filtered fetch responses do not represent the "whole" state. e.g. isAllFetched is ignored.
   /// As a filtered response usually does not represent "all" the data.
   final Filter requestFilter;
@@ -44,6 +47,7 @@ class SaveFetchDataCommand extends DataProviderCommand {
     required this.response,
     this.requestFilter = const Filter.empty(),
     this.setRootKey = false,
+    this.changed,
     required super.reason,
     super.showLoading,
   }) : super(dataProvider: response.dataProvider);
@@ -54,7 +58,7 @@ class SaveFetchDataCommand extends DataProviderCommand {
 
   @override
   String propertiesAsString() {
-    return "requestFilter: $requestFilter, response: $response, setRootKey: $setRootKey, ${super.propertiesAsString()}";
+    return "requestFilter: $requestFilter, response: $response, setRootKey: $setRootKey, changed: $changed, ${super.propertiesAsString()}";
   }
 
   @override

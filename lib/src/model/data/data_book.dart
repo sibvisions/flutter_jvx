@@ -211,7 +211,7 @@ class DataBook {
         notDecrypted.add(fetchResponse.from + i);
       }
 
-      dataMap[fetchResponse.from + i] = await _decryptValues(pageKey, fetchResponse.from + i, fetchResponse.records[i], _metaData);
+      dataMap[fetchResponse.from + i] = await _decryptValues(pageKey, fetchResponse.from + i, dataMap[fetchResponse.from + i], fetchResponse.records[i], _metaData, command.changed);
     }
 
     if (notDecrypted != null) {
@@ -771,7 +771,14 @@ class DataBook {
     return value;
   }
 
-  Future<List<dynamic>> _decryptValues(String? pageKey, int rowNumber, List<dynamic> record, DalMetaData? metaData) async {
+  Future<List<dynamic>> _decryptValues(
+    String? pageKey,
+    int rowNumber,
+    List<dynamic>? oldRecord,
+    List<dynamic> record,
+    DalMetaData? metaData,
+    List<bool>? changed
+  ) async {
     if (metaData == null) {
       return record;
     }
@@ -816,9 +823,42 @@ class DataBook {
           }
         }
         else {
-          _cryptoLock[pageKey]?[rowNumber]?.remove(colList[i].name);
+          bool bUseNewRecord = true;
 
-          newRecord[i] = DecryptedValue(type: CryptoValueType.Lazy, value: newRecord[i]);
+          //old record not changed by setValue -> keep old value if server-side did send an encrypted value
+          if (oldRecord?[i] is Uint8List && changed != null && !changed[i]) {
+            //new record will be empty -> use empty value
+            if (newRecord[i] == null || (newRecord[i] is String && (newRecord[i] as String).isEmpty)) {
+              newRecord[i] = null;
+            }
+            else if (newRecord[i] is String) {
+              //it's possible that server-side changed the value of a column which wasn't changed by setValues command
+              //but server is not able to encrypt, so if we receive an encrypted value which wasn't changed by setValues command
+              //keep old value on client
+              Uint8List? newValue = CryptoUtil.tryDecodeBase64(newRecord[i]);
+
+              if (newValue != null) {
+                try {
+                  String sJsonValue = utf8.decode(newValue);
+
+                  if (sJsonValue.startsWith("{") && sJsonValue.endsWith("}")) {
+                    bUseNewRecord = false;
+
+                    newRecord[i] = oldRecord![i];
+                  }
+                }
+                catch (error) {
+                  //not a string
+                }
+              }
+            }
+          }
+
+          if (newRecord[i] != null && bUseNewRecord) {
+            _cryptoLock[pageKey]?[rowNumber]?.remove(colList[i].name);
+
+            newRecord[i] = DecryptedValue(type: CryptoValueType.Lazy, value: newRecord[i]);
+          }
         }
       }
       else if (colList[i].dataTypeIdentifier == ITypes.BINARY) {
@@ -928,7 +968,7 @@ class DataBook {
             record = allRecords[i];
 
             if (record != null) {
-              record[i] = await _decryptValues(entry.key, i, record, metaData);
+              record[i] = await _decryptValues(entry.key, i, null, record, metaData, null);
             }
           }
         }
