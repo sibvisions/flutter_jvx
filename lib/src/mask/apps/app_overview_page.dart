@@ -19,6 +19,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -61,7 +62,7 @@ class AppOverviewPage extends StatefulWidget {
     required Future<void> Function(QRConfig config) callback,
     bool allowMultiScan = false,
   }) {
-    return IUiService().openDialog(
+    return IUiService().openDialogFullScreen(
       context: context,
       builder: (context) => EmbeddedCodeScanner(
         allowMultiScan: allowMultiScan,
@@ -134,16 +135,34 @@ class AppOverviewPage extends StatefulWidget {
 }
 
 class _AppOverviewPageState extends State<AppOverviewPage> {
+  static double _savedScrollOffset = 0.0;
+
+  late ScrollController _appScrollController;
+
   late final BackgroundBuilder? backgroundBuilder;
+
   List<App>? apps;
-  Future<void>? future;
 
   App? currentConfig;
 
   @override
   void initState() {
     super.initState();
+
+    _appScrollController = ScrollController();
+
+    _appScrollController.addListener(_scrollListener);
+
     backgroundBuilder = FlutterUI.of(context).widget.backgroundBuilder;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _appScrollController.removeListener(_scrollListener);
+    _appScrollController.dispose();
+
   }
 
   @override
@@ -152,17 +171,43 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     _refreshApps();
   }
 
+  void _scrollListener() {
+    if (_appScrollController.hasClients) {
+      _savedScrollOffset = _appScrollController.offset;
+    }
+  }
+
+  void _jumpToSavedScrollOffset() {
+    if (mounted && apps?.isNotEmpty == true && _appScrollController.hasClients && _savedScrollOffset > 0) {
+      try {
+        _appScrollController.jumpTo(_savedScrollOffset);
+      } catch (e) {
+        //will happen if maxExtent is null (-> if we successfully start an app)
+      }
+    }
+  }
+
   Future<void> _refreshApps() async {
     try {
+      _jumpToSavedScrollOffset();
+
       await IAppService().refreshStoredApps();
 
-      apps = [...IAppService().getApps().sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase())];
+      final sortedApps = [...IAppService().getApps().sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase())];
+      final config = _getSingleConfig();
 
-      currentConfig = _getSingleConfig();
-
-      if (mounted) {
-        setState(() {});
+      if (!mounted) {
+        return;
       }
+
+      setState(() {
+        apps = sortedApps;
+        currentConfig = config;
+      });
+
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _jumpToSavedScrollOffset();
+      });
     } catch (e, stack) {
       FlutterUI.createErrorHandler("Failed to init app list").call(e, stack);
     }
@@ -172,7 +217,15 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return Theme(
+      data: JVxColors.applyJVxTheme(ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          brightness: Theme.of(context).colorScheme.brightness,
+          seedColor: Colors.blue,
+        ),
+      )),
+      child: ValueListenableBuilder(
       valueListenable: IConfigService().singleAppMode,
       builder: (context, value, child) {
 
@@ -182,216 +235,195 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
           background = backgroundBuilder!.call(context, BackgroundType.AppOverview);
         }
 
-        return PageStorage(
-          bucket: FlutterUI.of(context).globalStorageBucket,
-          child: Theme(
-            data: JVxColors.applyJVxTheme(ThemeData(
-              useMaterial3: true,
-              colorScheme: ColorScheme.fromSeed(
-                brightness: Theme.of(context).colorScheme.brightness,
-                seedColor: Colors.blue,
-              ),
-            )),
-            child: Scaffold(
-              body: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (background != null)
-                    background,
-                  if (backgroundBuilder == null)
-                    SvgPicture.asset(
-                      ImageLoader.getAssetPath(
-                        FlutterUI.package,
-                        JVxColors.isLightTheme(context) ?
-                        "assets/images/JVx_Bg.svg" :
-                        "assets/images/JVx_Bg_dark.svg",
-                      ),
-                      fit: BoxFit.fill,
+        return Scaffold(
+            body: Stack(
+              fit: StackFit.expand,
+              children: [
+                if (background != null)
+                  background,
+                if (backgroundBuilder == null)
+                  SvgPicture.asset(
+                    ImageLoader.getAssetPath(
+                      FlutterUI.package,
+                      JVxColors.isLightTheme(context) ?
+                      "assets/images/JVx_Bg.svg" :
+                      "assets/images/JVx_Bg_dark.svg",
                     ),
-                  SafeArea(
-                    bottom: false,
-                    child: FutureBuilder(
-                      future: future,
-                      builder: (context, snapshot) {
-                        bool showAddOnFront = (apps?.isEmpty ?? false);
-
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0),
-                          child: Stack(
-                            fit: StackFit.expand,
+                    fit: BoxFit.fill,
+                  ),
+                SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Positioned.fill(
+                          child: Column(
                             children: [
-                              Positioned.fill(
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 3, left: 8.0),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          FlutterUI.translateLocal(
-                                              IConfigService().isSingleAppMode() ? "Application" : "Applications"),
-                                          style: TextStyle(
-                                            color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK :
-                                                    Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 32,
-                                          ),
-                                        ),
-                                      ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 8.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    FlutterUI.translateLocal(
+                                        IConfigService().isSingleAppMode() ? "Application" : "Applications"),
+                                    style: TextStyle(
+                                      color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK :
+                                              Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 32,
                                     ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 8.0),
-                                        child: _buildAppList(
-                                          context,
-                                          snapshot,
-                                          showAddOnFront,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                              Positioned(
-                                top: 0.0,
-                                right: 8.0,
-                                child: _buildMenuButton(
-                                  context,
-                                  IConfigService().isSingleAppMode() || showAddOnFront,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: _buildAppList(
+                                    context,
+                                    (apps?.isEmpty ?? false),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        );
+                        ),
+                        Positioned(
+                          top: 0.0,
+                          right: 8.0,
+                          child: _buildMenuButton(
+                            context,
+                            IConfigService().isSingleAppMode() || (apps?.isEmpty ?? false),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ),
+              ],
+            ),
+            floatingActionButton: IConfigService().isSingleAppMode()
+                ? FloatingActionButton(
+                    tooltip: FlutterUI.translateLocal("Scan QR Code"),
+                    onPressed: () => AppOverviewPage.openQRScanner(
+                      context,
+                      callback: (config) async {
+                        var serverConfig = config.apps?.firstOrNull;
+                        if (serverConfig != null) {
+                          currentConfig = await App.createAppFromConfig(serverConfig);
+                          setState(() {});
+                        }
                       },
                     ),
-                  ),
-                ],
-              ),
-              floatingActionButton: IConfigService().isSingleAppMode()
-                  ? FloatingActionButton(
-                      tooltip: FlutterUI.translateLocal("Scan QR Code"),
-                      onPressed: () => AppOverviewPage.openQRScanner(
-                        context,
-                        callback: (config) async {
-                          var serverConfig = config.apps?.firstOrNull;
-                          if (serverConfig != null) {
-                            currentConfig = await App.createAppFromConfig(serverConfig);
-                            setState(() {});
-                          }
-                        },
-                      ),
-                      child: const Icon(Icons.qr_code),
-                    )
-                  : null,
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-            ),
-          ),
-        );
-      },
+                    child: const Icon(Icons.qr_code),
+                  )
+                : null,
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          );
+        },
+      )
     );
   }
 
-  Widget _buildAppList(BuildContext context, AsyncSnapshot snapshot, bool showAddOnFront) {
+  Widget _buildAppList(BuildContext context, bool showAddOnFront) {
     Widget child;
-    if (snapshot.hasError) {
-      child = const FaIcon(FontAwesomeIcons.circleExclamation);
-    } else {
-      if (IConfigService().isSingleAppMode()) {
-        child = SingleAppView(
-          config: currentConfig,
-          onStart: (config) async {
-            App? editedApp = await _updateApp(
-              context,
-              config.merge(const ServerConfig(isDefault: true)),
-            );
 
-            if (editedApp != null && mounted) {
-              //we only save 1 manually defined application and 1 predefined application, why?
-              //it should be possible to test forceSingleAppMode with predefined config and without. In case,
-              //no predefined config is available, we try to use the available config. If we remove the
-              //predefined config -> it will be automatically removed from cache as well.
-              //So we can test forceSingleAppMode perfectly
+    if (IConfigService().isSingleAppMode()) {
+      child = SingleAppView(
+        config: currentConfig,
+        onStart: (config) async {
+          App? editedApp = await _updateApp(
+            context,
+            config.merge(const ServerConfig(isDefault: true)),
+          );
 
-              List<App> apps = IAppService().getApps();
+          if (editedApp != null && mounted) {
+            //we only save 1 manually defined application and 1 predefined application, why?
+            //it should be possible to test forceSingleAppMode with predefined config and without. In case,
+            //no predefined config is available, we try to use the available config. If we remove the
+            //predefined config -> it will be automatically removed from cache as well.
+            //So we can test forceSingleAppMode perfectly
 
-              for (App app in apps) {
-                if (app.id != editedApp.id && !app.predefined) {
-                  await app.delete();
-                }
+            List<App> apps = IAppService().getApps();
+
+            for (App app in apps) {
+              if (app.id != editedApp.id && !app.predefined) {
+                await app.delete();
               }
-
-              unawaited(IAppService().startApp(appId: editedApp.id, autostart: false));
             }
-          },
-        );
-      } else {
-        child = CustomScrollView(
-          key: const PageStorageKey("OverviewList"),
-          slivers: [
-            SliverPadding(
-              // Padding to keep card effects visible (prevent cropping),
-              // top padding is roughly half the size of the default check mark.
-              padding: EdgeInsets.only(
-                top: 20,
-                left: 8.0,
-                right: 8.0,
-                bottom: max(MediaQuery.of(context).viewPadding.bottom, 8.0),
+
+            unawaited(IAppService().startApp(appId: editedApp.id, autostart: false));
+          }
+        },
+      );
+    } else {
+      child = CustomScrollView(
+        controller: _appScrollController,
+        slivers: [
+          SliverPadding(
+            // Padding to keep card effects visible (prevent cropping),
+            // top padding is roughly half the size of the default check mark.
+            padding: EdgeInsets.only(
+              top: 20,
+              left: 8.0,
+              right: 8.0,
+              bottom: max(MediaQuery.of(context).viewPadding.bottom, 8.0),
+            ),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200,
+                childAspectRatio: 0.8,
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 20.0,
               ),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  childAspectRatio: 0.8,
-                  mainAxisSpacing: 20.0,
-                  crossAxisSpacing: 20.0,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  childCount: (apps?.length ?? 0) + (showAddOnFront ? 1 : 0),
-                  (context, index) {
-                    if (index < (apps?.length ?? 0)) {
-                      App app = apps![index];
-                      return AppItem(
-                        key: ObjectKey(app),
-                        enabled: (app.predefined || App.customAppsAllowed) && app.isStartable,
-                        appTitle: app.effectiveTitle ?? "-",
-                        image: AppOverviewPage.getAppIcon(app),
-                        isDefault: app.isDefault,
-                        locked: app.locked,
-                        hidden: app.parametersHidden,
-                        offline: app.offline,
-                        predefined: app.predefined,
-                        onTap: app.isStartable
-                            ? () {
-                                if (app.predefined || App.customAppsAllowed) {
-                                  IAppService().startApp(appId: app.id, appTitle: app.effectiveTitle, autostart: false);
-                                } else {
-                                  _showForbiddenAppStart(context);
-                                }
+              delegate: SliverChildBuilderDelegate(
+                childCount: (apps?.length ?? 0) + (showAddOnFront ? 1 : 0),
+                (context, index) {
+                  if (index < (apps?.length ?? 0)) {
+                    App app = apps![index];
+                    return AppItem(
+                      key: ObjectKey(app),
+                      enabled: (app.predefined || App.customAppsAllowed) && app.isStartable,
+                      appTitle: app.effectiveTitle ?? "-",
+                      image: AppOverviewPage.getAppIcon(app),
+                      isDefault: app.isDefault,
+                      locked: app.locked,
+                      hidden: app.parametersHidden,
+                      offline: app.offline,
+                      predefined: app.predefined,
+                      onTap: app.isStartable
+                          ? () {
+                              if (app.predefined || App.customAppsAllowed) {
+                                IAppService().startApp(appId: app.id, appTitle: app.effectiveTitle, autostart: false);
+                              } else {
+                                _showForbiddenAppStart(context);
                               }
-                            : null,
-                        onLongPress: !app.parametersHidden
-                            ? () => _openAppEditor(
-                                  context,
-                                  editApp: app,
-                                )
-                            : null,
-                      );
-                    } else if (showAddOnFront) {
-                      return AppItem(
-                        appTitle: "Add",
-                        icon: Icons.add,
-                        onTap: App.customAppsAllowed ? () => _showAddApp(context) : null,
-                      );
-                    }
-                    return null;
-                  },
-                ),
+                            }
+                          : null,
+                      onLongPress: !app.parametersHidden
+                          ? () => _openAppEditor(
+                                context,
+                                editApp: app,
+                              )
+                          : null,
+                    );
+                  } else if (showAddOnFront) {
+                    return AppItem(
+                      appTitle: "Add",
+                      icon: Icons.add,
+                      onTap: App.customAppsAllowed ? () => _showAddApp(context) : null,
+                    );
+                  }
+                  return null;
+                },
               ),
             ),
-          ],
-        );
-      }
+          ),
+        ],
+      );
     }
+
     return child;
   }
 
@@ -542,33 +574,33 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     IUiService().openDialog(
       context: context,
       builder: (context) => AppEditDialog(
-        config: editApp,
-        predefined: editApp?.predefined ?? false,
-        locked: editApp?.locked ?? false,
-        onSubmit: (config) => _updateApp(context, config, oldApp: editApp),
-        onCancel: () {
-          Navigator.pop(context);
-        },
-        onDelete: () async {
-          bool? shouldDelete = await _showDeleteDialog(context, editApp?.predefined ?? false);
-          if (shouldDelete ?? false) {
-            if (!context.mounted) return;
+          config: editApp,
+          predefined: editApp?.predefined ?? false,
+          locked: editApp?.locked ?? false,
+          onSubmit: (config) => _updateApp(context, config, oldApp: editApp),
+          onCancel: () {
             Navigator.pop(context);
-            apps?.remove(editApp);
-            await editApp!.delete();
-            unawaited(_refreshApps());
-          }
-        },
-        onLongDelete: () async {
-          bool? shouldDelete = await _showDeleteDataDialog(context);
-          if (shouldDelete ?? false) {
-            if (!context.mounted) return;
-            Navigator.pop(context);
-            await editApp!.deleteData();
-            unawaited(_refreshApps());
-          }
-        },
-      ),
+          },
+          onDelete: () async {
+            bool? shouldDelete = await _showDeleteDialog(context, editApp?.predefined ?? false);
+            if (shouldDelete ?? false) {
+              if (!context.mounted) return;
+              Navigator.pop(context);
+              apps?.remove(editApp);
+              await editApp!.delete();
+              unawaited(_refreshApps());
+            }
+          },
+          onLongDelete: () async {
+            bool? shouldDelete = await _showDeleteDataDialog(context);
+            if (shouldDelete ?? false) {
+              if (!context.mounted) return;
+              Navigator.pop(context);
+              await editApp!.deleteData();
+              unawaited(_refreshApps());
+            }
+          },
+        ),
     );
   }
 
@@ -749,6 +781,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         );
       },
     );
+
     if (shouldClear ?? false) {
       await IAppService().removeAllApps();
       unawaited(_refreshApps());
