@@ -14,12 +14,23 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'dart:collection';
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:timezone/timezone.dart' as tz;
+
+import '../flutter_ui.dart';
 import '../model/command/api/fetch_command.dart';
+import '../model/component/editor/cell_editor/cell_editor_model.dart';
+import '../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
 import '../model/data/column_definition.dart';
 import '../model/data/data_book.dart';
+import '../service/api/shared/fl_component_classname.dart';
 import '../service/command/i_command_service.dart';
+import '../service/config/i_config_service.dart';
 import '../service/data/i_data_service.dart';
 import '../service/ui/i_ui_service.dart';
 import 'html_vault.dart';
@@ -171,8 +182,8 @@ abstract class DataBookUtil {
         html.write(
             '''
           <div class="search-wrapper">
-          <input type="text" id="searchInput" class="table-search" placeholder="Enter search value">
-          <button id="searchClear" class="clear-btn">Clear</button>
+          <input type="text" id="searchInput" class="table-search" placeholder="${FlutterUI.translate('Enter search value')}">
+          <button id="searchClear" class="clear-btn">${FlutterUI.translate('Clear')}</button>
           </div>
           '''
         );
@@ -229,6 +240,8 @@ abstract class DataBookUtil {
 
             html.write("<tr>");
 
+            Map<ColumnDefinition, ICellEditorModel> modelCache = HashMap<ColumnDefinition, ICellEditorModel>();
+
             for (String name in columnNamesForTable) {
               html.write("<td style='text-align: ${alignments[name]};'>");
 
@@ -255,6 +268,8 @@ abstract class DataBookUtil {
                     }
                   }
                 }
+
+                _formatValue(book.metaData!.columnDefinitions[idx], modelCache, record[idx]);
 
                 html.write(record[idx] ?? "");
               }
@@ -324,5 +339,40 @@ abstract class DataBookUtil {
     }
 
     return null;
+  }
+
+  /// Formats a record value as string
+  static dynamic _formatValue(ColumnDefinition columnDefinition, Map<ColumnDefinition, ICellEditorModel> modelCache, dynamic value) {
+    if (value == null) {
+      return value;
+    }
+
+    if (columnDefinition.dataTypeIdentifier == ITypes.ENCODED_BINARY ||
+        columnDefinition.dataTypeIdentifier == ITypes.BINARY) {
+      if (columnDefinition.cellEditorClassName == FlCellEditorClassname.TEXT_CELL_EDITOR
+          || columnDefinition.cellEditorClassName == FlCellEditorClassname.LINKED_CELL_EDITOR) {
+        if (value is Uint8List) {
+          return utf8.decode(value);
+        }
+      }
+
+      return FlutterUI.translate("&lt;binary&gt;");
+    }
+    else if (columnDefinition.dataTypeIdentifier == ITypes.TIMESTAMP) {
+      FlDateCellEditorModel? model = modelCache[columnDefinition] as FlDateCellEditorModel?;
+
+      if (model == null) {
+        model = FlDateCellEditorModel()
+          ..applyFromJson(columnDefinition.cellEditorJson);
+
+        modelCache[columnDefinition] = model;
+      }
+
+      return DateFormat(model.dateFormat, model.locale ?? IConfigService().getLanguage()).format(
+        tz.TZDateTime.fromMillisecondsSinceEpoch(tz.getLocation(model.timeZoneCode ?? IConfigService().getTimezone()), value)
+      );
+    }
+
+    return value;
   }
 }
