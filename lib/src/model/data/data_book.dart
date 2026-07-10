@@ -440,10 +440,6 @@ class DataBook {
       return false;
     }
 
-    print("Update sort definitions in metadata: ${sortDefinitions}");
-    print(StackTrace.current);
-
-
     bool changeDetected = false;
 
     if (_metaData!.sortDefinitions == null || sortDefinitions == null) {
