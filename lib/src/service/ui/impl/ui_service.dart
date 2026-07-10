@@ -29,6 +29,7 @@ import '../../../custom/custom_component.dart';
 import '../../../custom/custom_menu_item.dart';
 import '../../../custom/custom_screen.dart';
 import '../../../flutter_ui.dart';
+import '../../../mask/error/error_dialog.dart';
 import '../../../mask/error/ierror.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame/frame.dart';
@@ -1005,6 +1006,16 @@ class UiService implements IUiService {
       for (int i = 0; i < copy.length && msg == null; i++) {
         if (copy[i] is MessageDialog && (copy[i] as MessageDialog).command.componentName == dialog.command.componentName) {
           msg = copy[i] as MessageDialog;
+        }
+      }
+    }
+    else if (dialog is ErrorDialog) {
+      //We won't show the same dialog multiple times !
+      for (int i = 0; i < copy.length; i++) {
+        if (copy[i] is ErrorDialog &&
+            (copy[i] as ErrorDialog).message == dialog.message &&
+            (copy[i] as ErrorDialog).goToAppOverview == dialog.goToAppOverview) {
+          return;
         }
       }
     }
