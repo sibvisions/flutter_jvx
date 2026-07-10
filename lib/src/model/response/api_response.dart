@@ -58,4 +58,7 @@ abstract class ApiResponse {
     return "name: $name";
   }
 
+  /// Gets whether the response has a property with [name]
+  bool hasProperty(String name) => json.containsKey(name);
+
 }

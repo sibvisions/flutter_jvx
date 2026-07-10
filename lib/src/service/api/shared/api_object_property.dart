@@ -105,6 +105,7 @@ abstract class ApiObjectProperty {
   static const String longitudeColumnName = "longitudeColumnName";
   static const String latitudeColumnName = "latitudeColumnName";
   static const String groupColumnName = "groupColumnName";
+  static const String popupMenu = "popupMenu";
   static const String defaultMenuItem = "defaultMenuItem";
   static const String eventFocusGained = "eventFocusGained";
   static const String eventFocusLost = "eventFocusLost";

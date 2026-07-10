@@ -358,9 +358,9 @@ class DataBook {
 
   /// Updates all data from a [DalDataProviderChangedResponse]
   Future<bool> updateDataChanged({required DalDataProviderChangedResponse changedResponse}) async {
-    bool changed = _updateSortDefinitions(changedResponse.sortDefinitions);
-    changed |= _updateRecordReadOnly(changedResponse.recordReadOnly, records, 0);
-    changed |= _updateRecordFormats(changedResponse.recordFormats, 0);
+    bool changed = changedResponse.hasProperty(ApiObjectProperty.sortDefinition) && _updateSortDefinitions(changedResponse.sortDefinitions);
+    changed |= changedResponse.hasProperty(ApiObjectProperty.recordReadOnly) && _updateRecordReadOnly(changedResponse.recordReadOnly, records, 0);
+    changed |= changedResponse.hasProperty(ApiObjectProperty.recordFormat) && _updateRecordFormats(changedResponse.recordFormats, 0);
 
     if (changedResponse.deletedRow != null && changedResponse.deletedRow! < records.length) {
       for (int i = changedResponse.deletedRow!; i < records.length - 1; i++) {
@@ -439,6 +439,10 @@ class DataBook {
     if (_metaData == null) {
       return false;
     }
+
+    print("Update sort definitions in metadata: ${sortDefinitions}");
+    print(StackTrace.current);
+
 
     bool changeDetected = false;
 
