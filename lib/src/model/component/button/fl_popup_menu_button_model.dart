@@ -21,6 +21,9 @@ class FlPopupMenuButtonModel extends FlButtonModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  String? popupMenu;
+
   String? defaultMenuItem;
 
   @override
@@ -29,6 +32,13 @@ class FlPopupMenuButtonModel extends FlButtonModel {
   @override
   void applyFromJson(Map<String, dynamic> newJson) {
     super.applyFromJson(newJson);
+
+    popupMenu = getPropertyValue(
+      json: newJson,
+      key: ApiObjectProperty.popupMenu,
+      defaultValue: defaultModel.popupMenu,
+      currentValue: popupMenu,
+    );
 
     defaultMenuItem = getPropertyValue(
       json: newJson,
