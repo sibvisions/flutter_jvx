@@ -171,6 +171,98 @@ abstract class DataBookUtil {
               font-weight: 600;
               margin-bottom: 20px;
             }
+            
+            .image-link {
+              color: #1a73e8;
+              text-decoration: none;
+              font-weight: bold;
+              cursor: pointer;
+              display: inline-flex;
+              align-items: center;
+              gap: 5px;
+              
+              -webkit-tap-highlight-color: transparent;
+            }
+          
+            @media (hover: hover) {
+              .image-link:hover {
+                  text-decoration: underline;
+                  color: #1557b0;
+              }
+            }
+            
+            .image-link:active {
+              text-decoration: none; 
+              opacity: 0.7;
+            }
+          
+            /* don't scroll background if modal layer is visible */
+            body.modal-open {
+                overflow: hidden;
+                position: fixed;
+                width: 100%;
+            }
+            
+            .modal {
+              display: none !important;
+              position: fixed;
+              z-index: 1000;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.85);
+              
+              /* Support scrolling if image is too high */
+              overflow-y: auto;
+              -webkit-overflow-scrolling: touch;
+              
+              display: flex;
+              justify-content: center;
+              align-items: flex-start; /* no image cut */
+              padding: 40px 10px; /* placeholder for x and scrolling */
+              box-sizing: border-box;
+            }
+            
+            .modal.is-active {
+                display: flex !important;
+            }
+            
+            .modal-wrapper {
+              position: relative;
+              max-width: 90%; 
+              margin: auto 0;
+            }
+            
+            .modal-content {
+              max-width: 100%;
+
+              height: auto;
+              max-height: 85vh; 
+              display: block;
+              box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+              border: 3px solid white;
+              background-color: white;
+              cursor: default;
+            }
+            
+            .close-btn {
+              position: absolute;
+              top: -15px;
+              right: -15px;
+              color: white;
+              background-color: #333;
+              border: 2px solid white;
+              border-radius: 50%;
+              width: 30px;
+              height: 30px;
+              font-size: 20px;
+              line-height: 26px;
+              text-align: center;
+              font-weight: bold;
+              cursor: pointer;
+              z-index: 1010;
+            }    
           </style>
           '''
         );
@@ -180,10 +272,10 @@ abstract class DataBookUtil {
         //Search
 
         html.write(
-            '''
+          '''
           <div class="search-wrapper">
-          <input type="text" id="searchInput" class="table-search" placeholder="${FlutterUI.translate('Enter search value')}">
-          <button id="searchClear" class="clear-btn">${FlutterUI.translate('Clear')}</button>
+            <input type="text" id="searchInput" class="table-search" placeholder="${FlutterUI.translate('Enter search value')}">
+            <button id="searchClear" class="clear-btn">${FlutterUI.translate('Clear')}</button>
           </div>
           '''
         );
@@ -269,9 +361,7 @@ abstract class DataBookUtil {
                   }
                 }
 
-                _formatValue(book.metaData!.columnDefinitions[idx], modelCache, record[idx]);
-
-                html.write(record[idx] ?? "");
+                html.write(_formatValue(book.metaData!.columnDefinitions[idx], modelCache, record[idx]) ?? "");
               }
               else {
                 html.write("");
@@ -286,9 +376,41 @@ abstract class DataBookUtil {
 
         html.write("</table>");
 
+        //image overlay
         html.write(
-            '''
+          '''
+          <div id="modalimage" class="modal" onclick="closeModal()">
+            <div class="modal-wrapper" onclick="event.stopPropagation()">
+              <span class="close-btn" onclick="closeModal()">&times;</span>
+              <img class="modal-content" id="modalimage-img">
+            </div>
+          </div>
+          '''
+        );
+
+        html.write(
+          '''
           <script>
+              function openModal(imageSrc) {
+                  var modal = document.getElementById("modalimage");
+                  var modalImg = document.getElementById("modalimage-img");
+                  
+                  modal.style.display = "flex";
+                  modalImg.src = imageSrc;
+                  
+                  modal.classList.add("is-active");
+                  document.body.classList.add("modal-open");
+              }
+          
+              function closeModal() {
+                  var modal = document.getElementById("modalimage");
+                  
+                  modal.style.display = "none";
+                  
+                  modal.classList.remove("is-active");
+                  document.body.classList.remove("modal-open");
+              }
+          
               (function() {
                   const input = document.getElementById('searchInput');
                   const btn = document.getElementById('searchClear');
@@ -353,6 +475,14 @@ abstract class DataBookUtil {
           || columnDefinition.cellEditorClassName == FlCellEditorClassname.LINKED_CELL_EDITOR) {
         if (value is Uint8List) {
           return utf8.decode(value);
+        }
+      }
+      else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER) {
+        if (value is Uint8List) {
+          return
+            '''
+              <span class="image-link" onclick="openModal('data:image/png;base64,${base64.encode(value)}')">${FlutterUI.translate('Show image')}</span>
+            ''';
         }
       }
 
