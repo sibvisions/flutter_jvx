@@ -74,6 +74,7 @@ class FormLayout extends ILayout {
     gaps = Gaps.createFromList(gapsList: layoutDef.sublist(5, 7), scaling: scaling);
     alignment = layoutDef.sublist(7, 9);
     anchors = _getAnchors(layoutData);
+
     horizontalAlignment = HorizontalAlignmentE.fromString(alignment[0]);
     verticalAlignment = VerticalAlignmentE.fromString(alignment[1]);
   }
@@ -586,7 +587,7 @@ class FormLayout extends ILayout {
         FormLayoutConstraints constraint = FormLayoutConstraints(
             bottomAnchor: bottomAnchor, leftAnchor: leftAnchor, rightAnchor: rightAnchor, topAnchor: topAnchor);
         componentConstraints[value.id] = constraint;
-      } catch (error, stacktrace) {
+      } catch (error, stack) {
         if (FlutterUI.logLayout.cl(Lvl.e)) {
           FlutterUI.logLayout.e("Parent id: ${value.parentId!}");
           FlutterUI.logLayout.e("Child id: ${value.id}");
@@ -597,7 +598,9 @@ class FormLayout extends ILayout {
           FlutterUI.logLayout.e(keys.toString());
           FlutterUI.logLayout.e(anchorNames.toString());
           FlutterUI.logLayout.e(anchorNames.where((anchorName) => !keys.contains(anchorName)).toString(),
-              error: error, stackTrace: stacktrace);
+              error: error, stackTrace: stack);
+
+          FlutterUI.logLayout.e(stack.toString());
         }
 
         rethrow;
