@@ -556,10 +556,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   void _onFocusChange(bool hasFocus) {
-    if (hasFocus) {
-      focus();
-    } else {
-      unfocus();
+    if (mounted) {
+      if (hasFocus) {
+        focus();
+      } else {
+        unfocus();
+      }
     }
   }
 

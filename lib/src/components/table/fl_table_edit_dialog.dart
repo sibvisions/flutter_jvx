@@ -453,6 +453,10 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   }
 
   bool _focusHandlingEnabled(IFocusableCellEditor cellEditor) {
+    if (!mounted) {
+      return false;
+    }
+
     if (ignoreCellEditorFocus) {
       ignoreCellEditorFocus = false;
       return false;
