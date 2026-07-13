@@ -15,7 +15,7 @@
  */
 
 import 'dart:convert';
-import 'dart:isolate';
+import 'package:flutter/foundation.dart';
 import 'dart:math';
 
 import 'package:cryptography/cryptography.dart';
@@ -53,32 +53,37 @@ abstract class CryptoUtil {
 
   /// Encrypts a binary or string with [keyCode]
   static Future<String> encrypt(dynamic value, String keyCode) async {
-    return Isolate.run(() async {
-      try {
-        final algorithm = AesGcm.with256bits();
-        final salt = _generateSalt(16);
+    return compute(_executeEncryption, (value, keyCode));
+  }
 
-        final key = await _deriveKey(keyCode, salt);
+  static Future<String> _executeEncryption((dynamic, String) args) async {
+    final value = args.$1;
+    final keyCode = args.$2;
 
-        final nonce = algorithm.newNonce();
+    try {
+      final algorithm = AesGcm.with256bits();
+      final salt = _generateSalt(16);
 
-        final secretBox = await algorithm.encrypt(
-            value is Uint8List ? value : utf8.encode(value.toString()),
-            secretKey: key,
-            nonce: nonce);
+      final key = await _deriveKey(keyCode, salt);
+      final nonce = algorithm.newNonce();
 
-        return jsonEncode({
-          "salt": base64Encode(salt),
-          "nonce": base64Encode(secretBox.nonce),
-          "cipher": base64Encode(secretBox.cipherText),
-          "mac": base64Encode(secretBox.mac.bytes)
-        });
-      } catch (e) {
-        FlutterUI.log.e(e);
+      final secretBox = await algorithm.encrypt(
+        value is Uint8List ? value : utf8.encode(value.toString()),
+        secretKey: key,
+        nonce: nonce,
+      );
 
-        rethrow;
-      }
-    });
+      return jsonEncode({
+        "salt": base64Encode(salt),
+        "nonce": base64Encode(secretBox.nonce),
+        "cipher": base64Encode(secretBox.cipherText),
+        "mac": base64Encode(secretBox.mac.bytes)
+      });
+    } catch (e) {
+      FlutterUI.log.e(e);
+
+      rethrow;
+    }
   }
 
   static bool maybeEncrypted(String? encrypted) {
@@ -97,47 +102,51 @@ abstract class CryptoUtil {
 
   /// Decrypts an [encrypted] text with [keyCode]
   static Future<DecryptedValue> decrypt(String? encrypted, String keyCode) async {
-    return Isolate.run(() async {
-      if (encrypted == null) {
-        return DecryptedValue(value: null);
-      }
+    return compute(_executeDecryption, (encrypted, keyCode));
+  }
 
-      if (!encrypted.startsWith("{") && !encrypted.endsWith("}")) {
-        return DecryptedValue(value: encrypted, type: CryptoValueType.PlainText);
-      }
+  static Future<DecryptedValue> _executeDecryption((String?, String) args) async {
+    final String? encrypted = args.$1; // Holt den ersten Wert (encrypted)
+    final String keyCode = args.$2;    // Holt den zweiten Wert (keyCode)
 
-      try {
-        final algorithm = AesGcm.with256bits();
-        final map = jsonDecode(encrypted);
+    if (encrypted == null) {
+      return DecryptedValue(value: null);
+    }
 
-        final key = await _deriveKey(
-            keyCode,
-            base64Decode(map["salt"])
-        );
+    if (!encrypted.startsWith("{") && !encrypted.endsWith("}")) {
+      return DecryptedValue(value: encrypted, type: CryptoValueType.PlainText);
+    }
 
-        final secretBox = SecretBox(
-          base64Decode(map["cipher"]),
-          nonce: base64Decode(map["nonce"]),
-          mac: Mac(base64Decode(map["mac"])),
-        );
+    try {
+      final algorithm = AesGcm.with256bits();
+      final map = jsonDecode(encrypted);
 
-        final decrypted = await algorithm.decrypt(
-          secretBox,
-          secretKey: key,
-        );
+      final key = await _deriveKey(
+        keyCode,
+        base64Decode(map["salt"]),
+      );
 
-        return DecryptedValue(value: decrypted);
-      } on SecretBoxAuthenticationError catch (se) {
-        FlutterUI.log.w(se);
+      final secretBox = SecretBox(
+        base64Decode(map["cipher"]),
+        nonce: base64Decode(map["nonce"]),
+        mac: Mac(base64Decode(map["mac"])),
+      );
 
-        //Wrong key (keyCode or salt)
-        return DecryptedValue(value: encrypted, type: CryptoValueType.DecryptFailure);
-      } catch (e, stack) {
-        FlutterUI.log.e(e, error: e, stackTrace: stack);
+      final decrypted = await algorithm.decrypt(
+        secretBox,
+        secretKey: key,
+      );
 
-        return DecryptedValue(value: encrypted, type: CryptoValueType.DecryptFailure);
-      }
-    });
+      return DecryptedValue(value: decrypted);
+    } on SecretBoxAuthenticationError catch (se) {
+      FlutterUI.log.w(se);
+
+      return DecryptedValue(value: encrypted, type: CryptoValueType.DecryptFailure);
+    } catch (e, stack) {
+      FlutterUI.log.e(e, error: e, stackTrace: stack);
+
+      return DecryptedValue(value: encrypted, type: CryptoValueType.DecryptFailure);
+    }
   }
 
   ///Checks whether the given [text] is base64 encoded

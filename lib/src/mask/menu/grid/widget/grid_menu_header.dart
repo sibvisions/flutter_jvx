@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../util/jvx_colors.dart';
@@ -76,6 +77,10 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
     return LayoutBuilder(builder: (context, constraints) {
       Widget child;
 
+      Color backgroundColor = background ?? (ListTileTheme.of(context).tileColor != null
+          ? JVxColors.lighten(ListTileTheme.of(context).tileColor!)
+          : Theme.of(context).colorScheme.surface);
+
       if (constraints.maxWidth <= 50) {
         _height = 9;
 
@@ -86,7 +91,7 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
             child: Container(
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: color ?? ListTileTheme.of(context).iconColor,
+                color: Colors.red, // color ?? ListTileTheme.of(context).iconColor,
                 borderRadius: BorderRadius.circular(2)
               )
             )
@@ -98,6 +103,7 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
         child = ListTile(
           contentPadding: EdgeInsets.fromLTRB(embedded ? 15 : 12, 0, embedded ? 15 : 12, 0),
           textColor: color,
+          tileColor: kIsWeb ? backgroundColor : null,
           title: Text(
             headerText,
             overflow: TextOverflow.ellipsis,
@@ -110,14 +116,16 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
         );
       }
 
+      if (kIsWeb) {
+        return child;
+      }
+
       return Container(
         // It seems that Sliver provides minHeight=0 as constraints but complains if height < maxHeight, so we force it here.
         // https://github.com/flutter/flutter/issues/78748
         height: _height,
         // Idk why, but tileColor doesn't seem to do the trick, when scrolling.
-        color: background ?? (ListTileTheme.of(context).tileColor != null
-              ? JVxColors.lighten(ListTileTheme.of(context).tileColor!)
-              : Theme.of(context).colorScheme.surface),
+        color: backgroundColor,
         child: child,
       );
     });

@@ -164,7 +164,14 @@ class SharedPrefsHandler implements ConfigHandler {
       String? pref = await _securePrefs.read(key: name);
       DecryptedValue decValue = await CryptoUtil.decrypt(pref, name);
 
-      return decValue.value;
+      if (decValue.value is Uint8List) {
+        return utf8.decode(decValue.value);
+      }
+      else if (decValue.value is String) {
+        return decValue.value;
+      }
+
+      return decValue.value?.toString();
     }
     else {
       return _securePrefs.read(key: name);
