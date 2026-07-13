@@ -30,6 +30,8 @@ class FlTextAreaDialog extends StatefulWidget {
 
   final bool isMandatory;
 
+  final bool autoWrap;
+
   final List<TextInputFormatter>? inputFormatters;
 
   final TextEditingValue value;
@@ -44,6 +46,7 @@ class FlTextAreaDialog extends StatefulWidget {
     required this.value,
     this.inputFormatters,
     this.isMandatory = false,
+    this.autoWrap = true
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,7 +133,9 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
                   // Set state to update the Text area widget.
                   setState(() {});
                 },
+                autoWrap: widget.autoWrap,
                 canShowDialog: false,
+                hidePrefixIcons: true,
                 endEditing: (value, [action]) {
                   Navigator.of(context).pop();
                 },

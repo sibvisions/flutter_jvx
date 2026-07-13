@@ -70,6 +70,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   /// How much space the icon is itself
   static const double iconSize = 16;
 
+  static const double iconsPaddingHorizontal = 5;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,6 +92,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   final bool hideSuffixIcons;
 
+  final bool hidePrefixIcons;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +111,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   EdgeInsets get iconsPadding {
     double verticalPadding = max(0, (TEXT_FIELD_HEIGHT - iconAreaSize) / 2);
 
-    return EdgeInsets.fromLTRB(5, verticalPadding, 5, verticalPadding);
+    return EdgeInsets.fromLTRB(iconsPaddingHorizontal, verticalPadding, iconsPaddingHorizontal, verticalPadding);
   }
 
   int? get minLines => null;
@@ -123,9 +127,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   bool get isMultiLine => keyboardType == TextInputType.multiline;
 
   CrossAxisAlignment get iconCrossAxisAlignment => CrossAxisAlignment.center;
-
-  // The whitespace every icon has around it
-  double get iconInnatePadding => ((iconAreaSize - TEXT_HEIGHT(model.createTextStyle())) / 2);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -143,7 +144,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     this.isMandatory = false,
     this.hideClearIcon = false,
     this.showCopy = false,
-    this.hideSuffixIcons = false
+    this.hideSuffixIcons = false,
+    this.hidePrefixIcons = false
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,58 +154,114 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   @override
   Widget build(BuildContext context) {
-    focusNode.canRequestFocus = model.isFocusable && model.isEditable && model.isEnabled;
-
-    InputBorder? borDisabled = createBorder(context, FlTextBorderType.disabledBorder);
-
-    return TextField(
-      controller: textController,
-      decoration: InputDecoration(
-        enabled: model.isEnabled,
-        alignLabelWithHint: true,
-        hintText: model.isBorderVisible ? null : model.placeholder,
-        labelText: model.isBorderVisible ? model.placeholder : null,
-        labelStyle: model.createTextStyle(
-          foreground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
-        ),
-        hintStyle: model.createTextStyle(
-          foreground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
-        ),
-        contentPadding: contentPadding,
-        border: createBorder(context, FlTextBorderType.border),
-        errorBorder: createBorder(context, FlTextBorderType.errorBorder),
-        enabledBorder: model.isEditable ? createBorder(context, FlTextBorderType.enabledBorder) : borDisabled,
-        focusedBorder: createBorder(context, FlTextBorderType.focusedBorder),
-        disabledBorder: borDisabled,
-        focusedErrorBorder: createBorder(context, FlTextBorderType.focusedErrorBorder),
-        suffixIcon: hideSuffixIcons ? null : createSuffixIcon(context),
-        suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
-        prefixIcon: createPrefixIcon(context),
-        prefixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
-        fillColor: getFillColor(context),
-        filled: true,
-        isDense: true,
-      ),
-      textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
-      textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
-      readOnly: model.isReadOnly,
-      style: _createTextStyle(),
-      onChanged: valueChanged,
-      onEditingComplete: () => endEditing(textController.text, FlTextFieldModel.ENTER_KEY),
-      expands: isExpanded,
-      minLines: minLines,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      focusNode: model.isEditable ? focusNode : NoFocusNode(),
-      inputFormatters: inputFormatters,
-      obscureText: obscureText,
-      obscuringCharacter: obscuringCharacter,
-    );
+    return createTextField(context).field;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ({InputDecoration decoration, Widget? suffixIcon, int prefixCount, int suffixCount}) createInputDecoration(
+    BuildContext context,
+    {bool filled = true,
+    bool showSuffixIcons = true,
+    bool withSuffixArea = false,
+    bool fillWithCenter = false
+  }) {
+    InputBorder? borDisabled = createBorder(context, FlTextBorderType.disabledBorder);
+
+    ({Widget? widget, int count})? prefix = hidePrefixIcons ? null : _createPrefixIcon(context);
+    ({Widget? widget, int count})? suffix = hideSuffixIcons ? null : _createSuffixIcon(context, withSuffixArea);
+
+    Widget? wSuffix = showSuffixIcons ? suffix?.widget : null;
+
+    //multiline needs Center to enlarge
+    if (fillWithCenter && wSuffix == null) {
+      wSuffix = Center();
+    }
+
+    return (decoration: InputDecoration(
+      enabled: model.isEnabled,
+      alignLabelWithHint: true,
+      hintText: model.isBorderVisible ? null : model.placeholder,
+      labelText: model.isBorderVisible ? model.placeholder : null,
+      labelStyle: model.createTextStyle(
+        foreground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
+      ),
+      hintStyle: model.createTextStyle(
+        foreground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
+      ),
+      contentPadding: contentPadding,
+      border: createBorder(context, FlTextBorderType.border),
+      errorBorder: createBorder(context, FlTextBorderType.errorBorder),
+      enabledBorder: model.isEditable ? createBorder(context, FlTextBorderType.enabledBorder) : borDisabled,
+      focusedBorder: createBorder(context, FlTextBorderType.focusedBorder),
+      disabledBorder: borDisabled,
+      focusedErrorBorder: createBorder(context, FlTextBorderType.focusedErrorBorder),
+      suffixIcon: wSuffix,
+      suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
+      prefixIcon: prefix?.widget,
+      prefixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
+      fillColor: getFillColor(context),
+      filled: filled,
+      isDense: true,
+    ),
+    suffixIcon: suffix?.widget,
+    prefixCount: prefix?.count ?? 0,
+    suffixCount: suffix?.count ?? 0);
+  }
+
+  ({TextField field, Widget? suffixIcon, int prefixCount, int suffixCount}) createTextField(
+    BuildContext context,
+    {bool noDecoration = false,
+    bool withSuffixArea = false
+    }) {
+
+    var inputDecoration = createInputDecoration(context, withSuffixArea: withSuffixArea);
+
+    return (
+      field: TextField(
+        controller: textController,
+        decoration:
+          noDecoration ?
+            InputDecoration(
+              filled: false,
+              isDense: true,
+              enabled: model.isEnabled,
+              border: InputBorder.none,
+              errorBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
+              contentPadding: contentPadding.copyWith(left: 0, right: 0),
+            )
+          :
+          inputDecoration.decoration,
+        textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
+        textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
+        readOnly: model.isReadOnly,
+        style: _createTextStyle(),
+        onChanged: valueChanged,
+        onEditingComplete: () => endEditing(textController.text, FlTextFieldModel.ENTER_KEY),
+        expands: isExpanded,
+        minLines: minLines,
+        maxLines: maxLines,
+        keyboardType: model.isEnabled ? keyboardType : TextInputType.none,
+        focusNode: model.isEnabled ? focusNode : NoFocusNode(),
+        contextMenuBuilder: model.isEnabled ? null : (context, editableTextState) {
+          return SizedBox.shrink();
+        },
+        selectionControls: model.isEnabled ? null : EmptyTextSelectionControls(),
+        inputFormatters: inputFormatters,
+        obscureText: obscureText,
+        obscuringCharacter: obscuringCharacter,
+      ),
+      suffixIcon: inputDecoration.suffixIcon,
+      prefixCount: inputDecoration.prefixCount,
+      suffixCount: inputDecoration.suffixCount
+    );
+  }
 
   /// The default background color of a text field.
   static Color? defaultBackground(BuildContext context) {
@@ -236,10 +294,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   /// Creates the clear icon at the end of a Text field.
   Widget? createClearIcon([BuildContext? context, bool force = false]) {
     if ((textController.text.isEmpty ||
-            hideClearIcon ||
-            !model.isEditable ||
-            !model.isEnabled ||
-            model.hideClearIcon) &&
+         hideClearIcon ||
+         !model.isEditable ||
+         !model.isEnabled ||
+         model.hideClearIcon) &&
         !force) {
       return null;
     }
@@ -293,8 +351,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return Icon(
       icon,
       size: size ?? iconSize,
-      color: JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER
+      color: getEmbeddableIconColor(context)
     );
+  }
+
+  Color getEmbeddableIconColor(BuildContext? context) {
+    return JVxColors.isLightTheme(context) && model.background == null ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER;
   }
 
   Widget createEmbeddableIcon(BuildContext? context, IconData icon, [double? size]) {
@@ -357,14 +419,22 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   /// Constructs a single widget to show at the end of a Text field, unifying all suffixIconItems.
-  Widget? createSuffixIcon(BuildContext context) {
+  ({Widget? widget, int count}) _createSuffixIcon(BuildContext context, bool force) {
     List<Widget> iconItems = createSuffixIconItems(context);
+
+    int count = iconItems.length;
+
+    if (iconItems.isEmpty && force) {
+      iconItems.add(SizedBox(width: iconAreaSize));
+
+      count = 0;
+    }
 
     // Just insert a center and voila, Text field is expanding without
     // setting "expanding" to true.
     iconItems.add(const Center());
 
-    return _createXFixWidget(iconItems);
+    return (widget: _createXFixWidget(iconItems), count: count);
   }
 
   /// Creates a list of widgets to show at the start of a Text field.
@@ -373,8 +443,17 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   /// Constructs a single widget to show at the end of a Text field, unifying all suffixIconItems.
-  Widget? createPrefixIcon(BuildContext? context) {
-    return _createXFixWidget(createPrefixIconItems(context));
+  ({Widget? widget, int count}) _createPrefixIcon(BuildContext? context) {
+    List<Widget> iconItems = createPrefixIconItems(context);
+
+    int count = iconItems.length;
+
+    //only center if icon is available and in multiline mode
+    if (iconItems.isNotEmpty && maxLines == null) {
+      iconItems.add(const Center());
+    }
+
+    return (widget: _createXFixWidget(iconItems), count: count);
   }
 
   InputBorder? createBorder(BuildContext context, FlTextBorderType borderType) {
@@ -402,15 +481,14 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           borderRadius: BorderRadius.circular(editorBorderRadius),
           borderSide: BorderSide(
             color: borderEnabledColor,
-          ),
+          )
         );
-
       case FlTextBorderType.disabledBorder:
         return OutlineInputBorder(
           borderRadius: BorderRadius.circular(editorBorderRadius),
           borderSide: BorderSide(
             color: model.isBorderVisible ? borderDisabledColor ?? JVxColors.COMPONENT_DISABLED : Colors.transparent,
-          ),
+          )
         );
       case FlTextBorderType.focusedBorder:
       case FlTextBorderType.focusedErrorBorder:
@@ -419,7 +497,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
                 borderRadius: BorderRadius.circular(editorBorderRadius),
                 borderSide: BorderSide(
                   color: borderFocusedColor,
-                ),
+                )
               )
             : null;
     }
@@ -504,4 +582,3 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return model.createTextStyle(foreground: color);
   }
 }
-

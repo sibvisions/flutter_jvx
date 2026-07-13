@@ -94,7 +94,7 @@ class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumber
       inputFormatters: [numberFormatter],
       keyboardType: numberFormatter.getKeyboardType(),
       isMandatory: columnDefinition?.nullable == false,
-      hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
+      hideClearIcon: model.hideClearIcon,
     );
   }
 

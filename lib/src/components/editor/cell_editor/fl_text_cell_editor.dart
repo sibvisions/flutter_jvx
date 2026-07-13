@@ -136,8 +136,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
-          hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
+          hideClearIcon: model.hideClearIcon,
           showCopy: model.showCopy,
+          autoWrap: model.contentType == TEXT_PLAIN_WRAPPEDMULTILINE
         );
       case (TEXT_HTML):
         return FlHtmlTextFieldWidget(
@@ -172,7 +173,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
-          hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
+          hideClearIcon: model.hideClearIcon,
           showPlainText: model.showPlainText,
           showCopy: model.showCopy,
           showPasswordStrength: model.showPasswordStrength,
@@ -188,7 +189,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
-          hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
+          hideClearIcon: model.hideClearIcon,
           showCopy: model.showCopy,
         );
     }
@@ -211,9 +212,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   void dispose() {
-    super.dispose();
-
     textController.dispose();
+
+    super.dispose();
   }
 
   @override

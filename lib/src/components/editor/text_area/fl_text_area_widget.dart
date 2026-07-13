@@ -14,12 +14,15 @@
  * the License.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../../flutter_ui.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../text_field/fl_text_field_widget.dart';
+import 'text_area.dart';
 import 'fl_text_area_dialog.dart';
 
 class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
@@ -28,6 +31,8 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final bool canShowDialog;
+
+  final bool autoWrap;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -42,7 +47,10 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     required super.textController,
     super.inputFormatters,
     super.isMandatory,
+    this.autoWrap = true,
     this.canShowDialog = true,
+    super.hidePrefixIcons,
+    super.hideSuffixIcons,
     super.hideClearIcon,
     super.showCopy
   }) : super(
@@ -79,24 +87,80 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    if (!model.isReadOnly && canShowDialog) {
+    bool showEdit = model.isEnabled && canShowDialog;
+
+    ({TextField field, Widget? suffixIcon, int prefixCount, int suffixCount}) textField = createTextField(
+      context,
+      noDecoration: !autoWrap,
+      withSuffixArea: showEdit && textController.text.length > 200
+    );
+
+    bool hasSuffixIcons = textField.suffixCount > 0;
+
+    Widget w = textField.field;
+
+    if (!autoWrap) {
+
+      ({InputDecoration decoration, Widget? suffixIcon, int prefixCount, int suffixCount}) inputDecoration = createInputDecoration(
+        context,
+        filled: true,
+        showSuffixIcons: false,
+        fillWithCenter: true
+      );
+
+      hasSuffixIcons = inputDecoration.suffixCount > 0;
+
+      if (showEdit) {
+        inputDecoration = (
+          decoration: inputDecoration.decoration,
+          suffixIcon: inputDecoration.suffixIcon,
+          prefixCount: inputDecoration.prefixCount,
+          suffixCount: max(1, inputDecoration.suffixCount)
+        );
+      }
+
+      w = TextArea(
+        focusNode: focusNode,
+        inputDecoration: inputDecoration,
+        contentPadding: contentPadding,
+        child: w
+      );
+    }
+
+
+
+    if (showEdit) {
       //Stack instead of full GestureDetector, to avoid delay between tap and double tap
       return Stack(
         children: [
-          super.build(context),
-          Positioned.fill(
-            right: FlTextFieldWidget.iconAreaSize + iconsPadding.left + iconsPadding.right,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onDoubleTap: _openDialogEditor,
-              child: Container(), // hidden
-            ),
-          ),
-        ],
+          w,
+          Visibility(visible: textController.text.length > 200,
+              child:
+          Positioned(
+            top: hasSuffixIcons ? 40 : FlTextFieldWidget.iconAreaSize - 16,
+            right: 4,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(30),
+                onTap: _openDialogEditor,
+                child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.manage_search,
+                      size: 16,
+                      color: !model.isReadOnly && model.isEnabled && model.isEditable ? getEmbeddableIconColor(context) : 
+                      Theme.of(context).textTheme.labelMedium?.color?.withAlpha(140)
+                    )
+                ),
+              )
+            )
+          ))
+        ]
       );
     }
     else {
-      return super.build(context);
+      return w;
     }
   }
 
@@ -114,6 +178,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
           value: textController.value,
           inputFormatters: inputFormatters,
           isMandatory: isMandatory,
+          autoWrap: autoWrap
         );
       },
     ).then((value) {
@@ -134,7 +199,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     });
   }
 
-  static double calculateTextAreaHeight(FlTextAreaModel model) {
+  static double calculateTextAreaHeight(FlTextFieldModel model) {
     double height = FlTextFieldWidget.TEXT_FIELD_HEIGHT;
 
     if (model.rows > 1) {

@@ -305,14 +305,16 @@ abstract class IFocusableCellEditor<
     required super.onValueChange,
     required super.onEndEditing,
   }) {
-    focusNode.addListener(() {
-      focusChanged(focusNode.hasFocus);
-    });
+    focusNode.addListener(_handleFocusNodeChanged);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void _handleFocusNodeChanged() {
+    focusChanged(focusNode.hasFocus);
+  }
 
   /// Returns true if the onFocusChanged callback is fired on "focusChanged".
   bool firesFocusCallback() => true;
@@ -345,6 +347,7 @@ abstract class IFocusableCellEditor<
   dispose() {
     disposed = true;
 
+    focusNode.removeListener(_handleFocusNodeChanged);
     focusNode.dispose();
   }
 
@@ -364,8 +367,8 @@ abstract class IFocusableCellEditor<
 
   /// Sets the focus node of this cell editor.
   void setFocusNode(FocusNode focusNode) {
-    focusNode.dispose();
-    focusNode = focusNode;
+    this.focusNode.dispose();
+    this.focusNode = focusNode;
   }
 
   /// Returns the focus node of this cell editor.
