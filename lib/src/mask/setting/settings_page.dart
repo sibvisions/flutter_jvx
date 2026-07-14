@@ -65,6 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late final Future<String> versionFuture;
 
   late final String? appName;
+  late final String? appVersion;
   late final String? appId;
   late final Uri? baseUrl;
   String? language;
@@ -93,6 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
     });
 
     appName = servCfg.appName.value;
+    appVersion = IUiService().applicationMetaData.value?.version ?? servCfg.version.value?.replaceAll('_', '.');
     appId = servCfg.currentApp.value;
     baseUrl = servCfg.baseUrl.value;
     language = servCfg.userLanguage.value;
@@ -275,6 +277,15 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildGeneralSettings(BuildContext context) {
     SettingItem? appNameSetting;
+    SettingItem? appVersionSetting;
+    SettingItem? baseUrlSetting;
+
+    appVersionSetting = SettingItem(
+      frontFaIcon: FaIcon(FontAwesomeIcons.anchor, color: Theme.of(context).colorScheme.primary),
+      title: FlutterUI.translateLocal("Version"),
+      value: appVersion ?? "",
+    );
+
     bool hideAppDetails = IConfigService().parametersHidden.value!;
 
     if (!hideAppDetails) {
@@ -284,15 +295,11 @@ class _SettingsPageState extends State<SettingsPage> {
         title: FlutterUI.translateLocal("App name"),
         value: appName ?? "",
       );
-    }
 
-    String urlTitle = FlutterUI.translateLocal("URL");
-    SettingItem? baseUrlSetting;
-    if (!hideAppDetails) {
       baseUrlSetting = SettingItem(
         enabled: false,
         frontFaIcon: const FaIcon(FontAwesomeIcons.globe),
-        title: urlTitle,
+        title: FlutterUI.translateLocal("URL"),
         value: baseUrl?.toString() ?? "",
       );
     }
@@ -379,6 +386,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     var items = [
       if (appNameSetting != null) appNameSetting,
+      if (appVersionSetting != null) appVersionSetting,
       if (baseUrlSetting != null) baseUrlSetting,
       if (languageSetting != null) languageSetting,
       if (pictureSizeSetting != null) pictureSizeSetting,
@@ -605,14 +613,19 @@ class _SettingsPageState extends State<SettingsPage> {
             title: FlutterUI.translateLocal("App Version"),
             onPressed: (context, value) => showLicensePage(
               context: context,
+              applicationName: FlutterUI.packageInfo.appName,
+              applicationLegalese: "Flutter UI for JVx",
               applicationIcon: Builder(builder: (context) {
                 double size = IconTheme.of(context).size ?? 24;
-                return SvgPicture.asset(
-                  ImageLoader.getAssetPath(
-                    FlutterUI.package,
-                    "assets/images/J.svg",
-                  ),
-                  height: max(80, size),
+                return Padding(
+                  padding: EdgeInsets.only(top: 15, bottom: 10),
+                  child: SvgPicture.asset(
+                    ImageLoader.getAssetPath(
+                      FlutterUI.package,
+                      "assets/images/J.svg",
+                    ),
+                    height: max(80, size),
+                  )
                 );
               }),
             ),
