@@ -149,7 +149,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   ///
   /// Every wrapper itself is "wrapped" in a [Positioned] widget,
   /// which will positioned itself inside the [Stack] of a [BaseContWrapperState]'s widget.
-  Positioned wrapWidget(BuildContext context, Widget child, [bool outlineBadge = true]) {
+  Widget wrapWidget(BuildContext context, Widget child, [bool outlineBadge = true]) {
     Widget w;
 
     if (widget.offstage) {
