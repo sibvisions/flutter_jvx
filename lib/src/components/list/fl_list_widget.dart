@@ -164,6 +164,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   // remote widgets
   final Runtime _runtime = Runtime();
 
+  late GlobalSubscription _globalSubscription;
+
   /// The current sliver context
   BuildContext? _sliverContext;
 
@@ -312,7 +314,9 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
     _initUITemplateEngine();
 
-    FlutterUI.registerGlobalSubscription(GlobalSubscription(subbedObj: this, onTap: _closeSlidables));
+    _globalSubscription = GlobalSubscription(subbedObj: this, onTap: _closeSlidables);
+
+    FlutterUI.registerGlobalSubscription(_globalSubscription);
 
     _scrollController = ScrollController(
         initialScrollOffset: widget.model.json["scroll_offset"] ?? 0,
@@ -367,14 +371,28 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   }
 
   @override
-  void dispose() {
-    super.dispose();
+  void deactivate() {
+    FlutterUI.disposeGlobalSubscription(_globalSubscription);
 
+    super.deactivate();
+  }
+
+  @override
+  void activate() {
+    FlutterUI.registerGlobalSubscription(_globalSubscription);
+
+    super.activate();
+  }
+
+  @override
+  void dispose() {
     _runtime.dispose();
 
-    FlutterUI.disposeGlobalSubscription(this);
+    FlutterUI.disposeGlobalSubscription(_globalSubscription);
 
     _scrollController?.dispose();
+
+    super.dispose();
   }
 
   @override
