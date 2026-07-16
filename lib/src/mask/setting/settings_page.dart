@@ -386,7 +386,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     var items = [
       if (appNameSetting != null) appNameSetting,
-      if (appVersionSetting != null) appVersionSetting,
+      appVersionSetting,
       if (baseUrlSetting != null) baseUrlSetting,
       if (languageSetting != null) languageSetting,
       if (pictureSizeSetting != null) pictureSizeSetting,

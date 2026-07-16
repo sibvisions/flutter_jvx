@@ -14,21 +14,16 @@
  * the License.
  */
 
-import 'dart:isolate';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../../../../flutter_jvx.dart';
 import '../../../layout/i_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/layout/layout_position.dart';
-import '../../../service/layout/i_layout_service.dart';
-import '../../../service/service.dart';
 import '../../../service/storage/i_storage_service.dart';
 import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
@@ -441,8 +436,6 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
                 }
 
                 Size newSize = Size(layoutData.layoutPosition?.width ?? 0, height_);
-
-                print("SEND: $newSize $_lastAnimateToHeight ${height_}");
 
                 LayoutData data = layoutData.clone();
                 data.preferredSize = newSize;
