@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web/web.dart' as web;
 
 import '../../../../model/config/user/user_info.dart';
 import '../../../../util/crypto_util.dart';
@@ -161,8 +162,16 @@ class SharedPrefsHandler implements ConfigHandler {
   @override
   Future<String?> getValueSecure(String name) async {
     if (kIsWeb) {
-      String? pref = await _securePrefs.read(key: name);
-      DecryptedValue decValue = await CryptoUtil.decrypt(pref, name);
+      String? value;
+
+      if (!isSecureWebContext()) {
+        value = _sharedPrefs.getString(name);
+      }
+      else {
+        value = await _securePrefs.read(key: name);
+      }
+
+      DecryptedValue decValue = await CryptoUtil.decrypt(value, name);
 
       if (decValue.value is Uint8List) {
         return utf8.decode(decValue.value);
@@ -201,33 +210,46 @@ class SharedPrefsHandler implements ConfigHandler {
 
   @override
   Future<bool> setValueSecure<T>(String name, String? value) async {
-    if (value != null) {
-      var unsecure = await getValue(name);
+    if (!isSecureWebContext()) {
+      //not https -> using secure prefs not possible
+      if (value != null) {
+        String encValue = await CryptoUtil.encrypt(value, name);
 
-      //if an unsecure value was available for same name -> remove it
-      if (unsecure != null) {
-        unawaited(setValue(name, null));
-      }
-
-      String encValue;
-
-      if (kIsWeb) {
-        encValue = await CryptoUtil.encrypt(value, name);
+        return _sharedPrefs.setString(name, encValue);
       }
       else {
-        encValue = value;
+        return _sharedPrefs.remove(name);
       }
+    }
+    else {
+      if (value != null) {
+        var unsecure = await getValue(name);
 
-      await _securePrefs.write(key: name, value: encValue);
+        //if an unsecure value was available for same name -> remove it
+        if (unsecure != null) {
+          unawaited(setValue(name, null));
+        }
 
-      var current = await _securePrefs.read(key: name);
+        String encValue;
 
-      return current == encValue;
-    } else {
-      await _securePrefs.delete(key: name);
-      var current = await _securePrefs.read(key: name);
+        if (kIsWeb) {
+          encValue = await CryptoUtil.encrypt(value, name);
+        }
+        else {
+          encValue = value;
+        }
 
-      return current == null;
+        await _securePrefs.write(key: name, value: encValue);
+
+        var current = await _securePrefs.read(key: name);
+
+        return current == encValue;
+      } else {
+        await _securePrefs.delete(key: name);
+        var current = await _securePrefs.read(key: name);
+
+        return current == null;
+      }
     }
   }
 
@@ -551,5 +573,11 @@ class SharedPrefsHandler implements ConfigHandler {
   @override
   Future<void> clear() async {
     await _sharedPrefs.clear();
+  }
+
+  bool isSecureWebContext() {
+    if (!kIsWeb) return true;
+
+    return web.window.isSecureContext;
   }
 }
