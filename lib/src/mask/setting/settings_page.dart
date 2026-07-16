@@ -342,7 +342,7 @@ class _SettingsPageState extends State<SettingsPage> {
       pictureSizeSetting = _buildPickerItem<String>(
         context,
         frontIcon: FontAwesomeIcons.image,
-        title: "Picture Size",
+        title: FlutterUI.translateLocal("Picture Size"),
         value: resolution,
         itemBuilder: (BuildContext context, String? value, Widget? widget) => Text(value ?? ""),
         onPressed: (context, value) {
@@ -365,11 +365,11 @@ class _SettingsPageState extends State<SettingsPage> {
       int quality = IConfigService().pictureQuality.value ?? 100;
 
       pictureQualitySetting = SettingItem<int>(
-        title: "Picture Quality",
+        title: "${FlutterUI.translateLocal('Picture Quality')} ($quality%)",
         frontIcon: Icon(Icons.filter_hdr_outlined, color: Theme.of(context).colorScheme.primary),
         itemBuilder: (BuildContext context, int? value, Widget? widget) {
           return Slider(
-            showValueIndicator: ShowValueIndicator.onDrag,
+            showValueIndicator: ShowValueIndicator.never,
             label: "$quality%",
             padding: EdgeInsetsGeometry.fromLTRB(10, 21, 10, 10),
             value: quality.toDouble(),
