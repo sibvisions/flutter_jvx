@@ -43,7 +43,7 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
     Widget labelWidget;
 
     if (model.isFlatStyle) {
-      labelWidget = Padding(
+      return Padding(
         padding: const EdgeInsets.fromLTRB(2, 2, 2, 5),
         child: FlLabelWidget.createTextWidget(model,
                                               textStyle: model.createTextStyle(foreground: model.foreground ?? Theme.of(context).textTheme.labelSmall!.color),
@@ -63,18 +63,21 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
           ),
         ),
       );
-    }
 
-    return ValueListenableBuilder<LayoutMode>(
-      valueListenable: IUiService().layoutMode,
-      builder: (context, value, child) {
-        if (value == LayoutMode.Mini && model.horizontalAlignment == HorizontalAlignment.STRETCH) {
-          return labelWidget;
-        } else {
+      return ValueListenableBuilder<LayoutMode>(
+        valueListenable: IUiService().layoutMode,
+        builder: (context, value, child) {
           HorizontalAlignment horizontalAlignment = model.horizontalAlignment;
-          // If the alignment was not explicitly set, defaults to left.
+
           if (horizontalAlignment == HorizontalAlignment.STRETCH) {
-            horizontalAlignment = HorizontalAlignment.LEFT;
+            if (value == LayoutMode.Mini) {
+              // If the alignment was not explicitly set, defaults to center
+              horizontalAlignment = HorizontalAlignment.CENTER;
+            }
+            else {
+              // If the alignment was not explicitly set, defaults to left
+              horizontalAlignment = HorizontalAlignment.LEFT;
+            }
           }
 
           return Container(
@@ -82,8 +85,8 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: labelWidget,
           );
-        }
-      },
-    );
+        },
+      );
+    }
   }
 }

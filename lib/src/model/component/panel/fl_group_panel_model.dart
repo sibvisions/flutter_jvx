@@ -27,6 +27,9 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   /// The style name for no border
   static const String STYLE_NO_BORDER = "f_panel_noborder";
 
+  /// The style name for no collapse
+  static const String STYLE_NO_COLLAPSE = "f_no_collapse";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +41,10 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   bool get isFlatStyle => styles.contains(STYLE_FLAT);
 
   bool get isBorderHidden => styles.contains(STYLE_NO_BORDER);
+
+  bool get canCollapse => !styles.contains(STYLE_NO_COLLAPSE);
+
+  LayoutData? layoutDataCollapsed;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
