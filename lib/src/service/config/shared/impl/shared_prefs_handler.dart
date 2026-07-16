@@ -21,12 +21,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web/web.dart' as web;
 
 import '../../../../model/config/user/user_info.dart';
 import '../../../../util/crypto_util.dart';
 import '../../../../util/extensions/string_extensions.dart';
 import '../config_handler.dart';
+
+import '../../../../util/web/secure_context_non_web.dart'
+if (dart.library.js_interop) '../../../../util/web/secure_context_web.dart';
 
 /// Stores all config and session based data.
 ///
@@ -575,9 +577,4 @@ class SharedPrefsHandler implements ConfigHandler {
     await _sharedPrefs.clear();
   }
 
-  bool isSecureWebContext() {
-    if (!kIsWeb) return true;
-
-    return web.window.isSecureContext;
-  }
 }
