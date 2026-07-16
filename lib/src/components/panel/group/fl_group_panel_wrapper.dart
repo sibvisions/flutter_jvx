@@ -332,13 +332,14 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
                     color: model.background ?? Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(4), bottomRight: Radius.circular(4)),
                 ),
-                children: _resizeEnabled || !_isCollapsed ? childWidgets : [SizedBox.shrink()]
+                children: childWidgets
             );
 
           if (_resizeEnabled || !_isCollapsed) {
               contentPanel = SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
-                child: contentPanel
+                clipBehavior: Clip.hardEdge,
+                child: contentPanel,
               );
           }
 
