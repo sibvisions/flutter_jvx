@@ -32,6 +32,7 @@ import '../../util/icon_util.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
+import '../layout/layout_data.dart';
 import '../layout/layout_position.dart';
 import '../response/record_format.dart';
 import 'editor/cell_editor/cell_editor_model.dart';

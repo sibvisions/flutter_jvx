@@ -232,7 +232,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   }
 
   @override
-  void receiveNewLayoutData(LayoutData newLayoutData) {
+  void receiveNewLayoutData(LayoutData newLayoutData, {bool repaint = true, List<LayoutData>? cache}) {
     bool newConstraint = newLayoutData.layoutPosition?.width != layoutData.layoutPosition?.width;
     super.receiveNewLayoutData(newLayoutData);
 

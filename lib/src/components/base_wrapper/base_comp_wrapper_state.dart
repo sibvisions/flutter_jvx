@@ -338,7 +338,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Is called when a new [LayoutData] is sent from the [ILayoutService].
-  void receiveNewLayoutData(LayoutData newLayoutData) {
+  void receiveNewLayoutData(LayoutData newLayoutData, {bool repaint = true, List<LayoutData>? cache}) {
     //mark layout data "received"
     newLayoutData.receivedDate = DateTime.now();
 
@@ -353,9 +353,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       if (lastContext != null) {
         LayoutData layoutDataCalc = calculateConstrainedSize(newPosition);
 
-        if (!identical(layoutDataCalc, layoutData))
-        {
-          sendCalcSize(layoutData: layoutDataCalc, reason: "Component has been constrained");
+        if (!identical(layoutDataCalc, layoutData)) {
+          if (cache != null) {
+            cache.add(layoutDataCalc);
+          }
+          else {
+            sendCalcSize(layoutData: layoutDataCalc, reason: "Component has been constrained");
+          }
         }
       }
     } else {
@@ -366,7 +370,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       FlutterUI.logLayout.d("${model.name}|${model.id} receiveNewLayoutData ${newLayoutData.layoutPosition}");
     }
 
-    setState(() {});
+    if (repaint) {
+      setState(() {});
+    }
   }
 
   double calculateRenderBoxWidth(BuildContext context, double height) {
