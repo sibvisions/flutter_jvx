@@ -62,8 +62,17 @@ class AppStyle extends InheritedWidget {
   static const String themeTableFloatingButtonBackground = "theme.data.table.floatingbutton.background";
   static const String themeTableFloatingButtonForeground = "theme.data.table.floatingbutton.foreground";
 
+  static const String themeListEntryPadding = "theme.data.list.entryPadding";
   static const String themeListBorderRadius = "theme.data.list.borderRadius";
   static const String themeListCardBorderRadius = "theme.data.list.card.borderRadius";
+  static const String themeListCardBackground = "theme.data.list.card.background";
+  static const String themeListCardBackgroundOdd = "theme.data.list.card.backgroundOdd";
+  static const String themeListCardBackgroundEven = "theme.data.list.card.backgroundEven";
+  static const String themeListImageSize = "theme.data.list.image.size";
+  static const String themeListImageNoBackground = "theme.data.list.image.noBackground";
+  static const String themeListArrowColor = "theme.data.list.arrow.color";
+  static const String themeListArrowSize = "theme.data.list.arrow.size";
+  static const String themeListCardSpacing = "theme.data.list.card.spacing";
   static const String themeListFloatingButtonBackground = "theme.data.list.floatingbutton.background";
   static const String themeListFloatingButtonForeground = "theme.data.list.floatingbutton.foreground";
 

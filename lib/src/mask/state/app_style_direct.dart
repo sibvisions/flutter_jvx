@@ -117,6 +117,42 @@ class AppStyleDirect {
       ?? JVxColors.BORDER_RADIUS;
   }
 
+  double? listCardSpacing() {
+    return ParseUtil.parseDouble(style(AppStyle.themeListCardSpacing));
+  }
+
+  Color? listCardBackground() {
+    return ParseUtil.parseHexColor(style(AppStyle.themeListCardBackground));
+  }
+
+  Color? listCardBackgroundOdd() {
+    return ParseUtil.parseHexColor(style(AppStyle.themeListCardBackgroundOdd));
+  }
+
+  Color? listCardBackgroundEven() {
+    return ParseUtil.parseHexColor(style(AppStyle.themeListCardBackgroundEven));
+  }
+
+  Color? listArrowColor() {
+    return ParseUtil.parseHexColor(style(AppStyle.themeListArrowColor));
+  }
+
+  bool listImageNoBackground() {
+    return ParseUtil.parseBoolOrFalse(style(AppStyle.themeListImageNoBackground));
+  }
+
+  double? listArrowSize() {
+    return ParseUtil.parseDouble(style(AppStyle.themeListArrowSize));
+  }
+
+  double? listImageSize() {
+    return ParseUtil.parseDouble(style(AppStyle.themeListImageSize));
+  }
+
+  EdgeInsets? listEntryPadding() {
+    return ParseUtil.parseMargins(style(AppStyle.themeListEntryPadding));
+  }
+
   double editorBorderRadius() {
     return ParseUtil.parseDouble(style(AppStyle.themeEditorBorderRadius))
         ?? ParseUtil.parseDouble(style(AppStyle.themeBorderRadius))
