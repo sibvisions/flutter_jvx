@@ -190,6 +190,10 @@ class JVxOverlayState extends State<JVxOverlay> {
     }
   }
 
+  bool isConnected() {
+    return _connected ?? false;
+  }
+
   void resetConnectionState({bool instant = false}) {
     _connectedTimer?.cancel();
     _connected = null;

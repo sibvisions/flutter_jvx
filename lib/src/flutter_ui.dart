@@ -1622,13 +1622,18 @@ if (kDebugMode) {
     }
 
     if (state == AppLifecycleState.resumed) {
-      // App was resumed from a paused state (Permission overlay is not paused)
-      if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-        ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"), showDialogOnError: false);
+      if (JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.isConnected() == false
+          || lastState == AppLifecycleState.paused) {
+        // App was resumed from a paused state (Permission overlay is not paused)
+        if (IUiService().clientId.value != null && !IConfigService().offline.value) {
+          ICommandService().sendCommand(AliveCommand(reason: "App resumed from $lastState"), showDialogOnError: false);
+        }
       }
     }
 
-    lastState = state;
+    if (lastState != AppLifecycleState.inactive) {
+      lastState = state;
+    }
   }
 
   @override
