@@ -47,6 +47,9 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The callback if a value has ended being changed in the list.
+  final ListValueChangedCallback? onEndEditing;
+
   // Runtime for rfw
   final Runtime? runtime;
 
@@ -104,6 +107,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     this.columnSeparator,
     this.background,
     this.imageSize,
+    this.onEndEditing,
     mainAxisAlignment,
     ListEntryBuilder? entryBuilder
   })
@@ -152,15 +156,16 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     String? imageColumn;
     List<String> valueColumns = [];
     List<String> checkBoxColumns = [];
+    List<String> leadingCheckBoxColumns = [];
 
     //search image column and collect all "text" columns
     for (int i = 0; i < model.columnNames.length; i++) {
       int columnIndex = columnDefinitions.indexByName(model.columnNames[i]);
 
-      if (!model.columnNames[i].startsWith('\$')) {
-        if (columnIndex >= 0) {
-          ColumnDefinition colDef = columnDefinitions[columnIndex];
+      if (columnIndex >= 0) {
+        ColumnDefinition colDef = columnDefinitions[columnIndex];
 
+        if (!model.columnNames[i].startsWith('\$')) {
           if (FlCellEditorClassname.IMAGE_VIEWER == colDef.cellEditorClassName) {
             //fifo
             imageColumn ??= model.columnNames[i];
@@ -169,6 +174,9 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
           } else if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName || FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
             checkBoxColumns.add(model.columnNames[i]);
           }
+        }
+        else if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName || FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
+          leadingCheckBoxColumns.add(model.columnNames[i]);
         }
       }
     }
@@ -366,6 +374,23 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       );
     }
 
+    if (leadingCheckBoxColumns.isNotEmpty) {
+      List<Widget> boxes = [];
+
+      for (int i = 0; i < leadingCheckBoxColumns.length; i++) {
+        boxes.add(_createCheckBoxCellEditor(context, leadingCheckBoxColumns[i]));
+      }
+
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ...boxes,
+          Flexible(child: widget)
+        ]
+      );
+    }
+
     return widget;
   }
 
@@ -459,18 +484,31 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: widgets,
     );
+  }
 
-    //row would use the fill width without IntrinsicWidth
-    return IntrinsicWidth(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: widgets,
-    ));
+  Widget _createCheckBoxCellEditor(BuildContext context, String columnName) {
+    ICellEditor ced = cellEditors[columnName]!;
+
+    ICellEditor cedEdit = ICellEditor.getCellEditor(
+      cellEditorJson: ced.cellEditorJson,
+      name: model.name,
+      dataProvider: ced.dataProvider,
+      columnName: ced.columnName,
+      isInTable: ced.isInTable,
+      onEndEditing: onEndEditing != null && model.isEnabled && (model.editable || columnDefinitions.byName(columnName)!.forcedStateless)
+        ? (value, [action]) => onEndEditing!.call(value, index, ced.columnName)
+        :
+        null
+    );
+
+    cedEdit.setValue(values[columnDefinitions.indexByName(columnName)]);
+
+    return cedEdit.createWidget(model.json, context: context);
   }
 
   /// Gets a checkbox widget (choice or checkbox - with different styles). The widget may contain
   /// a label
-  List<Widget> _getCheckBoxWidget(BuildContext context, String columnName, [String? prefix, String? postfix]) {
+  List<Widget> _getCheckBoxWidget(BuildContext context, String columnName, {String? prefix, String? postfix}) {
     ICellEditor ced = cellEditors[columnName]!;
 
     ced.setValue(values[columnDefinitions.indexByName(columnName)]);
@@ -547,7 +585,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
           w = Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
-            children: _getCheckBoxWidget(context, cell.columnName!, cell.prefix, cell.postfix),
+            children: _getCheckBoxWidget(context, cell.columnName!, prefix: cell.prefix, postfix: cell.postfix),
           );
         }
       }

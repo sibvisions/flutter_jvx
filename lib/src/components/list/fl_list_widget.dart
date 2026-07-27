@@ -48,6 +48,7 @@ import 'localwidgets/list_space.dart';
 
 typedef ListTapCallback = void Function(int rowIndex);
 typedef ListLongPressCallback = void Function(int rowIndex, Offset globalPosition);
+typedef ListValueChangedCallback = void Function(dynamic value, int row, String column);
 typedef ListSlideActionFactory = List<SlidableAction> Function(BuildContext context, int row);
 typedef ListScrollCallback = void Function(ScrollNotification scrollNotification);
 typedef ListScrollEndCallback = bool Function();
@@ -93,6 +94,9 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Callbacks
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The callback if a value has ended being changed in the list.
+  final ListValueChangedCallback? onEndEditing;
 
   /// Gets called when the list should refresh
   final Future<void> Function()? onRefresh;
@@ -141,7 +145,24 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlListWidget({super.key, required super.model, required this.chunkData, required this.metaData, required this.cellEditors, this.slideActionFactory, this.selectedRowIndex = -1, this.initialScrollToSelected = true, this.entryBuilder, this.onRefresh, this.onScroll, this.onEndScroll, this.onTap, this.onLongPress, this.onFloatingPress});
+  const FlListWidget({
+    super.key,
+    required super.model,
+    required this.chunkData,
+    required this.metaData,
+    required this.cellEditors,
+    this.slideActionFactory,
+    this.selectedRowIndex = -1,
+    this.initialScrollToSelected = true,
+    this.entryBuilder,
+    this.onRefresh,
+    this.onScroll,
+    this.onEndScroll,
+    this.onTap,
+    this.onLongPress,
+    this.onFloatingPress,
+    this.onEndEditing
+  });
 
   @override
   State<FlListWidget> createState() => _FlListWidgetState();
@@ -543,7 +564,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                       mainAxisAlignment: verticalAlign,
                       entryBuilder: widget.entryBuilder,
                       background: noImageBackground ? Colors.transparent : null,
-                      imageSize: sizeImage
+                      imageSize: sizeImage,
+                      onEndEditing: widget.onEndEditing
                     );
 
                     if (entryPadding != null) {

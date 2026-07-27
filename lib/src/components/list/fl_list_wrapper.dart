@@ -175,6 +175,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       onTap: _onListTap,
       onLongPress: _onLongPress,
       onFloatingPress: showFloatingButton ? insertRecord : null,
+      onEndEditing: setValueOnEndEditing
     );
 
     lastSelectedRow = selectedRow;
