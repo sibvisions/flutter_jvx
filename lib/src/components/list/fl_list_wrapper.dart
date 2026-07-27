@@ -122,7 +122,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// If the list should show a floating insert button
   bool get showFloatingButton =>
-      model.showFloatButton &&
+      !model.hideFloatButton &&
       model.isEnabled &&
       !metaData.readOnly &&
       metaData.insertEnabled &&
