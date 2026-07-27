@@ -28,6 +28,7 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../../flutter_ui.dart';
 import '../../mask/state/app_style.dart';
+import '../../mask/state/app_style_direct.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -67,6 +68,9 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
 
   /// With this style list will show card items
   static const String STYLE_AS_CARD = "f_as_card";
+
+  /// With this style list will show card items
+  static const String STYLE_AS_CARD_FLAT = "f_as_card_flat";
 
   /// With this style list entry will show an arrow
   static const String STYLE_WITH_ARROW = "f_with_arrow";
@@ -137,30 +141,13 @@ class FlListWidget extends FlStatefulWidget<FlTableModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlListWidget({
-    super.key,
-    required super.model,
-    required this.chunkData,
-    required this.metaData,
-    required this.cellEditors,
-    this.slideActionFactory,
-    this.selectedRowIndex = -1,
-    this.initialScrollToSelected = true,
-    this.entryBuilder,
-    this.onRefresh,
-    this.onScroll,
-    this.onEndScroll,
-    this.onTap,
-    this.onLongPress,
-    this.onFloatingPress
-  });
+  const FlListWidget({super.key, required super.model, required this.chunkData, required this.metaData, required this.cellEditors, this.slideActionFactory, this.selectedRowIndex = -1, this.initialScrollToSelected = true, this.entryBuilder, this.onRefresh, this.onScroll, this.onEndScroll, this.onTap, this.onLongPress, this.onFloatingPress});
 
   @override
   State<FlListWidget> createState() => _FlListWidgetState();
 }
 
-class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMixin,
-                                                          ScrollMixin {
+class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMixin, ScrollMixin {
   // remote widgets
   final Runtime _runtime = Runtime();
 
@@ -189,6 +176,9 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
   /// Whether to show list entries as cards (style definition)
   bool asCard = false;
+
+  /// Whether to show list entries as flat cards (style definition)
+  bool asCardFlat = false;
 
   /// Whether to show a "next" arrow (style definition)
   bool withArrow = false;
@@ -219,6 +209,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     uiTemplateName = null;
 
     asCard = false;
+    asCardFlat = false;
     withArrow = false;
     withBorder = false;
     vAlign = null;
@@ -242,11 +233,11 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
           newUITemplate = true;
 
           uiTemplateName = styleDef;
-        }
-        else if (!asCard && styleDef == FlListWidget.STYLE_AS_CARD) {
+        } else if (!asCard && styleDef == FlListWidget.STYLE_AS_CARD) {
           asCard = true;
-        }
-        else if (styleDef.startsWith(FlListWidget.STYLE_COLUMN_COUNT)) {
+        } else if (!asCardFlat && styleDef == FlListWidget.STYLE_AS_CARD_FLAT) {
+          asCardFlat = true;
+        } else if (styleDef.startsWith(FlListWidget.STYLE_COLUMN_COUNT)) {
           //e.g. 1_2_3 (means first row = 1 column, second row = 2 columns, third row = 3 columns)
           styleDef = styleDef.substring(FlListWidget.STYLE_COLUMN_COUNT.length);
 
@@ -256,8 +247,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
           for (int i = 0; i < colCount.length; i++) {
             mapColumnsPerRow![i] = int.parse(colCount[i]);
           }
-        }
-        else if (styleDef.startsWith(FlListWidget.STYLE_COLUMN_SEPARATOR)) {
+        } else if (styleDef.startsWith(FlListWidget.STYLE_COLUMN_SEPARATOR)) {
           //e.g. :_,_%20,%20 (first separator = colon, second = comma, third = space colon space)
           styleDef = styleDef.substring(FlListWidget.STYLE_COLUMN_SEPARATOR.length);
 
@@ -265,24 +255,15 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
           List<String> separators = styleDef.split("_");
 
           for (int i = 0; i < separators.length; i++) {
-            columnSeparator!.add(separators[i].
-            replaceAll("%20", " ").
-            replaceAll("%5f", "_").
-            replaceAll("%5F", "_").
-            replaceAll("%2c", ",").
-            replaceAll("%2C", ","));
+            columnSeparator!.add(separators[i].replaceAll("%20", " ").replaceAll("%5f", "_").replaceAll("%5F", "_").replaceAll("%2c", ",").replaceAll("%2C", ","));
           }
-        }
-        else if (!withArrow && styleDef == FlListWidget.STYLE_WITH_ARROW) {
+        } else if (!withArrow && styleDef == FlListWidget.STYLE_WITH_ARROW) {
           withArrow = true;
-        }
-        else if (styleDef == FlListWidget.STYLE_VALIGN_TOP) {
+        } else if (styleDef == FlListWidget.STYLE_VALIGN_TOP) {
           vAlign = MainAxisAlignment.start;
-        }
-        else if (styleDef == FlListWidget.STYLE_VALIGN_BOTTOM) {
+        } else if (styleDef == FlListWidget.STYLE_VALIGN_BOTTOM) {
           vAlign = MainAxisAlignment.end;
-        }
-        else if (styleDef == FlListWidget.STYLE_STANDARD_BORDER) {
+        } else if (styleDef == FlListWidget.STYLE_STANDARD_BORDER) {
           withBorder = true;
         }
       }
@@ -296,14 +277,13 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
         uiTemplateFuture = UITemplateManager.loadTemplate(uiTemplateName!);
 
         uiTemplateFutures[uiTemplateName!] = uiTemplateFuture!;
-      }
-      else {
+      } else {
         uiTemplateFuture = uiTemplateFutures[uiTemplateName];
       }
     }
 
     //no border if cards are used -> makes no sense
-    if (asCard) {
+    if (asCard || asCardFlat) {
       withBorder = false;
     }
   }
@@ -329,16 +309,14 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
           position.isScrollingNotifier.removeListener(_scrollUpdate);
 
           _scrollUpdate(position);
-        }
-    );
+        });
     _observerController = SliverObserverController(controller: _scrollController);
 
     _scrollToSelected = widget.initialScrollToSelected;
 
     if (_scrollToSelected) {
       selectedRowIndex = -1;
-    }
-    else {
+    } else {
       selectedRowIndex = widget.selectedRowIndex;
     }
 
@@ -358,7 +336,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   }
 
   @override
-  void didUpdateWidget(FlListWidget oldWidget ) {
+  void didUpdateWidget(FlListWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     _scrollToSelected |= widget.initialScrollToSelected;
@@ -416,64 +394,31 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
               }
               return Center(child: Text(FlutterUI.translate("An error has occurred!")));
             } else if (snapshot.hasData) {
-
               if (newUITemplate) {
                 _updateUITemplateEngine();
               }
 
-              return _buildList(
-                context,
-                snapshot.data!,
-                mapColumnsPerRow,
-                columnSeparator,
-                vAlign,
-                asCard,
-                withBorder,
-                withArrow);
+              return _buildList(context, snapshot.data!, mapColumnsPerRow, columnSeparator, vAlign, asCard, asCardFlat, withBorder, withArrow);
             } else {
-              return const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator()
-                ]
-              );
+              return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [CircularProgressIndicator()]);
             }
-          }
-      );
+          });
     }
 
     if (newUITemplate) {
       _updateUITemplateEngine();
     }
 
-    return _buildList(
-      context,
-      UITemplateManager.getTemplateFromCache(uiTemplateName),
-      mapColumnsPerRow,
-      columnSeparator,
-      vAlign,
-      asCard,
-      withBorder,
-      withArrow);
+    return _buildList(context, UITemplateManager.getTemplateFromCache(uiTemplateName), mapColumnsPerRow, columnSeparator, vAlign, asCard, asCardFlat, withBorder, withArrow);
   }
 
   WidgetLibrary _createLocalWidgets() {
     return LocalWidgetLibrary(<String, LocalWidgetBuilder>{
       "ListCell": (BuildContext context, DataSource source) {
-        return ListCell(
-          columnName: source.v<String>(["columnName"]),
-          useFormat: source.v<bool>(["useFormat"]) ?? true,
-          prefix: source.v<String>(["prefix"]),
-          postfix : source.v<String>(["postfix"])
-        );
+        return ListCell(columnName: source.v<String>(["columnName"]), useFormat: source.v<bool>(["useFormat"]) ?? true, prefix: source.v<String>(["prefix"]), postfix: source.v<String>(["postfix"]));
       },
       "ListSpace": (BuildContext context, DataSource source) {
-        return ListSpace(
-          notEmptyColumnNames: ArgumentDecoders.list(source, ["notEmptyColumnNames"], ArgumentDecoders.string),
-          text: source.v<String>(["text"]),
-          width: source.v<double>(["width"]),
-          height: source.v<double>(["height"])
-        );
+        return ListSpace(notEmptyColumnNames: ArgumentDecoders.list(source, ["notEmptyColumnNames"], ArgumentDecoders.string), text: source.v<String>(["text"]), width: source.v<double>(["width"]), height: source.v<double>(["height"]));
       },
       "ListImage": (BuildContext context, DataSource source) {
         return ListImage(
@@ -504,242 +449,247 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
     if (tpl is String) {
       _runtime.update(FlListWidget.mainName, parseLibraryFile(tpl));
-    }
-    else if (tpl is Uint8List){
+    } else if (tpl is Uint8List) {
       _runtime.update(FlListWidget.mainName, decodeLibraryBlob(tpl));
-    }
-    else {
+    } else {
       FlutterUI.log.e("Got unsupported value: $tpl for template $uiTemplateName!");
     }
   }
 
-  Widget _buildList(
-    BuildContext context,
-    dynamic uiTemplate,
-    Map<int, int>? mapColumnsPerRow,
-    List<String>? columnSeparator,
-    MainAxisAlignment? verticalAlign,
-    bool asCard,
-    bool withBorder,
-    bool withArrow) {
+  Widget _buildList(BuildContext context, dynamic uiTemplate, Map<int, int>? mapColumnsPerRow, List<String>? columnSeparator, MainAxisAlignment? verticalAlign, bool asCard, bool asCardFlat, bool withBorder, bool withArrow) {
+    AppStyleDirect style = AppStyle.of(context).direct;
 
-    double cardBorderRadius = AppStyle.of(context).direct.listCardBorderRadius();
+    double cardBorderRadius = style.listCardBorderRadius();
 
-    Widget list = _wrapList(context, _wrapSlider(context,
+    double cardSpacing = style.listCardSpacing() ?? 4;
+
+    Color colCardBackground = style.listCardBackground() ?? Colors.white;
+    Color colCardBackgroundOdd = style.listCardBackgroundOdd() ?? colCardBackground;
+    Color colCardBackgroundEven = style.listCardBackgroundEven() ?? colCardBackground;
+    Color colArrow = style.listArrowColor() ?? Colors.grey.shade300;
+    double? sizeArrow = style.listArrowSize();
+
+    double? sizeImage = style.listImageSize();
+
+    bool noImageBackground = style.listImageNoBackground();
+
+    EdgeInsets? entryPadding = style.listEntryPadding();
+
+    Widget list = _wrapList(context, _wrapSlider(
+      context,
       NotificationListener<ScrollNotification>(
-          onNotification: (notification) => _onInternalEndScroll(notification),
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (notification) => _onInternalScroll(notification),
-            child:
-              SliverViewObserver(
-                controller: _observerController,
-                child: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  controller: _scrollController,
-                  slivers: [
-                    SliverList.separated(
-                      separatorBuilder: (context, index) {
-                        if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
-                          return Container();
-                        }
+        onNotification: (notification) => _onInternalEndScroll(notification),
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) => _onInternalScroll(notification),
+          child: SliverViewObserver(
+            controller: _observerController,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: _scrollController,
+              slivers: [
+                SliverList.separated(
+                  separatorBuilder: (context, index) {
+                    if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
+                      return Container();
+                    }
 
-                        if (asCard) {
-                              return const Divider(height: 4, color: Colors.transparent);
-                          }
-                          else {
-                              return Divider(height: 1.0, color: JVxColors.isLightTheme(context) ?  Colors.grey.shade300 : Colors.white70);
-                          }
-                      },
-                      itemCount: widget.chunkData.data.length,
-                      itemBuilder: (context, index) {
-                        if (_sliverContext != context) {
-                          _sliverContext = context;
+                    if (asCard || asCardFlat) {
+                      return Divider(height: cardSpacing, color: Colors.transparent);
+                    } else {
+                      return Divider(height: 1.0, color: JVxColors.isLightTheme(context) ? Colors.grey.shade300 : Colors.white70);
+                    }
+                  },
+                  itemCount: widget.chunkData.data.length,
+                  itemBuilder: (context, index) {
+                    if (_sliverContext != context) {
+                      _sliverContext = context;
 
-                          SchedulerBinding.instance.addPostFrameCallback((_) {
-                            _scrollTo(widget.selectedRowIndex);
-                          });
-                        }
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        _scrollTo(widget.selectedRowIndex);
+                      });
+                    }
 
-                        SlidableController? slideCtrl;
+                    SlidableController? slideCtrl;
 
-                        if (widget.slideActionFactory != null) {
-                          slideCtrl = SlidableController(this);
+                    if (widget.slideActionFactory != null) {
+                      slideCtrl = SlidableController(this);
 
-                          if (index > _slideController.length - 1) {
-                            _slideController.add(slideCtrl);
-                          }
-                          else {
-                            _slideController[index] = slideCtrl;
-                          }
-                        }
+                      if (index > _slideController.length - 1) {
+                        _slideController.add(slideCtrl);
+                      } else {
+                        _slideController[index] = slideCtrl;
+                      }
+                    }
 
-                        if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
-                          return Container();
-                        }
+                    if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
+                      return Container();
+                    }
 
-                        bool selected = index == widget.selectedRowIndex && widget.model.showSelection;
+                    bool selected = index == widget.selectedRowIndex && widget.model.showSelection;
 
-                        Widget listEntry = FlListEntry(
-                          model: widget.model,
-                          runtime: uiTemplate != null ? _runtime : null,
-                          index: index,
-                          columnDefinitions: widget.chunkData.columnDefinitions,
-                          cellEditors: widget.cellEditors,
-                          isSelected: selected,
-                          values: widget.chunkData.data[index]!,
-                          recordFormat: widget.chunkData.recordFormats?[widget.model.name],
-                          columnsPerRow: mapColumnsPerRow,
-                          columnSeparator: columnSeparator,
-                          mainAxisAlignment: verticalAlign,
-                          entryBuilder: widget.entryBuilder,
-                        );
+                    Color colBack = index % 2 == 0 ? colCardBackgroundEven : colCardBackgroundOdd;
 
-                        if (withArrow) {
-                          listEntry = Flex(direction: Axis.horizontal,
-                            children: [
-                              Flexible(
-                                flex: 1,
-                                fit: FlexFit.tight,
-                                child: listEntry
-                              ),
-                              Flexible(
-                                flex: 0,
-                                fit: FlexFit.loose,
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: selected ? 2 : 5),
-                                  child: Icon(Icons.arrow_forward_ios,
-                                  color: Colors.grey.shade300)
-                                )
-                              )
-                            ],
-                          );
-                        }
-                        else {
-                          //we need the padding to avoid jumps on selection
-                          listEntry = Padding(
-                            padding: EdgeInsets.only(right: selected ? 2 : 5),
-                            child: listEntry
-                          );
-                        }
+                    Widget listEntry = FlListEntry(
+                      model: widget.model,
+                      runtime: uiTemplate != null ? _runtime : null,
+                      index: index,
+                      columnDefinitions: widget.chunkData.columnDefinitions,
+                      cellEditors: widget.cellEditors,
+                      isSelected: selected,
+                      values: widget.chunkData.data[index]!,
+                      recordFormat: widget.chunkData.recordFormats?[widget.model.name],
+                      columnsPerRow: mapColumnsPerRow,
+                      columnSeparator: columnSeparator,
+                      mainAxisAlignment: verticalAlign,
+                      entryBuilder: widget.entryBuilder,
+                      background: noImageBackground ? Colors.transparent : null,
+                      imageSize: sizeImage
+                    );
 
-                        if (selected) {
-                          ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
+                    if (entryPadding != null) {
+                      listEntry = Padding(padding: entryPadding, child: listEntry);
+                    }
 
-                          Color? colSelection;
+                    if (withArrow) {
+                      listEntry = Flex(
+                        direction: Axis.horizontal,
+                        children: [Flexible(flex: 1, fit: FlexFit.tight, child: listEntry), Flexible(flex: 0, fit: FlexFit.loose, child: Padding(padding: EdgeInsets.only(right: selected ? 2 : 5), child: Icon(Icons.arrow_forward_ios, size: sizeArrow, color: colArrow)))],
+                      );
+                    } else {
+                      //we need the padding to avoid jumps on selection
+                      listEntry = Padding(padding: EdgeInsets.only(right: selected ? 2 : 5), child: listEntry);
+                    }
 
-                          if (JVxColors.isLightTheme(context)) {
-                            colSelection = applicationSettings.colors?.activeSelectionBackground;
-                          } else {
-                            colSelection = applicationSettings.darkColors?.activeSelectionBackground;
-                          }
+                    if (selected) {
+                      ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
 
-                          colSelection ??= Theme.of(context).colorScheme.primary;
+                      Color? colSelection;
 
-                          colSelection = colSelection.withAlpha(Color.getAlphaFromOpacity(0.7));
+                      if (JVxColors.isLightTheme(context)) {
+                        colSelection = applicationSettings.colors?.activeSelectionBackground;
+                      } else {
+                        colSelection = applicationSettings.darkColors?.activeSelectionBackground;
+                      }
 
-                          listEntry = Container(decoration: BoxDecoration(
-                            border: Border(right: BorderSide(color: colSelection,width: 3)),
-                          ), child: listEntry);
-                        }
+                      colSelection ??= Theme.of(context).colorScheme.primary;
 
-                        if (widget.slideActionFactory != null) {
-                          List<SlidableAction> slideActions = widget.slideActionFactory?.call(context, index) ?? [];
+                      colSelection = colSelection.withAlpha(Color.getAlphaFromOpacity(0.7));
 
-                          listEntry = Theme(
-                            data: Theme.of(context).copyWith(
-                              outlinedButtonTheme: OutlinedButtonThemeData(
-                                style: OutlinedButton.styleFrom(
-                                  iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white,
-                                  textStyle: const TextStyle(fontWeight: FontWeight.normal),
-                                  iconSize: 16))),
-                            child: Slidable(
-                              key: UniqueKey(),
-                              controller: slideCtrl,
-                              closeOnScroll: true,
-                              direction: Axis.horizontal,
-                              enabled: widget.slideActionFactory != null && slideActions.isNotEmpty == true && widget.model.isEnabled,
-                              groupTag: widget.slideActionFactory,
-                              endActionPane: ActionPane(
-                                extentRatio: 0.50,
-                                dismissible: DismissiblePane(
-                                  closeOnCancel: true,
-                                  onDismissed: () {
-                                    String? status = widget.chunkData.getRecordStatusRaw(index);
+                      listEntry = Container(
+                        decoration: BoxDecoration(
+                          border: Border(right: BorderSide(color: colSelection, width: 3)),
+                        ),
+                        child: listEntry
+                      );
+                    }
 
-                                    if (status != null && !status.contains("DISMISSED")) {
-                                      if (_slideController.length > index) {
-                                        SlidableController ctrl = _slideController.elementAt(index);
-                                        ctrl.close(duration: const Duration(milliseconds: 0));
+                    if (widget.slideActionFactory != null) {
+                      List<SlidableAction> slideActions = widget.slideActionFactory?.call(context, index) ?? [];
 
-                                        _slideController.removeAt(index);
-                                      }
+                      listEntry = Theme(
+                        data: Theme.of(context).copyWith(outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white, textStyle: const TextStyle(fontWeight: FontWeight.normal), iconSize: 16))),
+                        child: Slidable(
+                          key: UniqueKey(),
+                          controller: slideCtrl,
+                          closeOnScroll: true,
+                          direction: Axis.horizontal,
+                          enabled: widget.slideActionFactory != null && slideActions.isNotEmpty == true && widget.model.isEnabled,
+                          groupTag: widget.slideActionFactory,
+                          endActionPane: ActionPane(
+                            extentRatio: 0.50,
+                            dismissible: DismissiblePane(
+                              closeOnCancel: true,
+                              onDismissed: () {
+                                String? status = widget.chunkData.getRecordStatusRaw(index);
 
-                                      widget.chunkData.setStatusRaw(index, "DISMISSED");
+                                if (status != null && !status.contains("DISMISSED")) {
+                                  if (_slideController.length > index) {
+                                    SlidableController ctrl = _slideController.elementAt(index);
+                                    ctrl.close(duration: const Duration(milliseconds: 0));
 
-                                      HapticUtil.medium();
+                                    _slideController.removeAt(index);
+                                  }
 
-                                      setState(() {});
-                                    }
+                                  widget.chunkData.setStatusRaw(index, "DISMISSED");
 
-                                    slideActions.last.onPressed!(context);
-                                  },
-                                ),
-                                motion: const StretchMotion(),
-                                children: slideActions,
-                              ),
-                              child: listEntry
+                                  HapticUtil.medium();
+
+                                  setState(() {});
+                                }
+
+                                slideActions.last.onPressed!(context);
+                              },
+                            ),
+                            motion: const StretchMotion(),
+                            children: slideActions,
+                          ),
+                          child: listEntry
+                        )
+                      );
+                    }
+
+                    if (asCard) {
+                      listEntry = Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(cardBorderRadius),
+                        ),
+                        color: colBack,
+                        margin: const EdgeInsets.all(2),
+                        child: ClipPath(
+                          clipper: ShapeBorderClipper(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(cardBorderRadius)
                             )
-                          );
-                        }
+                          ), child: listEntry
+                        )
+                      );
+                    } else if (asCardFlat) {
+                      listEntry = Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(cardBorderRadius),
+                        ),
+                        color: colBack,
+                        margin: const EdgeInsets.all(2),
+                        child: ClipPath(
+                          clipper: ShapeBorderClipper(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(cardBorderRadius)
+                            )
+                          ),
+                          child: listEntry
+                        )
+                      );
+                    }
 
-                        if (asCard) {
-                          listEntry = Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(cardBorderRadius),
-                              ),
-                              color: Colors.white,
-                              margin: const EdgeInsets.all(2),
-                              child: ClipPath(
-                                  clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(cardBorderRadius))),
-                                  child: listEntry
-                              )
-                          );
-                        }
+                    Widget listTile = ListTile(minTileHeight: 10, contentPadding: const EdgeInsets.all(0), horizontalTitleGap: 0, minVerticalPadding: 0, title: listEntry);
 
-                        Widget listTile = ListTile(
-                          minTileHeight: 10,
-                          contentPadding: const EdgeInsets.all(0),
-                          horizontalTitleGap: 0,
-                          minVerticalPadding: 0,
-                          title: listEntry
-                        );
+                    if (widget.onTap != null || widget.onLongPress != null) {
+                      listTile = GestureDetector(
+                        onTap: widget.onTap != null && widget.model.isEnabled
+                          ? () {
+                              widget.onTap!(index);
 
-                        if (widget.onTap != null || widget.onLongPress != null) {
-                          listTile = GestureDetector(
-                            onTap: widget.onTap != null && widget.model.isEnabled? () {
-                                widget.onTap!(index);
+                              _closeSlidables();
+                            }
+                          : null,
+                        onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
+                          ? (details) {
+                              widget.onLongPress!(index, details.globalPosition);
 
-                                _closeSlidables();
-                              }
-                              : null,
-                            onLongPressStart: widget.onLongPress != null && widget.model.isEnabled ? (details) {
-                                widget.onLongPress!(index, details.globalPosition);
+                              _closeSlidables();
+                            }
+                          : null,
+                        child: listTile,
+                      );
+                    }
 
-                                _closeSlidables();
-                              }
-                              :
-                              null,
-                            child: listTile,
-                          );
-                        }
-
-                        return listTile;
-                      },
-                    ),
-                  ],
-                )
-              )
+                    return listTile;
+                  },
+                ),
+              ],
+            )
+          )
         )
       )
     ));
@@ -755,15 +705,18 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     Widget listWidget = list;
 
     if (widget.onRefresh != null && widget.model.isEnabled) {
-      listWidget = wrapWithScrollConfiguration(context, RefreshIndicator(
-        onRefresh: widget.onRefresh!,
-        child: listWidget,
-        notificationPredicate: (notification) => notification.depth == 0,
-      ));
+      listWidget = wrapWithScrollConfiguration(
+        context,
+        RefreshIndicator(
+          onRefresh: widget.onRefresh!,
+          child: listWidget,
+          notificationPredicate: (notification) => notification.depth == 0,
+        )
+      );
     }
 
     if (widget.onFloatingPress != null) {
-      listWidget = Stack(children: [listWidget, _createFloatingButton(context)]);
+      listWidget = Stack(fit: StackFit.expand, children: [listWidget, _createFloatingButton(context)]);
     }
 
     return listWidget;
@@ -775,11 +728,12 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
         closeWhenOpened: true,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onLongPressStart: widget.onLongPress != null && widget.model.isEnabled ? (details) {
-            widget.onLongPress?.call(-1, details.globalPosition);
+          onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
+            ? (details) {
+                widget.onLongPress?.call(-1, details.globalPosition);
 
-              _closeSlidables();
-            }
+                _closeSlidables();
+              }
             : null,
           onTap: () => _closeSlidables(),
           child: list,
@@ -813,7 +767,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
   /// Closes all slidables immediately without delay
   void _closeSlidablesImmediate() {
-    _closeSlidables(null, const Duration(milliseconds:  0));
+    _closeSlidables(null, const Duration(milliseconds: 0));
   }
 
   /// Closes all slidables with given or default delay. If an [event] is given
@@ -835,18 +789,14 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       final position1 = table.localToGlobal(Offset.zero);
       final position2 = event.position;
 
-      collide = (position1.dx < position2.dx + size2 &&
-        position1.dx + size1.width > position2.dx &&
-        position1.dy < position2.dy + size2 &&
-        position1.dy + size1.height > position2.dy);
+      collide = (position1.dx < position2.dx + size2 && position1.dx + size1.width > position2.dx && position1.dy < position2.dy + size2 && position1.dy + size1.height > position2.dy);
     }
 
     if (!collide) {
       _slideController.toList(growable: false).forEach((element) {
         if (duration != null) {
           element.close(duration: duration);
-        }
-        else {
+        } else {
           element.close();
         }
       });
@@ -856,9 +806,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   /// Notifies if the bottom of the list has been reached
   bool _onInternalEndScroll(ScrollNotification notification) {
     // 25 is a grace value.
-    if (widget.model.isEnabled &&
-        notification.metrics.extentAfter < 25 &&
-        notification.metrics.axis == Axis.vertical) {
+    if (widget.model.isEnabled && notification.metrics.extentAfter < 25 && notification.metrics.axis == Axis.vertical) {
       /// Scrolled to the bottom
       return widget.onEndScroll?.call() == true;
     }
@@ -953,9 +901,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
     var obj = ObserverUtils.findRenderObject(_sliverContext);
 
-    if (obj == null || obj is! RenderSliver
-        || (obj.geometry?.paintExtent ?? 0) == 0) {
-
+    if (obj == null || obj is! RenderSliver || (obj.geometry?.paintExtent ?? 0) == 0) {
       selectedRowIndex = -1;
       _scrollToSelected = true;
 
@@ -986,5 +932,4 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       },
     ));
   }
-
 }
