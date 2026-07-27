@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'dart:ui' as ui;
 import 'font_awesome_util.dart';
 import 'material_icons_util.dart';
 import 'parse_util.dart';
@@ -37,9 +38,40 @@ abstract class IconUtil {
     // Private constructor to prevent instantiation
     IconUtil._();
 
+    static Map<String, String>? parseArguments(String? imageDefinition) {
+        if (imageDefinition == null || imageDefinition.isEmpty) {
+            return null;
+        }
+
+        // name;arg=value;arg2=value2,width,height,dynamic
+        String? imageDefinition_ = imageDefinition;
+
+        Map<String, String> arguments = {};
+
+        List<String> fontDefElements = imageDefinition_.split(",");
+
+        List<String> fontWithArguments = fontDefElements[0].split(";");
+
+        for (int i = 1; i < fontWithArguments.length; i++) {
+            List<String> arg = fontWithArguments[i].split("=");
+
+            if (arg.length == 2) {
+                arguments[arg[0]] = arg[1];
+            }
+        }
+
+        arguments["name"] = fontWithArguments[0];
+
+        if (fontDefElements.length > 3) {
+            arguments["width"] = fontDefElements[fontDefElements.length - 3];
+            arguments["height"] = fontDefElements[fontDefElements.length - 2];
+        }
+
+        return arguments;
+    }
+
     ///Gets the (icon, size and color) for the given [imageDefinition] if it's a font icon.
     static ({Widget? icon, double? size, Color? color})? fromString(String? imageDefinition, [double? size, Color? color]) {
-
         if (imageDefinition == null || imageDefinition.isEmpty) {
             return null;
         }
@@ -72,7 +104,8 @@ abstract class IconUtil {
 
             Color? color_ = color;
 
-            if (color_ == null) {
+            //for later usage
+            void fillArguments() {
                 for (int i = 1; i < fontWithArguments.length; i++) {
                     List<String> arg = fontWithArguments[i].split("=");
 
@@ -80,6 +113,11 @@ abstract class IconUtil {
                         arguments[arg[0]] = arg[1];
                     }
                 }
+            }
+
+            if (color_ == null) {
+                //parse late!
+                fillArguments();
 
                 String? argColor = arguments["color"];
 
@@ -94,6 +132,17 @@ abstract class IconUtil {
                 if (fontDefElements.length > 3) {
                     //use height if width is not a valid number (shouldn't happen)
                     size_ = double.tryParse(fontDefElements[fontDefElements.length - 3]) ?? double.tryParse(fontDefElements[fontDefElements.length - 2]);
+                }
+                else {
+                    //parse if not already parsed!
+                    if (color == null) {
+                        fillArguments();
+                    }
+                    String? argSize = arguments["size"];
+
+                    if (argSize != null) {
+                        size_ = double.tryParse(argSize);
+                    }
                 }
             }
 
@@ -157,4 +206,60 @@ abstract class IconUtil {
 
         return null;
     }
+
+    /// Gets an image for an icon
+    static Future<({MemoryImage image, Size size})> iconToImageProvider(
+      IconData icon, {
+      double? fontSize,
+      Color? color,
+      double? scaleFactor,
+    }) async {
+      final textPainter = TextPainter(textDirection: TextDirection.ltr);
+
+      double fontSize_ = fontSize ?? 48.0;
+      Color color_ = color ?? Colors.black;
+      double scaleFactor_ = scaleFactor ?? 4.0;
+
+      textPainter.text = TextSpan(
+        text: String.fromCharCode(icon.codePoint),
+        style: TextStyle(
+          fontSize: fontSize_ * scaleFactor_,
+          fontFamily: icon.fontFamily,
+          package: icon.fontPackage,
+          color: color_,
+        ),
+      );
+
+    textPainter.layout();
+    final Size renderedSize = textPainter.size;
+
+    final pictureRecorder = ui.PictureRecorder();
+    final canvas = Canvas(pictureRecorder);
+
+    final paint = Paint()
+          ..colorFilter = ui.ColorFilter.mode(color_, ui.BlendMode.srcIn);
+      canvas.saveLayer(Offset.zero & renderedSize, paint);
+    textPainter.paint(canvas, Offset.zero);
+      canvas.restore();
+
+    final picture = pictureRecorder.endRecording();
+    final image = await picture.toImage(
+        renderedSize.width.ceil(),
+        renderedSize.height.ceil(),
+    );
+
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+
+    return (
+      image: MemoryImage(
+        bytes!.buffer.asUint8List(),
+        scale: scaleFactor_
+      ),
+      size: Size(
+        renderedSize.width / scaleFactor_,
+        renderedSize.height / scaleFactor_,
+      ),
+    );
+  }
+
 }

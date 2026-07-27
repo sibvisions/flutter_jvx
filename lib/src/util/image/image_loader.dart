@@ -14,7 +14,9 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -245,73 +247,102 @@ abstract class ImageLoader {
         return createCachedMemoryImage(imageDefinition, base64Decoded, imageStreamListener);
       }
       else {
-        Uri? parsedURI;
+        if (IconUtil.isFontIcon(imageDefinition)) {
+          (MemoryImage image, Size? size)? cacheInfo = _imageCache["font:$imageDefinition"];
 
-        try {
-          parsedURI = Uri.parse(imageDefinition);
-        } catch (_) {}
+          if (cacheInfo != null) {
+            return cacheInfo.$1;
+          }
+          else {
+            ({Widget? icon, double? size, Color? color})? iconDef = IconUtil.fromString(imageDefinition);
 
-        ImageProvider imageProvider;
+            if (iconDef != null) {
+              IconData? iconData = (iconDef.icon as Icon).icon;
 
-        double? width_;
-        double? height_;
+              if (iconData != null) {
+                Future<({MemoryImage image, Size size})> icon = IconUtil.iconToImageProvider(iconData, fontSize: iconDef.size, color: iconDef.color);
 
-        if (parsedURI == null || !parsedURI.scheme.contains("http")) {
-          // Cut away optional size
-          int commaIndex = imageDefinition.indexOf(",");
+                return FutureImageProvider(icon.then((result) {
+                  _imageCache["font:$imageDefinition"] = (result.image, result.size);
 
-          String imageDefinition_ = imageDefinition;
-          if (commaIndex >= 0) {
-            imageDefinition_ = imageDefinition.substring(0, commaIndex);
-
-            List<String> split = imageDefinition.substring(commaIndex + 1).split(",");
-
-            if (split.length >= 2) {
-              width_ = double.tryParse(split[0]);
-              height_ = double.tryParse(split[1]);
+                  return result.image;
+                }));
+              }
             }
           }
 
-          if (imageDefinition_.startsWith("/")) {
-            imageDefinition_ = imageDefinition_.substring(1);
-          }
-
-          File? file;
-
-          String? appVersion = app?.version ?? IConfigService().version.value;
-
-          if (appVersion != null) {
-            IFileManager fileManager = IConfigService().getFileManager();
-
-            String path = fileManager.getAppSpecificPath(
-              "${IFileManager.IMAGES_PATH}/$imageDefinition_",
-              appId: app?.id ?? IConfigService().currentApp.value!,
-              version: appVersion,
-            );
-
-            file = fileManager.getFileSync(path);
-          }
-
-          if (file != null) {
-            imageProvider = FileImage(file);
-          } else {
-            Uri baseUrl = app?.baseUrl ?? IConfigService().baseUrl.value!;
-            String appName = app?.name ?? IConfigService().appName.value!;
-
-            imageProvider = NetworkImage("$baseUrl/resource/$appName/$imageDefinition_", headers: _getHeaders());
-          }
-        } else {
-          imageProvider = NetworkImage(imageDefinition, headers: _getHeaders());
-        }
-
-        if (width_ != null || height_ != null) {
-          imageStreamListener?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
+          //not possible
+          return null;
         }
         else {
-          _addImageListener(imageProvider, imageStreamListener);
-        }
+          Uri? parsedURI;
 
-        return imageProvider;
+          try {
+            parsedURI = Uri.parse(imageDefinition);
+          } catch (_) {}
+
+          ImageProvider imageProvider;
+
+          double? width_;
+          double? height_;
+
+          if (parsedURI == null || !parsedURI.scheme.contains("http")) {
+            // Cut away optional size
+            int commaIndex = imageDefinition.indexOf(",");
+
+            String imageDefinition_ = imageDefinition;
+            if (commaIndex >= 0) {
+              imageDefinition_ = imageDefinition.substring(0, commaIndex);
+
+              List<String> split = imageDefinition.substring(commaIndex + 1).split(",");
+
+              if (split.length >= 2) {
+                width_ = double.tryParse(split[0]);
+                height_ = double.tryParse(split[1]);
+              }
+            }
+
+            if (imageDefinition_.startsWith("/")) {
+              imageDefinition_ = imageDefinition_.substring(1);
+            }
+
+            File? file;
+
+            String? appVersion = app?.version ?? IConfigService().version.value;
+
+            if (appVersion != null) {
+              IFileManager fileManager = IConfigService().getFileManager();
+
+              String path = fileManager.getAppSpecificPath(
+                "${IFileManager.IMAGES_PATH}/$imageDefinition_",
+                appId: app?.id ?? IConfigService().currentApp.value!,
+                version: appVersion,
+              );
+
+              file = fileManager.getFileSync(path);
+            }
+
+            if (file != null) {
+              imageProvider = FileImage(file);
+            } else {
+              Uri baseUrl = app?.baseUrl ?? IConfigService().baseUrl.value!;
+              String appName = app?.name ?? IConfigService().appName.value!;
+
+              imageProvider = NetworkImage("$baseUrl/resource/$appName/$imageDefinition_", headers: _getHeaders());
+            }
+          } else {
+            imageProvider = NetworkImage(imageDefinition, headers: _getHeaders());
+          }
+
+          if (width_ != null || height_ != null) {
+            imageStreamListener?.call(Size(width_ ?? height_!, height_ ?? width_!), true);
+          }
+          else {
+            _addImageListener(imageProvider, imageStreamListener);
+          }
+
+          return imageProvider;
+        }
       }
     }
 
@@ -374,4 +405,49 @@ abstract class ImageLoader {
     _imageCache.clear();
   }
 
+}
+
+class FutureImageProvider extends ImageProvider<FutureImageProvider> {
+  final Future<ImageProvider> providerFuture;
+
+  const FutureImageProvider(this.providerFuture);
+
+  @override
+  ImageStreamCompleter loadImage(FutureImageProvider key, ImageDecoderCallback decode) {
+    final StreamController<ImageChunkEvent> chunkEvents = StreamController<ImageChunkEvent>();
+
+    return MultiFrameImageStreamCompleter(
+      codec: _loadAsync(key, decode, chunkEvents),
+      chunkEvents: chunkEvents.stream,
+      scale: 1.0,
+    );
+  }
+
+  Future<ui.Codec> _loadAsync(
+    FutureImageProvider key,
+    ImageDecoderCallback decode,
+    StreamController<ImageChunkEvent> chunkEvents,
+  ) async {
+    final realProvider = await providerFuture;
+
+    if (realProvider is MemoryImage) {
+      final buffer = await ui.ImmutableBuffer.fromUint8List(realProvider.bytes);
+      return await decode(buffer);
+    }
+
+    throw UnsupportedError('Only MemoryImage is supported!');
+  }
+
+  @override
+  Future<FutureImageProvider> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<FutureImageProvider>(this);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is FutureImageProvider && runtimeType == other.runtimeType && providerFuture == other.providerFuture;
+
+  @override
+  int get hashCode => providerFuture.hashCode;
 }
