@@ -1621,19 +1621,14 @@ if (kDebugMode) {
       repository.jvxWebSocket?.resetPingInterval();
     }
 
-    if (lastState != null) {
-      if ((lastState == AppLifecycleState.paused || lastState == AppLifecycleState.inactive || lastState == AppLifecycleState.hidden)
-          && state == AppLifecycleState.resumed) {
-        // App was resumed from a paused state (Permission overlay is not paused)
-        if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-          ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"), showDialogOnError: false);
-        }
+    if (state == AppLifecycleState.resumed) {
+      // App was resumed from a paused state (Permission overlay is not paused)
+      if (IUiService().clientId.value != null && !IConfigService().offline.value) {
+        ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"), showDialogOnError: false);
       }
     }
 
-    if (state != AppLifecycleState.inactive) {
-      lastState = state;
-    }
+    lastState = state;
   }
 
   @override
