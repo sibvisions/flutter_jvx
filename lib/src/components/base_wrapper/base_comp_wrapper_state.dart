@@ -389,7 +389,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         rethrow;
       }
     }
-    return (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(height).ceilToDouble();
+
+    return 0;
   }
 
   double calculateRenderBoxHeight(BuildContext context, double width) {
@@ -408,8 +409,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     }
 
     return 0;
-
-    return (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(width).ceilToDouble();
   }
 
   /// Calculates the size the components wants to have if a specific side of it is constrained.
