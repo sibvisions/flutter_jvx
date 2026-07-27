@@ -376,10 +376,39 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   double calculateRenderBoxWidth(BuildContext context, double height) {
+    final renderObject = context.findRenderObject();
+    if (renderObject is RenderBox) {
+      try {
+        return (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(height).ceilToDouble();
+      }
+      catch (error) {
+        if (renderObject.hasSize) {
+          return renderObject.size.width.ceilToDouble();
+        }
+
+        rethrow;
+      }
+    }
     return (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(height).ceilToDouble();
   }
 
   double calculateRenderBoxHeight(BuildContext context, double width) {
+    final renderObject = context.findRenderObject();
+    if (renderObject is RenderBox) {
+      try {
+        return (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(width).ceilToDouble();
+      }
+      catch (error) {
+        if (renderObject.hasSize) {
+          return renderObject.size.height.ceilToDouble();
+        }
+
+        rethrow;
+      }
+    }
+
+    return 0;
+
     return (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(width).ceilToDouble();
   }
 
