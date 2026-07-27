@@ -378,7 +378,9 @@ class OnlineApiRepository extends IRepository {
 
   void _reconnectHTTP() {
     _lastDelay = min(_lastDelay + 5, 30);
+
     FlutterUI.logAPI.i("Retrying HTTP Alive request in $_lastDelay seconds...");
+
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(Duration(seconds: _lastDelay), () async {
       try {

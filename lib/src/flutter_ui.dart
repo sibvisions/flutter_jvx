@@ -898,7 +898,7 @@ class FlutterUI extends StatefulWidget {
   }
 
   /// Disposes a global subscription
-  static void disposeGlobalSubscription(Object subscription) {
+  static void disposeGlobalSubscription(GlobalSubscription subscription) {
     _globalSubscriptions.remove(subscription);
   }
 
@@ -1085,6 +1085,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         _updateTitle(context);
       },
       routeListener: (routeInfo, delegate) {
+if (kDebugMode) {
+  print("Update routes");
+}
+
+
         _updateTitle(context);
         _updateRouterDelegate(routeInfo);
       },
@@ -1617,7 +1622,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
 
     if (lastState != null) {
-      if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
+      if ((lastState == AppLifecycleState.paused || lastState == AppLifecycleState.inactive || lastState == AppLifecycleState.hidden)
+          && state == AppLifecycleState.resumed) {
         // App was resumed from a paused state (Permission overlay is not paused)
         if (IUiService().clientId.value != null && !IConfigService().offline.value) {
           ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"), showDialogOnError: false);
