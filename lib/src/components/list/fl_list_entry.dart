@@ -27,7 +27,6 @@ import '../../model/layout/alignments.dart';
 import '../../model/response/record_format.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/column_list.dart';
-import '../../util/i_types.dart';
 import '../../util/image/image_loader.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/fl_check_box_cell_editor.dart';
@@ -81,13 +80,35 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
   /// the entry builder
   final ListEntryBuilder? _entryBuilder;
 
+  /// the background color
+  final Color? background;
+
+  // the image size
+  final double? imageSize;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlListEntry({super.key, required super.model, this.runtime, required this.columnDefinitions, required this.cellEditors, required this.values, required this.index, required this.isSelected, this.recordFormat, this.columnsPerRow, this.columnSeparator, mainAxisAlignment, ListEntryBuilder? entryBuilder})
-      : mainAxisAlignment = mainAxisAlignment ?? MainAxisAlignment.center,
-        _entryBuilder = entryBuilder;
+  const FlListEntry({
+    super.key,
+    required super.model,
+    this.runtime,
+    required this.columnDefinitions,
+    required this.cellEditors,
+    required this.values,
+    required this.index,
+    required this.isSelected,
+    this.recordFormat,
+    this.columnsPerRow,
+    this.columnSeparator,
+    this.background,
+    this.imageSize,
+    mainAxisAlignment,
+    ListEntryBuilder? entryBuilder
+  })
+    : mainAxisAlignment = mainAxisAlignment ?? MainAxisAlignment.center,
+      _entryBuilder = entryBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -136,16 +157,18 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     for (int i = 0; i < model.columnNames.length; i++) {
       int columnIndex = columnDefinitions.indexByName(model.columnNames[i]);
 
-      if (columnIndex >= 0) {
-        ColumnDefinition colDef = columnDefinitions[columnIndex];
+      if (!model.columnNames[i].startsWith('\$')) {
+        if (columnIndex >= 0) {
+          ColumnDefinition colDef = columnDefinitions[columnIndex];
 
-        if (colDef.dataTypeIdentifier == ITypes.BINARY) {
-          //fifo
-          imageColumn ??= model.columnNames[i];
-        } else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != colDef.cellEditorClassName && FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != colDef.cellEditorClassName) {
-          valueColumns.add(model.columnNames[i]);
-        } else if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName || FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
-          checkBoxColumns.add(model.columnNames[i]);
+          if (FlCellEditorClassname.IMAGE_VIEWER == colDef.cellEditorClassName) {
+            //fifo
+            imageColumn ??= model.columnNames[i];
+          } else if (FlCellEditorClassname.CHOICE_CELL_EDITOR != colDef.cellEditorClassName && FlCellEditorClassname.CHECK_BOX_CELL_EDITOR != colDef.cellEditorClassName) {
+            valueColumns.add(model.columnNames[i]);
+          } else if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName || FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
+            checkBoxColumns.add(model.columnNames[i]);
+          }
         }
       }
     }
@@ -282,20 +305,65 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     if (imageColumn != null) {
       CellFormat? format = recordFormat?.getCellFormat(index, columnDefinitions.indexByName(imageColumn));
 
-      widget = IntrinsicHeight(
-          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Container(
-            color: format?.background ?? Colors.grey.shade200,
-            child: Padding(
+      widget = Stack(
+        children: [
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            child: Container(
+              color: format?.background ?? background ?? Colors.grey.shade200,
+              child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: ListImage.predefined(
-                  imageDefinition: values[columnDefinitions.indexByName(imageColumn)],
-                  iconColor: format?.foreground,
-                ))),
-        Expanded(child: Padding(padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5), child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: mainAxisAlignment, children: liRows)))
-      ]));
+                child: Center(
+                  child: ListImage.predefined(
+                    imageDefinition: values[columnDefinitions.indexByName(imageColumn)],
+                    iconColor: format?.foreground,
+                    size: imageSize,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Opacity(
+                opacity: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: ListImage.predefined(
+                    imageDefinition: values[columnDefinitions.indexByName(imageColumn)],
+                    iconColor: format?.foreground,
+                    size: imageSize,
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: mainAxisAlignment,
+                    children: liRows,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
     } else {
-      widget = Padding(padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5), child: Column(mainAxisAlignment: mainAxisAlignment, crossAxisAlignment: CrossAxisAlignment.start, children: liRows));
+      widget = Padding(
+        padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+        child: Column(
+          mainAxisAlignment: mainAxisAlignment,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: liRows,
+        ),
+      );
     }
 
     return widget;
@@ -386,6 +454,12 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
       widgets.add(Text(postfix));
     }
 
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: widgets,
+    );
+
     //row would use the fill width without IntrinsicWidth
     return IntrinsicWidth(
         child: Row(
@@ -468,7 +542,13 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
         ColumnDefinition colDef = columnDefinitions.byName(cell.columnName!)!;
 
         if (FlCellEditorClassname.CHECK_BOX_CELL_EDITOR == colDef.cellEditorClassName || FlCellEditorClassname.CHOICE_CELL_EDITOR == colDef.cellEditorClassName) {
-          w = IntrinsicWidth(child: Row(mainAxisAlignment: MainAxisAlignment.start, children: _getCheckBoxWidget(context, cell.columnName!, cell.prefix, cell.postfix)));
+//          w = IntrinsicWidth(child: Row(mainAxisAlignment: MainAxisAlignment.start, children: _getCheckBoxWidget(context, cell.columnName!, cell.prefix, cell.postfix)));
+
+          w = Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: _getCheckBoxWidget(context, cell.columnName!, cell.prefix, cell.postfix),
+          );
         }
       }
 
@@ -514,7 +594,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     return null;
   }
 
-  Color? background(String? columnName, Color? defaultColor) {
+  Color? backgroundColor(String? columnName, Color? defaultColor) {
     if (columnName != null) {
       return recordFormat?.getCellFormat(index, columnDefinitions.indexByName(columnName))?.background ?? defaultColor;
     }
@@ -522,7 +602,7 @@ class FlListEntry extends FlStatelessWidget<FlTableModel> {
     return null;
   }
 
-  Color? foreground(String? columnName, Color? defaultColor) {
+  Color? foregroundColor(String? columnName, Color? defaultColor) {
     if (columnName != null) {
       return recordFormat?.getCellFormat(index, columnDefinitions.indexByName(columnName))?.foreground ?? defaultColor;
     }
