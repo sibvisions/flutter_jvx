@@ -53,7 +53,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   // Callbacks
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The callback if a value has ended beeing changed in the table.
+  /// The callback if a value has ended being changed in the table.
   final TableValueChangedCallback? onEndEditing;
 
   /// The callback if a value has been changed in the table.
