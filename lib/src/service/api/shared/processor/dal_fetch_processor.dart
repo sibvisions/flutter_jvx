@@ -32,7 +32,8 @@ class DalFetchProcessor extends IResponseProcessor<DalFetchResponse> {
     bool setRootKey = false;
     Filter filter = const Filter.empty();
 
-    List<bool> changedBySetValues = List.filled(response.columnNames.length, false);
+    //-> not changed by setValues
+    List<bool>? changedBySetValues;
 
     if (request is ApiFetchRequest) {
       filter = request.filter ?? filter;
@@ -41,6 +42,8 @@ class DalFetchProcessor extends IResponseProcessor<DalFetchResponse> {
       filter = request.filter ?? filter;
       setRootKey = request.command?.setRootKey ?? setRootKey;
     } else if (request is ApiSetValuesRequest) {
+      changedBySetValues = List.filled(response.columnNames.length, false);
+
       filter = request.filter ?? filter;
 
       //only 1 record in response -> check changed
@@ -51,7 +54,7 @@ class DalFetchProcessor extends IResponseProcessor<DalFetchResponse> {
           for (int i = 0; i < request.columnNames.length; i++) {
             int pos = response.columnNames.indexOf(request.columnNames[i]);
 
-            if (pos > 0) {
+            if (pos >= 0) {
               //mark column as changed by setValues
               changedBySetValues[pos] = true;
             }
