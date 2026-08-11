@@ -143,7 +143,7 @@ abstract class IAppService implements Service {
   /// See also:
   /// * [App.createApp]
   /// * [stopApp]
-  Future<void> startApp({String? appId, String? appTitle, bool? autostart});
+  Future<void> startApp({String? appId, String? appTitle, bool? autostart, bool restart = false});
 
   /// Stops the currently running app and performs any necessary cleanup.
   Future<void> stopApp();

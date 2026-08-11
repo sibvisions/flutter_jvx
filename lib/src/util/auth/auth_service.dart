@@ -115,6 +115,21 @@ class AuthService extends ChangeNotifier {
     _globalAuthTime.removeWhere((key, value) => key.startsWith("$appId@"));
   }
 
+  /// Clears biometric authentication cache for [appId] and if last
+  /// check exceeds [_shortPause]
+  static void clearCacheWithDurationCheck(String? appId) {
+    DateTime now = DateTime.now();
+
+    _globalAuthTime.removeWhere((key, value) {
+      if (key.startsWith("$appId@")) {
+        return now.difference(value.creation) >= _shortPause;
+      }
+      else {
+        return false;
+      }
+    });
+  }
+
   /// Clears biometric authentication cache for all applications
   static void clearCacheForAllApps() {
     _globalAuthTime.clear();

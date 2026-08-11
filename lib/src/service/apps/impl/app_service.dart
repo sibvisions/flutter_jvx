@@ -260,13 +260,13 @@ class AppService implements IAppService {
   }
 
   @override
-  Future<void> startApp({String? appId, String? appTitle, bool? autostart}) {
+  Future<void> startApp({String? appId, String? appTitle, bool? autostart, bool restart = false}) {
     _exitFuture.value = null;
-    return _startupFuture.value = _startApp(appId: appId, appTitle: appTitle, autostart: autostart)
+    return _startupFuture.value = _startApp(appId: appId, appTitle: appTitle, autostart: autostart, restart: restart)
         .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
   }
 
-  Future<void> _startApp({String? appId, String? appTitle, bool? autostart}) async {
+  Future<void> _startApp({String? appId, String? appTitle, bool? autostart, bool restart = false}) async {
     IConfigService servCfg = IConfigService();
 
     IUiService servUi = IUiService();
@@ -277,7 +277,9 @@ class AppService implements IAppService {
       return;
     }
 
-    await _stopApp(restart: appId == null);
+    bool isRestart = appId == null || restart;
+
+    await _stopApp(restart: isRestart);
 
     if (appId != null) {
       await servCfg.updateCurrentApp(appId);
@@ -306,6 +308,7 @@ class AppService implements IAppService {
       await ICommandService().sendCommand(
         StartupCommand(
           reason: "InitApp",
+          restart: isRestart
         ),
         throwFirstErrorCommand: true,
       );

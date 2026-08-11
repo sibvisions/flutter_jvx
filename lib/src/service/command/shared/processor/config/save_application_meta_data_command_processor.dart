@@ -49,7 +49,13 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
 
     String appId = servConf.currentApp.value!;
 
-    AuthService.clearCache(appId);
+    if (origin is StartupCommand && origin.restart) {
+      //in case of restart, check last successful auth and don't do it again if it's still valid
+      AuthService.clearCacheWithDurationCheck(appId);
+    }
+    else {
+      AuthService.clearCache(appId);
+    }
 
     await IAppService().removePreviousAppVersions(appId, version);
 

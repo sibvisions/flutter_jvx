@@ -38,6 +38,9 @@ class StartupCommand extends ApiCommand {
   /// Whether to load/init only base resources
   final bool minimal;
 
+  /// Whether the command is because of restart
+  final bool restart;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,6 +50,7 @@ class StartupCommand extends ApiCommand {
     this.password,
     this.minimal = false,
     this.websocket = true,
+    this.restart = false,
     required super.reason,
     super.showLoading,
   });
@@ -57,7 +61,8 @@ class StartupCommand extends ApiCommand {
 
   @override
   String propertiesAsString() {
-    return "username: $username, password: ${password != null ? '<set>' : 'null'}, websocket: $websocket, minimal: $minimal, ${super.propertiesAsString()}";
+    return "username: $username, password: ${password != null ? '<set>' : 'null'}, websocket: $websocket, "
+           "minimal: $minimal, restart: $restart, ${super.propertiesAsString()}";
   }
 
   @override

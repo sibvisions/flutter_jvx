@@ -43,7 +43,7 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
       servApp.saveLocationAsReturnUri();
 
       //use appTitle of last application. This is important if JVxSplash has a hardcoded appName
-      unawaited(servApp.startApp(appTitle: servApp.getCurrentApp()?.effectiveTitle));
+      unawaited(servApp.startApp(appTitle: servApp.getCurrentApp()?.effectiveTitle, restart: true));
     }
 
     return [];
