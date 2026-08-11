@@ -184,7 +184,7 @@ abstract class FilePickerDialog {
 
                     return pickedFile;
                 case UploadType.FILE_SYSTEM:
-                    FilePickerResult? result = await FilePicker.platform.pickFiles();
+                    FilePickerResult? result = await FilePicker.pickFiles();
 
                     XFile? pickedFile = result?.xFiles.single;
                     if (pickedFile != null) {
