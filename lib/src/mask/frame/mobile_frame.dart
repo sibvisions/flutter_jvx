@@ -53,6 +53,9 @@ class MobileFrameState extends FrameState {
     IconThemeData? actionsIconTheme,
     IconThemeData? iconTheme
   }) {
+    //this is required for switching theme (dark <-> light)
+    Theme.of(context);
+
     return AppBar(
       leading: leading,
       title: title,

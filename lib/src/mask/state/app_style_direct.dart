@@ -51,6 +51,10 @@ class AppStyleDirect {
     return _applicationStyle == other._applicationStyle && _darkMode == other._darkMode;
   }
 
+  bool isDarkMode() {
+    return _darkMode;
+  }
+
   String? style(String propertyName) {
     if (_darkMode) {
       String? valueDark = _applicationStyle?["dark.$propertyName"];
