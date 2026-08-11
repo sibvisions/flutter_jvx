@@ -124,6 +124,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   bool get showFloatingButton =>
       !model.hideFloatButton &&
       model.isEnabled &&
+      !model.isSelectionMode &&
       !metaData.readOnly &&
       metaData.insertEnabled &&
       // Only shows the floating button if we are bigger than 100x150

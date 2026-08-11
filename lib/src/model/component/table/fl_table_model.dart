@@ -90,6 +90,9 @@ class FlTableModel extends FlComponentModel {
   /// If the table should be visualized as list
   bool get asList => styles.contains(STYLE_TABLE_AS_LIST);
 
+  /// If table is in (multi) selection mode
+  bool get isSelectionMode => styles.contains("selectionMode");
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
