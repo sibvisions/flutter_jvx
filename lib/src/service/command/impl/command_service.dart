@@ -276,8 +276,9 @@ class CommandService implements ICommandService {
         }
       }
 
-      if ((error is! IErrorCommand)
-          && command is! IErrorCommand && command is! FeedbackCommand) {
+      if (error is! IErrorCommand
+          && command is! IErrorCommand
+          && command is! FeedbackCommand) {
         bool showError = true;
 
         if (command is AliveCommand) {
@@ -287,6 +288,12 @@ class CommandService implements ICommandService {
         }
 
         bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException;
+
+        if (wasConnected
+            && (repository is OnlineApiRepository) && !repository.connected
+            && isConnectionError) {
+          showError = false;
+        }
 
         if (showError) {
           if (showDialogOnError && FlutterUI.getCurrentContext() != null && FlutterUI.getCurrentContext()!.mounted) {
