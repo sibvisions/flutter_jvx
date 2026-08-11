@@ -28,6 +28,8 @@ class FlButtonModel extends FlComponentModel {
 
   static const String STYLE_TEXT = "f_text";
 
+  static const String STYLE_TEXT_LABEL = "f_text_label";
+
   static const String STYLE_SECURE = "f_secure";
 
   static const String STYLE_SLIDE_RESETTABLE = "f_slide_reset";
@@ -119,7 +121,10 @@ class FlButtonModel extends FlComponentModel {
   bool get isSliderAutoResetting => styles.contains(STYLE_SLIDE_AUTO_RESET);
 
   /// If the button is a text button
-  bool get isTextButton => styles.contains(STYLE_TEXT);
+  bool get isTextButton => styles.contains(STYLE_TEXT) || isTextLabelButton;
+
+  /// If the button is a text button
+  bool get isTextLabelButton => styles.contains(STYLE_TEXT_LABEL);
 
   /// If the button is a secure button
   bool get isSecure => styles.contains(STYLE_SECURE);

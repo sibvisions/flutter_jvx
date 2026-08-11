@@ -322,6 +322,13 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       }),
       minimumSize: WidgetStateProperty.all(Size.zero),
       elevation: WidgetStateProperty.all(hasElevation ? 2 : 0),
+      foregroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return null;
+        }
+
+        return model.foreground ?? (model.isTextLabelButton ? Theme.of(context).textTheme.labelMedium?.color : null);
+      }),
       backgroundColor: backgroundColor != null ? WidgetStateProperty.all(backgroundColor) : null,
       //always EdgeInsets.zero paddings just looks wrong with border painted
       padding: WidgetStateProperty.all(shrinkSize == true ?
