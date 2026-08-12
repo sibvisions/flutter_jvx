@@ -287,7 +287,7 @@ class CommandService implements ICommandService {
           }
         }
 
-        bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException;
+        bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException || error is HttpException;
 
         if (wasConnected
             && (repository is OnlineApiRepository) && !repository.connected
