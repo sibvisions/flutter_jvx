@@ -23,6 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../flutter_jvx.dart';
 import '../flutter_ui.dart';
 import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
@@ -246,6 +247,31 @@ class JVxOverlayState extends State<JVxOverlay> {
   @override
   void initState() {
     super.initState();
+
+    if (!kIsWeb) {
+      AppStyleDirect direct = AppStyle.directFromConfig();
+
+      if (direct.styleAsBool("fixLandscape")) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+      }
+      else if (direct.styleAsBool("fixPortrait")) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+      }
+      else {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+      }
+    }
 
     backButtonDispatcher = RootBackButtonDispatcher();
     backButtonDispatcher.addCallback(_onBackPress);
