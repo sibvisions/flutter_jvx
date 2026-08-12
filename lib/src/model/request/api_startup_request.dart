@@ -90,6 +90,13 @@ class ApiStartupRequest extends ApiRequest {
   /// The device type model this app runs on.
   final String? deviceTypeModel;
 
+  /// Whether the device is a tablet
+  final bool? deviceIsTablet;
+  /// Whether the device is a phone
+  final bool? deviceIsPhone;
+  /// Whether the device is a TV
+  final bool? deviceIsTV;
+
   /// The supported server version.
   final String? serverVersion;
 
@@ -125,6 +132,9 @@ class ApiStartupRequest extends ApiRequest {
     this.deviceType,
     this.deviceTypeModel,
     this.serverVersion,
+    this.deviceIsTablet,
+    this.deviceIsPhone,
+    this.deviceIsTV
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,6 +165,9 @@ class ApiStartupRequest extends ApiRequest {
         if (appVersion != null) ApiObjectProperty.appVersion: appVersion,
         if (deviceType != null) ApiObjectProperty.deviceType: deviceType,
         if (deviceTypeModel != null) ApiObjectProperty.deviceTypeModel: deviceTypeModel,
+        if (deviceIsTablet != null) ApiObjectProperty.deviceIsTablet: deviceIsTablet,
+        if (deviceIsPhone != null) ApiObjectProperty.deviceIsPhone: deviceIsPhone,
+        if (deviceIsTV != null) ApiObjectProperty.deviceIsTV: deviceIsTV,
         if (serverVersion != null) ApiObjectProperty.serverVersion: serverVersion,
         ...?customProperties?.map((key, value) => MapEntry("custom_$key", value)),
       };

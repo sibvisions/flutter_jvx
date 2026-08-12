@@ -22,6 +22,9 @@ import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DeviceInfo {
+  //cached info
+  static DeviceInfo? _instance;
+
   String? appVersion;
   String? technology;
   String? osName;
@@ -29,6 +32,9 @@ class DeviceInfo {
   String? deviceType;
   String? deviceTypeModel;
   String? deviceId;
+  bool isTablet;
+  bool isPhone;
+  bool isTV;
 
   DeviceInfo({
     this.appVersion,
@@ -38,47 +44,67 @@ class DeviceInfo {
     this.deviceType,
     this.deviceTypeModel,
     this.deviceId,
+    this.isTablet = false,
+    this.isPhone = false,
+    this.isTV = false
   });
 
   static Future<DeviceInfo> fromPlatform() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    DeviceInfo deviceInfo;
+    if (_instance == null) {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      DeviceInfo deviceInfo;
 
-    if (kIsWeb) {
-      var webBrowserInfo = await DeviceInfoPlugin().webBrowserInfo;
-      deviceInfo = DeviceInfo(
-        osName: webBrowserInfo.platform,
-        deviceType: webBrowserInfo.browserName.name,
-        deviceTypeModel: webBrowserInfo.userAgent,
-        technology: "FlutterWeb",
-        deviceId: await FlutterDevicePlatformId().getUniqueId()
-      );
-    } else {
-      if (Platform.isAndroid) {
-        var androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (kIsWeb) {
+        var webBrowserInfo = await DeviceInfoPlugin().webBrowserInfo;
+
         deviceInfo = DeviceInfo(
-          osName: "Android ${androidInfo.version.release}",
-          osVersion: androidInfo.version.sdkInt.toString(),
-          deviceType: androidInfo.manufacturer,
-          deviceTypeModel: androidInfo.model,
+          osName: webBrowserInfo.platform,
+          deviceType: webBrowserInfo.browserName.name,
+          deviceTypeModel: webBrowserInfo.userAgent,
+          technology: "FlutterWeb",
           deviceId: await FlutterDevicePlatformId().getUniqueId()
         );
-      } else if (Platform.isIOS) {
-        var iosInfo = await DeviceInfoPlugin().iosInfo;
-        deviceInfo = DeviceInfo(
-          osName: iosInfo.systemName,
-          osVersion: iosInfo.systemVersion,
-          deviceTypeModel: iosInfo.name,
-          deviceType: iosInfo.model,
-          deviceId: iosInfo.identifierForVendor,
-        );
-      } else {
-        deviceInfo = DeviceInfo();
       }
+      else {
+        if (Platform.isAndroid) {
+          var androidInfo = await DeviceInfoPlugin().androidInfo;
+
+          deviceInfo = DeviceInfo(
+            osName: "Android ${androidInfo.version.release}",
+            osVersion: androidInfo.version.sdkInt.toString(),
+            deviceType: androidInfo.manufacturer,
+            deviceTypeModel: androidInfo.model,
+            deviceId: await FlutterDevicePlatformId().getUniqueId(),
+            isTablet: !androidInfo.systemFeatures.contains('android.hardware.telephony'),
+            isPhone: androidInfo.systemFeatures.contains('android.hardware.telephony'),
+            isTV: androidInfo.systemFeatures.contains('android.software.leanback')
+              || androidInfo.systemFeatures.contains('android.hardware.type.television')
+          );
+        } else if (Platform.isIOS) {
+          var iosInfo = await DeviceInfoPlugin().iosInfo;
+
+          String lowerModel = iosInfo.model.toLowerCase();
+
+          deviceInfo = DeviceInfo(
+            osName: iosInfo.systemName,
+            osVersion: iosInfo.systemVersion,
+            deviceTypeModel: iosInfo.name,
+            deviceType: iosInfo.model,
+            deviceId: iosInfo.identifierForVendor,
+            isTablet: lowerModel.contains('ipad'),
+            isPhone: lowerModel.contains("iphone"),
+            isTV: lowerModel.contains('apple tv') || lowerModel.contains("tv")
+          );
+        } else {
+          deviceInfo = DeviceInfo();
+        }
+      }
+
+      _instance = deviceInfo
+        ..technology ??= "FlutterMobile"
+        ..appVersion = "${packageInfo.version}+${packageInfo.buildNumber}";
     }
 
-    return deviceInfo
-      ..technology ??= "FlutterMobile"
-      ..appVersion = "${packageInfo.version}+${packageInfo.buildNumber}";
+    return _instance!;
   }
 }

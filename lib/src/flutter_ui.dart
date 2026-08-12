@@ -132,6 +132,10 @@ enum BackgroundType {
 
 ///Simple static application variables
 class AppVariables {
+  static bool? isTablet;
+  static bool? isPhone;
+  static bool? isTV;
+
   static Size? lastSize;
 
   static bool? lastDarkMode;
@@ -1165,6 +1169,11 @@ if (kDebugMode) {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mqd = MediaQuery.of(context);
+
+    AppVariables.isTablet ??= mqd.size.shortestSide >= 600;
+    AppVariables.isPhone ??= mqd.size.shortestSide < 600;
+    AppVariables.isTV ??= FocusManager.instance.highlightMode == FocusHighlightMode.touch;
     AppVariables.lastSize ??= AppVariables.lastSize = MediaQuery.sizeOf(context);
     AppVariables.lastDarkMode ??= MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 

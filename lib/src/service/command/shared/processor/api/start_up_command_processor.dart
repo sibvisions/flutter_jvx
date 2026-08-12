@@ -81,6 +81,23 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
 
     //MARK: STARTUP APPLICATION
 
+    bool isTablet = deviceInfo.isTablet;
+    bool isPhone = deviceInfo.isPhone;
+    bool isTV = deviceInfo.isTV;
+
+    //if device is phone and tablet -> tablet with sim
+    if (isTablet && isPhone) {
+      if (AppVariables.isTablet != null) {
+        isTablet = AppVariables.isTablet!;
+        isPhone = AppVariables.isPhone!;
+      }
+    }
+
+    //still both -> force tablet
+    if (isTablet && isPhone) {
+      isPhone = false;
+    }
+
     ApiStartupRequest startupRequest = ApiStartupRequest(
       baseUrl: servConf.baseUrl.value!.toString(),
       requestUri: kIsWeb ? Uri.base.toString() : null,
@@ -102,6 +119,9 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
       appVersion: deviceInfo.appVersion,
       deviceType: deviceInfo.deviceType,
       deviceTypeModel: deviceInfo.deviceTypeModel,
+      deviceIsTablet: isTablet,
+      deviceIsPhone: isPhone,
+      deviceIsTV: isTV,
       deviceId: deviceInfo.deviceId,
       installId: await servConf.getConfigHandler().installId(),
       serverVersion: FlutterUI.supportedServerVersion,

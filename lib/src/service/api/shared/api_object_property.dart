@@ -385,6 +385,9 @@ abstract class ApiObjectProperty {
   static const String appVersion = "appVersion";
   static const String deviceType = "deviceType";
   static const String deviceTypeModel = "deviceTypeModel";
+  static const String deviceIsTablet = "deviceIsTablet";
+  static const String deviceIsPhone = "deviceIsPhone";
+  static const String deviceIsTV = "deviceIsTV";
   static const String serverVersion = "serverVersion";
 
   static const String file = "file";
