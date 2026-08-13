@@ -22,6 +22,12 @@ class FlLabelModel extends FlComponentModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The style if the top and bottom padding are set to 0
+  static const String STYLE_NO_PADDING = "f_padding_0";
+
+  /// The style if the top and bottom padding are set to 1/2
+  static const String STYLE_HALF_PADDING = "f_padding_2";
+
   /// The style if the bottom padding is set to 0
   static const String STYLE_NO_BOTTOM_PADDING = "f_padding_bottom_0";
 
