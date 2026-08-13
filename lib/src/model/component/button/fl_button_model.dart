@@ -74,11 +74,18 @@ class FlButtonModel extends FlComponentModel {
   /// The image when the button is currently being pressed down.
   String? mouseOverImage;
 
+  /// The margins
+  EdgeInsets? margins;
+
   /// The paddings between the button and its children.
   EdgeInsets? _paddings;
 
   /// The paddings between the button and its children.
   EdgeInsets get paddings {
+    if (margins != null) {
+      return margins!;
+    }
+
     if (_paddings != null) {
       return _paddings!;
     }
@@ -145,7 +152,7 @@ class FlButtonModel extends FlComponentModel {
   bool get isHaptic => styles.contains(STYLE_HAPTIC);
 
   /// If the button has no default paddings and is small.
-  bool get isSmallStyle => styles.contains(STYLE_SMALL);
+  bool get isSmallStyle => styles.contains(STYLE_SMALL) || margins != null;
 
   /// If the button is a hyperlink button
   bool get isHyperLink => styles.contains(STYLE_HYPERLINK) || styles.contains(STYLE_CELL_HYPERLINK);
@@ -230,11 +237,12 @@ class FlButtonModel extends FlComponentModel {
       defaultValue: defaultModel.mouseOverImage,
       currentValue: mouseOverImage,
     );
-    paddings = getPropertyValue(
+
+    margins = getPropertyValue(
         json: newJson,
         key: ApiObjectProperty.margins,
-        defaultValue: defaultModel._paddings,
-        currentValue: _paddings,
+        defaultValue: defaultModel.margins,
+        currentValue: margins,
         conversion: (value) => ParseUtil.parseMargins(value)! * scaling);
 
     dataProvider = getPropertyValue(

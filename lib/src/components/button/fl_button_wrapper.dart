@@ -188,6 +188,11 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     Size calcSize = super.calculateSize(context);
 
     if (model.preferredSize == null) {
+      if (model.isSmallStyle) {
+        return calcSize;
+      }
+
+      //-> at least a minimum button size
       double height = JVxColors.componentHeight();
 
       if (calcSize.width < height || calcSize.height < height) {

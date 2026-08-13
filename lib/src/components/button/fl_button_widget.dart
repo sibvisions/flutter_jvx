@@ -336,7 +336,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         :
         model.paddings
       ),
-      tapTargetSize:  shrinkSize == true ? MaterialTapTargetSize.shrinkWrap : tapTargetSize,
+      tapTargetSize: shrinkSize == true || model.isSmallStyle ? MaterialTapTargetSize.shrinkWrap : tapTargetSize,
       splashFactory: !model.borderPainted && !model.isHyperLink ? NoSplash.splashFactory : null,
       overlayColor: !model.borderPainted && !model.isHyperLink
           ? WidgetStateProperty.all(Colors.transparent)
