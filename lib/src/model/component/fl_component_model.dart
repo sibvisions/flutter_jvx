@@ -229,6 +229,9 @@ abstract class FlComponentModel {
   /// If the component sends mouse clicked events.
   bool eventMouseClicked = false;
 
+  /// Whether layouting should be used for the component
+  bool noLayout = false;
+
   /// The aria label.
   String ariaLabel = "";
 

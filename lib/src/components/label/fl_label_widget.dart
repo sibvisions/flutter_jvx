@@ -123,9 +123,6 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   static EdgeInsets adjustPaddingWithStyles(FlLabelModel model, EdgeInsets padding) {
     EdgeInsets usedPadding = padding;
 
-    print(model.text);
-    print(model.styles);
-
     if (model.styles.contains(FlLabelModel.STYLE_NO_BOTTOM_PADDING) ||
         model.styles.contains(FlLabelModel.STYLE_NO_PADDING)) {
       usedPadding = usedPadding.copyWith(bottom: 0);

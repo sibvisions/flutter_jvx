@@ -286,7 +286,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Callback called after every build.
   void postFrameCallback(BuildContext context) {
-    if (!context.mounted || widget.offstage) {
+    if (!context.mounted || widget.offstage || model.noLayout) {
       return;
     }
 
@@ -339,6 +339,11 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Is called when a new [LayoutData] is sent from the [ILayoutService].
   void receiveNewLayoutData(LayoutData newLayoutData, {bool repaint = true, List<LayoutData>? cache}) {
+
+    if (model.noLayout) {
+      return;
+    }
+
     //mark layout data "received"
     newLayoutData.receivedDate = DateTime.now();
 

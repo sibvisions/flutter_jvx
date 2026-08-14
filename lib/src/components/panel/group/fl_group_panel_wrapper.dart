@@ -119,6 +119,13 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
                     model.layoutDataCollapsed = layoutData.clone();
                     model.layoutDataCollapsed!.layoutPosition?.height = _heightAnimation.value;
                 }
+
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  if (mounted) {
+                    IStorageService servSt = IStorageService();
+                    children.keys.forEach((element) => servSt.getComponentModel(componentId: element)?.noLayout = false);
+                  }
+                });
             }
         });
 
@@ -368,6 +375,12 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
                       child: GestureDetector(
                           onDoubleTap: () {
                               if (model.canCollapse && !_resizeEnabled) {
+
+                                  IStorageService servSt = IStorageService();
+                                  children.keys.forEach((element) => servSt.getComponentModel(componentId: element)?.noLayout = true);
+
+                                  children.keys.forEach((element) => print(servSt.getComponentModel(componentId: element)));
+
                                   if (!_isCollapsed) {
                                       preferredSizeBeforeCollapse = layoutData.preferredSize;
                                       posBeforeCollapse = layoutData.layoutPosition?.clone();
