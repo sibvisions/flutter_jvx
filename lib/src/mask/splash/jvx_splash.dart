@@ -91,13 +91,15 @@ class _JVxSplashState extends State<JVxSplash> {
                     if (widget.logo != null) widget.logo!,
                     if (widget.showAppName)
                       Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Text(_appTitle(),
-                          style: TextStyle(
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.bold,
-                            color: widget.color,
-                          ),
+                        padding: const EdgeInsets.only(top: 15, left: 10, right: 10),
+                        child: FittedBox(
+                          child: Text(_appTitle(),
+                            style: TextStyle(
+                              fontSize: 32.0,
+                              fontWeight: FontWeight.bold,
+                              color: widget.color,
+                            ),
+                          )
                         ),
                       ),
                   ],
