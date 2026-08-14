@@ -188,7 +188,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     Size calcSize = super.calculateSize(context);
 
     if (model.preferredSize == null) {
-      if (model.isSmallStyle) {
+      //makes it possible to use margins, but use componentHeight (e.g. MorphPanel buttons)
+      if (model.isSmallStyle && !model.isStandardSize) {
         return calcSize;
       }
 

@@ -24,6 +24,8 @@ class FlButtonModel extends FlComponentModel {
 
   static const String STYLE_SMALL = "f_small";
 
+  static const String STYLE_STANDARD_SIZE = "f_standard_size";
+
   static const String STYLE_SLIDE = "f_slide";
 
   static const String STYLE_TEXT = "f_text";
@@ -153,6 +155,9 @@ class FlButtonModel extends FlComponentModel {
 
   /// If the button has no default paddings and is small.
   bool get isSmallStyle => styles.contains(STYLE_SMALL) || margins != null;
+
+  /// If the button has no default paddings and is small.
+  bool get isStandardSize => styles.contains(STYLE_STANDARD_SIZE);
 
   /// If the button is a hyperlink button
   bool get isHyperLink => styles.contains(STYLE_HYPERLINK) || styles.contains(STYLE_CELL_HYPERLINK);
