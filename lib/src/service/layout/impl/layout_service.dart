@@ -166,8 +166,7 @@ class LayoutService implements ILayoutService {
       }
 
       //send if commands are available
-      //or parent has children (if component is not a container -> perform layout)
-      if (commands.isNotEmpty || children.isNotEmpty) {
+      if (commands.isNotEmpty) {
         return commands;
       }
     }
