@@ -279,7 +279,7 @@ class ContentBottomSheet extends StatelessWidget {
         Container(
           padding: const EdgeInsets.only(top: 8, bottom: 4),
           height: 17,
-          color: model.useBackgroundInTitle ? model.background ?? Theme.of(context).colorScheme.surface : null,
+          color: model.useBackgroundInTitle ? model.background ?? Theme.of(context).colorScheme.surface : Theme.of(context).appBarTheme.backgroundColor,
           child: Center(
             child: Container(
               width: 36,
