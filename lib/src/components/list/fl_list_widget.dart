@@ -496,221 +496,265 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
 
     EdgeInsets? entryPadding = style.listEntryPadding();
 
+    ThemeData theme = Theme.of(context);
+
     Widget list = _wrapList(context, _wrapSlider(
       context,
       NotificationListener<ScrollNotification>(
         onNotification: (notification) => _onInternalEndScroll(notification),
         child: NotificationListener<ScrollNotification>(
           onNotification: (notification) => _onInternalScroll(notification),
-          child: SliverViewObserver(
-            controller: _observerController,
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              slivers: [
-                SliverList.separated(
-                  separatorBuilder: (context, index) {
-                    if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
-                      return Container();
-                    }
+          child: Stack(
+            children: [
+              SliverViewObserver(
+                controller: _observerController,
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: _scrollController,
+                  slivers: [
+                    SliverList.separated(
+                      separatorBuilder: (context, index) {
+                        if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
+                          return Container();
+                        }
 
-                    if (asCard || asCardFlat) {
-                      return Divider(height: cardSpacing, color: Colors.transparent);
-                    } else {
-                      return Divider(height: 1.0, color: JVxColors.isLightTheme(context) ? Colors.grey.shade300 : Colors.white70);
-                    }
-                  },
-                  itemCount: widget.chunkData.data.length,
-                  itemBuilder: (context, index) {
-                    if (_sliverContext != context) {
-                      _sliverContext = context;
+                        if (asCard || asCardFlat) {
+                          return Divider(height: cardSpacing, color: Colors.transparent);
+                        } else {
+                          return Divider(height: 1.0, color: JVxColors.isLightTheme(context) ? Colors.grey.shade300 : Colors.white70);
+                        }
+                      },
+                      itemCount: widget.chunkData.data.length,
+                      itemBuilder: (context, index) {
+                        if (_sliverContext != context) {
+                          _sliverContext = context;
 
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        _scrollTo(widget.selectedRowIndex);
-                      });
-                    }
+                          SchedulerBinding.instance.addPostFrameCallback((_) {
+                            _scrollTo(widget.selectedRowIndex);
+                          });
+                        }
 
-                    SlidableController? slideCtrl;
+                        SlidableController? slideCtrl;
 
-                    if (widget.slideActionFactory != null) {
-                      slideCtrl = SlidableController(this);
+                        if (widget.slideActionFactory != null) {
+                          slideCtrl = SlidableController(this);
 
-                      if (index > _slideController.length - 1) {
-                        _slideController.add(slideCtrl);
-                      } else {
-                        _slideController[index] = slideCtrl;
-                      }
-                    }
+                          if (index > _slideController.length - 1) {
+                            _slideController.add(slideCtrl);
+                          } else {
+                            _slideController[index] = slideCtrl;
+                          }
+                        }
 
-                    if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
-                      return Container();
-                    }
+                        if (widget.chunkData.getRecordStatusRaw(index)?.contains("DISMISSED") == true) {
+                          return Container();
+                        }
 
-                    bool selected = index == widget.selectedRowIndex && widget.model.showSelection;
+                        bool selected = index == widget.selectedRowIndex && widget.model.showSelection;
 
-                    Color colBack = index % 2 == 0 ? colCardBackgroundEven : colCardBackgroundOdd;
+                        Color colBack = index % 2 == 0 ? colCardBackgroundEven : colCardBackgroundOdd;
 
-                    Widget listEntry = FlListEntry(
-                      model: widget.model,
-                      runtime: uiTemplate != null ? _runtime : null,
-                      index: index,
-                      columnDefinitions: widget.chunkData.columnDefinitions,
-                      cellEditors: widget.cellEditors,
-                      isSelected: selected,
-                      values: widget.chunkData.data[index]!,
-                      recordFormat: widget.chunkData.recordFormats?[widget.model.name],
-                      columnsPerRow: mapColumnsPerRow,
-                      columnSeparator: columnSeparator,
-                      mainAxisAlignment: verticalAlign,
-                      entryBuilder: widget.entryBuilder,
-                      background: noImageBackground ? Colors.transparent : null,
-                      imageSize: sizeImage,
-                      onEndEditing: widget.onEndEditing
-                    );
+                        Widget listEntry = FlListEntry(
+                          model: widget.model,
+                          runtime: uiTemplate != null ? _runtime : null,
+                          index: index,
+                          columnDefinitions: widget.chunkData.columnDefinitions,
+                          cellEditors: widget.cellEditors,
+                          isSelected: selected,
+                          values: widget.chunkData.data[index]!,
+                          recordFormat: widget.chunkData.recordFormats?[widget.model.name],
+                          columnsPerRow: mapColumnsPerRow,
+                          columnSeparator: columnSeparator,
+                          mainAxisAlignment: verticalAlign,
+                          entryBuilder: widget.entryBuilder,
+                          background: noImageBackground ? Colors.transparent : null,
+                          imageSize: sizeImage,
+                          onEndEditing: widget.onEndEditing
+                        );
 
-                    if (entryPadding != null) {
-                      listEntry = Padding(padding: entryPadding, child: listEntry);
-                    }
+                        if (entryPadding != null) {
+                          listEntry = Padding(padding: entryPadding, child: listEntry);
+                        }
 
-                    if (withArrow) {
-                      listEntry = Flex(
-                        direction: Axis.horizontal,
-                        children: [Flexible(flex: 1, fit: FlexFit.tight, child: listEntry), Flexible(flex: 0, fit: FlexFit.loose, child: Padding(padding: EdgeInsets.only(right: selected ? 2 : 5), child: Icon(Icons.arrow_forward_ios, size: sizeArrow, color: colArrow)))],
-                      );
-                    } else {
-                      //we need the padding to avoid jumps on selection
-                      listEntry = Padding(padding: EdgeInsets.only(right: selected ? 2 : 5), child: listEntry);
-                    }
+                        if (withArrow) {
+                          listEntry = Flex(
+                            direction: Axis.horizontal,
+                            children: [Flexible(flex: 1, fit: FlexFit.tight, child: listEntry), Flexible(flex: 0, fit: FlexFit.loose, child: Padding(padding: EdgeInsets.only(right: selected ? 2 : 5), child: Icon(Icons.arrow_forward_ios, size: sizeArrow, color: colArrow)))],
+                          );
+                        } else {
+                          //we need the padding to avoid jumps on selection
+                          listEntry = Padding(padding: EdgeInsets.only(right: selected ? 2 : 5), child: listEntry);
+                        }
 
-                    if (selected) {
-                      ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
+                        if (selected) {
+                          ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
 
-                      Color? colSelection;
+                          Color? colSelection;
 
-                      if (JVxColors.isLightTheme(context)) {
-                        colSelection = applicationSettings.colors?.activeSelectionBackground;
-                      } else {
-                        colSelection = applicationSettings.darkColors?.activeSelectionBackground;
-                      }
+                          if (JVxColors.isLightTheme(context)) {
+                            colSelection = applicationSettings.colors?.activeSelectionBackground;
+                          } else {
+                            colSelection = applicationSettings.darkColors?.activeSelectionBackground;
+                          }
 
-                      colSelection ??= Theme.of(context).colorScheme.primary;
+                          colSelection ??= Theme.of(context).colorScheme.primary;
 
-                      colSelection = colSelection.withAlpha(Color.getAlphaFromOpacity(0.7));
+                          colSelection = colSelection.withAlpha(Color.getAlphaFromOpacity(0.7));
 
-                      listEntry = Container(
-                        decoration: BoxDecoration(
-                          border: Border(right: BorderSide(color: colSelection, width: 3)),
-                        ),
-                        child: listEntry
-                      );
-                    }
-
-                    if (widget.slideActionFactory != null) {
-                      List<SlidableAction> slideActions = widget.slideActionFactory?.call(context, index) ?? [];
-
-                      listEntry = Theme(
-                        data: Theme.of(context).copyWith(outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white, textStyle: const TextStyle(fontWeight: FontWeight.normal), iconSize: 16))),
-                        child: Slidable(
-                          key: UniqueKey(),
-                          controller: slideCtrl,
-                          closeOnScroll: true,
-                          direction: Axis.horizontal,
-                          enabled: widget.slideActionFactory != null && slideActions.isNotEmpty == true && widget.model.isEnabled,
-                          groupTag: widget.slideActionFactory,
-                          endActionPane: ActionPane(
-                            extentRatio: 0.50,
-                            dismissible: DismissiblePane(
-                              closeOnCancel: true,
-                              onDismissed: () {
-                                String? status = widget.chunkData.getRecordStatusRaw(index);
-
-                                if (status != null && !status.contains("DISMISSED")) {
-                                  if (_slideController.length > index) {
-                                    SlidableController ctrl = _slideController.elementAt(index);
-                                    ctrl.close(duration: const Duration(milliseconds: 0));
-
-                                    _slideController.removeAt(index);
-                                  }
-
-                                  widget.chunkData.setStatusRaw(index, "DISMISSED");
-
-                                  HapticUtil.medium();
-
-                                  setState(() {});
-                                }
-
-                                slideActions.last.onPressed!(context);
-                              },
+                          listEntry = Container(
+                            decoration: BoxDecoration(
+                              border: Border(right: BorderSide(color: colSelection, width: 3)),
                             ),
-                            motion: const StretchMotion(),
-                            children: slideActions,
-                          ),
-                          child: listEntry
-                        )
-                      );
-                    }
+                            child: listEntry
+                          );
+                        }
 
-                    if (asCard) {
-                      listEntry = Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(cardBorderRadius),
-                        ),
-                        color: colBack,
-                        margin: const EdgeInsets.all(2),
-                        child: ClipPath(
-                          clipper: ShapeBorderClipper(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(cardBorderRadius)
+                        if (widget.slideActionFactory != null) {
+                          List<SlidableAction> slideActions = widget.slideActionFactory?.call(context, index) ?? [];
+
+                          listEntry = Theme(
+                            data: Theme.of(context).copyWith(outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(iconColor: slideActions.isNotEmpty ? slideActions.first.foregroundColor : Colors.white, textStyle: const TextStyle(fontWeight: FontWeight.normal), iconSize: 16))),
+                            child: Slidable(
+                              key: UniqueKey(),
+                              controller: slideCtrl,
+                              closeOnScroll: true,
+                              direction: Axis.horizontal,
+                              enabled: widget.slideActionFactory != null && slideActions.isNotEmpty == true && widget.model.isEnabled,
+                              groupTag: widget.slideActionFactory,
+                              endActionPane: ActionPane(
+                                extentRatio: 0.50,
+                                dismissible: DismissiblePane(
+                                  closeOnCancel: true,
+                                  onDismissed: () {
+                                    String? status = widget.chunkData.getRecordStatusRaw(index);
+
+                                    if (status != null && !status.contains("DISMISSED")) {
+                                      if (_slideController.length > index) {
+                                        SlidableController ctrl = _slideController.elementAt(index);
+                                        ctrl.close(duration: const Duration(milliseconds: 0));
+
+                                        _slideController.removeAt(index);
+                                      }
+
+                                      widget.chunkData.setStatusRaw(index, "DISMISSED");
+
+                                      HapticUtil.medium();
+
+                                      setState(() {});
+                                    }
+
+                                    slideActions.last.onPressed!(context);
+                                  },
+                                ),
+                                motion: const StretchMotion(),
+                                children: slideActions,
+                              ),
+                              child: listEntry
                             )
-                          ), child: listEntry
-                        )
-                      );
-                    } else if (asCardFlat) {
-                      listEntry = Card(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(cardBorderRadius),
-                        ),
-                        color: colBack,
-                        margin: const EdgeInsets.all(2),
-                        child: ClipPath(
-                          clipper: ShapeBorderClipper(
+                          );
+                        }
+
+                        if (asCard) {
+                          listEntry = Card(
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(cardBorderRadius)
+                              borderRadius: BorderRadius.circular(cardBorderRadius),
+                            ),
+                            color: colBack,
+                            margin: const EdgeInsets.all(2),
+                            child: ClipPath(
+                              clipper: ShapeBorderClipper(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(cardBorderRadius)
+                                )
+                              ), child: listEntry
                             )
+                          );
+                        } else if (asCardFlat) {
+                          listEntry = Card(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(cardBorderRadius),
+                            ),
+                            color: colBack,
+                            margin: const EdgeInsets.all(2),
+                            child: ClipPath(
+                              clipper: ShapeBorderClipper(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(cardBorderRadius)
+                                )
+                              ),
+                              child: listEntry
+                            )
+                          );
+                        }
+
+                        Widget listTile = ListTile(minTileHeight: 10, contentPadding: const EdgeInsets.all(0), horizontalTitleGap: 0, minVerticalPadding: 0, title: listEntry);
+
+                        if (widget.onTap != null || widget.onLongPress != null) {
+                          listTile = GestureDetector(
+                            onTap: widget.onTap != null && widget.model.isEnabled
+                              ? () {
+                                  widget.onTap!(index);
+
+                                  _closeSlidables();
+                                }
+                              : null,
+                            onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
+                              ? (details) {
+                                  widget.onLongPress!(index, details.globalPosition);
+
+                                  _closeSlidables();
+                                }
+                              : null,
+                            child: listTile,
+                          );
+                        }
+
+                        return listTile;
+                      },
+                    ),
+                  ],
+                )
+              ),
+              if (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty)
+                Positioned(
+                  top: 40,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    //avoid overflow
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(40),
+                              onTap: widget.onRefresh,
+                              onLongPress: widget.onRefresh,
+                              child: Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: Stack(
+                                      children: [Icon(Icons.notes, size: 50, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
+                                        Positioned(bottom: 0, right: 0, child: Icon(Icons.refresh, size: 20, color: theme.colorScheme.primary.withAlpha(150)))
+                                      ])
+                              ),
+                            ),
                           ),
-                          child: listEntry
-                        )
-                      );
-                    }
-
-                    Widget listTile = ListTile(minTileHeight: 10, contentPadding: const EdgeInsets.all(0), horizontalTitleGap: 0, minVerticalPadding: 0, title: listEntry);
-
-                    if (widget.onTap != null || widget.onLongPress != null) {
-                      listTile = GestureDetector(
-                        onTap: widget.onTap != null && widget.model.isEnabled
-                          ? () {
-                              widget.onTap!(index);
-
-                              _closeSlidables();
-                            }
-                          : null,
-                        onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
-                          ? (details) {
-                              widget.onLongPress!(index, details.globalPosition);
-
-                              _closeSlidables();
-                            }
-                          : null,
-                        child: listTile,
-                      );
-                    }
-
-                    return listTile;
-                  },
-                ),
-              ],
-            )
+                          const SizedBox(height: 8),
+                          IgnorePointer(
+                            child: Text(
+                              FlutterUI.translate("No records available"),
+                              style: TextStyle(fontSize: 16, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+            ]
           )
         )
       )
@@ -737,8 +781,22 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
       );
     }
 
-    if (widget.onFloatingPress != null) {
-      listWidget = Stack(fit: StackFit.expand, children: [listWidget, _createFloatingButton(context)]);
+    if (widget.onFloatingPress != null || !widget.chunkData.isAllFetched) {
+      List<Widget> children = [listWidget];
+
+      if (!widget.chunkData.isAllFetched) {
+        children.add(Positioned(
+            bottom: 2,
+            right: 2,
+            child: Icon(Icons.keyboard_double_arrow_down, size: 15, color: Colors.red[300]!.withAlpha(160)))
+        );
+      }
+
+      if (widget.onFloatingPress != null) {
+        children.add(_createFloatingButton(context));
+      }
+
+      listWidget = Stack(fit: StackFit.expand, children: children);
     }
 
     return listWidget;
