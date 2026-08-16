@@ -37,6 +37,8 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
   String? _layoutDefinition;
 
+  String? _layoutData;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,23 +53,16 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   void initState() {
     super.initState();
 
-    createLayout(true);
+    _createLayout();
 
     buildChildren(setStateOnChange: false);
 
     registerParent();
   }
 
-  void createLayout([bool force = false]) {
-    if (force || _layoutDefinition != model.layout) {
-      layoutData.layout = ILayout.getLayout(model);
-      _layoutDefinition = model.layout;
-    }
-  }
-
   @override
   modelUpdated() {
-    createLayout();
+    _updateLayout();
 
     super.modelUpdated();
 
@@ -94,5 +89,21 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     }
 
     return wrapWidget(context, w);
+  }
+
+  void _createLayout() {
+    layoutData.layout = ILayout.getLayout(model);
+    _layoutDefinition = model.layout;
+    _layoutData = model.layoutData;
+  }
+
+  void _updateLayout() {
+    if (_layoutDefinition != model.layoutData) {
+      _createLayout();
+    }
+    else if (_layoutData != model.layoutData){
+      _layoutData = model.layoutData;
+      layoutData.layout?.updateData(model.layoutData);
+    }
   }
 }

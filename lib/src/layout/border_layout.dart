@@ -114,6 +114,10 @@ class BorderLayout extends ILayout implements ICloneable {
   }
 
   @override
+  void updateData(String? layoutData) {
+  }
+
+  @override
   void calculateLayout(LayoutData parent, List<LayoutData> children) {
     // Clear constraint map.
     _positions.clear();

@@ -49,6 +49,10 @@ class NullLayout extends ILayout implements ICloneable {
   }
 
   @override
+  void updateData(String? layoutData) {
+  }
+
+  @override
   void calculateLayout(LayoutData parent, List<LayoutData> children) {
     double width = 0;
     double height = 0;

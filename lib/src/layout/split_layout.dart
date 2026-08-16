@@ -102,6 +102,10 @@ class SplitLayout extends ILayout implements ICloneable {
   }
 
   @override
+  void updateData(String? layoutData) {
+  }
+
+  @override
   void calculateLayout(LayoutData parent, List<LayoutData> children) {
     // Either left or top child, dependent on splitter orientation
     LayoutData leftTopChild = children.firstWhere((element) => element.constraints == FIRST_COMPONENT);

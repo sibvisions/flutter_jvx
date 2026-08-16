@@ -43,6 +43,10 @@ class ScrollLayout extends ILayout {
   }
 
   @override
+  void updateData(String? layoutData) {
+  }
+
+  @override
   void calculateLayout(LayoutData parent, List<LayoutData> children) {
     LayoutData clonedParentData = parent.clone();
 

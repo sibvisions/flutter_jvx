@@ -67,6 +67,10 @@ class GridLayout extends ILayout {
   }
 
   @override
+  void updateData(String? layoutData) {
+  }
+
+  @override
   void calculateLayout(LayoutData parent, List<LayoutData> children) {
     // The widest single grid of all components
     num maxWidth = 0;

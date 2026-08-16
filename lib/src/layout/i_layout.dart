@@ -39,14 +39,15 @@ abstract class ILayout implements ICloneable {
   EdgeInsets margins = EdgeInsets.zero;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Method definitions
+  // Method implementations
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Calculates the constraints and widths and heigths of the children components and those of the [parent].
-  void calculateLayout(LayoutData parent, List<LayoutData> children);
 
   @override
   ILayout clone();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns the correct [ILayout] implementation depending on the data in [model].
   ///
@@ -85,4 +86,11 @@ abstract class ILayout implements ICloneable {
       double.parse(marginList[2]) * scaling,
     );
   }
+
+  /// Calculates the constraints and widths and heigths of the children components and those of the [parent].
+  void calculateLayout(LayoutData parent, List<LayoutData> children);
+
+  /// Updates layout data if supported
+  void updateData(String? layoutData);
+
 }

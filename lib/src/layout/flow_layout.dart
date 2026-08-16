@@ -81,6 +81,10 @@ class FlowLayout extends ILayout {
   }
 
   @override
+  void updateData(String? layoutData) {
+  }
+
+  @override
   void calculateLayout(LayoutData parent, List<LayoutData> children) {
     /** Sorts the Child component based on indexOf property */
     children.sort((a, b) => a.indexOf! - b.indexOf!);

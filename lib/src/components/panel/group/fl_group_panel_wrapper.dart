@@ -54,11 +54,9 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
     // Class members
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    bool _layoutAfterBuild = false;
+    String? _layoutDefinition;
 
-    bool _isCollapsed = false;
-
-    bool _resizeEnabled = false;
+    String? _layoutData;
 
     LayoutData? layoutDataCollapsedOld;
 
@@ -72,6 +70,12 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
 
     double? _lastSentHeight;
     double? _lastAnimateToHeight;
+
+    bool _layoutAfterBuild = false;
+
+    bool _isCollapsed = false;
+
+    bool _resizeEnabled = false;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initialization
@@ -130,6 +134,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
         });
 
         _createLayout();
+
         _layoutAfterBuild = true;
 
         buildChildren(setStateOnChange: false);
@@ -144,7 +149,8 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
 
     @override
     modelUpdated() {
-        _createLayout();
+        _updateLayout();
+
         super.modelUpdated();
 
         _layoutAfterBuild = true;
@@ -410,8 +416,18 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
 
     void _createLayout() {
         layoutData.layout = ILayout.getLayout(model);
-        layoutData.children =
-            IStorageService().getAllComponentsBelowById(parentId: model.id, recursively: false).map((e) => e.id).toList();
+        _layoutDefinition = model.layout;
+        _layoutData = model.layoutData;
+    }
+
+    void _updateLayout() {
+        if (_layoutDefinition != model.layoutData) {
+            _createLayout();
+        }
+        else if (_layoutData != model.layoutData){
+            _layoutData = model.layoutData;
+            layoutData.layout?.updateData(model.layoutData);
+        }
     }
 
     void _animateTo(double height, {bool immediate = false}) {

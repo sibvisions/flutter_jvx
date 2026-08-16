@@ -43,6 +43,10 @@ class TabLayout extends ILayout {
   }
 
   @override
+  void updateData(String? layoutData) {
+  }
+
+  @override
   void calculateLayout(LayoutData parent, List<LayoutData> children) {
     LayoutPosition? childrenPosition;
     if (parent.hasPosition) {

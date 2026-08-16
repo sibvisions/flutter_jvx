@@ -35,10 +35,26 @@ class FlScrollPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
 }
 
 class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
-  _FlScrollPanelWrapperState() : super();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  String? _layoutDefinition;
+
+  String? _layoutData;
 
   final ScrollController _horizontalController = ScrollController();
   final ScrollController _verticalController = ScrollController();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  _FlScrollPanelWrapperState() : super();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void initState() {
@@ -47,16 +63,18 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     _createLayout();
 
     buildChildren(setStateOnChange: false);
+
     registerParent();
   }
 
   @override
   modelUpdated() {
-    _createLayout();
+    _updateLayout();
 
     super.modelUpdated();
 
     buildChildren();
+
     registerParent();
   }
 
@@ -100,8 +118,19 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     ILayout originalLayout = ILayout.getLayout(model)!;
 
     layoutData.layout = ScrollLayout(originalLayout);
-    layoutData.children =
-        IStorageService().getAllComponentsBelowById(parentId: model.id, recursively: false).map((e) => e.id).toList();
+
+    _layoutDefinition = model.layout;
+    _layoutData = model.layoutData;
+  }
+
+  void _updateLayout() {
+    if (_layoutDefinition != model.layoutData) {
+      _createLayout();
+    }
+    else if (_layoutData != model.layoutData){
+      _layoutData = model.layoutData;
+      layoutData.layout?.updateData(model.layoutData);
+    }
   }
 
   double get widthOfScrollPanel {

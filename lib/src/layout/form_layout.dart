@@ -19,6 +19,7 @@ import 'dart:core';
 
 import 'package:flutter/widgets.dart';
 
+import '../../flutter_jvx.dart';
 import '../flutter_ui.dart';
 import '../model/layout/alignments.dart';
 import '../model/layout/form_layout/form_layout_anchor.dart';
@@ -87,6 +88,15 @@ class FormLayout extends ILayout {
   ILayout clone() {
     return FormLayout(layoutData: layoutData, layoutString: layoutString, scaling: scaling);
   }
+
+  @override
+  void updateData(String? layoutData) {
+
+    if (layoutData != null) {
+      anchors = _getAnchors(layoutData);
+    }
+  }
+
 
   @override
   void calculateLayout(LayoutData parent, List<LayoutData> children) {
@@ -590,7 +600,7 @@ class FormLayout extends ILayout {
       } catch (error, stack) {
         if (FlutterUI.logLayout.cl(Lvl.e)) {
           FlutterUI.logLayout.e("Parent id: ${value.parentId!}");
-          FlutterUI.logLayout.e("Child id: ${value.id}");
+          FlutterUI.logLayout.e("Child id: ${value.id} (${value.name})");
 
           var keys = anchors.keys.toList()..sort();
           anchorNames.sort();
