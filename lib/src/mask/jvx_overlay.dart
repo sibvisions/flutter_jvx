@@ -23,7 +23,6 @@ import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '../../flutter_jvx.dart';
 import '../flutter_ui.dart';
 import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
@@ -38,6 +37,7 @@ import '../util/widgets/blinking_circle.dart';
 import '../util/widgets/status_banner.dart';
 import 'apps/app_overview_page.dart';
 import 'state/app_style.dart';
+import 'state/app_style_direct.dart';
 import 'state/loading_bar.dart';
 
 

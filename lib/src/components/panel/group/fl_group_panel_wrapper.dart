@@ -385,8 +385,6 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel>
                                   IStorageService servSt = IStorageService();
                                   children.keys.forEach((element) => servSt.getComponentModel(componentId: element)?.noLayout = true);
 
-                                  children.keys.forEach((element) => print(servSt.getComponentModel(componentId: element)));
-
                                   if (!_isCollapsed) {
                                       preferredSizeBeforeCollapse = layoutData.preferredSize;
                                       posBeforeCollapse = layoutData.layoutPosition?.clone();
