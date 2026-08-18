@@ -123,6 +123,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
   /// If the list should show a floating insert button
   bool get showFloatingButton =>
       !model.hideFloatButton &&
+      !model.isHideInsert &&
       model.isEnabled &&
       !model.isSelectionMode &&
       !metaData.readOnly &&
@@ -410,7 +411,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
     bool isLight = JVxColors.isLightTheme(context);
 
-    if (isAnyCellInRowEditable(index)) {
+    if (isAnyCellInRowEditable(index) && !model.isHideEdit) {
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
@@ -430,7 +431,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       );
     }
 
-    if (isRowDeletable(index)) {
+    if (isRowDeletable(index) && !model.isHideDelete) {
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
@@ -492,15 +493,15 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       separator++;
     }
 
-    if (metaData.insertEnabled && !metaData.readOnly) {
+    if (metaData.insertEnabled && !model.isHideInsert && !metaData.readOnly) {
       popupMenuEntries.add(createContextMenuItem(Icons.add_box_outlined, "New", DataContextMenuItemType.INSERT));
     }
 
-    if (isRowDeletable(index)) {
+    if (isRowDeletable(index) && !model.isHideDelete) {
       popupMenuEntries.add(createContextMenuItem(Icons.delete_outline, "Delete", DataContextMenuItemType.DELETE));
     }
 
-    if (isAnyCellInRowEditable(index)) {
+    if (isAnyCellInRowEditable(index) && !model.isHideEdit) {
       popupMenuEntries.add(createContextMenuItem(Icons.edit_note_outlined, "Edit", DataContextMenuItemType.EDIT));
     }
 

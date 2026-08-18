@@ -33,6 +33,15 @@ class FlTableModel extends FlComponentModel {
   /// This style uses a list widget instead a table widget.
   static const String STYLE_TABLE_AS_LIST = "f_as_list";
 
+  /// The style name for hiding insert
+  static const String STYLE_INSERT_HIDE = "f_insert_hide";
+
+  /// The style name for hiding edit
+  static const String STYLE_EDIT_HIDE = "f_edit_hide";
+
+  /// The style name for hiding delete
+  static const String STYLE_DELETE_HIDE = "f_delete_hide";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,6 +101,15 @@ class FlTableModel extends FlComponentModel {
 
   /// If table is in (multi) selection mode
   bool get isSelectionMode => styles.contains("selectionMode");
+
+  /// If Insert should be hidden
+  bool get isHideInsert => styles.contains(STYLE_INSERT_HIDE);
+
+  // If edit should be hidden
+  bool get isHideEdit => styles.contains(STYLE_EDIT_HIDE);
+
+  // If delete should be hidden
+  bool get isHideDelete => styles.contains(STYLE_DELETE_HIDE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

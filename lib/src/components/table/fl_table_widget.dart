@@ -410,72 +410,76 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
       scrollDirection: Axis.horizontal,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
-        child: Stack(
-          children: [
-            SliverViewObserver(
-              controller: _observerController,
-              child: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  controller: _scrollController,
-                  slivers: [
-                    SliverList.builder(
-                      itemBuilder: (context, index) {
-                        if (_sliverContext != context) {
-                          _sliverContext = context;
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+                SliverViewObserver(
+                  controller: _observerController,
+                  child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    controller: _scrollController,
+                    slivers: [
+                      SliverList.builder(
+                        itemBuilder: (context, index) {
+                          if (_sliverContext != context) {
+                            _sliverContext = context;
 
-                          SchedulerBinding.instance.addPostFrameCallback((_) {
-                            _scrollTo(widget.selectedRowIndex);
-                          });
-                        }
+                            SchedulerBinding.instance.addPostFrameCallback((_) {
+                              _scrollTo(widget.selectedRowIndex);
+                            });
+                          }
 
-                        return _tableItem(context, index, canScrollHorizontally);
-                      },
-                      itemCount: _itemCount,
-                    )
-                  ]
-                )
-              ),
-            if (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty)
-              Positioned(
-                top: 80,
-                left: 0,
-                right: 0,
-                child: Center(
-                  //avoid overflow
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(40),
-                            onTap: widget.onRefresh,
-                            onLongPress: widget.onRefresh,
-                            child: Padding(
-                              padding: EdgeInsets.all(5),
-                              child: Stack(
-                                children: [Icon(Icons.notes, size: 50, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
-                                  Positioned(bottom: 0, right: 0, child: Icon(Icons.refresh, size: 20, color: theme.colorScheme.primary.withAlpha(150)))
-                              ])
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        IgnorePointer(
-                          child: Text(
-                            FlutterUI.translate("No records available"),
-                            style: TextStyle(fontSize: 16, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                          return _tableItem(context, index, canScrollHorizontally);
+                        },
+                        itemCount: _itemCount,
+                      )
+                    ]
+                  )
                 ),
-              )
-          ],
-        ),
+                if (widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty))
+                  Positioned(
+                    top: constraints.maxHeight > 140 ? 80 : constraints.maxHeight > 120 ? 40 : 10,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      //avoid overflow
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(40),
+                                onTap: widget.onRefresh,
+                                onLongPress: widget.onRefresh,
+                                child: Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: Stack(
+                                        children: [Icon(Icons.notes, size: 50, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
+                                          Positioned(bottom: 0, right: 0, child: Icon(Icons.refresh, size: 20, color: theme.colorScheme.primary.withAlpha(150)))
+                                        ])
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            IgnorePointer(
+                              child: Text(
+                                FlutterUI.translate("No records available"),
+                                style: TextStyle(fontSize: 16, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+            );
+          }
+        )
       ),
     );
   }

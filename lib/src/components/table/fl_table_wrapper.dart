@@ -137,6 +137,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
   /// If the table should show a floating insert button
   bool get showFloatingButton =>
       !model.hideFloatButton &&
+      !model.isHideInsert &&
       model.isEnabled &&
       !model.isSelectionMode &&
       !metaData.readOnly &&
@@ -199,7 +200,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       tableSize: tableSize!,
       selectedRowIndex: selectedRowTemporary ?? selectedRow,
       selectedColumn: selectedColumn,
-      slideActionFactory: createSlideActions,
+      slideActionFactory: _createSlideActions,
       headerHorizontalController: headerHorizontalController,
       tableHorizontalController: tableHorizontalController,
       initialScrollToSelected: lastSelectedRow != selectedRow,
@@ -632,15 +633,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       separator++;
     }
 
-    if (metaData.insertEnabled && !metaData.readOnly) {
+    if (metaData.insertEnabled && !model.isHideInsert && !metaData.readOnly) {
       popupMenuEntries.add(createContextMenuItem(Icons.add_box_outlined, "New", DataContextMenuItemType.INSERT));
     }
 
-    if (isRowDeletable(rowIndex)) {
+    if (isRowDeletable(rowIndex) && !model.isHideDelete) {
       popupMenuEntries.add(createContextMenuItem(Icons.delete_outline, "Delete", DataContextMenuItemType.DELETE));
     }
 
-    if (isAnyCellInRowEditable(rowIndex)) {
+    if (isAnyCellInRowEditable(rowIndex) && !model.isHideEdit) {
       popupMenuEntries.add(createContextMenuItem(Icons.edit_note_outlined, "Edit", DataContextMenuItemType.EDIT));
     }
 
@@ -786,7 +787,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     );
   }
 
-  List<Widget> createSlideActions(BuildContext context, int row) {
+  List<Widget> _createSlideActions(BuildContext context, int row) {
     List<Widget> slideActions = [];
 
     IUiService uis = IUiService();
@@ -794,7 +795,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
     bool bSmall = kIsWeb && (uis.webOnly.value || !uis.mobileOnly.value);
     bool isLight = JVxColors.isLightTheme(context);
 
-    if (isAnyCellInRowEditable(row)) {
+    if (isAnyCellInRowEditable(row) && !model.isHideEdit) {
 
       void pressed(BuildContext context) => _editRow(row);
 
@@ -839,7 +840,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       }
     }
 
-    if (isRowDeletable(row)) {
+    if (isRowDeletable(row) && !model.isHideDelete) {
       void pressed(BuildContext context) {
         String? status = dataChunk.getRecordStatusRaw(row);
 
