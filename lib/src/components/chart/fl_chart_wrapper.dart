@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:graphic/graphic.dart' show Selected;
 
+import '../../flutter_ui.dart';
 import '../../model/command/api/mouse_clicked_command.dart';
 import '../../model/command/api/mouse_pressed_command.dart';
 import '../../model/command/api/mouse_released_command.dart';
@@ -111,7 +112,9 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     });
 
     if (model.yColumnNames.isEmpty && model.xColumnName.isEmpty) {
-      return wrapWidget(context, Center(child: Text("Invalid Chart: ${model.name}")));
+      FlutterUI.logUI.e("Invalid Chart: ${model.name}");
+
+      return wrapWidget(context, SizedBox.shrink());
     }
 
     if (dataChunk == null || metaData == null) {

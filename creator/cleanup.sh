@@ -14,6 +14,7 @@ rm -r $pubCache/hosted/pub.dev/shared_preferences_foundation-*
 rm -r $pubCache/hosted/pub.dev/url_launcher_ios-*
 rm -r $pubCache/hosted/pub.dev/image_picker_ios-*
 rm -r $pubCache/hosted/pub.dev/file_picker-*
+rm -r $pubCache/hosted/pub.dev/file_picker_*
 rm -r $pubCache/hosted/pub.dev/device_info_plus-*
 rm -r $pubCache/hosted/pub.dev/flutter_native_splash-*
 rm -r $pubCache/hosted/pub.dev/sqflite-*

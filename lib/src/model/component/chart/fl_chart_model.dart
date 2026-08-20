@@ -73,6 +73,7 @@ class FlChartModel extends FlComponentModel {
   String xColumnLabel = "";
   List<String> yColumnNames = [];
   List<String> yColumnLabels = [];
+  List<Color?>? colors;
   int chartStyle = 0;
 
   String dataProvider = "";
@@ -159,6 +160,22 @@ class FlChartModel extends FlComponentModel {
       key: ApiObjectProperty.chartStyle,
       defaultValue: defaultModel.chartStyle,
       currentValue: chartStyle,
+    );
+
+    colors = getPropertyValue(
+      json: newJson,
+      key: ApiObjectProperty.colors,
+      defaultValue: defaultModel.colors,
+      currentValue: colors,
+      conversion: (value) {
+        if (value is List) {
+          return List<Color?>.generate(value.length, (index) {
+            return ParseUtil.parseColor(value[index]);
+          });
+        }
+
+        return null;
+      },
     );
   }
 

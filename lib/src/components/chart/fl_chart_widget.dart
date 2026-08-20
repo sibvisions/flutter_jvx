@@ -19,6 +19,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/main.dart';
 import 'package:graphic/graphic.dart';
 
 import '../../flutter_ui.dart';
@@ -32,7 +33,7 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   final num highestStackedValue;
   final StreamController<Selected?>? selectionStream;
 
-  static const colors = [
+  static const defaultcolors = [
     Color(0xff81dfd0),
     Color(0xffb6afe4),
     Color(0xfff95a48),
@@ -54,7 +55,7 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     Color(0xff003f5c),
     Color(0xffd45087),
   ];
-
+/*
   static const colorsTransparent = [
     Color(0xc881dfd0),
     Color(0xc8b6afe4),
@@ -77,7 +78,7 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     Color(0xc8003f5c),
     Color(0xc8d45087),
   ];
-
+*/
   const FlChartWidget({
     super.key,
     required super.model,
@@ -307,14 +308,14 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   ColorEncode getTransparentColors() {
     return ColorEncode(
       variable: model.isPieChart() ? "index" : "group",
-      values: colorsTransparent,
+      values: _getTransparentChartColors(),
     );
   }
 
   ColorEncode getColors() {
     return ColorEncode(
       variable: model.isPieChart() ? "index" : "group",
-      values: colors,
+      values: _getChartColors(),
     );
   }
 
@@ -434,6 +435,8 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     const double padding = 5;
     const double circleSize = 10;
 
+    List<Color> colors = _getChartColors();
+
     List<Widget> children = labels
         .mapIndexed(
           (index, label) => Row(
@@ -468,4 +471,30 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
       ),
     );
   }
+
+  List<Color> _getChartColors() {
+    if (model.colors == null) {
+      return defaultcolors;
+    }
+    else {
+      List<Color> colors = [];
+
+      for (int i = 0; i < model.colors!.length; i++) {
+        colors.add(model.colors![i] ?? (i < defaultcolors.length ? defaultcolors[i] : defaultcolors[0]));
+      }
+
+      return colors;
+    }
+  }
+
+  List<Color> _getTransparentChartColors() {
+    List<Color> color = _getChartColors();
+
+    for (int i = 0; i < color.length; i++) {
+      color[i] = color[i].withAlpha(0xc8);
+    }
+
+    return color;
+  }
+
 }
