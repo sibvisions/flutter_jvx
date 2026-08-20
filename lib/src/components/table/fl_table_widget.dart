@@ -265,7 +265,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
     List<Widget> children = [LayoutBuilder(builder: _createTable)];
 
     //show "more records available"
-    if (!widget.chunkData.isAllFetched) {
+    if (widget.model.dataProvider.isNotEmpty && !widget.chunkData.isAllFetched && widget.chunkData.data.isNotEmpty) {
       children.add(Positioned(
         bottom: 2,
         right: 2,
@@ -340,7 +340,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
 
     Widget table = _createRecordList(context, canScrollHorizontally, maxWidth);
 
-    if (widget.onRefresh != null && widget.model.isEnabled) {
+    if (widget.model.dataProvider.isNotEmpty && widget.onRefresh != null && widget.model.isEnabled) {
       table = wrapWithScrollConfiguration(context, RefreshIndicator(
         onRefresh: widget.onRefresh!,
         child: table,
@@ -438,7 +438,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
                     ]
                   )
                 ),
-                if (widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty))
+                if (widget.model.dataProvider.isEmpty || widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty))
                   Positioned(
                     top: constraints.maxHeight > 140 ? 80 : constraints.maxHeight > 120 ? 40 : 10,
                     left: 0,
@@ -453,13 +453,15 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
                               color: Colors.transparent,
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(40),
-                                onTap: widget.onRefresh,
-                                onLongPress: widget.onRefresh,
+                                onTap: widget.model.dataProvider.isNotEmpty ? widget.onRefresh : null,
+                                onLongPress: widget.model.dataProvider.isNotEmpty ? widget.onRefresh : null,
                                 child: Padding(
                                     padding: EdgeInsets.all(5),
                                     child: Stack(
-                                        children: [Icon(Icons.notes, size: 50, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
-                                          Positioned(bottom: 0, right: 0, child: Icon(Icons.refresh, size: 20, color: theme.colorScheme.primary.withAlpha(150)))
+                                        children: [
+                                          Icon(Icons.notes, size: 50, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
+                                          if (widget.model.dataProvider.isNotEmpty)
+                                            Positioned(bottom: 0, right: 0, child: Icon(Icons.refresh, size: 20, color: theme.colorScheme.primary.withAlpha(150)))
                                         ])
                                 ),
                               ),

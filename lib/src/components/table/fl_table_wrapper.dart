@@ -136,6 +136,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
 
   /// If the table should show a floating insert button
   bool get showFloatingButton =>
+      model.dataProvider.isNotEmpty &&
       !model.hideFloatButton &&
       !model.isHideInsert &&
       model.isEnabled &&
@@ -208,7 +209,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with FlDat
       onValueChanged: _setValueChanged,
       onRefresh: refresh,
       onEndScroll: _loadMore,
-      onLongPress: _onLongPress,
+      onLongPress: model.dataProvider.isNotEmpty ? _onLongPress : null,
       onTap: _onTimedCellTap,
       onHeaderTap: _sortColumn,
       onHeaderDoubleTap: (column) => _sortColumn(column, true),

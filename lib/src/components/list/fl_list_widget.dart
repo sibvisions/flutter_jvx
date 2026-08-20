@@ -741,7 +741,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                       ],
                     )
                   ),
-                  if (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty)
+                  if (widget.model.dataProvider.isEmpty || widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty))
                     Positioned(
                       top: constraints.maxHeight > 100 ? 40 : 10,
                       left: 0,
@@ -756,13 +756,15 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                                 color: Colors.transparent,
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(40),
-                                  onTap: widget.onRefresh,
-                                  onLongPress: widget.onRefresh,
+                                  onTap: widget.model.dataProvider.isNotEmpty ? widget.onRefresh : null,
+                                  onLongPress: widget.model.dataProvider.isNotEmpty ? widget.onRefresh : null,
                                   child: Padding(
                                       padding: EdgeInsets.all(5),
                                       child: Stack(
-                                          children: [Icon(Icons.notes, size: 50, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
-                                            Positioned(bottom: 0, right: 0, child: Icon(Icons.refresh, size: 20, color: theme.colorScheme.primary.withAlpha(150)))
+                                          children: [
+                                            Icon(Icons.notes, size: 50, color: theme.textTheme.labelMedium?.color?.withAlpha(100)),
+                                            if (widget.model.dataProvider.isNotEmpty)
+                                              Positioned(bottom: 0, right: 0, child: Icon(Icons.refresh, size: 20, color: theme.colorScheme.primary.withAlpha(150)))
                                           ])
                                   ),
                                 ),
@@ -797,7 +799,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
   Widget _wrapList(BuildContext context, Widget list) {
     Widget listWidget = list;
 
-    if (widget.onRefresh != null && widget.model.isEnabled) {
+    if (widget.model.dataProvider.isNotEmpty && widget.onRefresh != null && widget.model.isEnabled) {
       listWidget = wrapWithScrollConfiguration(
         context,
         RefreshIndicator(
@@ -811,7 +813,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
     if (widget.onFloatingPress != null || !widget.chunkData.isAllFetched) {
       List<Widget> children = [listWidget];
 
-      if (!widget.chunkData.isAllFetched) {
+      if (widget.model.dataProvider.isNotEmpty && !widget.chunkData.isAllFetched && widget.chunkData.data.isNotEmpty) {
         children.add(Positioned(
             bottom: 2,
             right: 2,

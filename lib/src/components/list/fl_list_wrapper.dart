@@ -122,6 +122,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
 
   /// If the list should show a floating insert button
   bool get showFloatingButton =>
+      model.dataProvider.isNotEmpty &&
       !model.hideFloatButton &&
       !model.isHideInsert &&
       model.isEnabled &&
@@ -175,7 +176,7 @@ class _FlListWrapperState extends BaseCompWrapperState<FlTableModel> with FlData
       onEndScroll: _loadMore,
       onScroll: (scrollNotification) => lastScrollNotification = scrollNotification,
       onTap: _onListTap,
-      onLongPress: _onLongPress,
+      onLongPress: model.dataProvider.isNotEmpty ? _onLongPress : null,
       onFloatingPress: showFloatingButton ? insertRecord : null,
       onEndEditing: setValueOnEndEditing
     );
