@@ -327,7 +327,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
               //important, because if we don't use an overlay - we should reset security
               if (IUiService().clientId.value == null) {
-                AuthService.instance.setSecure(false);
+                AuthService.instance.resetSecure();
               }
 
               return LoadingBar(

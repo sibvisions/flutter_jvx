@@ -27,6 +27,13 @@ class MainActivity : FlutterFragmentActivity() {
                     result.success(false)
                 }
 
+                "resetSecure" -> {
+                    secureCount = 0;
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+
+                    result.success(true)
+                }
+
                 "setSecure" -> {
                     val secure = call.arguments as Boolean
 

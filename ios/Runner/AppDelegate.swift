@@ -13,6 +13,8 @@ import Flutter
    return secureCount > 0
   }
 
+  var channel: FlutterMethodChannel?
+
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -31,14 +33,18 @@ import Flutter
   }
 
   private func setupMethodChannel(messenger: FlutterBinaryMessenger) {
-    let channel = FlutterMethodChannel(name: AppDelegate.CHANNEL, binaryMessenger: messenger)
+    channel = FlutterMethodChannel(name: AppDelegate.CHANNEL, binaryMessenger: messenger)
 
-    channel.setMethodCallHandler({ (call, result) in
+    channel?.setMethodCallHandler({ (call, result) in
       switch call.method {
         case "setAuthStatus":
           AppDelegate.isAuthenticating = call.arguments as? Bool ?? false
           result(true)
         case "hideBlur":
+          NotificationCenter.default.post(name: NSNotification.Name("HidePrivacyBlur"), object: nil)
+          result(true)
+        case "resetSecure":
+          AppDelegate.secureCount = 0;
           NotificationCenter.default.post(name: NSNotification.Name("HidePrivacyBlur"), object: nil)
           result(true)
         case "setSecure":
@@ -50,6 +56,10 @@ import Flutter
           result(FlutterMethodNotImplemented)
       }
     })
+  }
+
+  func sendLogToUI(_ message: String) {
+    channel?.invokeMethod("nativeLog", arguments: message)
   }
 
 }

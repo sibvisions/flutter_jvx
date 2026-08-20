@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,6 +52,9 @@ class AuthService extends ChangeNotifier {
 
   /// the current configuration list
   List<ProtectConfig>? _config;
+
+  /// the setSecure call futures
+  List<Future<dynamic>> _pendingFutures = [];
 
   /// The timer for automatic stop of authentication
   Timer? _noAuthTimer;
@@ -107,6 +111,20 @@ class AuthService extends ChangeNotifier {
       }
     } on PlatformException catch (e) {
       FlutterUI.log.e(e);
+    }
+
+    if (_useChannel) {
+      _platformChannel.setMethodCallHandler((MethodCall call) async {
+        switch (call.method) {
+          case 'nativeLog':
+            final String logMessage = call.arguments as String;
+
+            _log({'log from device': logMessage});
+            break;
+          default:
+            _log({'unknown method called': call.method});
+        }
+      });
     }
   }
 
@@ -251,10 +269,37 @@ class AuthService extends ChangeNotifier {
     return _noAuthTimerSeconds;
   }
 
+  void resetSecure() {
+    if (_useChannel) {
+      _log({'resetSecure': true});
+      _platformChannel.invokeMethod('resetSecure');
+    }
+  }
+
+
   void setSecure(bool secure) {
     if (_useChannel) {
-      _platformChannel.invokeMethod('setSecure', secure);
+      _log({'setSecure': secure});
+      final future = _platformChannel.invokeMethod('setSecure', secure);
+
+      _pendingFutures.add(future);
     }
+  }
+
+  static void _log(Map<String, dynamic> message) {
+    /*
+    final dio = Dio();
+
+    unawaited(dio.post(
+      'http://172.16.0.10:8081/JVx.mobile/log?onlyBody',
+      data: message,
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      ),
+    ));
+     */
   }
 
   /// Notification about app resumed
@@ -405,7 +450,17 @@ class AuthService extends ChangeNotifier {
 
       notifyListeners();
 
+      if (_pendingFutures.isNotEmpty) {
+        try {
+          await Future.wait(_pendingFutures, eagerError: false);
+        }
+        finally {
+          _pendingFutures.clear();
+        }
+      }
+
       if (_useChannel) {
+        _log({'autStatus': currentAuthStatus});
         await _platformChannel.invokeMethod('setAuthStatus', currentAuthStatus);
       }
 
@@ -416,9 +471,12 @@ class AuthService extends ChangeNotifier {
       );
 
       if (_useChannel && authenticated) {
+        _log({'hideBlur': true});
         await _platformChannel.invokeMethod('hideBlur');
 
+        _log({'autStatus': false});
         await _platformChannel.invokeMethod('setAuthStatus', false);
+
         currentAuthStatus = false;
       }
 
@@ -467,6 +525,7 @@ class AuthService extends ChangeNotifier {
     }
     finally {
       if (_useChannel && currentAuthStatus) {
+        _log({'autStatus': false});
         await _platformChannel.invokeMethod('setAuthStatus', false);
       }
     }
@@ -495,6 +554,7 @@ class AuthService extends ChangeNotifier {
 
   static Future<void> hideBlur() async {
     if (_useChannel) {
+      _log({"hideBlur": true});
       await _platformChannel.invokeMethod('hideBlur');
     }
   }
