@@ -19,7 +19,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/main.dart';
 import 'package:graphic/graphic.dart';
 
 import '../../flutter_ui.dart';
@@ -33,7 +32,7 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   final num highestStackedValue;
   final StreamController<Selected?>? selectionStream;
 
-  static const defaultcolors = [
+  static const defaultColors = [
     Color(0xff81dfd0),
     Color(0xffb6afe4),
     Color(0xfff95a48),
@@ -474,13 +473,13 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
 
   List<Color> _getChartColors() {
     if (model.colors == null) {
-      return defaultcolors;
+      return defaultColors;
     }
     else {
       List<Color> colors = [];
 
       for (int i = 0; i < model.colors!.length; i++) {
-        colors.add(model.colors![i] ?? (i < defaultcolors.length ? defaultcolors[i] : defaultcolors[0]));
+        colors.add(model.colors![i] ?? (i < defaultColors.length ? defaultColors[i] : defaultColors[0]));
       }
 
       return colors;

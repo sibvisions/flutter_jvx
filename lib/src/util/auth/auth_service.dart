@@ -17,7 +17,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,7 +53,7 @@ class AuthService extends ChangeNotifier {
   List<ProtectConfig>? _config;
 
   /// the setSecure call futures
-  List<Future<dynamic>> _pendingFutures = [];
+  final List<Future<dynamic>> _pendingFutures = [];
 
   /// The timer for automatic stop of authentication
   Timer? _noAuthTimer;
