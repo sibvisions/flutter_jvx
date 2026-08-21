@@ -129,7 +129,17 @@ class AppService implements IAppService {
   void saveLocationAsReturnUri() {
     BeamState targetState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     if (targetState.uri.path.startsWith("/screens/")) {
-      returnUri ??= Uri(path: targetState.uri.path);
+
+      //URI must start with /home
+      //because:
+      // setup: autologin is enabled, welcome screen is set (not sure if this is really important), encryption is used
+      //        start application, enter an encrypted value -> restart server to force session expired
+      // --> application will restart and open the previous saved screen
+      //     --> go to settings and clear security token -> no back navigation possible
+      //
+      //The Problem is that the history is empty and only contains the "last" saved screen. With /home in the URI, the
+      //history will be correct
+      returnUri ??= Uri(path: "/home${targetState.uri.path}");
     }
   }
 

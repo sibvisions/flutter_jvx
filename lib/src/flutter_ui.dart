@@ -1089,10 +1089,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         _updateTitle(context);
       },
       routeListener: (routeInfo, delegate) {
-if (kDebugMode) {
-  print("Update routes");
-}
-
+        /*
+        if (kDebugMode) {
+          //Show current history -> should contain more than just a screen at least /home
+          delegate.beamingHistory.whereType<MainLocation>().forEach((location) {
+            location.history.forEach((element) => print("UI: ${element.routeInformation.uri.toString()}"));
+          });
+        }
+        */
 
         _updateTitle(context);
         _updateRouterDelegate(routeInfo);
