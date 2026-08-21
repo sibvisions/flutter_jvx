@@ -43,6 +43,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   final WidgetWrapper? wrapper;
 
+  final EdgeInsetsGeometry? padding;
+
   final Function(Size, bool)? imageStreamListener;
 
   final bool inTable;
@@ -67,7 +69,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     this.onEndEditing,
     this.wrapper,
     this.showAsAvatar = false,
-    this.showAvatarFullSize = false
+    this.showAvatarFullSize = false,
+    this.padding
   });
 
   @override
@@ -103,10 +106,16 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       child = Tooltip(message: model.toolTipText!, child: child);
     }
 
-    child = DecoratedBox(
-      decoration: BoxDecoration(color: model.background),
-      child: child,
-    );
+    if (padding != null) {
+      child = Padding(padding: padding!, child: child);
+    }
+
+    if (model.background != null) {
+      child = DecoratedBox(
+        decoration: BoxDecoration(color: model.background!.withAlpha(Color.getAlphaFromOpacity(0.3))),
+        child: child,
+      );
+    }
 
     if (model.showAsAvatar || showAsAvatar) {
       child = ClipPath(clipper: CircleClipper(areaSize: imageSize), child: child);

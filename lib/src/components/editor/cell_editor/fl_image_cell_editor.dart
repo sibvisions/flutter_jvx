@@ -92,10 +92,11 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
       wrapper: wrapper,
       showAsAvatar: model.showAsAvatar,
       showAvatarFullSize: model.showAvatarFullSize,
+      padding: model.hasStandardBorder ? EdgeInsets.all(4) : null
     );
 
     if (model.hasStandardBorder && context != null) {
-      w = FlPanelWidget.wrapWithStandardBorder(context, w, padding: EdgeInsets.all(4));
+      w = FlPanelWidget.wrapWithStandardBorder(context, w, enabled: !widgetModel.isReadOnly && widgetModel.isEditable);
     }
 
     return w;
