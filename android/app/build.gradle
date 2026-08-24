@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.sibvisions.flutter_jvx"
     //compileSdk = flutter.compileSdkVersion
-    compileSdk = 36
+    compileSdk = 37
     //ndkVersion = flutter.ndkVersion
     ndkVersion = "29.0.14206865"
 
@@ -50,7 +50,7 @@ android {
         //minSdkVersion = flutter.minSdkVersion
         minSdkVersion = 26
         //targetSdk = flutter.targetSdkVersion
-        targetSdk = 36
+        targetSdk = 37
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
