@@ -74,21 +74,21 @@ class AppOverviewPage extends StatefulWidget {
             if (FlutterUI.logUI.cl(Lvl.d)) {
               FlutterUI.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
             }
+
             try {
               final QRConfig config = QRParser.parse(barcode.rawValue!);
               await callback.call(config);
             } catch (e, stack) {
               FlutterUI.logUI.w("Error parsing QR Code", error: e, stackTrace: stack);
-              if (barcodes.length == 1) {
-                messengerState.showSnackBar(SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  content: Text(
-                    e is FormatException
-                        ? "${FlutterUI.translateLocal("Invalid QR Code")}${e.message.isNotEmpty ? ": ${FlutterUI.translateLocal(e.message)}" : ""}"
-                        : FlutterUI.translateLocal("Failed to parse QR Code"),
-                  ),
-                ));
-              }
+
+              messengerState.showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+                content: Text(
+                  e is FormatException
+                      ? "${FlutterUI.translateLocal("Invalid QR Code")}${e.message.isNotEmpty ? ": ${FlutterUI.translateLocal(e.message)}" : ""}"
+                      : FlutterUI.translateLocal("Failed to parse QR Code"),
+                ),
+              ));
             }
           }
         },
@@ -551,7 +551,6 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   void _scanQR(BuildContext context) {
     AppOverviewPage.openQRScanner(
       context,
-      allowMultiScan: true,
       callback: (config) async {
         if (config.apps != null) {
           for (var serverConfig in config.apps!) {
