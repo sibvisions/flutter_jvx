@@ -743,7 +743,7 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                   ),
                   if (widget.model.dataProvider.isEmpty || widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty))
                     Positioned(
-                      top: constraints.maxHeight > 100 ? 40 : 10,
+                      top: constraints.maxHeight > 130 ? 40 : constraints.maxHeight > 100 ? 20 : 10,
                       left: 0,
                       right: 0,
                       child: Center(

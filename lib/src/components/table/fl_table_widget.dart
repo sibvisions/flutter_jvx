@@ -401,7 +401,6 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
 
   /// Creates the list of records.
   Widget _createRecordList(BuildContext context, bool canScrollHorizontally, double maxWidth) {
-
     ThemeData theme = Theme.of(context);
 
     return SingleChildScrollView(
@@ -440,7 +439,7 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
                 ),
                 if (widget.model.dataProvider.isEmpty || widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty))
                   Positioned(
-                    top: constraints.maxHeight > 140 ? 80 : constraints.maxHeight > 120 ? 40 : 10,
+                    top: constraints.maxHeight > 160 ? 80 : constraints.maxHeight > 140 ? 30 : constraints.maxHeight > 120 ? 20 : 10,
                     left: 0,
                     right: 0,
                     child: Center(
