@@ -89,11 +89,18 @@ class FlPasswordWidget extends FlTextFieldWidget<FlPasswordFieldModel> {
       //don't use a column because it will create overflow exceptions if size changes
       //with Flex and Flexible, we avoid this
       w = Flex(direction: Axis.vertical,
-          children: [
-            w,
-            Flexible(child: Column(
+        children: [
+          w,
+          Flexible(
+            flex: 1,
+            fit: FlexFit.loose,
+            child: SizedBox(height: 8)
+          ),
+          Flexible(
+            flex: 0,
+            fit: FlexFit.tight,
+            child: Column(
               children: [
-                SizedBox(height: 8),
                 PasswordStrengthIndicator(
                   password: textController.text,
                   hideLabel: hidePasswordStrengthLabel,
