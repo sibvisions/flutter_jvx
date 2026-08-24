@@ -298,7 +298,7 @@ abstract class ParseUtil {
             textDirection: textDirection,
             maxWidth: maxWidth,
             maxLines: maxLines)
-        .width;
+          .width.ceilToDouble() + 1;
   }
 
   static T getPropertyValue<T>({
