@@ -21,7 +21,7 @@ import 'dart:math';
 import 'package:action_slider/action_slider.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -118,7 +118,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
               })
               .whenComplete(() => Future.delayed(const Duration(milliseconds: 1500)))
               .whenComplete(() {
-                if (controller.value.mode == SliderMode.failure || (model.isSliderResetable && model.isSliderAutoResetting)) {
+                if (controller.value.status is SliderStatusFailure || (model.isSliderResetable && model.isSliderAutoResetting)) {
                   controller.reset();
                 }
               });
@@ -157,7 +157,9 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     layoutData.isFixedSize = model.isSlideStyle;
 
     if (model.isSlideStyle && model.lastChangedProperties.contains(ApiObjectProperty.style)) {
-      if (actionSliderController.value.mode == SliderMode.success || actionSliderController.value.mode == SliderMode.failure) {
+      SliderStatus status = actionSliderController.value.status;
+
+      if (status is SliderStatusSuccess || status is SliderStatusFailure) {
         actionSliderController.reset();
       }
     }

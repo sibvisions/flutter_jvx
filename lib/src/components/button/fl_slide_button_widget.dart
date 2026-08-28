@@ -17,7 +17,7 @@
 import 'dart:math';
 
 import 'package:action_slider/action_slider.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../mask/state/app_style.dart';
 import '../../mask/state/app_style_direct.dart';
@@ -107,16 +107,18 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
             child: GestureDetector(
               onDoubleTap: model.isSliderResetable ? _handleDoubleTap : null,
               child: ActionSlider.standard(
-                backgroundBorderRadius: BorderRadius.circular(border ?? 100),
+                style: SliderStyle(
+                  borderRadius: BorderRadius.circular(border ?? 100),
+                  backgroundColor: model.background,
+                  toggleColor: model.foreground,
+                ),
                 foregroundBorderRadius: handle != null ? BorderRadius.circular(handle) : null,
                 controller: controller,
                 action: onSlide,
                 width: max(minimumSize.width, constraints.maxWidth),
                 height: max(minimumSize.height, constraints.maxHeight),
-                backgroundColor: model.background,
                 icon: image,
-                toggleColor: model.foreground,
-                rolling: true,
+                iconAnimation: SliderIconAnimation.roll,
                 child: _createTextWidget(),
               ),
             ),
@@ -147,7 +149,8 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
   }
 
   void _handleDoubleTap() {
-    if (controller.value.mode == SliderMode.loading || controller.value.mode == SliderMode.standard) {
+    SliderStatus status = controller.value.status;
+    if (status is SliderStatusLoading || status is SliderStatusStandard) {
       return;
     }
 
