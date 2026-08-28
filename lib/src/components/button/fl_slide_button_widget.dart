@@ -118,6 +118,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
                 width: max(minimumSize.width, constraints.maxWidth),
                 height: max(minimumSize.height, constraints.maxHeight),
                 icon: image,
+                enabled: model.isEnabled,
                 iconAnimation: SliderIconAnimation.roll,
                 child: _createTextWidget(),
               ),
