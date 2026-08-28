@@ -16,7 +16,7 @@
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -87,7 +87,9 @@ abstract class FilePickerDialog {
                                             ),
                                         ],
                                     ),
-                                    InkWell(
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
                                         onTap: () => pick(UploadType.CAMERA).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}}),
                                         child: Padding(
                                             padding: const EdgeInsets.all(16.0),
@@ -106,8 +108,10 @@ abstract class FilePickerDialog {
                                                 ],
                                             ),
                                         ),
-                                    ),
-                                    InkWell(
+                                    )),
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
                                         onTap: () => pick(UploadType.GALLERY).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}} ),
                                         child: Padding(
                                             padding: const EdgeInsets.all(16.0),
@@ -126,8 +130,10 @@ abstract class FilePickerDialog {
                                                 ],
                                             ),
                                         ),
-                                    ),
-                                    InkWell(
+                                    )),
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
                                         onTap: () => pick(UploadType.FILE_SYSTEM).then((val) => {if (context.mounted) { Navigator.of(context).pop(val)}}),
                                         child: Padding(
                                             padding: const EdgeInsets.all(16.0),
@@ -143,7 +149,7 @@ abstract class FilePickerDialog {
                                                 ],
                                             ),
                                         ),
-                                    ),
+                                    )),
                                 ],
                             ),
                         ),
