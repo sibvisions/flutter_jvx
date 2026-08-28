@@ -17,7 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
@@ -360,7 +360,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                                 type: MaterialType.button,
                                 elevation: 20.0,
                                 borderRadius: BorderRadius.circular(16),
-                                color: Theme.of(context).colorScheme.surface,
+                                color: JVxColors.DARKER_WHITE.withAlpha(210),
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(16),
                                   onTap: () async {
@@ -377,7 +377,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                                           child: Icon(
                                             AppOverviewPage.appsIcon,
                                             size: 24,
-                                            color: Theme.of(context).colorScheme.onSurface,
+                                            color: JVxColors.LIGHTER_BLACK,
                                           ),
                                         ),
                                         Flexible(
@@ -385,7 +385,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                                             FlutterUI.translate("Exit App"),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: Theme.of(context).colorScheme.onSurface,
+                                              color: JVxColors.LIGHTER_BLACK,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -407,9 +407,9 @@ class JVxOverlayState extends State<JVxOverlay> {
                         useMaxWidth: true,
                         backgroundColor: _connected == true
                             ? const Color(0xFF1A964A)
-                            : Theme.of(context).snackBarTheme.backgroundColor,
+                            : JVxColors.DARKER_WHITE.withAlpha(255),
                         color: _connected == true
-                            ? (JVxColors.isLightTheme(context) ? const Color(0xFF141414) : Colors.white) : null,
+                            ? (JVxColors.isLightTheme(context) ? const Color(0xFF141414) : JVxColors.DARKER_WHITE) : null,
                         onClose: () => _removeStatusBanner(),
                         onTap: _connected == false
                             ? () {
@@ -421,7 +421,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                         dismissible: _connected != false,
                         child: Text(
                           FlutterUI.translate(_connectedMessage),
-                          style: const TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16, color: JVxColors.LIGHTER_BLACK),
                         ),
                       ),
                     ListenableBuilder(

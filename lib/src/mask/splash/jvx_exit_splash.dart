@@ -14,10 +14,11 @@
  * the License.
  */
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../flutter_ui.dart';
+import '../../util/jvx_colors.dart';
 
 class JVxExitSplash extends StatelessWidget {
   final AsyncSnapshot? snapshot;
@@ -38,19 +39,23 @@ class JVxExitSplash extends StatelessWidget {
         if (snapshot?.connectionState == ConnectionState.done)
           Center(
             child: Material(
-              color: Colors.transparent,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CupertinoActivityIndicator(color: Colors.white, radius: 18),
-                  const SizedBox(height: 15),
-                  Text(
-                    FlutterUI.translateLocal("Exiting..."),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ],
-              ),
+              color: Colors.white54,
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator.adaptive(backgroundColor: JVxColors.LIGHTER_BLACK),
+                      const SizedBox(height: 15),
+                      Text(
+                        FlutterUI.translateLocal("Exiting"),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 16, color: JVxColors.LIGHTER_BLACK),
+                      ),
+                    ],
+                )
+              )
             ),
           ),
       ],
