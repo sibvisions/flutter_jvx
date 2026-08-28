@@ -22,12 +22,12 @@ import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart' as flutter_loc;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart' hide LogEvent;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -1194,6 +1194,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         IConfigService().applicationStyle,
       ]),
       builder: (context, _) {
+
+        List<LocalizationsDelegate> locDel = [];
+        locDel.addAll(GlobalMaterialLocalizations.delegates);
+
+        //required for modal_bottom_sheet
+        locDel.add(flutter_loc.GlobalCupertinoLocalizations.delegate);
+        locDel.add(flutter_loc.GlobalMaterialLocalizations.delegate);
+        locDel.add(flutter_loc.GlobalWidgetsLocalizations.delegate);
+
         return MaterialApp.router(
           themeMode: IConfigService().getThemeMode(),
           theme: themeData,
@@ -1201,7 +1210,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           themeAnimationDuration: Duration.zero,
           locale: Locale(IConfigService().getLanguage()),
           supportedLocales: supportedLocales,
-          localizationsDelegates: GlobalMaterialLocalizations.delegates,
+          localizationsDelegates: locDel,
           routeInformationParser: BeamerParser(),
           routerDelegate: routerDelegate,
           backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
