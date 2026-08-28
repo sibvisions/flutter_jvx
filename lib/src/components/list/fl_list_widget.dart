@@ -17,7 +17,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -741,7 +741,8 @@ class _FlListWidgetState extends State<FlListWidget> with TickerProviderStateMix
                       ],
                     )
                   ),
-                  if (widget.model.dataProvider.isEmpty || widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty))
+                  if (constraints.maxHeight > 60
+                      && (widget.model.dataProvider.isEmpty || widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty)))
                     Positioned(
                       top: constraints.maxHeight > 130 ? 40 : constraints.maxHeight > 100 ? 20 : 10,
                       left: 0,

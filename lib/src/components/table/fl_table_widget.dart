@@ -18,7 +18,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -437,7 +437,8 @@ class _FlTableWidgetState extends State<FlTableWidget> with TickerProviderStateM
                     ]
                   )
                 ),
-                if (widget.model.dataProvider.isEmpty || widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty))
+                if (constraints.maxHeight > 60
+                    && (widget.model.dataProvider.isEmpty || widget.metaData == null || (widget.chunkData.isAllFetched && widget.chunkData.data.isEmpty)))
                   Positioned(
                     top: constraints.maxHeight > 160 ? 80 : constraints.maxHeight > 140 ? 30 : constraints.maxHeight > 120 ? 20 : 10,
                     left: 0,
