@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:badges/badges.dart' as badges;
 
 import '../service/ui/i_ui_service.dart';

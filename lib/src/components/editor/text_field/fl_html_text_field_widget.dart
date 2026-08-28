@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
 import '../../../model/component/fl_component_model.dart';

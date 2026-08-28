@@ -15,7 +15,7 @@
  */
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../model/menu/menu_item_model.dart';
 import '../../../model/response/device_status_response.dart';

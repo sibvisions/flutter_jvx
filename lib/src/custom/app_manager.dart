@@ -18,7 +18,7 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:universal_io/io.dart';
 
 import '../components/list/fl_list_entry.dart';

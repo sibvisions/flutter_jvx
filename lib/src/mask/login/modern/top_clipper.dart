@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 /// Creates a path like this
 ///

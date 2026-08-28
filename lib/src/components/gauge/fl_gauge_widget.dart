@@ -16,7 +16,7 @@
 
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:gauges/gauges.dart';
 
 import '../../model/component/fl_component_model.dart';

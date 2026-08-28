@@ -16,7 +16,7 @@
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../routing/locations/main_location.dart';

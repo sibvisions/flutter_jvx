@@ -16,7 +16,7 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../lib/src/model/command/layout/preferred_size_command.dart';
 import '../lib/src/model/component/fl_component_model.dart';

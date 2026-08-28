@@ -15,7 +15,7 @@
  */
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../model/response/record_format.dart';
 import '../../../util/extensions/color_extensions.dart';

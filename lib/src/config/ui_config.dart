@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../mask/setting/settings_page.dart';
 import '../model/response/application_meta_data_response.dart';

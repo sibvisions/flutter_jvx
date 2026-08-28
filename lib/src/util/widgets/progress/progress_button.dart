@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum ButtonState { idle, loading, success, fail }
 

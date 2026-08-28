@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../model/component/editor/cell_editor/fl_choice_cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';

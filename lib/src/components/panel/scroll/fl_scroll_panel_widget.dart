@@ -15,7 +15,7 @@
  */
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../model/component/fl_component_model.dart';
 import '../../editor/text_field/fl_text_field_widget.dart';

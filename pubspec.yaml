@@ -112,17 +112,20 @@ dependencies:
   community_charts_flutter: ^1.0.4
   gauges: ^1.0.0
   graphic: ^2.7.0
-  flutter_keyboard_visibility: ^6.0.0
+  flutter_keyboard_visibility: ^7.0.0
   flutter_slidable: ^4.0.0
-  action_slider: ^0.7.0
+  action_slider: #^0.7.0
+    git:
+      url: https://github.com/sibvisions/action_slider
 
   webview_flutter: ^4.0.0
 
   card_loading: ^0.3.0
   flutter_treeview: #^1.0.7+1
     git:
-      url: https://github.com/kee-org/flutter_treeview
-      ref: v1.1.1
+      url: https://github.com/sibvisions/fix_flutter_treeview
+      #url: https://github.com/kee-org/flutter_treeview
+      #ref: v1.1.1
 
   modal_bottom_sheet: ^3.0.0
   qr_flutter: ^4.1.0
@@ -167,6 +170,8 @@ dependencies:
 
   pro_image_editor: ^13.0.0
 
+  material_ui: any
+  cupertino_ui: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -179,10 +184,10 @@ dev_dependencies:
 dependency_overrides:
 
   #until wasm is fixed in original package
-  flutter_keyboard_visibility:
-    git:
-      url: https://github.com/wenkaifan0720/flutter_keyboard_visibility
-      path: flutter_keyboard_visibility
+#  flutter_keyboard_visibility:
+#    git:
+#      url: https://github.com/wenkaifan0720/flutter_keyboard_visibility
+#      path: flutter_keyboard_visibility
 
 flutter:
   uses-material-design: true

@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract class MaterialIconUtil {
   static Icon? getIcon(String name, [double? size, Color? color, bool useDefault = true]) {

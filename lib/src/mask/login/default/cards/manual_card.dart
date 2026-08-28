@@ -16,7 +16,7 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../../../config/app_config.dart';

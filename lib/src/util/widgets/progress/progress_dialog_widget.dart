@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
 class ProgressDialogWidget extends StatefulWidget {

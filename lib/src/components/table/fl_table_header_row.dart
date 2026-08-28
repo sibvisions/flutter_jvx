@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';

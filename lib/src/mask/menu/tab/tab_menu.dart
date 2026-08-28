@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../model/menu/menu_group_model.dart';
 import '../grid/widget/grid_menu_item.dart';

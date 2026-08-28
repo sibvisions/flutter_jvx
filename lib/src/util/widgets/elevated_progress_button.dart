@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Acts like a standard [ElevatedButton] but shows a progress indicator as long as
 /// pressed is executing

@@ -18,7 +18,7 @@ import 'dart:math';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../model/command/ui/route/route_to_login_command.dart';
 import '../../state/app_style_direct.dart';
