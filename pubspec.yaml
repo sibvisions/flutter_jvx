@@ -49,11 +49,13 @@ dependencies:
   collection: ^1.19.0
   rxdart: ^0.28.0
   queue: ^3.4.0
-  flutter_html: ^3.0.0
-  #flutter_html:
-  #  git:
-  #    url: https://github.com/Sub6Resources/flutter_html
-  #    ref: flutter_html-v3.0.0-beta.2
+  #flutter_html: ^3.0.0
+
+  #fix for: https://github.com/Sub6Resources/flutter_html/issues/1515
+  flutter_html:
+    git:
+      url: https://github.com/suhail-121/flutter_html.git
+
   async: ^2.13.0
 
   # IO handling
