@@ -685,34 +685,37 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       expand: false,
       bounce: false,
       topControl: const SizedBox.shrink(),
-      builder: (context) => SizedBox(
-        height: contentHeight + 18,
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 8, bottom: 4),
-              height: 17,
-              child: Center(
-                child: Container(
-                  width: 36,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withAlpha(90),
-                    borderRadius: BorderRadius.circular(2.5),
+      builder: (context) => Material(
+        color: Colors.transparent,
+        child: SizedBox(
+          height: contentHeight + 18,
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 8, bottom: 4),
+                height: 17,
+                child: Center(
+                  child: Container(
+                    width: 36,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withAlpha(90),
+                      borderRadius: BorderRadius.circular(2.5),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: FlLinkedCellPicker(
-                linkedCellEditor: this,
-                model: model,
-                name: name!,
-                editorColumnDefinition: columnDefinition,
-                embeddable: true,
+              Expanded(
+                child: FlLinkedCellPicker(
+                  linkedCellEditor: this,
+                  model: model,
+                  name: name!,
+                  editorColumnDefinition: columnDefinition,
+                  embeddable: true,
+                )
               )
-            )
-          ]
+            ]
+          )
         )
       ),
     ).then((value) {
