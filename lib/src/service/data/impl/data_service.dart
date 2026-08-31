@@ -340,6 +340,7 @@ class DataService implements IDataService {
     int? to,
   }) {
     if (from <= -1) {
+      //all editors -> but dynamic editors should be supported as well
       CommandState state = ICommandService().getFetchCommandState(dataProvider, 0, 0);
 
       if (state == CommandState.Finished) {
