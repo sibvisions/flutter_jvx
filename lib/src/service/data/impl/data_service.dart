@@ -340,7 +340,20 @@ class DataService implements IDataService {
     int? to,
   }) {
     if (from <= -1) {
-      return FetchState.Available;
+      CommandState state = ICommandService().getFetchCommandState(dataProvider, 0, 0);
+
+      if (state == CommandState.Finished) {
+        return FetchState.Available;
+      }
+      else if (state == CommandState.Waiting) {
+        return FetchState.Queued;
+      }
+
+      if (dataBooks.containsKey(dataProvider)) {
+        return FetchState.Available;
+      }
+
+      return FetchState.NotAvailable;
     }
 
     CommandState state = ICommandService().getFetchCommandState(dataProvider, from, to);
