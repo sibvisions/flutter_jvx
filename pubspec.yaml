@@ -170,7 +170,7 @@ dependencies:
 
   haptic_feedback: ^0.6.0
 
-  pro_image_editor: ^13.0.0
+  pro_image_editor: ^14.0.0
 
   material_ui: any
   cupertino_ui: any
