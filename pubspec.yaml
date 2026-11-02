@@ -115,7 +115,7 @@ dependencies:
   gauges: ^1.0.0
   graphic: ^2.7.0
   flutter_keyboard_visibility: ^7.0.0
-  flutter_slidable: ^4.0.0
+  flutter_slidable: ^5.0.0
   action_slider: #^0.7.0
     git:
       url: https://github.com/sibvisions/action_slider
@@ -150,7 +150,7 @@ dependencies:
 
   push: ^3.0.0
   flutter_local_notifications: ^22.0.0
-  open_filex: ^4.0.0
+  open_filex: ^5.0.0
 
   screenshot: ^3.0.0
 
