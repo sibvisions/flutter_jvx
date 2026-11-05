@@ -19,7 +19,7 @@ rm -r $pubCache/hosted/pub.dev/device_info_plus-*
 rm -r $pubCache/hosted/pub.dev/flutter_native_splash-*
 rm -r $pubCache/hosted/pub.dev/sqflite-*
 rm -r $pubCache/hosted/pub.dev/sqflite_*
-#rm -r $pubCache/hosted/pub.dev/flutter_keyboard_visibility-*
+rm -r $pubCache/hosted/pub.dev/flutter_keyboard_visibility-*
 rm -r $pubCache/hosted/pub.dev/geolocator-*
 rm -r $pubCache/hosted/pub.dev/geolocator_*
 rm -r $pubCache/hosted/pub.dev/connectivity_plus*
@@ -34,7 +34,6 @@ rm -r $pubCache/hosted/pub.dev/push-*
 rm -r $pubCache/hosted/pub.dev/flutter_local_notifications*
 rm -r $pubCache/hosted/pub.dev/screen_brightness*
 rm -r $pubCache/hosted/pub.dev/open_filex*
-rm -r $pubCache/hosted/pub.dev/open_file*
 rm -r $pubCache/hosted/pub.dev/pointer_interceptor*
 rm -r $pubCache/hosted/pub.dev/webview_flutter*
 rm -r $pubCache/hosted/pub.dev/flutter_device_platform_id*
@@ -46,6 +45,6 @@ rm -r $pubCache/hosted/pub.dev/local_auth*
 rm -r $pubCache/hosted/pub.dev/haptic_feedback*
 rm -r $pubCache/hosted/pub.dev/pro_image_editor*
 rm -r $pubCache/git/fix_html-editor-enhanced*
-rm -r $pubCache/git/flutter_keyboard_visibility-*
+#rm -r $pubCache/git/flutter_keyboard_visibility*
 
 echo $pubCache

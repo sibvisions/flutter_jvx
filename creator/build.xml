@@ -313,9 +313,19 @@ the License.
 
     <!-- recognize java home for gradle builds-->
 
-    <echo file="${project.temp}/android/gradle.properties" append="true">
-      <![CDATA[org.gradle.java.home=${java.home}]]>
-    </echo>
+    <if>
+      <isset property="extern.java.home" />
+      <then>
+        <propertyfile file="${project.temp}/android/gradle.properties">
+          <entry key="org.gradle.java.home" value="${extern.java.home}" />
+        </propertyfile>
+      </then>
+      <else>
+        <propertyfile file="${project.temp}/android/gradle.properties">
+          <entry key="org.gradle.java.home" value="${java.home}" />
+        </propertyfile>
+      </else>
+    </if>
 
     <!-- file permissions -->
     <chmod perm="ug+x">
