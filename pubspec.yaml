@@ -27,7 +27,7 @@ dependencies:
   flutter_native_splash: ^2.4.0
 
   # iOS Dep
-  cupertino_icons: ^1.0.0
+  cupertino_icons: ^2.0.0
 
   # Translations capability
   intl: any # An exact version pin will be provided by the Flutter SDK
@@ -101,7 +101,7 @@ dependencies:
   # Custom Dependencies
   flutter_map: ^8.3.0
   latlong2: ">=0.9.1 <0.11.0"
-  geolocator: ^14.0.0
+  geolocator: ^14.1.0
   scrollview_observer: ^1.27.0
   url_launcher: ^6.0.0
   linked_scroll_controller: ^0.2.0
@@ -147,7 +147,7 @@ dependencies:
 #      path: speech_to_text
 
   push: ^3.0.0
-  flutter_local_notifications: ^22.0.0
+  flutter_local_notifications: ^23.0.0
   open_filex: ^5.0.0
 
   screenshot: ^3.0.0
